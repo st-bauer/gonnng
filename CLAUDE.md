@@ -91,6 +91,11 @@ mit viel Licht und Schatten, der Graf unter der Kapuze nur mit zwei glühenden A
   Hauptfigur mit Laufphasen (`held.png`, `held_lauf.png`), Krächz, Frau Kallweit, Jonas, Lina.
   Laufwege sind ein Netz aus Linien (NODES/EDGES), Teile des Hintergrunds verdecken Figuren dahinter (OCC).
   Die Hauptfigur ist bewusst so gestaltet, dass sie als Mädchen oder Junge durchgeht.
+- Prolog Fassung 2, alles im Code gezeichnet: `prolog/prolog-v2-code.html` (eine Datei, keine Bilder nötig).
+  Raum, Figuren, Pixelschrift mit Umlauten und Verbleiste werden im Browser gezeichnet, alle in derselben Pixelgröße
+  mit festen Farbrampen, Licht von links und dunkler Umrisslinie. Figuren entstehen aus Einzelteilen (Klasse `Pup`),
+  dadurch gibt es Laufphasen, Sprechen, Blinzeln und Greifen ohne neue Bilder. Spiellogik wie in Fassung 1.
+  Anlass: In Fassung 1 wirkten die Figuren aufgesetzt. Zum Testen: `window.__act(verb, id, item)`, `window.__pick(i)`.
 - `scripts/alles_umrechnen.sh` baut Palette (224 Farben) und alle Bilder neu. Neue Bilder dort eintragen.
 
 ## Nächste Schritte
@@ -98,7 +103,7 @@ mit viel Licht und Schatten, der Graf unter der Kapuze nur mit zwei glühenden A
 1. Optional: „Schule bei Nacht“ in voller Auflösung aus der Canva-Arbeitsdatei exportieren und neu umrechnen.
 2. Graf: Stil prüfen (Rüstung wirkt noch etwas türkis), bei Bedarf Laufphasen oder weitere Posen erzeugen.
 3. Intro Version 2 abnehmen und verfeinern (z. B. Stein zum Hinsetzen). Die Leiter ist auf Wunsch gestrichen, die Greifpose ist eingebaut.
-4. Prolog-Vorschau abnehmen: Richtung, Bedienung, Figuren. Danach verfeinern (Sprechanimation, weitere Posen, Ton, Speichern).
+4. Entscheiden: Fassung 1 (gemalte Bilder) oder Fassung 2 (Code-Pixelgrafik) für das Spiel. Danach verfeinern (Posen, Ton, Speichern).
 5. Offene Punkte aus dem Konzept klären (Namen der Nebenfiguren, Zielstufe, Speicherstand, Begleitmaterial).
 
 ## Online-Dokument
