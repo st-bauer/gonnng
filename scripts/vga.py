@@ -47,6 +47,11 @@ def key_green(im):
     return rgba
 
 
+def pixels(im):
+    """Pixelliste, ohne Warnung in neuen Pillow-Versionen."""
+    return list(im.get_flattened_data() if hasattr(im, "get_flattened_data") else im.getdata())
+
+
 def load_palette(path):
     pal_img = Image.open(path).convert("RGB")
     px = [pal_img.getpixel((x, y)) for y in range(pal_img.height) for x in range(pal_img.width)]
@@ -83,10 +88,22 @@ def main():
     w, h = map(int, a.size.lower().split("x"))
 
     if a.make_palette:
-        tiles = [fit_cover(prep(Image.open(p), a.contrast, a.color), w, h) for p in a.inputs]
-        sheet = Image.new("RGB", (w, h * len(tiles)))
-        for i, t in enumerate(tiles):
-            sheet.paste(t, (0, i * h))
+        # Figuren vor Gruen (Dateiname enthaelt "gruen") zaehlen nur mit ihren eigenen Pixeln,
+        # damit das Gruen keine Plaetze in der Palette belegt.
+        px = []
+        for p in a.inputs:
+            im = Image.open(p)
+            if "gruen" in p.lower():
+                rgba = key_green(im)
+                rgb = prep(rgba, a.contrast, a.color)
+                alpha = pixels(rgba.getchannel("A"))
+                px += [c for c, al in zip(pixels(rgb), alpha) if al > 128]
+            else:
+                px += pixels(fit_cover(prep(im, a.contrast, a.color), w, h))
+        rows = (len(px) + w - 1) // w
+        px += [px[-1]] * (rows * w - len(px))
+        sheet = Image.new("RGB", (w, rows))
+        sheet.putdata(px)
         q = sheet.quantize(colors=a.colors, method=Image.Quantize.MEDIANCUT)
         pal = q.getpalette()[: a.colors * 3]
         out = Image.new("RGB", (a.colors, 1))

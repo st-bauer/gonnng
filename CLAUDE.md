@@ -60,15 +60,25 @@ mit viel Licht und Schatten, der Graf unter der Kapuze nur mit zwei glühenden A
 - Graf Nimmerjetzt als Figur: in Canva vor Grün erzeugt (https://www.canva.com/M/MAHWVEdRLfQ), Rohbild
   `assets/raw/graf_gruen_600px.png`, freigestellt und umgerechnet nach `assets/sprites/graf.png` (52 × 90).
   `scripts/vga.py` kann dafür jetzt mit `--key-green` Figuren vor Grün freistellen.
-- Gemeinsame Palette (128 Farben) aus Schule und Graf: `assets/palette.png`. Bei neuen Bildern neu bauen und alles neu umrechnen.
-- Probemontage Einstellung 2/3 des Intros: `assets/test/schule_nacht_mit_graf.png`.
+- Weitere Bilder (alle in der Canva-Arbeitsdatei, Rohbilder in `assets/raw/`):
+  Uhrwerk im Glockenturm mit großer Unruh (`assets/bg/uhrwerk.png`, 320 × 200, https://www.canva.com/M/MAHWVGRLFcE),
+  Klassenzimmer am Nachmittag mit Tafel, Wanduhr und Lüftungsgitter rechts (`assets/bg/klassenzimmer.png`,
+  320 × 180, damit das Gitter nicht abgeschnitten wird und unten Platz für die Verbleiste bleibt,
+  https://www.canva.com/M/MAHWVMHQKLw), Aufschiebchen in Schlafanzug und Zipfelmütze
+  (`assets/sprites/aufschiebchen.png`, 40 × 48, https://www.canva.com/M/MAHWVF1FGcM).
+- Gemeinsame Palette (128 Farben) aus allen Bildern: `assets/palette.png`. Bei neuen Bildern neu bauen und alles neu umrechnen.
+  Bei Figuren vor Grün (Dateiname mit „gruen“) zählen dabei nur die Pixel der Figur.
+- Probemontagen: `assets/test/intro_huegel.png`, `assets/test/intro_uhrwerk.png`, `assets/test/prolog_klassenzimmer.png`,
+  Übersicht `assets/test/uebersicht_x2.png`. Figuren in Nachtszenen wirken noch zu hell, das Spiel sollte sie dort abdunkeln.
+- Fachcheck offen: Große Turmuhren laufen in der Regel mit einem Pendel, die Unruh sitzt eher in Taschen- und Tischuhren.
+  Entweder im Spiel begründen (besondere Uhr) oder auf Pendel umstellen.
 
 ## Nächste Schritte
 
 1. Optional: „Schule bei Nacht“ in voller Auflösung aus der Canva-Arbeitsdatei exportieren und neu umrechnen.
 2. Graf: Stil prüfen (Rüstung wirkt noch etwas türkis), bei Bedarf Laufphasen oder weitere Posen erzeugen.
-3. Wenn der Stil passt: übrige Intro-Einstellungen erzeugen (Hügel mit Aufschiebchen, Uhrwerk-Nahaufnahme,
-   Nebel, Logo, Klassenzimmer) und das Intro nach dem Storyboard in `docs/konzept.md` neu bauen.
+3. Intro nach dem Storyboard in `docs/konzept.md` neu bauen: Hintergründe und Figuren sind da,
+   Nebel und Logo „Gonnng!“ werden im Code erzeugt.
 4. Danach den Prolog als spielbare Szene bauen (Lösungsweg, Hotspots, Dialogbaum und Tipps stehen im Konzept).
 5. Offene Punkte aus dem Konzept klären (Namen der Nebenfiguren, Zielstufe, Speicherstand, Begleitmaterial).
 
