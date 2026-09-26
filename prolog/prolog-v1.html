@@ -1,0 +1,557 @@
+<title>Gonnng! Prolog</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=VT323&display=swap">
+<style>
+:root{--bg:#07060f;--ink:#efe9ff;--muted:#9a90c0;--line:#3a3160;--gold:#f0b848;--verb:#7fb0e8;--verbHi:#ffe28a;color-scheme:dark}
+html,body{background:var(--bg);margin:0}
+[hidden]{display:none!important}
+body{color:var(--ink);font-family:'VT323',ui-monospace,Menlo,Consolas,monospace;padding:16px 16px 28px}
+.wrap{max-width:960px;margin:0 auto;display:flex;flex-direction:column;gap:10px}
+.top{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
+.brand{font-size:30px;color:var(--gold);letter-spacing:.04em;text-shadow:2px 2px 0 #3a1c06}
+.sub{font-size:19px;color:var(--muted)}
+.screen{position:relative;width:100%;aspect-ratio:16/9;background:#000;border:2px solid var(--line);border-radius:6px 6px 0 0;overflow:hidden;user-select:none;-webkit-user-select:none;cursor:crosshair;touch-action:manipulation}
+canvas{display:block;width:100%;height:100%;image-rendering:pixelated;image-rendering:crisp-edges}
+.out{text-shadow:2px 0 #000,-2px 0 #000,0 2px #000,0 -2px #000,2px 2px #000,-2px -2px #000,2px -2px #000,-2px 2px #000}
+.say{position:absolute;transform:translate(-50%,-100%);max-width:62%;text-align:center;font-size:clamp(15px,3vw,28px);line-height:1.05;pointer-events:none}
+.narr{position:absolute;left:50%;top:4%;transform:translateX(-50%);width:86%;text-align:center;font-size:clamp(15px,2.8vw,26px);color:#d8d0f0;font-style:italic;pointer-events:none}
+.overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;background:rgba(5,4,14,.8);text-align:center;padding:16px;cursor:default}
+.overlay h1{margin:0;font-weight:400;font-size:clamp(36px,9vw,80px);color:var(--gold);letter-spacing:.04em;text-shadow:4px 4px 0 #3a1c06;line-height:1}
+.overlay p{margin:0;font-size:clamp(16px,2.8vw,23px);color:#c9c0ea;max-width:40ch}
+.panel{background:#0d0b1c;border:2px solid var(--line);border-top:0;border-radius:0 0 6px 6px;padding:8px 10px 10px;display:flex;flex-direction:column;gap:8px}
+.sentence{font-size:clamp(18px,2.8vw,24px);color:#c8f0ff;min-height:1.1em;text-align:center}
+.controls{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:12px}
+.verbs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px}
+.verbs button,.inv button,.dialog button{font-family:inherit;border-radius:3px;cursor:pointer}
+.verbs button{font-size:clamp(17px,2.6vw,24px);color:var(--verb);background:#141030;border:1px solid #2a2450;padding:4px 2px}
+.verbs button.on{color:var(--verbHi);border-color:#8a6ad8;background:#221a48}
+.verbs button:hover{color:#bfe0ff}
+.inv{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;align-content:start}
+.inv button{height:48px;background:#141030;border:1px solid #2a2450;padding:2px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#b8b0d8;font-size:14px;line-height:1}
+.inv button.on{border-color:#ffe28a;background:#221a48}
+.inv button canvas{width:48px;height:24px;image-rendering:pixelated}
+.inv .empty{height:48px;border:1px dashed #221c40;border-radius:3px}
+.dialog{display:flex;flex-direction:column;gap:4px}
+.dialog button{text-align:left;font-size:clamp(17px,2.6vw,24px);color:var(--verb);background:#141030;border:1px solid #2a2450;padding:5px 10px}
+.dialog button:hover,.dialog button:focus-visible{color:var(--verbHi);border-color:#8a6ad8}
+button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.primary{font-family:inherit;font-size:25px;color:var(--ink);background:#2a1c4a;border:1px solid #8a6ad8;border-radius:4px;padding:8px 22px;cursor:pointer}
+.primary:disabled{opacity:.6;cursor:default}
+.hint{font-size:17px;color:var(--muted);text-align:center}
+@media (max-width:560px){.controls{grid-template-columns:1fr}.inv{grid-template-columns:repeat(4,minmax(0,1fr))}}
+</style>
+
+<div class="wrap">
+  <div class="top">
+    <div class="brand">Gonnng!</div>
+    <div class="sub">Prolog · Das stille Klassenzimmer (Vorschau)</div>
+  </div>
+  <div>
+    <div class="screen" id="screen">
+      <canvas id="cv" width="320" height="180" aria-label="Spielszene: Klassenzimmer"></canvas>
+      <div class="narr out" id="narr" hidden></div>
+      <div class="say out" id="say" hidden></div>
+      <div class="overlay" id="start">
+        <h1>Gonnng!</h1>
+        <p>Prolog: Das stille Klassenzimmer. Tippe ein Verb und dann etwas im Bild an. Ohne Verb schaust du Dinge an.</p>
+        <button class="primary" id="play" disabled>Lädt …</button>
+      </div>
+      <div class="overlay" id="end" hidden>
+        <h1>Weiter geht’s …</h1>
+        <p>Ende des Prologs. Im Lüftungsschacht beginnt Kapitel 1: Die wandernden Flure.</p>
+        <button class="primary" id="again">Nochmal spielen</button>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="sentence" id="sentence">Gehe zu</div>
+      <div class="controls" id="controls">
+        <div class="verbs" id="verbs"></div>
+        <div class="inv" id="inv"></div>
+      </div>
+      <div class="dialog" id="dialog" hidden></div>
+    </div>
+  </div>
+  <div class="hint">Während jemand spricht: ins Bild tippen oder Leertaste für den nächsten Satz.</div>
+</div>
+
+<script>
+(()=>{
+const W=320,H=180;
+const cv=document.getElementById('cv'),ctx=cv.getContext('2d');ctx.imageSmoothingEnabled=false;
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+
+/* ---------- Bilder ---------- */
+const SRC={
+  bg:'../assets/bg/klassenzimmer.png',
+  held:'../assets/sprites/held.png',heldLauf:'../assets/sprites/held_lauf.png',
+  kraechz:'../assets/sprites/kraechz.png',kallweit:'../assets/sprites/kallweit.png',
+  jonas:'../assets/sprites/jonas.png',lina:'../assets/sprites/lina.png',
+  auf:'../assets/sprites/aufschiebchen.png',aufLauf:'../assets/sprites/aufschiebchen_lauf.png'
+};
+const IMG={};
+function load(){return Promise.all(Object.entries(SRC).map(([k,s])=>new Promise((ok,no)=>{const i=new Image();i.onload=()=>{IMG[k]=i;ok();};i.onerror=()=>no(s);i.src=s;})));}
+// Kopfmitte einer Figur (oberes Drittel), damit Stehen und Laufen ohne Sprung wechseln
+function headX(img,sx,sw){
+  const c=document.createElement('canvas');c.width=sw;c.height=img.height;const g=c.getContext('2d');g.drawImage(img,sx,0,sw,img.height,0,0,sw,img.height);
+  const d=g.getImageData(0,0,sw,Math.floor(img.height*0.35)).data;let a=sw,b=0;
+  for(let i=3;i<d.length;i+=4)if(d[i]>128){const x=((i-3)/4)%sw;a=Math.min(a,x);b=Math.max(b,x);}
+  return a<=b?(a+b)/2:sw/2;
+}
+// Figur zeichnen: x = Kopfmitte, y = Fusspunkt, s = Massstab, flip = nach links schauen
+function drawImg(img,sx,sw,hx,x,y,s,flip,alpha){
+  const w=Math.max(1,Math.round(sw*s)),h=Math.max(1,Math.round(img.height*s)),ax=hx*s;
+  ctx.save();if(alpha!=null)ctx.globalAlpha=alpha;
+  if(flip){ctx.translate(Math.round(x+ax),Math.round(y)-h);ctx.scale(-1,1);ctx.drawImage(img,sx,0,sw,img.height,0,0,w,h);}
+  else ctx.drawImage(img,sx,0,sw,img.height,Math.round(x-ax),Math.round(y)-h,w,h);
+  ctx.restore();
+}
+function pxr(x,y,w,h,c){ctx.fillStyle=c;ctx.fillRect(x,y,w,h);}
+
+/* ---------- Raum ---------- */
+const depth=y=>clamp(0.6+0.4*(y-101)/79,0.55,1.05);
+// Laufwege als Netz: Mittelgang, vorn rechts bis zum Gitter, hinter dem Pult entlang bis zum hellen Streifen am Fenster
+const NODES={A:[211,176],B:[211,120],E:[218,111],C:[252,110],D:[292,113],H:[190,112],F:[150,112],G:[132,106]};
+const EDGES=[['A','B'],['B','E'],['E','C'],['C','D'],['E','H'],['H','F'],['F','G']];
+// Teile des Hintergrunds, die vor Figuren liegen, die weiter hinten stehen
+const OCC=[{x:142,y:90,w:70,h:27,base:117},{x:136,y:112,w:60,h:15,base:125},{x:58,y:100,w:52,h:22,base:120},{x:226,y:105,w:68,h:18,base:121}];
+
+function nearestOnEdges(px,py){
+  let best=null;
+  for(const [a,b] of EDGES){const [x1,y1]=NODES[a],[x2,y2]=NODES[b],dx=x2-x1,dy=y2-y1,l=dx*dx+dy*dy;
+    const t=clamp(((px-x1)*dx+(py-y1)*dy)/l,0,1),x=x1+dx*t,y=y1+dy*t,d=Math.hypot(px-x,py-y);
+    if(!best||d<best.d)best={x,y,a,b,d};}
+  return best;
+}
+function route(from,to){
+  const s=nearestOnEdges(from.x,from.y),t=nearestOnEdges(to.x,to.y);
+  if((s.a===t.a&&s.b===t.b))return[[t.x,t.y]];
+  const dist={},prev={},todo=new Set(Object.keys(NODES));for(const k of todo)dist[k]=Infinity;
+  const nb=k=>EDGES.flatMap(([a,b])=>a===k?[b]:b===k?[a]:[]);
+  dist[s.a]=Math.hypot(s.x-NODES[s.a][0],s.y-NODES[s.a][1]);dist[s.b]=Math.hypot(s.x-NODES[s.b][0],s.y-NODES[s.b][1]);prev[s.a]=prev[s.b]='S';
+  while(todo.size){let u=null;for(const k of todo)if(u===null||dist[k]<dist[u])u=k;todo.delete(u);
+    for(const v of nb(u)){const d=dist[u]+Math.hypot(NODES[u][0]-NODES[v][0],NODES[u][1]-NODES[v][1]);if(d<dist[v]){dist[v]=d;prev[v]=u;}}}
+  const end=[t.a,t.b].map(k=>({k,d:dist[k]+Math.hypot(t.x-NODES[k][0],t.y-NODES[k][1])})).sort((p,q)=>p.d-q.d)[0].k;
+  const path=[];let k=end;while(k&&k!=='S'){path.unshift(NODES[k].slice());k=prev[k];}
+  path.push([t.x,t.y]);return path;
+}
+
+/* ---------- Zustand ---------- */
+let S;
+function reset(){
+  S={
+    hero:{x:211,y:156,flip:false,path:[],walking:false,t:0},
+    auf:null,                 // Aufschiebchen in der Eingangssequenz
+    heft:true,kraechz:'aussen',kx:70,ky:86,kflip:false,
+    fenster:false,ziel:false,kruemelGesehen:false,gitter:false,
+    federmappe:false,muenze:false,kreide:2,
+    tipp:{fenster:0,kruemel:0,gitter:0},kraechzKennt:false,jonas:0,
+    inv:[],verb:'gehe',item:null,busy:false,globus:0
+  };
+}
+reset();
+
+/* ---------- Gegenstände im Inventar ---------- */
+const ITEMS={
+  lineal:{name:'Lineal',look:'Ein Holzlineal, dreißig Zentimeter. Lang und flach.'},
+  radiergummi:{name:'Radiergummi',look:'Riecht nach Erdbeere. Warum riechen Radiergummis nach Erdbeere?'},
+  muenze:{name:'Münze',look:'Ein Euro aus der Klassenkasse. Flach und rund.'},
+  kreide:{name:'Kreide',look:'Ein Stück weiße Kreide. Damit kann man Zeichen machen.'}
+};
+function icon(id){
+  const c=document.createElement('canvas');c.width=32;c.height=16;const g=c.getContext('2d');
+  const r=(x,y,w,h,col)=>{g.fillStyle=col;g.fillRect(x,y,w,h);};
+  if(id==='lineal'){r(2,6,28,5,'#c89858');r(2,10,28,1,'#8a6030');for(let x=4;x<30;x+=3)r(x,6,1,x%6===1?3:2,'#5a3a18');}
+  if(id==='radiergummi'){r(9,5,8,7,'#f08aa8');r(17,5,7,7,'#5a8ae0');r(9,11,15,1,'#803050');r(10,6,3,1,'#ffc8d8');}
+  if(id==='muenze'){g.fillStyle='#d8b040';g.beginPath();g.arc(16,8,6,0,7);g.fill();g.fillStyle='#b08820';g.beginPath();g.arc(16,8,4,0,7);g.fill();r(13,6,2,1,'#fff0a0');}
+  if(id==='kreide'){r(7,7,18,3,'#f4f4f0');r(7,9,18,1,'#c8c8c0');r(24,7,1,3,'#ffffff');}
+  return c;
+}
+
+/* ---------- Hotspots ---------- */
+const K={
+  hero:'#ffffff',kraechz:'#b8d0ff',kallweit:'#ffc0d8',jonas:'#b8f0b0',lina:'#ffd890',auf:'#d8c0ff'
+};
+function heroHead(){const s=depth(S.hero.y);return[S.hero.x,S.hero.y-78*s-3];}
+const HEADS={kallweit:()=>[116,38],jonas:()=>[128,108],lina:()=>[40,112],kraechz:()=>[S.kx,S.ky-24],auf:()=>S.auf?[S.auf.x,S.auf.y-34]:[250,80]};
+
+const HS=[
+  {id:'kraechz',name:'Krächz',vis:()=>true,rect:()=>S.kraechz==='aussen'?[58,62,26,28]:[S.kx-14,S.ky-26,28,28],walk:[132,106],flip:true},
+  {id:'federmappe',name:'Federmappe',rect:()=>[238,116,16,8],walk:[213,138],flip:false},
+  {id:'kreide',name:'Kreide',vis:()=>S.kreide>0,rect:()=>[208,78,18,7],walk:[218,111],flip:true},
+  {id:'uhr',name:'Uhr',rect:()=>[165,5,26,26],walk:[185,112],flip:false},
+  {id:'globus',name:'Globus',rect:()=>[258,36,20,20],walk:[252,110],flip:false},
+  {id:'gitter',name:()=>S.gitter?'Lüftungsschacht':'Lüftungsgitter',rect:()=>[297,97,18,28],walk:[292,113],flip:false},
+  {id:'kruemel',name:'Krümelspur',vis:()=>S.ziel,rect:()=>[230,108,72,14],walk:[252,110],flip:false},
+  {id:'lina',name:'Lina',rect:()=>[0,108,62,72],walk:[211,172],flip:true},
+  {id:'jonas',name:'Jonas',rect:()=>[100,104,56,76],walk:[211,160],flip:true},
+  {id:'kallweit',name:'Frau Kallweit',rect:()=>[100,38,32,60],walk:[150,112],flip:true},
+  {id:'fenster',name:'Fenster',rect:()=>[52,2,38,92],walk:[132,106],flip:true},
+  {id:'poster',name:'Poster Pflanzenzelle',rect:()=>[91,32,26,54],walk:[132,106],flip:true},
+  {id:'tafel',name:'Tafel',rect:()=>[124,31,110,52],walk:[185,112],flip:false},
+  {id:'pult',name:'Pult',rect:()=>[143,89,69,27],walk:[218,111],flip:true},
+  {id:'boden',name:'Boden',rect:()=>[190,122,46,58],walk:[211,150],flip:false}
+];
+const nameOf=h=>typeof h.name==='function'?h.name():h.name;
+function hotspotAt(x,y){for(const h of HS){if(h.vis&&!h.vis())continue;const [a,b,w,hh]=h.rect();if(x>=a&&x<a+w&&y>=b&&y<b+hh)return h;}return null;}
+
+/* ---------- Sprechen, Laufen ---------- */
+const sayEl=document.getElementById('say'),narrEl=document.getElementById('narr');
+let skipLine=null;
+function lineTime(t){return 1400+t.length*55;}
+async function say(who,text){
+  const [x,y]=who==='hero'?heroHead():HEADS[who]();
+  sayEl.textContent=text;sayEl.style.color=K[who];
+  sayEl.style.left=clamp(x/W*100,18,82)+'%';sayEl.style.top=clamp(y/H*100,14,100)+'%';sayEl.hidden=false;
+  await new Promise(r=>{skipLine=r;setTimeout(r,lineTime(text));});
+  skipLine=null;sayEl.hidden=true;await sleep(120);
+}
+async function narrate(text){
+  narrEl.textContent=text;narrEl.hidden=false;
+  await new Promise(r=>{skipLine=r;setTimeout(r,lineTime(text));});
+  skipLine=null;narrEl.hidden=true;await sleep(120);
+}
+function walkTo(x,y){
+  const p=route(S.hero,{x,y});S.hero.path=p;S.hero.walking=true;
+  return new Promise(r=>{S.hero.done=r;});
+}
+function face(left){S.hero.flip=left;}
+function stepHero(dt){
+  const h=S.hero;if(!h.walking)return;
+  let left=dt*48*depth(h.y);
+  while(left>0&&h.path.length){
+    const [tx,ty]=h.path[0],dx=tx-h.x,dy=ty-h.y,d=Math.hypot(dx,dy);
+    if(Math.abs(dx)>0.5)h.flip=dx<0;
+    if(d<=left){h.x=tx;h.y=ty;h.path.shift();left-=d;}
+    else{h.x+=dx/d*left;h.y+=dy/d*left;left=0;}
+  }
+  h.t+=dt;
+  if(!h.path.length){h.walking=false;const r=h.done;h.done=null;if(r)r();}
+}
+
+/* ---------- Ton ---------- */
+let AC=null,M=null;
+function initAudio(){try{AC=AC||new (window.AudioContext||window.webkitAudioContext)();M=AC.createGain();M.gain.value=0.5;M.connect(AC.destination);}catch(e){AC=null;}}
+function tone(type,f,dur,vol,f2,delay){if(!AC)return;const s=AC.currentTime+(delay||0),o=AC.createOscillator(),g=AC.createGain();o.type=type;o.frequency.setValueAtTime(f,s);if(f2)o.frequency.exponentialRampToValueAtTime(f2,s+dur);g.gain.setValueAtTime(0.0001,s);g.gain.exponentialRampToValueAtTime(vol,s+0.01);g.gain.exponentialRampToValueAtTime(0.0001,s+dur);o.connect(g);g.connect(M);o.start(s);o.stop(s+dur+0.05);}
+function knock(){tone('square',180,0.05,0.12,90);tone('square',170,0.05,0.12,90,0.16);}
+function gongStuck(sec){if(!AC)return;const s=AC.currentTime,bus=AC.createGain();bus.connect(M);bus.gain.setValueAtTime(1,s);bus.gain.setValueAtTime(1,s+sec-1.5);bus.gain.linearRampToValueAtTime(0,s+sec);
+  const lfo=AC.createOscillator(),lg=AC.createGain();lfo.frequency.value=6;lg.gain.value=0.35;lfo.connect(lg);lg.connect(bus.gain);lfo.start(s);lfo.stop(s+sec);
+  [[1,1],[1.48,.6],[2.02,.45],[2.74,.3]].forEach(([m,v])=>{const o=AC.createOscillator(),g=AC.createGain();o.type='sine';o.frequency.value=131*m;g.gain.setValueAtTime(0.0001,s);g.gain.exponentialRampToValueAtTime(0.14*v,s+0.01);g.gain.exponentialRampToValueAtTime(0.08*v,s+0.4);o.connect(g);g.connect(bus);o.start(s);o.stop(s+sec);});}
+
+/* ---------- Standardantworten ---------- */
+const FALLBACK={
+  schau:h=>'Das ist '+nameOf(h)+'.',
+  nimm:()=>'Das lasse ich lieber, wo es ist.',
+  oeffne:()=>'Das lässt sich nicht öffnen.',
+  schliesse:()=>'Da gibt es nichts zu schließen.',
+  druecke:()=>'Da tut sich nichts.',
+  ziehe:()=>'Da tut sich nichts.',
+  rede:()=>'Mit Gegenständen rede ich nur im Notfall.',
+  gib:()=>'Das will hier niemand haben.',
+  benutze:()=>'Das bringt nichts.'
+};
+
+/* ---------- Tipps von Krächz ---------- */
+function stage(){
+  if(!S.fenster)return'fenster';
+  if(!S.ziel)return'ziel';
+  if(!S.kruemelGesehen)return'kruemel';
+  if(!S.gitter)return'gitter';
+  if(!S.kreide||S.inv.indexOf('kreide')<0)return'kreide';
+  return'fertig';
+}
+const TIPPS={
+  kruemel:['Wohin wollte das Aufschiebchen?','Aufschiebchen essen ständig. Schau mal nach unten.','Die Krümel führen zum Gitter.'],
+  gitter:['Schrauben brauchen einen Dreher.','Schlitzschrauben mag alles, was flach und rund ist.','In Pulten liegt oft Kleingeld.']
+};
+async function tipp(){
+  const st=stage();
+  if(st==='kreide'){await say('kraechz','Wer ins Dunkle geht, braucht Zeichen.');return;}
+  if(st==='fertig'){await say('kraechz','Worauf wartest du? Auf den Gong?');return;}
+  const i=Math.min(S.tipp[st],2);S.tipp[st]=i+1;
+  await say('kraechz',TIPPS[st][i]);
+}
+
+/* ---------- Dialoge ---------- */
+const dialogEl=document.getElementById('dialog'),controlsEl=document.getElementById('controls');
+function choose(options){
+  return new Promise(r=>{
+    dialogEl.innerHTML='';controlsEl.hidden=true;dialogEl.hidden=false;
+    options.forEach((o,i)=>{const b=document.createElement('button');b.textContent=o;b.onclick=()=>{dialogEl.hidden=true;controlsEl.hidden=false;r(i);};dialogEl.appendChild(b);});
+  });
+}
+async function zielGespraech(){
+  await say('kraechz','Also, was ist dein Ziel?');
+  for(;;){
+    const a=await choose(['Irgendwie alles wieder normal machen.','Mein Bestes geben!','Die ganze Welt retten.','Das Aufschiebchen finden, das mein Heft hat.']);
+    const T=['Irgendwie alles wieder normal machen.','Mein Bestes geben!','Die ganze Welt retten.','Das Aufschiebchen finden, das mein Heft hat.'];
+    await say('hero',T[a]);
+    if(a===0){await say('kraechz','„Irgendwie“ ist keine Himmelsrichtung. Noch mal.');continue;}
+    if(a===1){await say('kraechz','Das sagen alle, kurz bevor sie ein Nickerchen machen.');continue;}
+    if(a===2){await say('kraechz','Ehrgeizig. Und womit fängst du heute an?');continue;}
+    await say('kraechz','Schon besser. Bis wann?');
+    for(;;){
+      const b=await choose(['Irgendwann.','Bevor es im Keller verschwindet.']);
+      if(b===0){await say('hero','Irgendwann.');await say('kraechz','So heißt diese Schule. Das ist keine Uhrzeit.');continue;}
+      await say('hero','Bevor es im Keller verschwindet.');break;
+    }
+    await say('kraechz','Und woran merkst du, dass du es geschafft hast?');
+    await choose(['Wenn ich mein Heft wieder in der Hand habe.']);
+    await say('hero','Wenn ich mein Heft wieder in der Hand habe.');
+    await say('kraechz','Na bitte. Ein Ziel mit Anfang und Ende. Das ist selten geworden.');
+    S.ziel=true;return;
+  }
+}
+async function redeKraechz(){
+  if(S.kraechz==='aussen'){
+    await say('hero','Hallo? Ich verstehe kein Wort. Das Fenster ist zu.');
+    const i=Math.min(S.tipp.fenster,2);S.tipp.fenster=i+1;
+    await narrate(['Krächz klopft und deutet mit dem Schnabel auf den Spalt.','Krächz malt mit dem Schnabel einen Hebel an die beschlagene Scheibe.','Krächz hält ein Lineal hoch und zeigt auf deine Federmappe.'][i]);
+    return;
+  }
+  if(!S.kraechzKennt){
+    S.kraechzKennt=true;
+    await say('hero','Warum sind alle erstarrt?');
+    await say('kraechz','Jemand hat die Unruh aus der Stundenuhr gestohlen. Ohne Unruh keine Uhr. Ohne Uhr kein Anfangen. Und ohne Anfangen sieht es aus wie hier.');
+  }
+  if(!S.ziel){await zielGespraech();return;}
+  for(;;){
+    const a=await choose(['Hast du einen Tipp für mich?','Warum sind alle erstarrt?','Bis gleich.']);
+    if(a===0){await say('hero','Hast du einen Tipp für mich?');await tipp();}
+    else if(a===1){await say('hero','Warum sind alle erstarrt?');await say('kraechz','Die Unruh ist weg. Ohne Unruh keine Uhr. Ohne Uhr kein Anfangen.');}
+    else{await say('hero','Bis gleich.');await say('kraechz','„Gleich“ sagen hier schon genug.');return;}
+  }
+}
+
+/* ---------- Aktionen ---------- */
+function give(id){if(S.inv.indexOf(id)<0)S.inv.push(id);renderInv();}
+function take(id){S.inv=S.inv.filter(i=>i!==id);renderInv();}
+async function act(verb,h,item){
+  const id=h.id;
+  // Benutze / Gib mit Gegenstand
+  if(item){
+    if(verb==='gib'){
+      if(id==='kraechz'){await say('kraechz','Behalte das mal schön selbst.');return;}
+      if(['jonas','lina','kallweit'].includes(id)){await say(id,'Gleich.');return;}
+      return say('hero',FALLBACK.gib());
+    }
+    if(item==='lineal'&&id==='fenster'){
+      if(S.fenster)return say('hero','Das ist schon offen.');
+      await say('hero','Langer Hebelarm, wenig Kraft.');
+      tone('sawtooth',220,0.5,0.05,120);S.fenster=true;
+      await sleep(400);await flyIn();
+      await say('kraechz','Guten Tag. Krächz. Früher Schulleiter, heute Vogel. Frag nicht.');
+      return;
+    }
+    if(item==='muenze'&&id==='gitter'){
+      if(S.gitter)return say('hero','Das Gitter ist schon ab.');
+      if(!S.ziel)return say('hero','Warum sollte ich da ran? Ich weiß ja noch nicht mal, was ich eigentlich will.');
+      for(let i=0;i<4;i++){tone('square',900+i*60,0.08,0.05,700);await sleep(350);}
+      S.gitter=true;await say('hero','Vier Schrauben, eine Münze. Das Gitter ist ab.');return;
+    }
+    if(item==='lineal'&&id==='gitter')return say('hero','Zu dick für die Schlitze.');
+    if(item==='radiergummi'&&(id==='gitter'||id==='kruemel'))return say('hero','Schön wär’s, wenn man Aufschiebchen einfach wegradieren könnte.');
+    if(item==='kreide'&&id==='tafel')return say('hero','Später. Die Tafel läuft ja nicht weg.');
+    return say('hero',FALLBACK.benutze());
+  }
+  switch(id+':'+verb){
+    case 'kallweit:schau':return say('hero','Sie ist mitten im Satz stehen geblieben. Seite … was? Das bleibt ein Rätsel.');
+    case 'kallweit:rede':await say('hero','Frau Kallweit? Welche Seite?');return say('kallweit','Gleich.');
+    case 'jonas:schau':return say('hero','Er meldet sich seit zehn Minuten. Sein Arm zittert schon.');
+    case 'jonas:rede':
+      if(S.jonas++%2===0){await say('hero','Alles okay bei dir?');return say('jonas','Gleich.');}
+      await say('hero','Deine Haare brennen.');return say('jonas','… Gleich.');
+    case 'jonas:ziehe':return say('hero','Der Arm bleibt oben. Respekt.');
+    case 'lina:schau':return say('hero','Sie gähnt. In sehr, sehr langsamer Zeitlupe.');
+    case 'lina:rede':await say('hero','Lina? Aufwachen!');return say('lina','Gl… e… i… ch.');
+    case 'uhr:schau':return say('hero','Der Sekundenzeiger zittert, kommt aber nicht vom Fleck.');
+    case 'uhr:druecke':return say('hero','Ich komme nicht ran. Und ich will nichts kaputt machen, was schon kaputt ist.');
+    case 'fenster:schau':return say('hero',S.fenster?'Frische Luft. Endlich.':'Draußen sitzt ein Rabe mit Monokel und klopft. Das ist neu.');
+    case 'fenster:oeffne':return say('hero',S.fenster?'Ist schon offen.':'Klemmt. Ich bräuchte etwas Langes und Flaches.');
+    case 'fenster:schliesse':return say('hero',S.fenster?'Dann kommt Krächz nicht mehr raus. Lieber nicht.':'Ist schon zu. Leider.');
+    case 'kraechz:schau':return say('hero',S.fenster?'Ein Rabe mit Monokel und Krawattennadel. Er guckt streng.':'Draußen sitzt ein Rabe mit Monokel und klopft. Das ist neu.');
+    case 'kraechz:rede':return redeKraechz();
+    case 'federmappe:schau':return say('hero','Meine Federmappe. Innen herrscht Chaos mit System.');
+    case 'federmappe:oeffne':
+      if(S.federmappe)return say('hero','Da ist nur noch Chaos drin. Ohne System.');
+      S.federmappe=true;give('lineal');give('radiergummi');return say('hero','Ein Lineal und ein Radiergummi. Nehme ich mit.');
+    case 'federmappe:nimm':return say('hero','Die bleibt hier. Ich nehme mir raus, was ich brauche.');
+    case 'pult:schau':return say('hero','Das Lehrerpult. Aufgeräumter als jede Wohnung, die ich kenne.');
+    case 'pult:oeffne':
+      if(S.muenze)return say('hero','Da liegt nur noch mein Zettel.');
+      S.muenze=true;give('muenze');tone('triangle',1400,0.25,0.05);
+      await say('hero','Eine Münze aus der Klassenkasse.');return say('hero','Ich lege einen Zettel hinein: „Geliehen. Ehrlich.“');
+    case 'boden:schau':
+      if(!S.ziel)return say('hero','Dreck. Irgendwelcher.');
+      S.kruemelGesehen=true;return say('hero','Kekskrümel! Die führen zum Lüftungsgitter.');
+    case 'kruemel:schau':S.kruemelGesehen=true;return say('hero','Kekskrümel! Die führen zum Lüftungsgitter.');
+    case 'kruemel:nimm':return say('hero','Die gehören dem Aufschiebchen. Und dem Hausmeister.');
+    case 'gitter:schau':return say('hero',S.gitter?'Ein dunkler Schacht. Da ist das Aufschiebchen durch.':'Vier Schlitzschrauben. Da ist das Aufschiebchen durch.');
+    case 'gitter:oeffne':return say('hero',S.gitter?'Offener geht es nicht.':'Mit den Fingernägeln? Nein danke.');
+    case 'gitter:benutze':
+      if(!S.gitter)return say('hero','Da ist noch das Gitter davor.');
+      if(S.inv.indexOf('kreide')<0){return say('kraechz','Wer ins Dunkle geht, braucht Zeichen.');}
+      return ende();
+    case 'tafel:schau':return say('hero',S.kreide>1?'Frisch gewischt. Auf der Ablage liegen zwei Stück Kreide.':'Frisch gewischt. Auf der Ablage liegt noch ein Stück Kreide.');
+    case 'tafel:nimm':case 'kreide:nimm':
+      if(S.inv.indexOf('kreide')>=0)return say('hero','Ein Stück reicht. Das andere ist für Frau Kallweit.');
+      S.kreide--;give('kreide');return say('hero','Ein Stück Kreide. Kann nie schaden.');
+    case 'kreide:schau':return say('hero','Zwei Stück Kreide auf der Tafelablage.');
+    case 'poster:schau':return say('hero','Zellwand, Zellkern, Chloroplasten. Ordentlicher als meine Federmappe.');
+    case 'globus:schau':return say('hero','Irgendwo darauf liegt ein Ort, an dem gerade niemand erstarrt ist.');
+    case 'globus:druecke':S.globus=1.2;tone('sawtooth',300,0.6,0.03,900);return say('hero','Wusch.');
+  }
+  if(verb==='schau')return say('hero',FALLBACK.schau(h));
+  if(['jonas','lina','kallweit'].includes(id)&&verb!=='schau')return say(id,'Gleich.');
+  return say('hero',FALLBACK[verb]?FALLBACK[verb](h):FALLBACK.benutze());
+}
+async function flyIn(){
+  const x0=70,y0=86,x1=86,y1=98;
+  for(let t=0;t<=1;t+=0.05){S.kx=x0+(x1-x0)*t;S.ky=y0+(y1-y0)*t-Math.sin(t*Math.PI)*18;await sleep(30);}
+  S.kraechz='innen';S.kx=x1;S.ky=y1;S.kflip=true;
+}
+async function ende(){
+  await walkTo(292,113);face(false);
+  await say('hero','Dann mal los. Bevor es im Keller verschwindet.');
+  S.hero.hidden=true;tone('triangle',400,0.8,0.05,120);await sleep(900);
+  document.getElementById('end').hidden=false;S.over=true;
+}
+
+/* ---------- Eingangssequenz ---------- */
+async function eingang(){
+  S.busy=true;renderUI();
+  gongStuck(9);
+  await say('kallweit','Für morgen lest ihr bitte Seite …');
+  await sleep(600);
+  await say('hero','Frau Kallweit? Welche Seite?');
+  await sleep(300);
+  // Das Aufschiebchen huscht aus dem Gitter zum Pult der Hauptfigur
+  S.auf={x:300,y:114,flip:true,walk:true};
+  const path=[[252,111],[243,116]];
+  for(const [tx,ty] of path){
+    while(Math.hypot(tx-S.auf.x,ty-S.auf.y)>1){const dx=tx-S.auf.x,dy=ty-S.auf.y,d=Math.hypot(dx,dy);S.auf.x+=dx/d*1.6;S.auf.y+=dy/d*1.6;S.auf.flip=dx<0;await sleep(30);}
+  }
+  S.auf.walk=false;S.heft=false;S.auf.heft=true;await sleep(300);
+  await say('auf','Hoaaah.');
+  S.auf.walk=true;
+  for(const [tx,ty] of [[252,111],[302,114]]){
+    while(Math.hypot(tx-S.auf.x,ty-S.auf.y)>1){const dx=tx-S.auf.x,dy=ty-S.auf.y,d=Math.hypot(dx,dy);S.auf.x+=dx/d*1.9;S.auf.y+=dy/d*1.9;S.auf.flip=dx<0;await sleep(30);}
+  }
+  S.auf=null;
+  await say('hero','Hey! Mein Heft!');
+  knock();await sleep(500);knock();
+  await say('hero','Und wer klopft da?');
+  S.busy=false;renderUI();
+}
+
+/* ---------- Zeichnen ---------- */
+let HXS={};
+function heroFrame(){
+  const h=S.hero;if(h.hidden)return null;
+  if(h.walking){const cw=IMG.heldLauf.width/4,i=Math.floor(h.t*8)%4;return{img:IMG.heldLauf,sx:i*cw,sw:cw,hx:cw/2};}
+  return{img:IMG.held,sx:0,sw:IMG.held.width,hx:HXS.held};
+}
+function draw(now){
+  ctx.drawImage(IMG.bg,0,0);
+  // Uhr: der Sekundenzeiger zittert auf der Stelle
+  const a=-1.1+Math.sin(now/40)*0.06;ctx.strokeStyle='#8a1a1a';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(178.5,18.5);ctx.lineTo(178.5+Math.cos(a)*8,18.5+Math.sin(a)*8);ctx.stroke();
+  // Fenster offen
+  if(S.fenster){ctx.globalAlpha=0.28;pxr(58,12,26,78,'#ffffff');ctx.globalAlpha=1;ctx.fillStyle='#6a5236';ctx.beginPath();ctx.moveTo(84,11);ctx.lineTo(95,6);ctx.lineTo(95,92);ctx.lineTo(84,90);ctx.fill();pxr(89,8,1,84,'#a08060');}
+  // Kreide auf der Ablage
+  for(let i=0;i<S.kreide;i++)pxr(212+i*6,81,4,1,'#f4f4f0');
+  // Federmappe und Heft auf dem Tisch der Hauptfigur
+  pxr(239,118,11,4,'#3a6fb0');pxr(239,118,11,1,'#6a9fe0');pxr(244,118,1,4,'#d0d0d0');
+  if(S.heft){pxr(252,119,8,3,'#e8d070');pxr(252,121,8,1,'#b09040');}
+  // Kruemelspur, erst sichtbar, wenn das Ziel klar ist
+  if(S.ziel){[[234,120],[240,117],[247,114],[255,113],[263,112],[271,113],[279,113],[287,114],[294,116],[299,117]].forEach(([x,y],i)=>{pxr(x,y,1,1,'#d8a060');if(i%2)pxr(x+2,y+1,1,1,'#b07838');});}
+  // Lueftungsgitter
+  if(S.gitter){pxr(301,101,10,19,'#101016');pxr(290,118,10,4,'#7a8090');pxr(290,118,10,1,'#a0a8b8');}
+  else{[[301,101],[310,101],[301,119],[310,119]].forEach(([x,y])=>pxr(x,y,1,1,'#e0e0e8'));}
+  // Globus dreht sich
+  if(S.globus>0){for(let i=0;i<3;i++){const x=262+((now/30+i*5)%12);pxr(Math.round(x),40,1,10,'#e8f0ff');}}
+  // Figuren und Vordergrund nach Tiefe sortiert
+  const L=[];
+  L.push({y:97,d:()=>drawImg(IMG.kallweit,0,IMG.kallweit.width,HXS.kallweit,116,97,depth(97),false)});
+  L.push({y:190,d:()=>drawImg(IMG.jonas,0,IMG.jonas.width,HXS.jonas,128,190,0.9,false)});
+  L.push({y:188,d:()=>drawImg(IMG.lina,0,IMG.lina.width,HXS.lina,34,190,0.9,false)});
+  const kb=S.kraechz==='aussen'?Math.round(Math.abs(Math.sin(now/260))*(Math.floor(now/1600)%2)):0;
+  L.push({y:S.kraechz==='aussen'?0:S.ky,d:()=>{if(S.kraechz==='aussen'){ctx.save();ctx.globalAlpha=0.85;}drawImg(IMG.kraechz,0,IMG.kraechz.width,HXS.kraechz,S.kx,S.ky-kb,S.kraechz==='aussen'?0.75:0.85,S.kflip);if(S.kraechz==='aussen'){ctx.restore();ctx.globalAlpha=0.18;pxr(56,56,30,34,'#dfefff');ctx.globalAlpha=1;}}});
+  const f=heroFrame();if(f)L.push({y:S.hero.y,d:()=>drawImg(f.img,f.sx,f.sw,f.hx,S.hero.x,S.hero.y,depth(S.hero.y),S.hero.flip)});
+  if(S.auf){const au=S.auf,s=depth(au.y);L.push({y:au.y,d:()=>{
+    if(au.walk){const cw=IMG.aufLauf.width/4;drawImg(IMG.aufLauf,(Math.floor(now/110)%4)*cw,cw,cw/2,au.x,au.y,s,au.flip);}
+    else drawImg(IMG.auf,0,IMG.auf.width,HXS.auf,au.x,au.y,s,au.flip);
+    if(au.heft){pxr(Math.round(au.x-4),Math.round(au.y-18*s),8,3,'#e8d070');}
+  }});}
+  for(const o of OCC)L.push({y:o.base,d:()=>ctx.drawImage(IMG.bg,o.x,o.y,o.w,o.h,o.x,o.y,o.w,o.h)});
+  L.sort((p,q)=>p.y-q.y).forEach(o=>o.d());
+}
+
+/* ---------- Oberflaeche ---------- */
+const VERBS=[['gib','Gib'],['nimm','Nimm'],['benutze','Benutze'],['oeffne','Öffne'],['schau','Schau an'],['druecke','Drücke'],['schliesse','Schließe'],['rede','Rede mit'],['ziehe','Ziehe']];
+const VNAME=Object.fromEntries(VERBS);VNAME.gehe='Gehe zu';
+const verbsEl=document.getElementById('verbs'),invEl=document.getElementById('inv'),sentEl=document.getElementById('sentence');
+VERBS.forEach(([id,label])=>{const b=document.createElement('button');b.textContent=label;b.dataset.v=id;b.onclick=()=>{if(S.busy)return;S.verb=S.verb===id?'gehe':id;S.item=null;renderUI();};verbsEl.appendChild(b);});
+let hover=null;
+function sentence(){
+  let s=VNAME[S.verb];
+  if(S.item)s+=' '+ITEMS[S.item].name+(S.verb==='gib'?' an':' mit');
+  if(hover)s+=' '+hover;
+  return s;
+}
+function renderUI(){
+  [...verbsEl.children].forEach(b=>b.classList.toggle('on',b.dataset.v===S.verb));
+  sentEl.textContent=S.busy?' ':sentence();
+  [...invEl.children].forEach(b=>b.classList&&b.classList.toggle('on',b.dataset.i===S.item));
+}
+function renderInv(){
+  invEl.innerHTML='';
+  for(let k=0;k<8;k++){
+    const id=S.inv[k];
+    if(!id){const e=document.createElement('div');e.className='empty';invEl.appendChild(e);continue;}
+    const b=document.createElement('button');b.dataset.i=id;b.title=ITEMS[id].name;b.appendChild(icon(id));const t=document.createElement('span');t.textContent=ITEMS[id].name;b.appendChild(t);
+    b.onclick=()=>itemClick(id);b.onmouseenter=()=>{hover=ITEMS[id].name;renderUI();};b.onmouseleave=()=>{hover=null;renderUI();};
+    invEl.appendChild(b);
+  }
+  renderUI();
+}
+async function run(fn){S.busy=true;hover=null;renderUI();try{await fn();}finally{S.busy=false;if(!S.over){S.verb='gehe';S.item=null;}renderUI();}}
+function itemClick(id){
+  if(S.busy)return;
+  if((S.verb==='benutze'||S.verb==='gib')&&!S.item){S.item=id;renderUI();return;}
+  if(S.item){const a=S.item;run(async()=>{await say('hero',a===id?'Mit sich selbst? Philosophisch.':'Das passt nicht zusammen.');});return;}
+  if(S.verb==='schau'||S.verb==='gehe'){run(()=>say('hero',ITEMS[id].look));return;}
+  if(S.verb==='nimm'){run(()=>say('hero','Hab ich schon.'));return;}
+  run(()=>say('hero',FALLBACK[S.verb]?FALLBACK[S.verb]():FALLBACK.benutze()));
+}
+function toScene(e){const r=cv.getBoundingClientRect();return[(e.clientX-r.left)/r.width*W,(e.clientY-r.top)/r.height*H];}
+cv.addEventListener('pointermove',e=>{if(S.busy)return;const [x,y]=toScene(e),h=hotspotAt(x,y);const n=h?nameOf(h):null;if(n!==hover){hover=n;renderUI();}});
+cv.addEventListener('pointerleave',()=>{hover=null;if(!S.busy)renderUI();});
+cv.addEventListener('click',e=>{
+  if(skipLine){skipLine();return;}
+  if(S.busy)return;
+  const [x,y]=toScene(e),h=hotspotAt(x,y);
+  if(!h){const p=nearestOnEdges(x,y);run(()=>walkTo(p.x,p.y));return;}
+  const verb=S.verb==='gehe'?'schau':S.verb,item=S.item;
+  if((verb==='benutze'||verb==='gib')&&!item&&!['gitter'].includes(h.id)){
+    if(verb==='gib'){run(()=>say('hero','Was soll ich denn geben?'));return;}
+  }
+  run(async()=>{await walkTo(h.walk[0],h.walk[1]);face(h.flip);await act(verb,h,item);});
+});
+document.addEventListener('keydown',e=>{if((e.key===' '||e.key==='Enter')&&skipLine){e.preventDefault();skipLine();}});
+
+/* ---------- Schleife ---------- */
+let last=performance.now();
+function loop(now){const dt=Math.min(0.05,(now-last)/1000);last=now;stepHero(dt);if(S.globus>0)S.globus-=dt;draw(now);requestAnimationFrame(loop);}
+const playBtn=document.getElementById('play');
+load().then(()=>{
+  HXS={held:headX(IMG.held,0,IMG.held.width),kallweit:headX(IMG.kallweit,0,IMG.kallweit.width),jonas:headX(IMG.jonas,0,IMG.jonas.width),lina:headX(IMG.lina,0,IMG.lina.width),kraechz:headX(IMG.kraechz,0,IMG.kraechz.width),auf:headX(IMG.auf,0,IMG.auf.width)};
+  renderInv();requestAnimationFrame(loop);playBtn.disabled=false;playBtn.textContent='Prolog spielen';
+}).catch(s=>{playBtn.textContent='Bild fehlt: '+s;});
+playBtn.onclick=()=>{initAudio();document.getElementById('start').hidden=true;eingang();};
+document.getElementById('again').onclick=()=>{document.getElementById('end').hidden=true;reset();renderInv();eingang();};
+// Zum Testen
+window.__S=()=>S;window.__act=(verb,id,item)=>{const h=HS.find(x=>x.id===id);return run(async()=>{await walkTo(h.walk[0],h.walk[1]);face(h.flip);await act(verb,h,item);});};
+window.__skip=()=>{if(skipLine)skipLine();};
+})();
+</script>

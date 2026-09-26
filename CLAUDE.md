@@ -78,19 +78,27 @@ mit viel Licht und Schatten, der Graf unter der Kapuze nur mit zwei glühenden A
   320 × 180, damit das Gitter nicht abgeschnitten wird und unten Platz für die Verbleiste bleibt,
   https://www.canva.com/M/MAHWVMHQKLw), Aufschiebchen in Schlafanzug und Zipfelmütze
   (`assets/sprites/aufschiebchen.png`, 40 × 48, https://www.canva.com/M/MAHWVF1FGcM).
-- Gemeinsame Palette (192 Farben) aus allen Bildern: `assets/palette.png`. Mit 128 Farben wurde der Mond zu blass. Bei neuen Bildern neu bauen und alles neu umrechnen.
+- Gemeinsame Palette (224 Farben) aus allen Bildern: `assets/palette.png`. Mit 128 Farben wurde der Mond zu blass. Bei neuen Bildern neu bauen und alles neu umrechnen.
   Bei Figuren vor Grün (Dateiname mit „gruen“) zählen dabei nur die Pixel der Figur.
 - Probemontagen: `assets/test/intro_huegel.png`, `assets/test/intro_uhrwerk.png`, `assets/test/prolog_klassenzimmer.png`,
   Übersicht `assets/test/uebersicht_x2.png`. Figuren in Nachtszenen wirken noch zu hell, das Spiel sollte sie dort abdunkeln.
 - Fachcheck offen: Große Turmuhren laufen in der Regel mit einem Pendel, die Unruh sitzt eher in Taschen- und Tischuhren.
   Entweder im Spiel begründen (besondere Uhr) oder auf Pendel umstellen.
 
+- Prolog als spielbare Vorschau: `prolog/prolog-v1.html` (Bilder aus `assets/`), `prolog/gonnng-prolog-vorschau.html`
+  mit eingebetteten Bildern. Enthält Eingangssequenz, neun Verben, Inventar, alle Hotspots, Zielgespräch als Dialogbaum,
+  Tippstufen von Krächz und den kompletten Lösungsweg aus dem Konzept. Neue Figuren (Canva, vor Grün):
+  Hauptfigur mit Laufphasen (`held.png`, `held_lauf.png`), Krächz, Frau Kallweit, Jonas, Lina.
+  Laufwege sind ein Netz aus Linien (NODES/EDGES), Teile des Hintergrunds verdecken Figuren dahinter (OCC).
+  Die Hauptfigur ist bewusst so gestaltet, dass sie als Mädchen oder Junge durchgeht.
+- `scripts/alles_umrechnen.sh` baut Palette (224 Farben) und alle Bilder neu. Neue Bilder dort eintragen.
+
 ## Nächste Schritte
 
 1. Optional: „Schule bei Nacht“ in voller Auflösung aus der Canva-Arbeitsdatei exportieren und neu umrechnen.
 2. Graf: Stil prüfen (Rüstung wirkt noch etwas türkis), bei Bedarf Laufphasen oder weitere Posen erzeugen.
 3. Intro Version 2 abnehmen und verfeinern (z. B. Stein zum Hinsetzen). Die Leiter ist auf Wunsch gestrichen, die Greifpose ist eingebaut.
-4. Danach den Prolog als spielbare Szene bauen (Lösungsweg, Hotspots, Dialogbaum und Tipps stehen im Konzept).
+4. Prolog-Vorschau abnehmen: Richtung, Bedienung, Figuren. Danach verfeinern (Sprechanimation, weitere Posen, Ton, Speichern).
 5. Offene Punkte aus dem Konzept klären (Namen der Nebenfiguren, Zielstufe, Speicherstand, Begleitmaterial).
 
 ## Online-Dokument
