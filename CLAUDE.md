@@ -73,11 +73,12 @@ mit viel Licht und Schatten, der Graf unter der Kapuze nur mit zwei glühenden A
   Der Ton wird dabei ab der neuen Stelle neu geplant.
 - Weitere Bilder (alle in der Canva-Arbeitsdatei, Rohbilder in `assets/raw/`):
   Uhrwerk im Glockenturm mit großer Unruh (`assets/bg/uhrwerk.png`, 320 × 200, https://www.canva.com/M/MAHWVGRLFcE),
-  Klassenzimmer (im Intro: nächster Morgen) mit Tafel, Wanduhr und Lüftungsgitter rechts (`assets/bg/klassenzimmer.png`,
+  Klassenzimmer am Morgen mit kühlem Tageslicht (https://www.canva.com/M/MAHWVIXOb4c; die ältere Abendfassung liegt als
+  `assets/raw/klassenzimmer_abend_600px.png`) mit Tafel, Wanduhr und Lüftungsgitter rechts (`assets/bg/klassenzimmer.png`,
   320 × 180, damit das Gitter nicht abgeschnitten wird und unten Platz für die Verbleiste bleibt,
   https://www.canva.com/M/MAHWVMHQKLw), Aufschiebchen in Schlafanzug und Zipfelmütze
   (`assets/sprites/aufschiebchen.png`, 40 × 48, https://www.canva.com/M/MAHWVF1FGcM).
-- Gemeinsame Palette (128 Farben) aus allen Bildern: `assets/palette.png`. Bei neuen Bildern neu bauen und alles neu umrechnen.
+- Gemeinsame Palette (192 Farben) aus allen Bildern: `assets/palette.png`. Mit 128 Farben wurde der Mond zu blass. Bei neuen Bildern neu bauen und alles neu umrechnen.
   Bei Figuren vor Grün (Dateiname mit „gruen“) zählen dabei nur die Pixel der Figur.
 - Probemontagen: `assets/test/intro_huegel.png`, `assets/test/intro_uhrwerk.png`, `assets/test/prolog_klassenzimmer.png`,
   Übersicht `assets/test/uebersicht_x2.png`. Figuren in Nachtszenen wirken noch zu hell, das Spiel sollte sie dort abdunkeln.
