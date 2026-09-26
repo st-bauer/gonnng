@@ -47,7 +47,10 @@ mit viel Licht und Schatten, der Graf unter der Kapuze nur mit zwei glühenden A
 - Konzept komplett: Welt, Figuren, Intro-Storyboard, Prolog im Detail, Kapitel 1 bis 4 mit Rätseln,
   Inventarlisten, Kombinationsrätseln, Ausreden-Duell, Fachcheck, geprüfte Quellen (`docs/konzept.md`).
 - Titel: „Gonnng!“. Gegenspieler: Graf Nimmerjetzt. Schule: Sankt Irgendwann auf dem Schiefenberg.
-- Intro Version 1 als Code-Pixelgrafik fertig (`intro/`), wird im neuen Stil neu gebaut.
+- Intro Version 1 als Code-Pixelgrafik (`intro/intro-v1-code-pixel.html`), abgelöst durch
+  Intro Version 2 mit den gemalten Bildern (`intro/intro-v2-gemalt.html`, lädt die Bilder aus `assets/`).
+  `intro/gonnng-intro-vorschau.html` ist dieselbe Datei mit eingebetteten Bildern zum Weitergeben;
+  nach Änderungen neu erzeugen (Bilder als data-URI einsetzen). Zum Testen zeigt `window.__frame(sekunde)` ein Standbild.
 - Teststandbild im neuen Stil: `assets/test/vga_test_standbild.png` (aus einer 199-Pixel-Vorschau, daher zu grob).
   Das alte Canva-Original (https://www.canva.com/M/MAHWUmwXVTw) ist verworfen, weil die Schule darin wie eine Kirche aussah.
 - Neues Standbild „Schule bei Nacht“ (Variante 1): breites Schulgebäude aus Backstein, kleines eckiges Uhrtürmchen
@@ -77,8 +80,7 @@ mit viel Licht und Schatten, der Graf unter der Kapuze nur mit zwei glühenden A
 
 1. Optional: „Schule bei Nacht“ in voller Auflösung aus der Canva-Arbeitsdatei exportieren und neu umrechnen.
 2. Graf: Stil prüfen (Rüstung wirkt noch etwas türkis), bei Bedarf Laufphasen oder weitere Posen erzeugen.
-3. Intro nach dem Storyboard in `docs/konzept.md` neu bauen: Hintergründe und Figuren sind da,
-   Nebel und Logo „Gonnng!“ werden im Code erzeugt.
+3. Intro Version 2 abnehmen und verfeinern (z. B. Stein zum Hinsetzen, Laufphasen, Gesicht bleibt verborgen).
 4. Danach den Prolog als spielbare Szene bauen (Lösungsweg, Hotspots, Dialogbaum und Tipps stehen im Konzept).
 5. Offene Punkte aus dem Konzept klären (Namen der Nebenfiguren, Zielstufe, Speicherstand, Begleitmaterial).
 
