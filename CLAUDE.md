@@ -52,11 +52,15 @@ mit viel Licht und Schatten, der Graf unter der Kapuze nur mit zwei glühenden A
   Das alte Canva-Original (https://www.canva.com/M/MAHWUmwXVTw) ist verworfen, weil die Schule darin wie eine Kirche aussah.
 - Neues Standbild „Schule bei Nacht“ (Variante 1): breites Schulgebäude aus Backstein, kleines eckiges Uhrtürmchen
   auf dem Dach, Schulhof mit Tor und Fußballtor. Gerade Fassung: https://www.canva.com/M/MAHWUzxEJaM,
-  leicht schiefe Fassung: https://www.canva.com/M/MAHWUzkGKy8 (als PNG herunterladen, nach `assets/raw/schule_nacht.png`).
+  leicht schiefe Fassung: https://www.canva.com/M/MAHWUzkGKy8.
+  Lokal liegen beide nur als 600 × 338 Pixel große Canva-Vorschau in `assets/raw/` (`schule_nacht_600px.png`,
+  `schule_nacht_gerade_600px.png`), weil die Cloud-Umgebung `export-download.canva.com` nicht erreicht.
+  Für 320 × 200 reicht das. Die schiefe Fassung ist schon umgerechnet: `assets/bg/schule_nacht.png`
+  (noch ohne gemeinsame Palette). Die Canva-Arbeitsdatei mit beiden Bildern: https://canva.link/mp6p64febvogrh4
 
 ## Nächste Schritte
 
-1. Neues Canva-Bild „Schule bei Nacht“ (Variante 1) herunterladen und in voller Auflösung umrechnen.
+1. Optional: „Schule bei Nacht“ in voller Auflösung aus der Canva-Arbeitsdatei exportieren und neu umrechnen.
 2. Den Grafen als gemalte Figur erzeugen (Morgenmantel, Kapuze, glühende Augen, Gesicht bleibt verborgen) und davorsetzen.
 3. Wenn der Stil passt: übrige Intro-Einstellungen erzeugen (Hügel mit Aufschiebchen, Uhrwerk-Nahaufnahme,
    Nebel, Logo, Klassenzimmer) und das Intro nach dem Storyboard in `docs/konzept.md` neu bauen.
