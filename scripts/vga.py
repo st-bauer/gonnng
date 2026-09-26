@@ -7,6 +7,7 @@ Beispiele:
   python scripts/vga.py hintergrund.png out.png --palette assets/palette.png   (gemeinsame Palette)
   python scripts/vga.py graf.png assets/sprites/graf.png --sprite --height 90 --palette assets/palette.png
   python scripts/vga.py a.png b.png c.png --make-palette assets/palette.png --colors 128
+  python scripts/vga.py graf_gruen.png assets/sprites/graf.png --sprite --key-green   (Figur vor Gruen freistellen)
 
 Benoetigt: pip install pillow
 """
@@ -29,6 +30,21 @@ def fit_cover(im, w, h):
     im = im.resize((nw, nh), Image.LANCZOS)
     left, top = (nw - w) // 2, (nh - h) // 2
     return im.crop((left, top, left + w, top + h))
+
+
+def key_green(im):
+    """Stellt eine Figur vor einfarbigem Gruen frei und nimmt den gruenen Saum an den Kanten weg."""
+    rgba = im.convert("RGBA")
+    px = rgba.load()
+    for y in range(rgba.height):
+        for x in range(rgba.width):
+            r, g, b, a = px[x, y]
+            spill = g - max(r, b)
+            if spill > 60 and g > 120:
+                px[x, y] = (0, 0, 0, 0)
+            elif spill > 0:
+                px[x, y] = (r, max(r, b), b, a)
+    return rgba
 
 
 def load_palette(path):
@@ -57,6 +73,7 @@ def main():
     ap.add_argument("--palette", help="PNG mit gemeinsamer Palette (siehe --make-palette)")
     ap.add_argument("--make-palette", help="Erzeugt aus allen Eingaben eine gemeinsame Palette und speichert sie hier")
     ap.add_argument("--sprite", action="store_true", help="Figur mit Transparenz statt Hintergrund")
+    ap.add_argument("--key-green", action="store_true", help="Figur vor Gruen (Chroma Key) freistellen (bei --sprite)")
     ap.add_argument("--height", type=int, default=90, help="Zielhoehe einer Figur in Pixeln (bei --sprite)")
     ap.add_argument("--contrast", type=float, default=1.15)
     ap.add_argument("--color", type=float, default=1.2)
@@ -85,7 +102,7 @@ def main():
     im = Image.open(src)
 
     if a.sprite:
-        rgba = im.convert("RGBA")
+        rgba = key_green(im) if a.key_green else im.convert("RGBA")
         bbox = rgba.getchannel("A").point(lambda v: 255 if v > 40 else 0).getbbox()
         if bbox:
             rgba = rgba.crop(bbox)

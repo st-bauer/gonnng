@@ -56,12 +56,17 @@ mit viel Licht und Schatten, der Graf unter der Kapuze nur mit zwei glühenden A
   Lokal liegen beide nur als 600 × 338 Pixel große Canva-Vorschau in `assets/raw/` (`schule_nacht_600px.png`,
   `schule_nacht_gerade_600px.png`), weil die Cloud-Umgebung `export-download.canva.com` nicht erreicht.
   Für 320 × 200 reicht das. Die schiefe Fassung ist schon umgerechnet: `assets/bg/schule_nacht.png`
-  (noch ohne gemeinsame Palette). Die Canva-Arbeitsdatei mit beiden Bildern: https://canva.link/mp6p64febvogrh4
+  (mit gemeinsamer Palette). Die Canva-Arbeitsdatei mit allen Bildern: https://canva.link/mp6p64febvogrh4
+- Graf Nimmerjetzt als Figur: in Canva vor Grün erzeugt (https://www.canva.com/M/MAHWVEdRLfQ), Rohbild
+  `assets/raw/graf_gruen_600px.png`, freigestellt und umgerechnet nach `assets/sprites/graf.png` (52 × 90).
+  `scripts/vga.py` kann dafür jetzt mit `--key-green` Figuren vor Grün freistellen.
+- Gemeinsame Palette (128 Farben) aus Schule und Graf: `assets/palette.png`. Bei neuen Bildern neu bauen und alles neu umrechnen.
+- Probemontage Einstellung 2/3 des Intros: `assets/test/schule_nacht_mit_graf.png`.
 
 ## Nächste Schritte
 
 1. Optional: „Schule bei Nacht“ in voller Auflösung aus der Canva-Arbeitsdatei exportieren und neu umrechnen.
-2. Den Grafen als gemalte Figur erzeugen (Morgenmantel, Kapuze, glühende Augen, Gesicht bleibt verborgen) und davorsetzen.
+2. Graf: Stil prüfen (Rüstung wirkt noch etwas türkis), bei Bedarf Laufphasen oder weitere Posen erzeugen.
 3. Wenn der Stil passt: übrige Intro-Einstellungen erzeugen (Hügel mit Aufschiebchen, Uhrwerk-Nahaufnahme,
    Nebel, Logo, Klassenzimmer) und das Intro nach dem Storyboard in `docs/konzept.md` neu bauen.
 4. Danach den Prolog als spielbare Szene bauen (Lösungsweg, Hotspots, Dialogbaum und Tipps stehen im Konzept).
