@@ -11,7 +11,7 @@ body{color:var(--ink);font-family:'VT323',ui-monospace,Menlo,Consolas,monospace;
 .top{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
 .brand{font-size:30px;color:var(--gold);letter-spacing:.04em;text-shadow:2px 2px 0 #3a1c06}
 .sub{font-size:19px;color:var(--muted)}
-.screen{position:relative;width:100%;max-width:100%;aspect-ratio:16/10;background:#000;border:2px solid var(--line);border-radius:6px;overflow:hidden;user-select:none;-webkit-user-select:none}
+.screen{position:relative;cursor:pointer;width:100%;max-width:100%;aspect-ratio:16/10;background:#000;border:2px solid var(--line);border-radius:6px;overflow:hidden;user-select:none;-webkit-user-select:none}
 canvas{display:block;width:100%;height:100%;image-rendering:pixelated;image-rendering:crisp-edges}
 .out{text-shadow:2px 0 #000,-2px 0 #000,0 2px #000,0 -2px #000,2px 2px #000,-2px -2px #000,2px -2px #000,-2px 2px #000}
 .cap{position:absolute;left:50%;bottom:5%;transform:translateX(-50%);width:88%;text-align:center;font-size:clamp(15px,3.2vw,30px);line-height:1.05;color:#f2ecff;pointer-events:none}
@@ -53,9 +53,9 @@ button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
     </div>
   </div>
   <div class="controls">
-    <button id="skip">Überspringen</button>
+    <button id="skip">Intro überspringen</button>
     <button id="mute" aria-pressed="false">Ton aus</button>
-    <span class="hint">Gemalte Bilder in VGA-Optik, 320 × 200, Ton per Browser erzeugt</span>
+    <span class="hint">Tippen oder Leertaste: weiter zum nächsten Satz oder zur nächsten Szene</span>
   </div>
 </div>
 
@@ -72,19 +72,20 @@ function px(x,y,c){ctx.fillStyle=c;ctx.fillRect(Math.round(x),Math.round(y),1,1)
 function line(x0,y0,x1,y1,c){x0=Math.round(x0);y0=Math.round(y0);x1=Math.round(x1);y1=Math.round(y1);ctx.fillStyle=c;const dx=Math.abs(x1-x0),dy=-Math.abs(y1-y0),sx=x0<x1?1:-1,sy=y0<y1?1:-1;let e=dx+dy;for(let n=0;n<600;n++){ctx.fillRect(x0,y0,1,1);if(x0===x1&&y0===y1)break;const e2=2*e;if(e2>=dy){e+=dy;x0+=sx;}if(e2<=dx){e+=dx;y0+=sy;}}}
 
 /* ---------- Bilder ---------- */
-const SRC={school:'../assets/bg/schule_nacht.png',works:'../assets/bg/uhrwerk.png',cls:'../assets/bg/klassenzimmer.png',graf:'../assets/sprites/graf.png',auf:'../assets/sprites/aufschiebchen.png',grafLauf:'../assets/sprites/graf_lauf.png',aufLauf:'../assets/sprites/aufschiebchen_lauf.png'};
+const SRC={school:'../assets/bg/schule_nacht.png',works:'../assets/bg/uhrwerk.png',cls:'../assets/bg/klassenzimmer.png',graf:'../assets/sprites/graf.png',auf:'../assets/sprites/aufschiebchen.png',grafLauf:'../assets/sprites/graf_lauf.png',grafGreifen:'../assets/sprites/graf_greifen.png',aufLauf:'../assets/sprites/aufschiebchen_lauf.png'};
 const IMG={};
 function load(){return Promise.all(Object.entries(SRC).map(([k,s])=>new Promise((ok,no)=>{const i=new Image();i.onload=()=>{IMG[k]=i;ok();};i.onerror=()=>no(s);i.src=s;})));}
 function canvasOf(w,h){const c=document.createElement('canvas');c.width=w;c.height=h;const g=c.getContext('2d');g.imageSmoothingEnabled=false;return[c,g];}
 // Figuren fuer die Nacht abdunkeln und blau einfaerben
 function tinted(img,col,a){const[c,g]=canvasOf(img.width,img.height);g.drawImage(img,0,0);g.globalCompositeOperation='source-atop';g.globalAlpha=a;g.fillStyle=col;g.fillRect(0,0,c.width,c.height);return c;}
-let GRAF,AUF,GRAFL,AUFL,WHEEL,FOG;
+let GRAF,AUF,GRAFL,AUFL,GRAFG,WHEEL,FOG;
 const PHASES=4;   // Laufphasen je Streifen
 const WX=170,WY=106,WR=30;   // Unruh im Uhrwerk-Bild
 function prepare(){
   GRAF=tinted(IMG.graf,'#101a4a',0.25);
   AUF=tinted(IMG.auf,'#101a4a',0.5);
   GRAFL=tinted(IMG.grafLauf,'#101a4a',0.25);
+  GRAFG=tinted(IMG.grafGreifen,'#101a4a',0.25);
   AUFL=tinted(IMG.aufLauf,'#101a4a',0.5);
   const[c,g]=canvasOf(WR*2,WR*2);g.beginPath();g.arc(WR,WR,WR,0,6.2832);g.clip();g.drawImage(IMG.works,-(WX-WR),-(WY-WR));WHEEL=c;
   FOG=makeFog();
@@ -171,20 +172,28 @@ function works(t){
   // Die Unruh schwingt hin und her, bis sie herausgezogen wird
   let ua=0,wx=WX,wy=WY,ws=1,gone=false;
   if(t<42.4)ua=RM?0:0.5*Math.sin(Math.PI*t*2);
-  let gx,flip,walk=false;
-  if(t<42)          {gx=340-(340-222)*clamp((t-38.6)/3.2,0,1);flip=true;walk=t<41.8;}
-  else if(t<43.3)   {gx=222;flip=true;}
-  else              {gx=222+(t-43.3)*50;flip=false;walk=true;}
+  // Ablauf: hereinschlurfen, stehen, greifen, herausziehen, umdrehen, mit der Unruh abgehen
+  let gx,flip=true,pose='stand';
+  if(t<41.8)      {gx=340-(340-230)*clamp((t-38.6)/3.2,0,1);pose='walk';}
+  else if(t<42.2) {gx=230;}
+  else if(t<42.6) {gx=230;pose='grab';}
+  else if(t<43.2) {gx=230+10*easeOut((t-42.6)/0.6);pose='grab';}
+  else if(t<43.4) {gx=240;flip=false;}
+  else            {gx=240+(t-43.4)*50;flip=false;pose='walk';}
   const gy=184;
-  if(t>=42.4){
+  if(t>=42.4)ua=0;
+  if(t>=42.6){
     gone=true;
-    const hand=flip?[gx-19,gy-52]:[gx+19,gy-52];
-    const k=t<43?easeOut((t-42.4)/0.6):1;
-    wx=WX+(hand[0]-WX)*k;wy=WY+(hand[1]-WY)*k;ws=1-0.55*k;
+    if(pose==='grab'){const k=easeOut((t-42.6)/0.6);wx=gx-30+4*k;wy=gy-76+18*k;ws=1-0.55*k;}
+    else{wx=gx+19;wy=gy-58;ws=0.45;}
   }
   if(gone){ctx.fillStyle='#0c0a14';ctx.beginPath();ctx.arc(WX,WY,WR-1,0,6.2832);ctx.fill();
     for(let y=WY-WR;y<WY+WR;y++)for(let x=WX-WR;x<WX+WR;x++){const d=Math.hypot(x-WX,y-WY);if(d<WR-1&&bay(x,y)<3)px(x,y,'#1c2250');}}
-  if(walk)walkSprite(GRAFL,phase(t,5,0),gx,gy,1,flip);else sprite(GRAF,gx,gy,1,flip);
+  // Greifpose: Kopf sitzt 39 px vom linken Rand (Bild 69 px breit), damit sie ohne Sprung an die stehende Figur anschliesst
+  if(pose==='walk')walkSprite(GRAFL,phase(t,5,0),gx,gy,1,flip);
+  else if(pose==='grab')sprite(GRAFG,gx+(flip?1:-1)*(39-GRAFG.width/2),gy,1,flip);
+  else sprite(GRAF,gx,gy,1,flip);
+  // Die Unruh liegt vor dem Grafen, sobald er sie in der Hand hat
   ctx.save();ctx.translate(Math.round(wx),Math.round(wy));ctx.rotate(ua);ctx.scale(ws,ws);ctx.drawImage(WHEEL,-WR,-WR);ctx.restore();
 }
 
@@ -249,23 +258,31 @@ function frame(t){
 }
 
 /* ---------- Ton ---------- */
-let AC=null,M=null,NB=null,t0=0,muted=false,perf0=0,playing=false;
+let AC=null,M=null,BUS=null,NB=null,t0=0,muted=false,perf0=0,playing=false;
 function initAudio(){
   try{AC=new (window.AudioContext||window.webkitAudioContext)();}catch(e){AC=null;return;}
   M=AC.createGain();M.gain.value=muted?0:0.55;M.connect(AC.destination);
   NB=AC.createBuffer(1,Math.floor(AC.sampleRate*1.5),AC.sampleRate);const d=NB.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;
   t0=AC.currentTime+0.1;
+  startBus();
+}
+// Neuer Kanal fuer alle geplanten Klaenge; beim Springen wird der alte stumm geschaltet
+function startBus(){
+  if(BUS){try{BUS.disconnect();}catch(e){}}
+  BUS=AC.createGain();BUS.connect(M);
   try{schedule();}catch(e){}
 }
+const gone=s=>s<AC.currentTime-0.02;   // Klaenge vor dem Sprungziel entfallen
 const at=s=>t0+s;
 function env(g,s,peak,end){g.gain.setValueAtTime(0.0001,s);g.gain.exponentialRampToValueAtTime(peak,s+0.01);g.gain.exponentialRampToValueAtTime(0.0001,end);}
-function osc(type,f,s,dur,vol,f2){const o=AC.createOscillator(),g=AC.createGain();o.type=type;o.frequency.setValueAtTime(f,s);if(f2)o.frequency.exponentialRampToValueAtTime(f2,s+dur);env(g,s,vol,s+dur);o.connect(g);g.connect(M);o.start(s);o.stop(s+dur+0.05);}
-function noise(s,dur,vol,type,f,f2,q){const n=AC.createBufferSource();n.buffer=NB;const fl=AC.createBiquadFilter();fl.type=type;fl.frequency.setValueAtTime(f,s);if(f2)fl.frequency.exponentialRampToValueAtTime(f2,s+dur);fl.Q.value=q||1;const g=AC.createGain();env(g,s,vol,s+dur);n.connect(fl);fl.connect(g);g.connect(M);n.start(s);n.stop(s+dur+0.05);}
+function osc(type,f,s,dur,vol,f2){if(gone(s))return;const o=AC.createOscillator(),g=AC.createGain();o.type=type;o.frequency.setValueAtTime(f,s);if(f2)o.frequency.exponentialRampToValueAtTime(f2,s+dur);env(g,s,vol,s+dur);o.connect(g);g.connect(BUS);o.start(s);o.stop(s+dur+0.05);}
+function noise(s,dur,vol,type,f,f2,q){if(gone(s))return;const n=AC.createBufferSource();n.buffer=NB;const fl=AC.createBiquadFilter();fl.type=type;fl.frequency.setValueAtTime(f,s);if(f2)fl.frequency.exponentialRampToValueAtTime(f2,s+dur);fl.Q.value=q||1;const g=AC.createGain();env(g,s,vol,s+dur);n.connect(fl);fl.connect(g);g.connect(BUS);n.start(s);n.stop(s+dur+0.05);}
 const mf=m=>440*Math.pow(2,(m-69)/12);
 function gong(s,stuck,end){
+  if(gone(s))return;
   const f0=stuck?131:98;
   const bus=AC.createGain();bus.gain.value=1;
-  const lfo=AC.createOscillator(),lg=AC.createGain();lfo.frequency.value=stuck?6:3.5;lg.gain.value=stuck?0.35:0.2;lfo.connect(lg);lg.connect(bus.gain);bus.connect(M);lfo.start(s);lfo.stop(end+0.1);
+  const lfo=AC.createOscillator(),lg=AC.createGain();lfo.frequency.value=stuck?6:3.5;lg.gain.value=stuck?0.35:0.2;lfo.connect(lg);lg.connect(bus.gain);bus.connect(BUS);lfo.start(s);lfo.stop(end+0.1);
   [[1,1,6],[1.48,.6,4],[2.02,.45,3],[2.74,.3,2.2],[3.76,.2,1.5],[0.5,.5,7]].forEach(([m,v,dec])=>{
     const o=AC.createOscillator(),g=AC.createGain();o.type='sine';o.frequency.value=f0*m;
     g.gain.setValueAtTime(0.0001,s);g.gain.exponentialRampToValueAtTime(0.16*v,s+0.01);
@@ -286,11 +303,11 @@ function schedule(){
   [17,25.3].forEach(s=>{noise(at(s),1.3,0.22,'bandpass',900,280,3);osc('sawtooth',190,at(s),1.2,0.03,110);});
   [520,600,690].forEach((f,k)=>osc('triangle',f,at(31+k*0.05),0.9,0.05,f*0.62));
   osc('square',90,at(43),0.12,0.12);noise(at(43),0.15,0.25,'lowpass',800);
-  [55,55.8,82.4].forEach(f=>{const o=AC.createOscillator(),g=AC.createGain(),fl=AC.createBiquadFilter();o.type='sawtooth';o.frequency.value=f;fl.type='lowpass';fl.frequency.value=260;g.gain.setValueAtTime(0.0001,at(46));g.gain.exponentialRampToValueAtTime(0.06,at(48));g.gain.setValueAtTime(0.06,at(52.5));g.gain.exponentialRampToValueAtTime(0.0001,at(54));o.connect(fl);fl.connect(g);g.connect(M);o.start(at(46));o.stop(at(54.1));});
+  if(!gone(at(46)))[55,55.8,82.4].forEach(f=>{const o=AC.createOscillator(),g=AC.createGain(),fl=AC.createBiquadFilter();o.type='sawtooth';o.frequency.value=f;fl.type='lowpass';fl.frequency.value=260;g.gain.setValueAtTime(0.0001,at(46));g.gain.exponentialRampToValueAtTime(0.06,at(48));g.gain.setValueAtTime(0.06,at(52.5));g.gain.exponentialRampToValueAtTime(0.0001,at(54));o.connect(fl);fl.connect(g);g.connect(BUS);o.start(at(46));o.stop(at(54.1));});
   gong(at(54.3),false,at(62));
   gong(at(64),true,at(70.2));
 }
-function stopAudio(){if(AC){try{AC.close();}catch(e){}AC=null;}}
+function stopAudio(){if(AC){try{AC.close();}catch(e){}AC=null;BUS=null;}}
 function now(){return AC?AC.currentTime-t0:(performance.now()-perf0)/1000;}
 
 /* ---------- Steuerung ---------- */
@@ -301,11 +318,27 @@ function begin(){if(!ready)return;stopAudio();initAudio();perf0=performance.now(
 function finish(){playing=false;stopAudio();clearTexts();if(ready)frame(63);capEl.textContent='';bigEl.hidden=true;endEl.hidden=false;}
 playBtn.addEventListener('click',begin);
 document.getElementById('again').addEventListener('click',begin);
+// Weiter per Klick oder Taste: zum naechsten Satz, ans Ende des aktuellen Satzes oder zur naechsten Einstellung
+const SCENES=[5,15,25,30.3,38,46,54.3,62,64];
+const MARKS=[...new Set([...SCENES,...CAPS.flatMap(c=>[c[0],c[1]]),...SAYS.flatMap(q=>[q[0],q[1]]),END])].sort((a,b)=>a-b);
+function seek(target){
+  if(AC){t0=AC.currentTime-target+0.02;startBus();}
+  else perf0=performance.now()-target*1000;
+}
+function advance(){
+  if(!playing)return;
+  const t=now(),next=MARKS.find(m=>m>t+0.15);
+  if(next==null||next>=END){finish();return;}
+  seek(next);
+}
+document.getElementById('screen').addEventListener('click',e=>{if(e.target.closest('button'))return;advance();});
+document.addEventListener('keydown',e=>{if(!playing)return;if(e.key===' '||e.key==='Enter'||e.key==='ArrowRight'){e.preventDefault();advance();}});
 document.getElementById('skip').addEventListener('click',()=>{if(playing)finish();else if(!startEl.hidden&&ready){startEl.hidden=true;finish();}});
 muteBtn.addEventListener('click',()=>{muted=!muted;if(M)M.gain.value=muted?0:0.55;muteBtn.textContent=muted?'Ton an':'Ton aus';muteBtn.setAttribute('aria-pressed',String(muted));});
 load().then(()=>{prepare();ready=true;playBtn.disabled=false;playBtn.textContent='Intro abspielen';frame(10);clearTexts();})
       .catch(s=>{playBtn.textContent='Bild fehlt: '+s;});
 // Zum Testen: window.__frame(42) zeigt ein Standbild zu dieser Sekunde
 window.__frame=t=>{frame(t);};
+window.__now=()=>playing?now():null;
 })();
 </script>

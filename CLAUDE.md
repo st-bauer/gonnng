@@ -67,6 +67,10 @@ mit viel Licht und Schatten, der Graf unter der Kapuze nur mit zwei glühenden A
   `assets/sprites/graf_lauf.png` und `assets/sprites/aufschiebchen_lauf.png`, gebaut mit `scripts/lauf.py`
   (schneidet die Figuren aus, richtet sie an Kopf und Füßen aus). Canva-Bildreihen: https://www.canva.com/M/MAHWVG04uGg
   und https://www.canva.com/M/MAHWVCKMXrs. Tipp: In der Arbeitsdatei zwei Phasen pro Seite zeigen (Bild 1,4-fach), sonst ist die Vorschau zu klein.
+- Greifpose des Grafen: `assets/sprites/graf_greifen.png` (69 × 87, gleicher Maßstab wie die stehende Figur,
+  Kopfmitte 39 px vom linken Rand), https://www.canva.com/M/MAHWVKVjA2M.
+- Intro: Klick, Tippen, Leertaste, Enter oder Pfeil rechts springen zum nächsten Satz, ans Satzende oder zur nächsten Einstellung.
+  Der Ton wird dabei ab der neuen Stelle neu geplant.
 - Weitere Bilder (alle in der Canva-Arbeitsdatei, Rohbilder in `assets/raw/`):
   Uhrwerk im Glockenturm mit großer Unruh (`assets/bg/uhrwerk.png`, 320 × 200, https://www.canva.com/M/MAHWVGRLFcE),
   Klassenzimmer am Nachmittag mit Tafel, Wanduhr und Lüftungsgitter rechts (`assets/bg/klassenzimmer.png`,
@@ -84,7 +88,7 @@ mit viel Licht und Schatten, der Graf unter der Kapuze nur mit zwei glühenden A
 
 1. Optional: „Schule bei Nacht“ in voller Auflösung aus der Canva-Arbeitsdatei exportieren und neu umrechnen.
 2. Graf: Stil prüfen (Rüstung wirkt noch etwas türkis), bei Bedarf Laufphasen oder weitere Posen erzeugen.
-3. Intro Version 2 abnehmen und verfeinern (z. B. Stein zum Hinsetzen). Die Leiter ist auf Wunsch gestrichen.
+3. Intro Version 2 abnehmen und verfeinern (z. B. Stein zum Hinsetzen). Die Leiter ist auf Wunsch gestrichen, die Greifpose ist eingebaut.
 4. Danach den Prolog als spielbare Szene bauen (Lösungsweg, Hotspots, Dialogbaum und Tipps stehen im Konzept).
 5. Offene Punkte aus dem Konzept klären (Namen der Nebenfiguren, Zielstufe, Speicherstand, Begleitmaterial).
 
