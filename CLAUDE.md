@@ -49,11 +49,14 @@ mit viel Licht und Schatten, der Graf unter der Kapuze nur mit zwei glühenden A
 - Titel: „Gonnng!“. Gegenspieler: Graf Nimmerjetzt. Schule: Sankt Irgendwann auf dem Schiefenberg.
 - Intro Version 1 als Code-Pixelgrafik fertig (`intro/`), wird im neuen Stil neu gebaut.
 - Teststandbild im neuen Stil: `assets/test/vga_test_standbild.png` (aus einer 199-Pixel-Vorschau, daher zu grob).
-  Das Canva-Original liegt hier: https://www.canva.com/M/MAHWUmwXVTw (als PNG herunterladen, nach `assets/raw/schule_nacht.png`).
+  Das alte Canva-Original (https://www.canva.com/M/MAHWUmwXVTw) ist verworfen, weil die Schule darin wie eine Kirche aussah.
+- Neues Standbild „Schule bei Nacht“ (Variante 1): breites Schulgebäude aus Backstein, kleines eckiges Uhrtürmchen
+  auf dem Dach, Schulhof mit Tor und Fußballtor. Gerade Fassung: https://www.canva.com/M/MAHWUzxEJaM,
+  leicht schiefe Fassung: https://www.canva.com/M/MAHWUzkGKy8 (als PNG herunterladen, nach `assets/raw/schule_nacht.png`).
 
 ## Nächste Schritte
 
-1. Canva-Original herunterladen und das Standbild „Schule bei Nacht“ in voller Auflösung umrechnen.
+1. Neues Canva-Bild „Schule bei Nacht“ (Variante 1) herunterladen und in voller Auflösung umrechnen.
 2. Den Grafen als gemalte Figur erzeugen (Morgenmantel, Kapuze, glühende Augen, Gesicht bleibt verborgen) und davorsetzen.
 3. Wenn der Stil passt: übrige Intro-Einstellungen erzeugen (Hügel mit Aufschiebchen, Uhrwerk-Nahaufnahme,
    Nebel, Logo, Klassenzimmer) und das Intro nach dem Storyboard in `docs/konzept.md` neu bauen.
