@@ -91,7 +91,7 @@ Das Intro läuft als Zwischensequenz im Spiel, im gleichen Pixelstil, mit Textta
 | --- | --- | --- | --- | --- |
 | 1 | Schwarzer Bildschirm | Lautes, gleichmäßiges Ticken |  | 5 s |
 | 2 | Nacht. Die schiefe Schule auf dem Schiefenberg, Mond, im Glockenturm leuchtet das Zifferblatt der Großen Stundenuhr | Ticken, leise Melodie setzt ein | „Sankt Irgendwann. Die Schule, in der jeder Anfang pünktlich beginnt.“ | 10 s |
-| 3 | Eine Gestalt im Morgenmantel schlurft den Hügel hinauf, dahinter Aufschiebchen mit einer Leiter | Schlurfen, Gähnen |  | 10 s |
+| 3 | Eine Gestalt im Morgenmantel schlurft den Hügel hinauf, dahinter tapsen zwei Aufschiebchen | Schlurfen, Gähnen |  | 10 s |
 | 4 | Die Gestalt bleibt stehen, setzt sich auf einen Stein |  | Gestalt: „Ich mach das gleich.“ | 5 s |
 | 5 | Die Aufschiebchen seufzen und schieben die Gestalt weiter zum Turm | Seufzen im Chor |  | 8 s |
 | 6 | Im Glockenturm: Die Gestalt greift ins Uhrwerk und zieht die Unruh heraus | Letztes Ticken, dann Stille |  | 8 s |
