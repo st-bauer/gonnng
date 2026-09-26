@@ -73,7 +73,7 @@ mit viel Licht und Schatten, der Graf unter der Kapuze nur mit zwei glühenden A
   Der Ton wird dabei ab der neuen Stelle neu geplant.
 - Weitere Bilder (alle in der Canva-Arbeitsdatei, Rohbilder in `assets/raw/`):
   Uhrwerk im Glockenturm mit großer Unruh (`assets/bg/uhrwerk.png`, 320 × 200, https://www.canva.com/M/MAHWVGRLFcE),
-  Klassenzimmer am Nachmittag mit Tafel, Wanduhr und Lüftungsgitter rechts (`assets/bg/klassenzimmer.png`,
+  Klassenzimmer (im Intro: nächster Morgen) mit Tafel, Wanduhr und Lüftungsgitter rechts (`assets/bg/klassenzimmer.png`,
   320 × 180, damit das Gitter nicht abgeschnitten wird und unten Platz für die Verbleiste bleibt,
   https://www.canva.com/M/MAHWVMHQKLw), Aufschiebchen in Schlafanzug und Zipfelmütze
   (`assets/sprites/aufschiebchen.png`, 40 × 48, https://www.canva.com/M/MAHWVF1FGcM).

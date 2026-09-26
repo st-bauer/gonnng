@@ -97,7 +97,7 @@ Das Intro läuft als Zwischensequenz im Spiel, im gleichen Pixelstil, mit Textta
 | 6 | Im Glockenturm: Die Gestalt greift ins Uhrwerk und zieht die Unruh heraus | Letztes Ticken, dann Stille |  | 8 s |
 | 7 | Grauer Nebel kriecht aus dem Turm und legt sich über die ganze Schule | Tiefes Brummen |  | 8 s |
 | 8 | Schwarz. Dann das Logo „Gonnng!“, die Buchstaben vibrieren wie ein angeschlagener Gong | Ein Gong, der nicht aufhört zu schwingen |  | 8 s |
-| 9 | Überblendung ins Klassenzimmer am nächsten Nachmittag. Der Schulgong setzt an und bleibt hängen: „Gonnnnn…“ | Gong bleibt hängen |  | 8 s |
+| 9 | Überblendung ins Klassenzimmer am nächsten Morgen. Der Schulgong setzt an und bleibt hängen: „Gonnnnn…“ | Gong bleibt hängen |  | 8 s |
 
 Danach beginnt der Prolog mit der Eingangssequenz. Das Gesicht der Gestalt bleibt im Intro verborgen. Wer sie ist, zeigt sich erst in Kapitel 4.
 
@@ -105,7 +105,7 @@ Danach beginnt der Prolog mit der Eingangssequenz. Das Gesicht der Gestalt bleib
 
 Der Prolog führt die Bedienung ein und endet damit, dass die Hauptfigur einem Aufschiebchen in den Lüftungsschacht folgt. Spielzeit rund 15 Minuten.
 
-**Handlung.** Letzte Stunde. Der Gong bleibt mitten im Ton stecken, die Uhr steht still, die ganze Klasse erstarrt. Ein Aufschiebchen schnappt sich das Heft der Hauptfigur und verschwindet im Lüftungsschacht. Draußen klopft ein Rabe mit Monokel ans Fenster.
+**Handlung.** Erste Stunde. Der Gong bleibt mitten im Ton stecken, die Uhr steht still, die ganze Klasse erstarrt. Ein Aufschiebchen schnappt sich das Heft der Hauptfigur und verschwindet im Lüftungsschacht. Draußen klopft ein Rabe mit Monokel ans Fenster.
 
 | # | Rätsel | Art | Lösung |
 | --- | --- | --- | --- |
