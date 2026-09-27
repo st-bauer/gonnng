@@ -256,7 +256,7 @@ Die Hauptfigur muss durch die sich verschiebende Schule in den Heizungskeller, w
 
 | # | Rätsel | Art | Lösung |
 | --- | --- | --- | --- |
-| 1 | Die wandernden Flure | Allgemein, Logik | Siehe Regel unten. Die Figur beobachtet zwei Gongs, notiert die Regel und läuft dann in den Flügel, in dem der gesuchte Raum bei ihrer Ankunft stehen wird |
+| 1 | Die wandernden Flure | Allgemein, Logik | Siehe Regel unten. Die Figur schaut durch die Türspalten, liest die Regel am Aushang ab und läuft in den Flügel, in dem die Kellertreppe nach dem nächsten Gong stehen wird |
 | 2 | Der Musikraum | Allgemein, Rhythmus | Einmal muss die Figur absichtlich im Musikraum landen. Das Blockflötenorchester lässt sie erst gehen, wenn sie den Takt des Metronoms nachklatscht. Zum Dank gibt es eine Blockflötenschnur |
 | 3 | Frau Brösels Festessen | SRL: nahe Teilziele | Zwölf Rezeptkarten in eine sinnvolle Reihenfolge legen und in drei Viertelstunden-Ziele aufteilen. Der Pudding muss zuerst gekocht werden, weil er am längsten zum Festwerden braucht. Frau Brösel erwacht und schenkt Kekse und ein Einmachglas. In der Kantine liegen außerdem Plastiktüten, Gummiringe und eine leere Küchenrolle |
 | 4 | Der Flüstergang | SRL: Wenn-dann-Pläne | Jede Störung wirft die Figur an den Anfang zurück und hinterlässt eine Wenn-Karte mit genau dieser Situation. Die Dann-Karten sammelt sie bei Figuren: von Frau Brösel, aus der Keksdose und von Krächz. Drei richtige Paare ergeben drei Wenn-dann-Pläne, danach läuft die Figur durch |
@@ -277,7 +277,7 @@ Die Hauptfigur muss durch die sich verschiebende Schule in den Heizungskeller, w
 | Kellerschlüssel | Grummelbart |  | Kellertor zum Land Später |
 | Kompass der Pläne | Grummelbart |  | Wegweiser bis zum Finale, Zahnrad der Stundenuhr (K4) |
 
-**Regel der Flure.** Vier Flügel liegen im Kreis um die Halle. Bei jedem Gong rücken Kantine, Biologieraum und Kellertreppe einen Flügel im Uhrzeigersinn weiter. Der Musikraum bleibt immer im Süden, weil das Blockflötenorchester zu schwer ist. Die anderen Räume überspringen den Süden deshalb. Ein Gong kommt jede Minute, der Weg von der Halle in einen Flügel dauert 20 Sekunden. Eine Sanduhr in der Halle zeigt den nächsten Gong.
+**Regel der Flure.** Vier Flügel liegen im Kreis um die Halle. Bei jedem Gong rücken Kantine, Biologieraum und Kellertreppe einen Flügel im Uhrzeigersinn weiter. Der Musikraum bleibt immer im Süden, weil das Blockflötenorchester zu schwer ist. Die anderen Räume überspringen den Süden deshalb. Es gongt immer genau dann, wenn jemand einen Flur betritt: Man kommt also nie dort an, wo der Raum beim Losgehen war, sondern dort, wo er als Nächstes steht. Die Schilder über den Türen sind leer. Mit „Öffne Tür“ schaut die Figur durch den Spalt und sieht, was gerade dahinter liegt, das kostet nichts.
 
 | Takt | Nord | Ost | Süd | West |
 | --- | --- | --- | --- | --- |
@@ -285,7 +285,9 @@ Die Hauptfigur muss durch die sich verschiebende Schule in den Heizungskeller, w
 | 1 | Kellertreppe | Kantine | Musik | Bio |
 | 2 | Bio | Kellertreppe | Musik | Kantine |
 
-Der Zettel am Schwarzen Brett zeigt nur Takt 0 und 1. Den dritten Takt muss die Figur selbst ableiten.
+Der Aushang am Schwarzen Brett zeigt nur Takt 0 („vor dem Gong“) und Takt 1 („nach dem Gong“). Beim Betreten der Halle gilt Takt 2: Die Kellertreppe steht im Osten. Wer nach Osten läuft, landet im Biologieraum. Wer „einen Schritt im Uhrzeigersinn weiter“ denkt, landet im Süden beim Musikraum. Richtig ist Westen, weil die Räume den Süden überspringen. Das lässt sich am Aushang ablesen: Dort springt der Biologieraum von Osten nach Westen. Jeder Fehlversuch zählt als Gong, danach muss die Figur neu durch die Spalten schauen.
+
+Tippstufen von Krächz: „Schau erst durch die Türspalten. Und lies den Aushang am Brett.“ Dann: „Wer losläuft, hört unterwegs den Gong. Geh also dahin, wo die Kellertreppe gleich sein wird.“ Dann: „Die Räume wandern im Uhrzeigersinn: Norden, Osten, Westen. Den Süden lassen sie aus. Schau, wohin der Biologieraum springt.“
 
 **Die Karten im Flüstergang.** Drei Aufschiebchen stören. Jede Störung schickt die Figur an den Anfang zurück.
 

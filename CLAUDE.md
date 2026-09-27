@@ -63,11 +63,11 @@ Canva-Arbeitsdatei: https://canva.link/mp6p64febvogrh4
   Aufbau: gemeinsame Werkzeuge, Figuren und Schrift, dazu die Module `Intro` und `Prolog` mit eigenem Namensraum.
   Die Dateien `intro/intro-v3-code.html` und `prolog/prolog-v2-code.html` bleiben als Einzelansichten, neue Arbeit geht in `spiel/gonnng.html`.
 - Kapitel 1, erster Raum: die Eingangshalle in `spiel/gonnng.html` (Raum `halle` im selben Modul wie das Klassenzimmer).
-  Der Prolog endet im Lüftungsschacht und führt direkt in die Halle. Flur-Rätsel nach der Regel im Konzept:
-  Sanduhr mit 60 Sekunden bis zum Gong, 20 Sekunden Weg in einen Flügel, Kantine, Bio und Kellertreppe rücken im
-  Uhrzeigersinn weiter und lassen den Süden (Musikraum) aus. Schilder über den Türen zeigen den aktuellen Raum,
-  der Zettel am Schwarzen Brett zeigt Takt 0 und 1. Krächz gibt drei Tippstufen. Kantine, Bio und Musikraum sind
-  noch Texttafeln, die Kellertreppe beendet die Vorschau.
+  Der Prolog endet im Lüftungsschacht und führt direkt in die Halle. Flur-Rätsel als Denkrätsel (Regel im Konzept):
+  Wer losläuft, hört unterwegs immer den Gong und kommt dort an, wo der Raum als Nächstes steht. Die Schilder sind leer,
+  „Öffne Tür“ zeigt durch den Spalt, was gerade dahinter liegt. Start in Takt 2 (Kellertreppe im Osten, Lösung Westen).
+  Der Aushang zeigt Takt 0 und 1. Krächz gibt drei Tippstufen. Kantine, Bio und Musikraum sind noch Texttafeln,
+  die Kellertreppe beendet die Vorschau.
 - Zum Testen: `window.__frame(sekunde)` im Intro, `window.__act(verb, id, item)` und `window.__pick(i)` im Prolog.
 - Entschieden: Die Unruh bleibt. Die Große Stundenuhr ist eine Sonderanfertigung (Turmuhren haben sonst meist ein Pendel),
   Krächz erklärt das auf Nachfrage. Die Namen Frau Kallweit, Jonas und Lina bleiben.

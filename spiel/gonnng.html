@@ -1026,7 +1026,7 @@ const FALLBACK={
   rede:()=>'Mit Gegenständen rede ich nur im Notfall.',gib:()=>'Das will hier niemand haben.',benutze:()=>'Das bringt nichts.'
 };
 function stage(){if(S.room==='halle')return S.flureGeschafft?'fertig':'flure';if(!S.fenster)return'fenster';if(!S.ziel)return'ziel';if(!S.kruemelGesehen)return'kruemel';if(!S.gitter)return'gitter';if(S.inv.indexOf('kreide')<0)return'kreide';return'fertig';}
-const TIPPS={flure:['Lies mal, was am Schwarzen Brett hängt.','Der Weg in einen Flügel dauert zwanzig Sekunden. Schau auf die Sanduhr, bevor du losläufst.','Ist weniger als ein Drittel Sand übrig, geh dahin, wo die Kellertreppe als Nächstes hinwandert. Im Uhrzeigersinn, den Süden lässt sie aus.'],kruemel:['Wohin wollte das Aufschiebchen?','Aufschiebchen essen ständig. Schau mal nach unten.','Die Krümel führen zum Gitter.'],
+const TIPPS={flure:['Schau erst durch die Türspalten. Und lies den Aushang am Brett.','Wer losläuft, hört unterwegs den Gong. Geh also dahin, wo die Kellertreppe gleich sein wird.','Die Räume wandern im Uhrzeigersinn: Norden, Osten, Westen. Den Süden lassen sie aus. Schau, wohin der Biologieraum springt.'],kruemel:['Wohin wollte das Aufschiebchen?','Aufschiebchen essen ständig. Schau mal nach unten.','Die Krümel führen zum Gitter.'],
   gitter:['Schrauben brauchen einen Dreher.','Schlitzschrauben mag alles, was flach und rund ist.','In Pulten liegt oft Kleingeld.']};
 async function tipp(){const st=stage();
   if(st==='kreide'){await say('kraechz','Wer ins Dunkle geht, braucht Zeichen.');return;}
@@ -1351,9 +1351,9 @@ function loop(now){if(MODE()!=='prolog'){looping=false;return;}const dt=Math.min
    Kapitel 1: Die Eingangshalle mit den wandernden Fluren
    Regel (Konzept): Bei jedem Gong ruecken Kantine, Biologieraum und Kellertreppe einen Fluegel
    im Uhrzeigersinn weiter und ueberspringen dabei den Sueden. Der Musikraum bleibt im Sueden.
-   Ein Gong kommt jede Minute, der Weg in einen Fluegel dauert 20 Sekunden.
+   Wer einen Flur betritt, hoert unterwegs immer den Gong: Man kommt dort an, wo der Raum als Naechstes steht.
+   Durch einen Tuerspalt schauen (Oeffne) kostet nichts und zeigt, was gerade dahinter liegt.
    ===================================================================== */
-const GONG_S=60,WEG_S=20;
 const RING=['nord','ost','west'];                 // Uhrzeigersinn ohne Sueden
 const START=['kantine','bio','keller'];           // Takt 0: Nord, Ost, West
 const RAUM_NAME={kantine:'Kantine',bio:'Biologieraum',keller:'Kellertreppe',musik:'Musikraum'};
@@ -1417,17 +1417,7 @@ function drawGongDisc(x,y,sw){
   ellFill(ctx,x+dx,y,13,13,(px,py,a,b)=>{const d=a*a+b*b;return d>0.85?'#6a4a10':d<0.08?'#fff0a0':(a+b<-0.3?'#e8c060':d>0.5?'#9a7418':'#c89a30');});
   line(ctx,x+dx,y-13,x,y-17,'#383840');
 }
-function drawHourglass(x,y,frac){
-  // Sanduhr auf einer Saeule, frac = Anteil Sand oben
-  R(ctx,x-7,y,14,22,'#8a8a9c');R(ctx,x-7,y,2,22,'#b8b8c8');R(ctx,x-9,y+20,18,3,'#6e6e7c');
-  R(ctx,x-8,y-2,16,2,'#5c341c');R(ctx,x-8,y-22,16,2,'#5c341c');R(ctx,x-7,y-20,1,18,'#845028');R(ctx,x+6,y-20,1,18,'#845028');
-  for(let j=0;j<18;j++){const yy=y-20+j,w=Math.round(1+5*Math.abs(j-8.5)/8.5);R(ctx,x-w,yy,w*2,1,'#c8dcf0');}
-  const top=Math.round(8*frac);
-  for(let j=8-top;j<9;j++){const yy=y-20+j,w=Math.max(0,Math.round(1+5*Math.abs(j-8.5)/8.5)-1);R(ctx,x-w,yy,w*2,1,'#e0b858');}
-  const bot=Math.round(8*(1-frac));for(let j=0;j<bot;j++){const yy=y-3-j,w=Math.max(0,Math.round(1+5*Math.abs(17-j-8.5)/8.5)-1);R(ctx,x-w,yy,w*2,1,'#d0a040');}
-  if(frac>0.01)R(ctx,x,y-11,1,8,'#e0b858');
-}
-function plaque(x,y,label){const w=textW(label)+6;x=clamp(x,Math.ceil(w/2)+1,W-Math.ceil(w/2)-1);R(ctx,x-Math.ceil(w/2),y,w,10,'#2a160c');R(ctx,x-Math.ceil(w/2)+1,y+1,w-2,8,'#e8d8a0');text(label,x-Math.floor(textW(label)/2),y+2,'#3a2410',false);}
+function plaque(x,y,label){label=label||'   ?   ';const w=textW(label)+6;x=clamp(x,Math.ceil(w/2)+1,W-Math.ceil(w/2)-1);R(ctx,x-Math.ceil(w/2),y,w,10,'#2a160c');R(ctx,x-Math.ceil(w/2)+1,y+1,w-2,8,'#e8d8a0');text(label,x-Math.floor(textW(label)/2),y+2,'#3a2410',false);}
 function drawHalle(now){
   if(!HALLE)HALLE=drawHalleBg();
   if(S.card){R(ctx,0,0,W,SH,'#000000');const t=S.card.title;text(t,Math.round((W-textW(t))/2),34,'#ffe060',false);
@@ -1436,10 +1426,13 @@ function drawHalle(now){
   ctx.save();ctx.translate(sh,0);
   ctx.drawImage(HALLE,0,0);
   // Tuerschilder zeigen, welcher Raum gerade hinter der Tuer liegt
-  plaque(160,23,RAUM_NAME[raumAn('nord',S.takt)]);plaque(27,28,RAUM_NAME[raumAn('west',S.takt)]);plaque(294,28,RAUM_NAME[raumAn('ost',S.takt)]);
+  // Die Schilder sind leer, was dahinter liegt, zeigt nur ein Blick durch den Tuerspalt
+  plaque(160,23,'');plaque(27,28,'');plaque(294,28,'');
+  if(S.peek==='nord')polyFill(ctx,[[156,40],[164,40],[164,92],[156,92]],(x,y)=>bay(x,y)<0.5?'#0a0604':'#1a0c06');
+  if(S.peek==='west')polyFill(ctx,[[30,40],[38,38],[38,93],[30,96]],(x,y)=>bay(x,y)<0.5?'#0a0604':'#1a0c06');
+  if(S.peek==='ost')polyFill(ctx,[[282,38],[290,40],[290,96],[282,93]],(x,y)=>bay(x,y)<0.5?'#0a0604':'#1a0c06');
   text('Süden: Musikraum',Math.round(160-textW('Süden: Musikraum')/2),128,'#e8d8a0',true);
   drawGongDisc(212,36,S.gongSw||0);
-  drawHourglass(206,94,clamp(S.sand/GONG_S,0,1));
   const L=[];
   L.push({y:S.ky,d:()=>spr(S.speech&&S.talker==='kraechz'&&Math.floor(now/140)%2?SPR.ravenTalk:SPR.raven,S.kx,S.ky,11,19,S.kflip)});
   const h=S.hero;
@@ -1455,18 +1448,14 @@ function drawHalle(now){
 }
 function hallTick(dt){
   if(S.gongSw>0)S.gongSw=Math.max(0,S.gongSw-dt*4);if(S.shake>0)S.shake-=dt;
-  if(S.flureGeschafft)return;
-  S.sand-=dt;if(S.sand<=0){S.sand+=GONG_S;gongSchlag();}
 }
 function gongSchlag(){S.takt++;S.gongSw=6;S.shake=0.6;gongStuck(2.5);}
-function zeitVergeht(sek){S.sand-=sek;while(S.sand<=0){S.sand+=GONG_S;S.takt++;}}
 async function showCard(title,txt){S.card={title,text:txt};await new Promise(r=>{skipLine=r;setTimeout(r,lineTime(txt)+800);});skipLine=null;S.card=null;await sleep(100);}
 async function showPanel(lines){S.panel=lines;await new Promise(r=>{skipLine=r;setTimeout(r,9000);});skipLine=null;S.panel=null;await sleep(100);}
 const HS_HALLE=[
   {id:'kraechz',name:'Krächz',rect:()=>[S.kx-11,S.ky-19,22,19],walk:[96,100],flip:true},
   {id:'zettel',name:'Zettel am Schwarzen Brett',rect:()=>[74,59,18,14],walk:[90,99],flip:true},
   {id:'brett',name:'Schwarzes Brett',rect:()=>[68,44,44,32],walk:[90,99],flip:true},
-  {id:'sanduhr',name:'Sanduhr',rect:()=>[196,70,20,48],walk:[188,116],flip:false},
   {id:'gong',name:'Schulgong',rect:()=>[194,18,36,34],walk:[196,100],flip:false},
   {id:'bild',name:'Gemälde',rect:()=>[232,42,26,22],walk:[244,100],flip:false},
   {id:'gitterH',name:'Lüftungsgitter',rect:()=>[58,78,18,13],walk:[70,100],flip:true},
@@ -1478,36 +1467,44 @@ const HS_HALLE=[
 ];
 const curHS=()=>S.room==='halle'?HS_HALLE:HS;
 async function travel(tuer){
-  const vorher=S.takt;
   S.hero.hidden=true;tone('triangle',300,0.3,0.04,200);
-  zeitVergeht(WEG_S);
+  await sleep(500);gongSchlag();await sleep(700);
   const ziel=raumAn(tuer,S.takt);
-  if(S.takt!==vorher){gongStuck(2.5);}
-  const unterwegs=S.takt!==vorher?' Unterwegs macht es Gonnng. Die Flure rücken weiter.':'';
+  const unterwegs='Unterwegs macht es Gonnng, und die Flure rücken weiter. ';
   if(ziel==='keller'){
     S.flureGeschafft=true;
-    await showCard('Die Kellertreppe','Von unten brummt der Heizungskeller. Es riecht nach Kohle und nach Kekskrümeln.'+unterwegs);
+    await showCard('Die Kellertreppe',unterwegs+'Von unten brummt der Heizungskeller. Es riecht nach Kohle und nach Kekskrümeln.');
     S.hero.hidden=false;
-    await say('kraechz','Na bitte. Geplant, gewartet, getroffen.');
+    await say('kraechz','Na bitte. Erst gedacht, dann gegangen. So macht man das.');
     S.over=true;save();if(API.onDone)API.onDone('kapitel1');return;
   }
   const T={musik:['Der Musikraum','Das Blockflötenorchester hält dich fest, bis du den Takt nachklatschst. Dieses Rätsel kommt noch. Für heute lässt man dich laufen.'],
     kantine:['Die Kantine','Frau Brösel seufzt über vierhundert Portionen. Hier geht es später weiter.'],
     bio:['Der Biologieraum','Die Topfpflanzen streiten sich, wer mehr Licht bekommt. Keine Kellertreppe weit und breit.']}[ziel];
-  await showCard(T[0],T[1]+unterwegs);
-  zeitVergeht(WEG_S);
-  S.hero.hidden=false;
-  await say('hero',['Wieder in der Halle. Das war wohl der falsche Flügel.','Zurück in der Halle. Die Kellertreppe war da nicht.','Wieder hier. Ich sollte vorher auf die Sanduhr schauen.'][S.fehlwege++%3]);
+  await showCard(T[0],unterwegs+T[1]);
+  S.hero.hidden=false;S.fehlwege=(S.fehlwege||0)+1;
+  await say('hero',['Wieder in der Halle. Das war wohl der falsche Flügel.','Zurück in der Halle. Die Kellertreppe war da nicht.','Wieder hier. Ich sollte erst denken und dann laufen.'][(S.fehlwege-1)%3]);
+  if(S.fehlwege===3)await say('kraechz','Raten dauert. Der Aushang am Brett verrät, wie die Räume wandern.');
+}
+async function peek(tuer){
+  S.peek=tuer;tone('sawtooth',180,0.25,0.03,120);await sleep(250);
+  const r=raumAn(tuer,S.takt);
+  const T={kantine:'Durch den Spalt riecht es nach Eintopf. Da liegt gerade die Kantine.',
+    bio:'Dahinter streiten sich Topfpflanzen. Da ist gerade der Biologieraum.',
+    keller:'Dahinter führt eine Treppe nach unten, und es brummt. Da ist gerade die Kellertreppe!',
+    musik:'Blockflöten. Sehr viele Blockflöten. Der Musikraum, wie immer.'}[r];
+  await say('hero',T);S.peek=null;
 }
 async function enterHalle(){
   S.room='halle';S.hero.hidden=true;S.hero.x=68;S.hero.y=100;S.hero.flip=false;S.kraechz='halle';S.kx=-20;S.ky=40;S.kflip=true;
-  S.takt=1;S.sand=GONG_S*0.75;S.fehlwege=0;S.tipp.flure=0;
+  S.takt=2;S.fehlwege=0;S.tipp.flure=0;
   await showCard('Kapitel 1','Die wandernden Flure');
   tone('square',140,0.2,0.08,60);S.hero.hidden=false;S.hero.y=100;
   await walkTo(84,108);
   for(let t=0;t<=1;t+=0.05){S.kx=-20+(92+20)*t;S.ky=40+Math.sin(t*Math.PI)*-16+(44-40)*t;await sleep(30);}S.kx=92;S.ky=44;
   await say('hero','Wo bin ich denn jetzt gelandet?');
   await say('kraechz','In der Eingangshalle. Hier sortieren sich die Flure bei jedem Gong neu.');
+  await say('kraechz','Und es gongt immer genau dann, wenn jemand losläuft. Man kommt also nie da an, wo man hinwollte.');
   await say('kraechz','Wir müssen zur Kellertreppe. Da unten liegt der Eingang ins Land Später.');
   await say('hero','Und wo ist die Kellertreppe?');
   await say('kraechz','Mal hier, mal da. Wie meine Lesebrille früher.');
@@ -1517,21 +1514,18 @@ async function actHalle(verb,h,item){
   const id=h.id;
   if(item){
     if(id==='kraechz'&&verb==='gib')return say('kraechz','Behalte das mal schön selbst.');
-    if(id==='sanduhr')return say('hero','Die Sanduhr läuft auch ohne meine Hilfe.');
     if(id==='gong'&&item==='lineal'){await reach();gongSchlag();return say('hero','Oh. Das war vielleicht keine gute Idee.');}
     return say('hero',FALLBACK.benutze());
   }
-  if(h.exit&&(verb==='gehe'||verb==='oeffne'||verb==='benutze'))return travel(id);
+  if(h.exit&&verb==='oeffne')return peek(id);
+  if(h.exit&&(verb==='gehe'||verb==='benutze'))return travel(id);
   switch(id+':'+verb){
     case 'kraechz:rede':return redeKraechz();
     case 'kraechz:schau':return say('hero','Krächz sitzt auf dem Schwarzen Brett und tut so, als würde er nicht mitlesen.');
     case 'zettel:schau':case 'zettel:nimm':case 'brett:schau':
       S.zettelGelesen=true;
-      await showPanel([['Aushang: Wo ist was?','#a02234'],['Takt 0: Nord Kantine, Ost Bio,'],['        Süd Musik, West Kellertreppe'],['Takt 1: Nord Kellertreppe, Ost Kantine,'],['        Süd Musik, West Bio'],[''],['Bei jedem Gong ein Takt weiter.','#5a3a18'],['Der Musikraum rührt sich nicht.','#5a3a18'],['Weg in einen Flügel: 20 Sekunden.','#5a3a18']]);
-      return say('hero','Takt 2 steht nicht drauf. Den muss ich mir wohl selbst ausrechnen.');
-    case 'sanduhr:schau':{const s=Math.max(5,Math.round(S.sand/5)*5);return say('hero','Bis zum nächsten Gong sind es noch ungefähr '+s+' Sekunden.');}
-    case 'sanduhr:nimm':return say('hero','Die ist festgeschraubt. Jemand kennt diese Schule.');
-    case 'sanduhr:druecke':case 'sanduhr:ziehe':return say('hero','Umdrehen geht nicht. Die Zeit hier läuft nur in eine Richtung. Leider.');
+      await showPanel([['Aushang: Wo ist was?','#a02234'],['Vor dem Gong:'],['  Nord Kantine, Ost Bio,'],['  Süd Musik, West Kellertreppe'],['Nach dem Gong:'],['  Nord Kellertreppe, Ost Kantine,'],['  Süd Musik, West Bio'],['Der Musikraum rührt sich nicht.','#5a3a18'],['Wer losläuft, hört unterwegs den Gong.','#5a3a18']]);
+      return say('hero','Mal sehen. Welcher Raum ist wohin gewandert?');
     case 'gong:schau':return say('hero','Der Schulgong. Bei jedem Schlag rücken die Flure weiter.');
     case 'gong:druecke':await reach();gongSchlag();return say('hero','Oh. Das war vielleicht keine gute Idee.');
     case 'bild:schau':return say('hero','Der Schulgründer. Er guckt, als fände er Pendel zu gewöhnlich.');
@@ -1539,7 +1533,7 @@ async function actHalle(verb,h,item){
     case 'gitterH:benutze':case 'gitterH:oeffne':return say('hero','Zurück ins Klassenzimmer? Da sagen alle nur „gleich“.');
     case 'bodenH:schau':return say('hero','Schachbrettfliesen. Irgendwer hat hier mal sehr lange überlegt, welcher Zug der nächste ist.');
     case 'nord:schau':case 'west:schau':case 'ost:schau':
-      return say('hero','Auf dem Schild steht „'+RAUM_NAME[raumAn(id,S.takt)]+'“. Jedenfalls im Moment.');
+      return say('hero','Das Schild ist leer. Irgendwer hat aufgegeben, es ständig umzuschreiben. Ich könnte durch den Spalt schauen.');
     case 'sued:schau':return say('hero','Der Weg zum Musikraum. Der bleibt immer da. Das Blockflötenorchester ist zu schwer zum Wandern.');
   }
   if(verb==='schau')return say('hero',FALLBACK.schau(h));
@@ -1547,7 +1541,7 @@ async function actHalle(verb,h,item){
 }
 
 // Speichern: nur die Teile des Zustands, die das Spiel ausmachen
-const KEEP=['room','takt','sand','zettelGelesen','flureGeschafft','halleIntro','fehlwege','heft','kraechz','kx','ky','kflip','fenster','ziel','kruemelGesehen','gitter','federmappe','muenze','kreide','tipp','kraechzKennt','jonas','inv','gefragt','tschuess','eingangDone','kallFrozen','fertig'];
+const KEEP=['room','takt','zettelGelesen','flureGeschafft','halleIntro','fehlwege','heft','kraechz','kx','ky','kflip','fenster','ziel','kruemelGesehen','gitter','federmappe','muenze','kreide','tipp','kraechzKennt','jonas','inv','gefragt','tschuess','eingangDone','kallFrozen','fertig'];
 function save(){const d={};KEEP.forEach(k=>{if(S[k]!==undefined)d[k]=S[k];});d.hero={x:S.hero.x,y:S.hero.y,flip:S.hero.flip};SAVE.write({prolog:d});}
 let looping=false;
 const API={onDone:null,
