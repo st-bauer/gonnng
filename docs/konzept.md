@@ -221,6 +221,7 @@ Die falschen Antworten stehen jeweils für einen typischen Fehler beim Zielsetze
 | Warum sind alle erstarrt? | „Die Unruh ist weg. Ohne Unruh keine Uhr. Ohne Uhr kein Anfangen.“ | „Wie gesagt: keine Unruh, kein Anfangen. Ich wiederhole mich ungern. Ich tue es aber pünktlich.“ |
 | Warum bin ich nicht erstarrt? | „Du bist neu. Du stehst noch in keinem Stundenplan. Die Uhr weiß gar nicht, dass es dich gibt.“ | „Genieß es. Sobald dich die Schulverwaltung findet, bist du dran wie alle anderen.“ |
 | Wer hat die Unruh gestohlen? | „Jemand im Morgenmantel. Mehr habe ich nicht gesehen. Ich hatte das Monokel verkehrt herum auf.“ | „Ich sagte doch: Morgenmantel. Wer nachts im Morgenmantel Uhren ausräumt, hat Zeit. Viel zu viel Zeit.“ |
+| Was ist eigentlich eine Unruh? | „Das schwingende Rad, das eine Uhr im Takt hält. Turmuhren haben sonst ein Pendel. Unsere ist eine Sonderanfertigung.“ | „Der Schulgründer fand Pendel zu gewöhnlich. Er hatte auch sonst seltsame Ideen. Zum Beispiel diese Schule.“ |
 | Wie wird man eigentlich ein Rabe? | „Man ist dreißig Jahre lang pünktlich. Irgendwann reicht das jemandem.“ | „Ich rede nicht gern darüber. Die Federn jucken.“ |
 | Was machen Raben so den ganzen Tag? | „Glänzende Dinge sammeln, klug gucken, Leute ermahnen. Also ungefähr das, was ich vorher auch gemacht habe.“ | „Heute: dich beaufsichtigen. Morgen vielleicht wieder Regenwürmer.“ |
 
@@ -245,7 +246,8 @@ Abschiede, abwechselnd: „Bis gleich.“ Krächz: „‚Gleich‘ sagen hier sc
 
 **Offene Punkte zum Prolog**
 
-- [ ] Name der Lehrerin: Frau Kallweit passt? Die Mitschüler Jonas und Lina sind Platzhalter.
+- [x] Erledigt: Frau Kallweit, Jonas und Lina bleiben.
+- [x] Erledigt: Die Große Stundenuhr läuft mit einer Unruh, obwohl Turmuhren meist ein Pendel haben. Im Spiel ist sie eine Sonderanfertigung, Krächz sagt das, wenn man ihn fragt.
 - [x] Erledigt: Der Radiergummi wird in Kapitel 4 an der Später-Treppe gebraucht.
 
 ## Kapitel 1: Die wandernden Flure (Planen)

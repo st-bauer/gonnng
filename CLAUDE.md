@@ -63,12 +63,12 @@ Canva-Arbeitsdatei: https://canva.link/mp6p64febvogrh4
   Aufbau: gemeinsame Werkzeuge, Figuren und Schrift, dazu die Module `Intro` und `Prolog` mit eigenem Namensraum.
   Die Dateien `intro/intro-v3-code.html` und `prolog/prolog-v2-code.html` bleiben als Einzelansichten, neue Arbeit geht in `spiel/gonnng.html`.
 - Zum Testen: `window.__frame(sekunde)` im Intro, `window.__act(verb, id, item)` und `window.__pick(i)` im Prolog.
-- Fachcheck offen: Große Turmuhren laufen meist mit Pendel, die Unruh sitzt eher in Taschen- und Tischuhren.
+- Entschieden: Die Unruh bleibt. Die Große Stundenuhr ist eine Sonderanfertigung (Turmuhren haben sonst meist ein Pendel),
+  Krächz erklärt das auf Nachfrage. Die Namen Frau Kallweit, Jonas und Lina bleiben.
 
 ## Nächste Schritte
 
-1. Offene Punkte klären: Unruh oder Pendel, Namen der Nebenfiguren (Frau Kallweit, Jonas, Lina).
-2. Kapitel 1 „Die wandernden Flure“: erst einen Raum bauen und zeigen, dann den Rest.
+1. Kapitel 1 „Die wandernden Flure“: erst einen Raum bauen und zeigen, dann den Rest.
 
 ## Online-Dokument
 
