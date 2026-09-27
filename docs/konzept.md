@@ -105,7 +105,7 @@ Danach beginnt der Prolog mit der Eingangssequenz. Das Gesicht der Gestalt bleib
 
 Der Prolog führt die Bedienung ein und endet damit, dass die Hauptfigur einem Aufschiebchen in den Lüftungsschacht folgt. Spielzeit rund 15 Minuten.
 
-**Handlung.** Erste Stunde. Der Gong bleibt mitten im Ton stecken, die Uhr steht still, die ganze Klasse erstarrt. Ein Aufschiebchen schnappt sich das Heft der Hauptfigur und verschwindet im Lüftungsschacht. Draußen klopft ein Rabe mit Monokel ans Fenster.
+**Handlung.** Erste Stunde. Der Gong bleibt mitten im Ton stecken, die Uhr steht still, die ganze Klasse erstarrt. Kurz geht das Licht aus, etwas trippelt, das Lüftungsgitter klappert, und das Heft der Hauptfigur ist weg. Wer es war, bleibt vorerst offen. Erst im Flüstergang (Kapitel 1) zeigt sich, dass es ein Aufschiebchen war. Draußen klopft ein Rabe mit Monokel ans Fenster.
 
 | # | Rätsel | Art | Lösung |
 | --- | --- | --- | --- |
@@ -140,7 +140,7 @@ Der Prolog führt die Bedienung ein und endet damit, dass die Hauptfigur einem A
 
 ### Prolog im Detail
 
-**Eingangssequenz.** Der Gong bleibt mitten im Ton hängen: „Gonnnnn…“. Die Lehrerin, Frau Kallweit, erstarrt mitten im Satz: „Für morgen lest ihr bitte Seite …“. Welche Seite, wird die Klasse nie erfahren. Ein Aufschiebchen huscht herein, schnappt sich das Heft der Hauptfigur, gähnt demonstrativ und verschwindet hinter dem Lüftungsgitter. Dann übernimmt die Spielerin oder der Spieler.
+**Eingangssequenz.** Der Gong bleibt mitten im Ton hängen: „Gonnnnn…“. Die Lehrerin, Frau Kallweit, erstarrt mitten im Satz: „Für morgen lest ihr bitte Seite …“. Welche Seite, wird die Klasse nie erfahren. Dann geht das Licht aus. Man hört Trippeln und das Klappern des Lüftungsgitters. Hauptfigur: „Hey! Wer hat das Licht ausgemacht?“ Als es wieder hell ist, fehlt das Heft: „Mein Heft! Eben lag es noch da.“ Draußen klopft es ans Fenster. Dann übernimmt die Spielerin oder der Spieler.
 
 **Lösungsweg in Reihenfolge**
 
@@ -188,7 +188,7 @@ Der Prolog führt die Bedienung ein und endet damit, dass die Hauptfigur einem A
 | --- | --- |
 | Irgendwie alles wieder normal machen. | „‚Irgendwie‘ ist keine Himmelsrichtung. Noch mal.“ |
 | Mein Bestes geben! | „Das sagen alle, kurz bevor sie ein Nickerchen machen.“ |
-| **Das Aufschiebchen finden, das mein Heft hat.** | „Oh. Konkret. Fast schon verdächtig.“ Weiter zu Stufe 2 |
+| **Herausfinden, wer mein Heft hat, und es zurückholen.** | „Oh. Konkret. Fast schon verdächtig.“ Weiter zu Stufe 2 |
 | Die ganze Welt retten. | „Ehrgeizig. Fang doch mit diesem Klassenzimmer an. Es ist kleiner.“ |
 | Erst mal einen Plan machen, wie ich einen Plan mache. | „Klingt fleißig. Ist aber nur Aufschieben mit Klemmbrett.“ |
 
@@ -199,7 +199,7 @@ Der Prolog führt die Bedienung ein und endet damit, dass die Hauptfigur einem A
 | Irgendwann. | „So heißt diese Schule. Das ist keine Uhrzeit.“ |
 | Gleich. | „Das Wort ist hier gerade sehr beliebt. Schau dich mal um.“ |
 | Sobald ich Lust dazu habe. | „Die Lust kommt beim Anfangen. Meistens. Manchmal kommt auch nur Hunger.“ |
-| **Bevor es im Keller verschwindet.** | „Eine Frist! Ich bekomme Herzklopfen. Das ist bei Vögeln aber normal.“ Weiter zu Stufe 3 |
+| **Bevor der Dieb über alle Berge ist.** | „Eine Frist! Ich bekomme Herzklopfen. Das ist bei Vögeln aber normal.“ Weiter zu Stufe 3 |
 
 *Stufe 3. Krächz: „Und woran merkst du, dass du es geschafft hast?“*
 
@@ -210,7 +210,7 @@ Der Prolog führt die Bedienung ein und endet damit, dass die Hauptfigur einem A
 | Wenn du endlich aufhörst zu fragen. | „Da kennst du Schulleiter schlecht. Auch ehemalige.“ |
 | Wenn Frau Kallweit mir eine Eins gibt. | „Frau Kallweit gibt gerade gar nichts. Außer ‚Gleich‘.“ |
 
-*Abschluss.* Krächz: „Dann sag es einmal am Stück. Ich schreibe mit.“ Hauptfigur: „Ich finde das Aufschiebchen mit meinem Heft, bevor es im Keller verschwindet. Geschafft habe ich es, wenn ich das Heft wieder in der Hand habe.“ Krächz: „Na bitte. Ein Ziel mit Anfang und Ende. Das ist selten geworden.“
+*Abschluss.* Krächz: „Dann sag es einmal am Stück. Ich schreibe mit.“ Hauptfigur: „Ich finde heraus, wer mein Heft hat, und hole es zurück, bevor der Dieb über alle Berge ist. Geschafft habe ich es, wenn ich das Heft wieder in der Hand habe.“ Krächz: „Na bitte. Ein Ziel mit Anfang und Ende. Das ist selten geworden.“
 
 Die falschen Antworten stehen jeweils für einen typischen Fehler beim Zielsetzen: zu vage, zu groß, ohne Frist, ohne sichtbares Ergebnis oder abhängig von anderen. Die Figur muss selbst merken, was fehlt, Krächz erklärt es nicht.
 
@@ -234,7 +234,7 @@ Abschiede, abwechselnd: „Bis gleich.“ Krächz: „‚Gleich‘ sagen hier sc
 | Rätsel | Stufe 1 | Stufe 2 | Stufe 3 |
 | --- | --- | --- | --- |
 | Fenster | Krächz klopft und deutet mit dem Schnabel auf den Spalt | Krächz malt mit dem Schnabel einen Hebel an die Scheibe | Krächz hält ein Lineal hoch und zeigt auf die Federmappe |
-| Krümelspur | „Wohin wollte das Aufschiebchen?“ | „Aufschiebchen essen ständig. Schau mal nach unten.“ | „Die Krümel führen zum Gitter.“ |
+| Krümelspur | „Wohin ist der Dieb wohl verschwunden?“ | „Wer klaut, hat es eilig. Und wer es eilig hat, krümelt. Schau mal nach unten.“ | „Die Krümel führen zum Gitter.“ |
 | Gitter | „Schrauben brauchen einen Dreher.“ | „Schlitzschrauben mag alles, was flach und rund ist.“ | „In Pulten liegt oft Kleingeld.“ |
 
 **Fachliche Anmerkungen zum Prolog**
@@ -277,7 +277,7 @@ Die Hauptfigur muss durch die sich verschiebende Schule in den Heizungskeller, w
 | Kellerschlüssel | Grummelbart |  | Kellertor zum Land Später |
 | Kompass der Pläne | Grummelbart |  | Wegweiser bis zum Finale, Zahnrad der Stundenuhr (K4) |
 
-**Regel der Flure.** Vier Flügel liegen im Kreis um die Halle. Bei jedem Gong rücken Kantine, Biologieraum und Kellertreppe einen Flügel im Uhrzeigersinn weiter. Der Musikraum bleibt immer im Süden, weil das Blockflötenorchester zu schwer ist. Die anderen Räume überspringen den Süden deshalb. Es gongt immer genau dann, wenn jemand einen Flur betritt: Man kommt also nie dort an, wo der Raum beim Losgehen war, sondern dort, wo er als Nächstes steht. Die Schilder über den Türen sind leer. Mit „Öffne Tür“ schaut die Figur durch den Spalt und sieht, was gerade dahinter liegt, das kostet nichts.
+**Regel der Flure.** Vier Flügel liegen im Kreis um die Halle, eine Kompassrose im Boden zeigt Norden, Osten, Süden und Westen. Bei jedem Gong rücken Kantine, Biologieraum und Kellertreppe eine Tür weiter im Uhrzeigersinn. Der Musikraum bleibt immer im Süden, weil das Blockflötenorchester zu schwer ist. Die anderen Räume hüpfen an ihm vorbei. Schilder über den Türen zeigen, was gerade dahinter liegt. Wer auf den Gong haut, sieht die Schilder weiterrücken. Es gongt außerdem jedes Mal, wenn jemand einen Flur betritt: Man kommt also dort an, wo der Raum nach dem nächsten Gong steht.
 
 | Takt | Nord | Ost | Süd | West |
 | --- | --- | --- | --- | --- |
@@ -285,9 +285,9 @@ Die Hauptfigur muss durch die sich verschiebende Schule in den Heizungskeller, w
 | 1 | Kellertreppe | Kantine | Musik | Bio |
 | 2 | Bio | Kellertreppe | Musik | Kantine |
 
-Der Aushang am Schwarzen Brett zeigt nur Takt 0 („vor dem Gong“) und Takt 1 („nach dem Gong“). Beim Betreten der Halle gilt Takt 2: Die Kellertreppe steht im Osten. Wer nach Osten läuft, landet im Biologieraum. Wer „einen Schritt im Uhrzeigersinn weiter“ denkt, landet im Süden beim Musikraum. Richtig ist Westen, weil die Räume den Süden überspringen. Das lässt sich am Aushang ablesen: Dort springt der Biologieraum von Osten nach Westen. Jeder Fehlversuch zählt als Gong, danach muss die Figur neu durch die Spalten schauen.
+Beim Betreten der Halle gilt Takt 2: Das Schild über der Osttür zeigt die Kellertreppe. Krächz erklärt die Regel in drei Sätzen und fordert auf, den Gong auszuprobieren. Wer trotzdem nach Osten läuft, landet in der Kantine oder im Biologieraum. Wer „einen Schritt weiter“ denkt, landet im Süden beim Musikraum. Richtig ist die Tür, an der die Kellertreppe nach dem nächsten Gong steht; aus dem Osten ist das der Westen. Der Aushang am Schwarzen Brett zeigt ein Beispiel vor und nach dem Gong.
 
-Tippstufen von Krächz: „Schau erst durch die Türspalten. Und lies den Aushang am Brett.“ Dann: „Wer losläuft, hört unterwegs den Gong. Geh also dahin, wo die Kellertreppe gleich sein wird.“ Dann: „Die Räume wandern im Uhrzeigersinn: Norden, Osten, Westen. Den Süden lassen sie aus. Schau, wohin der Biologieraum springt.“
+Tippstufen von Krächz: „Hau mal auf den Gong und schau, was mit den Schildern passiert.“ Dann: „Wenn du losläufst, gongt es. Geh also dahin, wo die Kellertreppe nach dem nächsten Gong steht.“ Dann: „Die Räume rücken im Uhrzeigersinn eine Tür weiter und hüpfen am Musikraum vorbei. Von Osten geht es also direkt nach Westen.“
 
 **Die Karten im Flüstergang.** Drei Aufschiebchen stören. Jede Störung schickt die Figur an den Anfang zurück.
 

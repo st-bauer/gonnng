@@ -1026,7 +1026,7 @@ const FALLBACK={
   rede:()=>'Mit Gegenständen rede ich nur im Notfall.',gib:()=>'Das will hier niemand haben.',benutze:()=>'Das bringt nichts.'
 };
 function stage(){if(S.room==='halle')return S.flureGeschafft?'fertig':'flure';if(!S.fenster)return'fenster';if(!S.ziel)return'ziel';if(!S.kruemelGesehen)return'kruemel';if(!S.gitter)return'gitter';if(S.inv.indexOf('kreide')<0)return'kreide';return'fertig';}
-const TIPPS={flure:['Schau erst durch die Türspalten. Und lies den Aushang am Brett.','Wer losläuft, hört unterwegs den Gong. Geh also dahin, wo die Kellertreppe gleich sein wird.','Die Räume wandern im Uhrzeigersinn: Norden, Osten, Westen. Den Süden lassen sie aus. Schau, wohin der Biologieraum springt.'],kruemel:['Wohin wollte das Aufschiebchen?','Aufschiebchen essen ständig. Schau mal nach unten.','Die Krümel führen zum Gitter.'],
+const TIPPS={flure:['Hau mal auf den Gong und schau, was mit den Schildern passiert.','Wenn du losläufst, gongt es. Geh also dahin, wo die Kellertreppe nach dem nächsten Gong steht.','Die Räume rücken im Uhrzeigersinn eine Tür weiter und hüpfen am Musikraum vorbei. Von Osten geht es also direkt nach Westen.'],kruemel:['Wohin ist der Dieb wohl verschwunden?','Wer klaut, hat es eilig. Und wer es eilig hat, krümelt. Schau mal nach unten.','Die Krümel führen zum Gitter.'],
   gitter:['Schrauben brauchen einen Dreher.','Schlitzschrauben mag alles, was flach und rund ist.','In Pulten liegt oft Kleingeld.']};
 async function tipp(){const st=stage();
   if(st==='kreide'){await say('kraechz','Wer ins Dunkle geht, braucht Zeichen.');return;}
@@ -1039,14 +1039,14 @@ const ZIEL=[
   {frage:'Also. Was ist dein Ziel? Und sag jetzt nicht „Pause“.',antworten:[
     ['Irgendwie alles wieder normal machen.','„Irgendwie“ ist keine Himmelsrichtung. Noch mal.'],
     ['Mein Bestes geben!','Das sagen alle, kurz bevor sie ein Nickerchen machen.'],
-    ['Das Aufschiebchen finden, das mein Heft hat.',null,'Oh. Konkret. Fast schon verdächtig.'],
+    ['Herausfinden, wer mein Heft hat, und es zurückholen.',null,'Oh. Konkret. Fast schon verdächtig.'],
     ['Die ganze Welt retten.','Ehrgeizig. Fang doch mit diesem Klassenzimmer an. Es ist kleiner.'],
     ['Erst mal einen Plan machen, wie ich einen Plan mache.','Klingt fleißig. Ist aber nur Aufschieben mit Klemmbrett.']]},
   {frage:'Und bis wann?',antworten:[
     ['Irgendwann.','So heißt diese Schule. Das ist keine Uhrzeit.'],
     ['Gleich.','Das Wort ist hier gerade sehr beliebt. Schau dich mal um.'],
     ['Sobald ich Lust dazu habe.','Die Lust kommt beim Anfangen. Meistens. Manchmal kommt auch nur Hunger.'],
-    ['Bevor es im Keller verschwindet.',null,'Eine Frist! Ich bekomme Herzklopfen. Das ist bei Vögeln aber normal.']]},
+    ['Bevor der Dieb über alle Berge ist.',null,'Eine Frist! Ich bekomme Herzklopfen. Das ist bei Vögeln aber normal.']]},
   {frage:'Und woran merkst du, dass du es geschafft hast?',antworten:[
     ['Wenn ich mich gut fühle.','Das tust du auch nach drei Keksen. Woran genau?'],
     ['Wenn ich mein Heft wieder in der Hand habe.',null,null],
@@ -1065,7 +1065,7 @@ async function zielGespraech(){
     }
   }
   await say('kraechz','Dann sag es einmal am Stück. Ich schreibe mit.');
-  await say('hero','Ich finde das Aufschiebchen mit meinem Heft, bevor es im Keller verschwindet. Geschafft habe ich es, wenn ich das Heft wieder in der Hand habe.');
+  await say('hero','Ich finde heraus, wer mein Heft hat, und hole es zurück, bevor der Dieb über alle Berge ist. Geschafft habe ich es, wenn ich das Heft wieder in der Hand habe.');
   await say('kraechz','Na bitte. Ein Ziel mit Anfang und Ende. Das ist selten geworden.');
   S.ziel=true;
 }
@@ -1131,7 +1131,7 @@ async function act(verb,h,item){
       S.gitter=true;return say('hero','Vier Schrauben, eine Münze. Das Gitter ist ab.');
     }
     if(item==='lineal'&&id==='gitter')return say('hero','Zu dick für die Schlitze.');
-    if(item==='radiergummi'&&(id==='gitter'||id==='kruemel'))return say('hero','Schön wär’s, wenn man Aufschiebchen einfach wegradieren könnte.');
+    if(item==='radiergummi'&&(id==='gitter'||id==='kruemel'))return say('hero','Schön wär’s, wenn man Diebe einfach wegradieren könnte.');
     if(item==='kreide'&&id==='tafel')return say('hero','Später. Die Tafel läuft ja nicht weg.');
     return say('hero',FALLBACK.benutze());
   }
@@ -1160,8 +1160,8 @@ async function act(verb,h,item){
       await say('hero','Eine Münze aus der Klassenkasse.');return say('hero','Ich lege einen Zettel hinein: „Geliehen. Ehrlich.“');
     case 'boden:schau':if(!S.ziel)return say('hero','Dreck. Irgendwelcher.');S.kruemelGesehen=true;return say('hero','Kekskrümel! Die führen zum Lüftungsgitter.');
     case 'kruemel:schau':S.kruemelGesehen=true;return say('hero','Kekskrümel! Die führen zum Lüftungsgitter.');
-    case 'kruemel:nimm':return say('hero','Die gehören dem Aufschiebchen. Und dem Hausmeister.');
-    case 'gitter:schau':return say('hero',S.gitter?'Ein dunkler Schacht. Da ist das Aufschiebchen durch.':'Vier Schlitzschrauben. Da ist das Aufschiebchen durch.');
+    case 'kruemel:nimm':return say('hero','Beweismittel. Die bleiben liegen.');
+    case 'gitter:schau':return say('hero',S.gitter?'Ein dunkler Schacht. Da ist jemand durch. Jemand ziemlich Kleines.':'Vier Schlitzschrauben. Die Kratzer sind frisch. Da ist jemand durch.');
     case 'gitter:oeffne':if(!S.gitter)await reach();return say('hero',S.gitter?'Offener geht es nicht.':'Mit den Fingernägeln? Nein danke.');
     case 'gitter:benutze':if(!S.gitter)return say('hero','Da ist noch das Gitter davor.');if(S.inv.indexOf('kreide')<0)return say('kraechz','Wer ins Dunkle geht, braucht Zeichen.');return ende();
     case 'tafel:schau':return say('hero',S.kreide>1?'Frisch gewischt. Auf der Ablage liegen zwei Stück Kreide.':'Frisch gewischt. Auf der Ablage liegt noch ein Stück Kreide.');
@@ -1184,7 +1184,7 @@ async function flyIn(){
 }
 async function ende(){
   await walkTo(290,104);face(false);
-  await say('hero','Dann mal los. Bevor es im Keller verschwindet.');
+  await say('hero','Dann mal los. Bevor der Dieb über alle Berge ist.');
   S.hero.hidden=true;tone('triangle',400,0.8,0.05,120);await sleep(900);
   S.fertig=true;await enterHalle();
 }
@@ -1193,13 +1193,13 @@ async function eingang(){
   await say('kallweit','Für morgen lest ihr bitte Seite …');
   S.kallFrozen=true;await sleep(600);
   await say('hero','Frau Kallweit? Welche Seite?');await sleep(300);
-  S.auf={x:306,y:98,flip:true,walk:true};
-  const run=async(pts,sp)=>{for(const [tx,ty] of pts){while(Math.hypot(tx-S.auf.x,ty-S.auf.y)>1){const dx=tx-S.auf.x,dy=ty-S.auf.y,d=Math.hypot(dx,dy);S.auf.x+=dx/d*sp;S.auf.y+=dy/d*sp;S.auf.flip=dx<0;await sleep(30);}}};
-  await run([[290,104],[256,108]],1.5);
-  S.auf.walk=false;S.heft=false;S.auf.heft=true;await sleep(300);
-  S.auf.yawn=true;await say('auf','Hoaaah.');S.auf.yawn=false;
-  S.auf.walk=true;await run([[290,104],[306,98]],1.9);S.auf=null;
-  await say('hero','Hey! Mein Heft!');
+  // Licht aus: Trippeln, das Gitter klappert, das Heft ist weg. Wer es war, bleibt offen.
+  S.dunkel=true;tone('square',90,0.08,0.05);await sleep(250);
+  for(let i=0;i<7;i++){tone('triangle',700+(i%2)*120,0.04,0.06);await sleep(110);}
+  S.heft=false;tone('square',260,0.12,0.08,120);await sleep(200);tone('square',240,0.12,0.08,110);await sleep(500);
+  await say('hero','Hey! Wer hat das Licht ausgemacht?');
+  S.dunkel=false;tone('square',90,0.08,0.05);await sleep(400);
+  await say('hero','Mein Heft! Eben lag es noch da.');
   knock();S.knock=1;await sleep(500);knock();
   await say('hero','Und wer klopft da?');
   S.eingangDone=true;S.busy=false;save();
@@ -1281,6 +1281,7 @@ function drawScene(now){
   drawSpeech();
 }
 function drawSpeech(){
+  if(S.dunkel&&S.room!=='halle')R(ctx,0,0,W,SH,'#05040a');
   if(S.speech){const [x,y]=S.speech.who==='hero'?heroHead():HEADS[S.speech.who]();
     const lines=wrap(S.speech.text,170);const top=Math.max(2,y-lines.length*LINEH-2);
     lines.forEach((l,i)=>{const w=textW(l),lx=clamp(Math.round(x-w/2),3,W-3-w);text(l,lx,top+i*LINEH,K[S.speech.who],true);});}
@@ -1351,8 +1352,8 @@ function loop(now){if(MODE()!=='prolog'){looping=false;return;}const dt=Math.min
    Kapitel 1: Die Eingangshalle mit den wandernden Fluren
    Regel (Konzept): Bei jedem Gong ruecken Kantine, Biologieraum und Kellertreppe einen Fluegel
    im Uhrzeigersinn weiter und ueberspringen dabei den Sueden. Der Musikraum bleibt im Sueden.
+   Die Schilder zeigen, was gerade hinter jeder Tuer liegt. Wer auf den Gong haut, sieht die Raeume weiterruecken.
    Wer einen Flur betritt, hoert unterwegs immer den Gong: Man kommt dort an, wo der Raum als Naechstes steht.
-   Durch einen Tuerspalt schauen (Oeffne) kostet nichts und zeigt, was gerade dahinter liegt.
    ===================================================================== */
 const RING=['nord','ost','west'];                 // Uhrzeigersinn ohne Sueden
 const START=['kantine','bio','keller'];           // Takt 0: Nord, Ost, West
@@ -1417,7 +1418,7 @@ function drawGongDisc(x,y,sw){
   ellFill(ctx,x+dx,y,13,13,(px,py,a,b)=>{const d=a*a+b*b;return d>0.85?'#6a4a10':d<0.08?'#fff0a0':(a+b<-0.3?'#e8c060':d>0.5?'#9a7418':'#c89a30');});
   line(ctx,x+dx,y-13,x,y-17,'#383840');
 }
-function plaque(x,y,label){label=label||'   ?   ';const w=textW(label)+6;x=clamp(x,Math.ceil(w/2)+1,W-Math.ceil(w/2)-1);R(ctx,x-Math.ceil(w/2),y,w,10,'#2a160c');R(ctx,x-Math.ceil(w/2)+1,y+1,w-2,8,'#e8d8a0');text(label,x-Math.floor(textW(label)/2),y+2,'#3a2410',false);}
+function plaque(x,y,label){label=label||' ... ';const w=textW(label)+6;x=clamp(x,Math.ceil(w/2)+1,W-Math.ceil(w/2)-1);R(ctx,x-Math.ceil(w/2),y,w,10,'#2a160c');R(ctx,x-Math.ceil(w/2)+1,y+1,w-2,8,'#e8d8a0');text(label,x-Math.floor(textW(label)/2),y+2,'#3a2410',false);}
 function drawHalle(now){
   if(!HALLE)HALLE=drawHalleBg();
   if(S.card){R(ctx,0,0,W,SH,'#000000');const t=S.card.title;text(t,Math.round((W-textW(t))/2),34,'#ffe060',false);
@@ -1426,12 +1427,13 @@ function drawHalle(now){
   ctx.save();ctx.translate(sh,0);
   ctx.drawImage(HALLE,0,0);
   // Tuerschilder zeigen, welcher Raum gerade hinter der Tuer liegt
-  // Die Schilder sind leer, was dahinter liegt, zeigt nur ein Blick durch den Tuerspalt
-  plaque(160,23,'');plaque(27,28,'');plaque(294,28,'');
+  // Schilder zeigen den Raum hinter jeder Tuer, beim Gong drehen sie sich kurz
+  const sg=d=>S.flip>0?'':RAUM_NAME[raumAn(d,S.takt)];
+  plaque(160,23,sg('nord'));plaque(27,28,sg('west'));plaque(294,28,sg('ost'));plaque(160,128,RAUM_NAME.musik);
+  kompass();
   if(S.peek==='nord')polyFill(ctx,[[156,40],[164,40],[164,92],[156,92]],(x,y)=>bay(x,y)<0.5?'#0a0604':'#1a0c06');
   if(S.peek==='west')polyFill(ctx,[[30,40],[38,38],[38,93],[30,96]],(x,y)=>bay(x,y)<0.5?'#0a0604':'#1a0c06');
   if(S.peek==='ost')polyFill(ctx,[[282,38],[290,40],[290,96],[282,93]],(x,y)=>bay(x,y)<0.5?'#0a0604':'#1a0c06');
-  text('Süden: Musikraum',Math.round(160-textW('Süden: Musikraum')/2),128,'#e8d8a0',true);
   drawGongDisc(212,36,S.gongSw||0);
   const L=[];
   L.push({y:S.ky,d:()=>spr(S.speech&&S.talker==='kraechz'&&Math.floor(now/140)%2?SPR.ravenTalk:SPR.raven,S.kx,S.ky,11,19,S.kflip)});
@@ -1446,10 +1448,19 @@ function drawHalle(now){
     S.panel.forEach((l,i)=>text(l[0],50,22+i*11,l[1]||'#3a2410',false));}
   drawSpeech();
 }
+// Kompassrose im Boden: Himmelsrichtungen und Pfeil im Uhrzeigersinn
+function kompass(){
+  const cx=160,cy=113;
+  ellFill(ctx,cx,cy,30,9,(x,y,dx,dy)=>{const d=dx*dx+dy*dy;return d>0.82?'#5c341c':d>0.62?'#b08a40':null;});
+  for(let a=-2.6;a<1.9;a+=0.05){P(ctx,Math.round(cx+Math.cos(a)*22),Math.round(cy+Math.sin(a)*6),'#8a5a20');}
+  const ax=Math.round(cx+Math.cos(1.9)*22),ay=Math.round(cy+Math.sin(1.9)*6);R(ctx,ax-2,ay-1,3,1,'#8a5a20');R(ctx,ax-1,ay-2,1,3,'#8a5a20');
+  text('N',cx-2,cy-15,'#f0d890',true);text('S',cx-2,cy+8,'#f0d890',true);text('W',cx-39,cy-4,'#f0d890',true);text('O',cx+34,cy-4,'#f0d890',true);
+}
 function hallTick(dt){
+  if(S.flip>0)S.flip-=dt;
   if(S.gongSw>0)S.gongSw=Math.max(0,S.gongSw-dt*4);if(S.shake>0)S.shake-=dt;
 }
-function gongSchlag(){S.takt++;S.gongSw=6;S.shake=0.6;gongStuck(2.5);}
+function gongSchlag(){S.takt++;S.gongSw=6;S.shake=0.6;S.flip=0.45;gongStuck(2.5);}
 async function showCard(title,txt){S.card={title,text:txt};await new Promise(r=>{skipLine=r;setTimeout(r,lineTime(txt)+800);});skipLine=null;S.card=null;await sleep(100);}
 async function showPanel(lines){S.panel=lines;await new Promise(r=>{skipLine=r;setTimeout(r,9000);});skipLine=null;S.panel=null;await sleep(100);}
 const HS_HALLE=[
@@ -1484,7 +1495,7 @@ async function travel(tuer){
   await showCard(T[0],unterwegs+T[1]);
   S.hero.hidden=false;S.fehlwege=(S.fehlwege||0)+1;
   await say('hero',['Wieder in der Halle. Das war wohl der falsche Flügel.','Zurück in der Halle. Die Kellertreppe war da nicht.','Wieder hier. Ich sollte erst denken und dann laufen.'][(S.fehlwege-1)%3]);
-  if(S.fehlwege===3)await say('kraechz','Raten dauert. Der Aushang am Brett verrät, wie die Räume wandern.');
+  if(S.fehlwege===3)await say('kraechz','Raten dauert. Hau auf den Gong und schau genau hin, wohin die Kellertreppe wandert.');
 }
 async function peek(tuer){
   S.peek=tuer;tone('sawtooth',180,0.25,0.03,120);await sleep(250);
@@ -1503,11 +1514,11 @@ async function enterHalle(){
   await walkTo(84,108);
   for(let t=0;t<=1;t+=0.05){S.kx=-20+(92+20)*t;S.ky=40+Math.sin(t*Math.PI)*-16+(44-40)*t;await sleep(30);}S.kx=92;S.ky=44;
   await say('hero','Wo bin ich denn jetzt gelandet?');
-  await say('kraechz','In der Eingangshalle. Hier sortieren sich die Flure bei jedem Gong neu.');
-  await say('kraechz','Und es gongt immer genau dann, wenn jemand losläuft. Man kommt also nie da an, wo man hinwollte.');
-  await say('kraechz','Wir müssen zur Kellertreppe. Da unten liegt der Eingang ins Land Später.');
-  await say('hero','Und wo ist die Kellertreppe?');
-  await say('kraechz','Mal hier, mal da. Wie meine Lesebrille früher.');
+  await say('kraechz','In der Eingangshalle. Wir müssen zur Kellertreppe. Da unten geht es weiter.');
+  await say('hero','Da steht sie doch. Osten!');
+  await say('kraechz','Schön wär’s. Bei jedem Gong rücken die Räume eine Tür weiter. Im Uhrzeigersinn.');
+  await say('kraechz','Nur der Musikraum bleibt im Süden. Das Orchester ist zu schwer. Die anderen Räume hüpfen an ihm vorbei.');
+  await say('kraechz','Und der Gong schlägt jedes Mal, wenn jemand losläuft. Hau ruhig mal drauf und schau, was die Schilder machen.');
   S.halleIntro=true;save();
 }
 async function actHalle(verb,h,item){
@@ -1525,16 +1536,19 @@ async function actHalle(verb,h,item){
     case 'zettel:schau':case 'zettel:nimm':case 'brett:schau':
       S.zettelGelesen=true;
       await showPanel([['Aushang: Wo ist was?','#a02234'],['Vor dem Gong:'],['  Nord Kantine, Ost Bio,'],['  Süd Musik, West Kellertreppe'],['Nach dem Gong:'],['  Nord Kellertreppe, Ost Kantine,'],['  Süd Musik, West Bio'],['Der Musikraum rührt sich nicht.','#5a3a18'],['Wer losläuft, hört unterwegs den Gong.','#5a3a18']]);
-      return say('hero','Mal sehen. Welcher Raum ist wohin gewandert?');
-    case 'gong:schau':return say('hero','Der Schulgong. Bei jedem Schlag rücken die Flure weiter.');
-    case 'gong:druecke':await reach();gongSchlag();return say('hero','Oh. Das war vielleicht keine gute Idee.');
+      return say('hero','Aha. Der Biologieraum hüpft von Osten gleich nach Westen. Am Musikraum vorbei.');
+    case 'gong:schau':return say('hero','Der Schulgong. Ich könnte ja mal draufhauen. Nur um zu sehen, was passiert.');
+    case 'gong:druecke':case 'gong:benutze':case 'gong:ziehe':
+      await reach();gongSchlag();await sleep(700);
+      S.gongProbe=(S.gongProbe||0)+1;
+      return say('hero',S.gongProbe===1?'Gonnng! Die Schilder sind alle eine Tür weitergerückt. Nur der Musikraum nicht.':'Gonnng! Wieder eine Tür weiter.');
     case 'bild:schau':return say('hero','Der Schulgründer. Er guckt, als fände er Pendel zu gewöhnlich.');
     case 'gitterH:schau':return say('hero','Da bin ich rausgefallen. Elegant war anders.');
     case 'gitterH:benutze':case 'gitterH:oeffne':return say('hero','Zurück ins Klassenzimmer? Da sagen alle nur „gleich“.');
     case 'bodenH:schau':return say('hero','Schachbrettfliesen. Irgendwer hat hier mal sehr lange überlegt, welcher Zug der nächste ist.');
     case 'nord:schau':case 'west:schau':case 'ost:schau':
-      return say('hero','Das Schild ist leer. Irgendwer hat aufgegeben, es ständig umzuschreiben. Ich könnte durch den Spalt schauen.');
-    case 'sued:schau':return say('hero','Der Weg zum Musikraum. Der bleibt immer da. Das Blockflötenorchester ist zu schwer zum Wandern.');
+      return say('hero','Auf dem Schild steht „'+RAUM_NAME[raumAn(id,S.takt)]+'“. Bis zum nächsten Gong jedenfalls.');
+    case 'sued:schau':return say('hero','Der Weg zum Musikraum. Der bleibt immer im Süden. Das Blockflötenorchester ist zu schwer zum Wandern.');
   }
   if(verb==='schau')return say('hero',FALLBACK.schau(h));
   return say('hero',FALLBACK[verb]?FALLBACK[verb](h):FALLBACK.benutze());
