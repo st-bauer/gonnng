@@ -317,6 +317,36 @@ async function zielGespraech(){
   await say('kraechz','Na bitte. Ein Ziel mit Anfang und Ende. Das ist selten geworden.');
   S.ziel=true;
 }
+// Gespraech mit Kraechz nach dem Zielgespraech. Wiederholte Fragen bekommen neue Antworten.
+const KRAECHZ={
+  tipp:{frage:'Hast du einen Tipp für mich?',vorwort:['Ein Tipp. Aber nur, weil du fragst, bevor es zu spät ist.','Schon wieder? Na gut. Hör genau hin.','Letzter Tipp. Danach werde ich unerträglich pünktlich.']},
+  fragen:[
+    ['Warum sind alle erstarrt?',['Die Unruh ist weg. Ohne Unruh keine Uhr. Ohne Uhr kein Anfangen.','Wie gesagt: keine Unruh, kein Anfangen. Ich wiederhole mich ungern. Ich tue es aber pünktlich.']],
+    ['Warum bin ich nicht erstarrt?',['Du bist neu. Du stehst noch in keinem Stundenplan. Die Uhr weiß gar nicht, dass es dich gibt.','Genieß es. Sobald dich die Schulverwaltung findet, bist du dran wie alle anderen.']],
+    ['Wer hat die Unruh gestohlen?',['Jemand im Morgenmantel. Mehr habe ich nicht gesehen. Ich hatte das Monokel verkehrt herum auf.','Ich sagte doch: Morgenmantel. Wer nachts im Morgenmantel Uhren ausräumt, hat Zeit. Viel zu viel Zeit.']],
+    ['Wie wird man eigentlich ein Rabe?',['Man ist dreißig Jahre lang pünktlich. Irgendwann reicht das jemandem.','Ich rede nicht gern darüber. Die Federn jucken.']],
+    ['Was machen Raben so den ganzen Tag?',['Glänzende Dinge sammeln, klug gucken, Leute ermahnen. Also ungefähr das, was ich vorher auch gemacht habe.','Heute: dich beaufsichtigen. Morgen vielleicht wieder Regenwürmer.']]
+  ],
+  tschuess:[['Bis gleich.','„Gleich“ sagen hier schon genug. Sag lieber „bis jetzt“.'],['Ich hab zu tun. Wichtige Sachen.','Das habe ich früher auch immer gesagt. Dann bin ich ein Vogel geworden.']]
+};
+async function kraechzMenue(){
+  S.gefragt=S.gefragt||{};S.tschuess=S.tschuess||0;
+  for(;;){
+    // hoechstens fuenf Antworten: Tipp, drei offene Fragen, ein Abschied
+    const offen=KRAECHZ.fragen.map((f,i)=>i).filter(i=>(S.gefragt[i]||0)<2).slice(0,3);
+    const ts=KRAECHZ.tschuess[S.tschuess%KRAECHZ.tschuess.length];
+    const opts=[KRAECHZ.tipp.frage,...offen.map(i=>KRAECHZ.fragen[i][0]),ts[0]];
+    const a=await choose(opts);
+    await say('hero',opts[a]);
+    if(a===0){
+      const st=stage();
+      if(st==='kruemel'||st==='gitter')await say('kraechz',KRAECHZ.tipp.vorwort[Math.min(S.tipp[st],2)]);
+      await tipp();continue;
+    }
+    if(a<=offen.length){const i=offen[a-1],n=S.gefragt[i]||0;S.gefragt[i]=n+1;await say('kraechz',KRAECHZ.fragen[i][1][Math.min(n,1)]);continue;}
+    S.tschuess++;await say('kraechz',ts[1]);return;
+  }
+}
 async function redeKraechz(){
   if(S.kraechz==='aussen'){
     await say('hero','Hallo? Ich verstehe kein Wort. Das Fenster ist zu.');
@@ -330,12 +360,7 @@ async function redeKraechz(){
     await say('kraechz','Jemand hat die Unruh aus der Stundenuhr gestohlen. Ohne Unruh keine Uhr. Ohne Uhr kein Anfangen. Und ohne Anfangen sieht es aus wie hier.');
   }
   if(!S.ziel){await zielGespraech();return;}
-  for(;;){
-    const a=await choose(['Hast du einen Tipp für mich?','Warum sind alle erstarrt?','Bis gleich.']);
-    if(a===0){await say('hero','Hast du einen Tipp für mich?');await tipp();}
-    else if(a===1){await say('hero','Warum sind alle erstarrt?');await say('kraechz','Die Unruh ist weg. Ohne Unruh keine Uhr. Ohne Uhr kein Anfangen.');}
-    else{await say('hero','Bis gleich.');await say('kraechz','„Gleich“ sagen hier schon genug.');return;}
-  }
+  await kraechzMenue();
 }
 
 /* ---------- Aktionen ---------- */

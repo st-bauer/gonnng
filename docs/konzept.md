@@ -214,6 +214,20 @@ Der Prolog führt die Bedienung ein und endet damit, dass die Hauptfigur einem A
 
 Die falschen Antworten stehen jeweils für einen typischen Fehler beim Zielsetzen: zu vage, zu groß, ohne Frist, ohne sichtbares Ergebnis oder abhängig von anderen. Die Figur muss selbst merken, was fehlt, Krächz erklärt es nicht.
 
+**Weitere Gespräche mit Krächz.** Nach dem Zielgespräch bietet Krächz höchstens fünf Antworten an: den Tipp, drei Fragen und einen Abschied. Wer eine Frage zweimal gestellt hat, bekommt dafür eine neue angeboten. Krächz weiß nicht, wer der Dieb ist, das zeigt sich erst in Kapitel 4.
+
+| Frage der Figur | Krächz beim ersten Mal | Krächz beim zweiten Mal |
+| --- | --- | --- |
+| Warum sind alle erstarrt? | „Die Unruh ist weg. Ohne Unruh keine Uhr. Ohne Uhr kein Anfangen.“ | „Wie gesagt: keine Unruh, kein Anfangen. Ich wiederhole mich ungern. Ich tue es aber pünktlich.“ |
+| Warum bin ich nicht erstarrt? | „Du bist neu. Du stehst noch in keinem Stundenplan. Die Uhr weiß gar nicht, dass es dich gibt.“ | „Genieß es. Sobald dich die Schulverwaltung findet, bist du dran wie alle anderen.“ |
+| Wer hat die Unruh gestohlen? | „Jemand im Morgenmantel. Mehr habe ich nicht gesehen. Ich hatte das Monokel verkehrt herum auf.“ | „Ich sagte doch: Morgenmantel. Wer nachts im Morgenmantel Uhren ausräumt, hat Zeit. Viel zu viel Zeit.“ |
+| Wie wird man eigentlich ein Rabe? | „Man ist dreißig Jahre lang pünktlich. Irgendwann reicht das jemandem.“ | „Ich rede nicht gern darüber. Die Federn jucken.“ |
+| Was machen Raben so den ganzen Tag? | „Glänzende Dinge sammeln, klug gucken, Leute ermahnen. Also ungefähr das, was ich vorher auch gemacht habe.“ | „Heute: dich beaufsichtigen. Morgen vielleicht wieder Regenwürmer.“ |
+
+Vor jedem Tipp sagt Krächz einen Satz, der mit der Stufe wechselt: „Ein Tipp. Aber nur, weil du fragst, bevor es zu spät ist.“, „Schon wieder? Na gut. Hör genau hin.“, „Letzter Tipp. Danach werde ich unerträglich pünktlich.“ Die Tipps selbst stehen unter Hinweisstufen.
+
+Abschiede, abwechselnd: „Bis gleich.“ Krächz: „‚Gleich‘ sagen hier schon genug. Sag lieber ‚bis jetzt‘.“ Oder: „Ich hab zu tun. Wichtige Sachen.“ Krächz: „Das habe ich früher auch immer gesagt. Dann bin ich ein Vogel geworden.“
+
 **Hinweisstufen.** „Rede mit Krächz“ liefert je Rätsel bis zu drei Tipps. Stufe 1 erinnert an das Ziel, Stufe 2 an die passende Vorgehensweise, Stufe 3 nennt den konkreten Gegenstand. So bleibt Hilfe eine Unterstützung beim eigenen Lösen.
 
 | Rätsel | Stufe 1 | Stufe 2 | Stufe 3 |
