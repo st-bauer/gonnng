@@ -951,7 +951,8 @@ const ITEMS={
   lineal:{name:'Lineal',look:'Ein Holzlineal, dreißig Zentimeter. Lang und flach.'},
   radiergummi:{name:'Radiergummi',look:'Riecht nach Erdbeere. Warum riechen Radiergummis nach Erdbeere?'},
   muenze:{name:'Münze',look:'Ein Euro aus der Klassenkasse. Flach und rund.'},
-  kreide:{name:'Kreide',look:'Ein Stück weiße Kreide. Damit kann man Zeichen machen.'}
+  kreide:{name:'Kreide',look:'Ein Stück weiße Kreide. Damit kann man Zeichen machen.'},
+  notiz:{name:'Zettel',look:'„Heft im Heizungskeller abgeben. Gleich. Oder später.“ Voller Kekskrümel. Die Schrift ist sehr klein.'}
 };
 function icon(g,id,x,y){
   const r=(a,b,w,h,c)=>R(g,x+a,y+b,w,h,c);
@@ -959,6 +960,7 @@ function icon(g,id,x,y){
   if(id==='radiergummi'){r(9,5,8,7,'#f08aa8');r(17,5,7,7,'#5a8ae0');r(9,11,15,1,'#803050');r(10,6,3,1,'#ffc8d8');}
   if(id==='muenze'){ellFill(g,x+16,y+8,6,6,(px,py,dx,dy)=>dx*dx+dy*dy>0.55?'#b08820':dx+dy<-0.4?'#fff0a0':'#d8b040');}
   if(id==='kreide'){r(7,7,18,3,'#f4f4f0');r(7,9,18,1,'#c8c8c0');r(24,7,1,3,'#ffffff');}
+  if(id==='notiz'){r(10,3,12,11,'#e8e0c8');r(10,3,12,1,'#ffffff');for(let i=5;i<13;i+=2)r(12,i,8,1,'#6e6e7c');r(19,11,1,1,'#b07c48');r(13,12,1,1,'#b07c48');}
 }
 const K={hero:'#ffffff',kraechz:'#9ab8ff',kallweit:'#ff9ac8',jonas:'#8af08a',lina:'#ffd070',auf:'#d0a8ff'};
 const heroHead=()=>[S.hero.x,S.hero.y-46];
@@ -1025,10 +1027,11 @@ const FALLBACK={
   schliesse:()=>'Da gibt es nichts zu schließen.',druecke:()=>'Da tut sich nichts.',ziehe:()=>'Da tut sich nichts.',
   rede:()=>'Mit Gegenständen rede ich nur im Notfall.',gib:()=>'Das will hier niemand haben.',benutze:()=>'Das bringt nichts.'
 };
-function stage(){if(S.room==='halle')return S.flureGeschafft?'fertig':'flure';if(!S.fenster)return'fenster';if(!S.ziel)return'ziel';if(!S.kruemelGesehen)return'kruemel';if(!S.gitter)return'gitter';if(S.inv.indexOf('kreide')<0)return'kreide';return'fertig';}
+function stage(){if(S.room==='halle')return S.flureGeschafft?'fertig':(S.spur?'flure':'spur');if(!S.fenster)return'fenster';if(!S.ziel)return'ziel';if(!S.kruemelGesehen)return'kruemel';if(!S.gitter)return'gitter';if(S.inv.indexOf('kreide')<0)return'kreide';return'fertig';}
 const TIPPS={flure:['Hau mal auf den Gong und schau, was mit den Schildern passiert.','Wenn du losläufst, gongt es. Geh also dahin, wo die Kellertreppe nach dem nächsten Gong steht.','Die Räume rücken im Uhrzeigersinn eine Tür weiter und hüpfen am Musikraum vorbei. Von Osten geht es also direkt nach Westen.'],kruemel:['Wohin ist der Dieb wohl verschwunden?','Wer klaut, hat es eilig. Und wer es eilig hat, krümelt. Schau mal nach unten.','Die Krümel führen zum Gitter.'],
   gitter:['Schrauben brauchen einen Dreher.','Schlitzschrauben mag alles, was flach und rund ist.','In Pulten liegt oft Kleingeld.']};
 async function tipp(){const st=stage();
+  if(st==='spur'){await say('kraechz','Da vorne unter dem Gitter liegt ein Zettel. Heb ihn doch mal auf.');return;}
   if(st==='kreide'){await say('kraechz','Wer ins Dunkle geht, braucht Zeichen.');return;}
   if(st==='fertig'){await say('kraechz','Worauf wartest du? Auf den Gong?');return;}
   const i=Math.min(S.tipp[st],2);S.tipp[st]=i+1;await say('kraechz',TIPPS[st][i]);}
@@ -1434,6 +1437,7 @@ function drawHalle(now){
   if(S.peek==='nord')polyFill(ctx,[[156,40],[164,40],[164,92],[156,92]],(x,y)=>bay(x,y)<0.5?'#0a0604':'#1a0c06');
   if(S.peek==='west')polyFill(ctx,[[30,40],[38,38],[38,93],[30,96]],(x,y)=>bay(x,y)<0.5?'#0a0604':'#1a0c06');
   if(S.peek==='ost')polyFill(ctx,[[282,38],[290,40],[290,96],[282,93]],(x,y)=>bay(x,y)<0.5?'#0a0604':'#1a0c06');
+  if(!S.spur){R(ctx,64,99,8,4,'#e8e0c8');R(ctx,65,98,5,1,'#ffffff');P(ctx,70,102,'#9a9aa8');P(ctx,74,101,'#d8a060');P(ctx,61,102,'#d8a060');}
   drawGongDisc(212,36,S.gongSw||0);
   const L=[];
   L.push({y:S.ky,d:()=>spr(S.speech&&S.talker==='kraechz'&&Math.floor(now/140)%2?SPR.ravenTalk:SPR.raven,S.kx,S.ky,11,19,S.kflip)});
@@ -1464,6 +1468,7 @@ function gongSchlag(){S.takt++;S.gongSw=6;S.shake=0.6;S.flip=0.45;gongStuck(2.5)
 async function showCard(title,txt){S.card={title,text:txt};await new Promise(r=>{skipLine=r;setTimeout(r,lineTime(txt)+800);});skipLine=null;S.card=null;await sleep(100);}
 async function showPanel(lines){S.panel=lines;await new Promise(r=>{skipLine=r;setTimeout(r,9000);});skipLine=null;S.panel=null;await sleep(100);}
 const HS_HALLE=[
+  {id:'notiz',name:'Zettel auf dem Boden',vis:()=>!S.spur,rect:()=>[62,96,16,8],walk:[82,104],flip:true},
   {id:'kraechz',name:'Krächz',rect:()=>[S.kx-11,S.ky-19,22,19],walk:[96,100],flip:true},
   {id:'zettel',name:'Zettel am Schwarzen Brett',rect:()=>[74,59,18,14],walk:[90,99],flip:true},
   {id:'brett',name:'Schwarzes Brett',rect:()=>[68,44,44,32],walk:[90,99],flip:true},
@@ -1514,15 +1519,23 @@ async function enterHalle(){
   await walkTo(84,108);
   for(let t=0;t<=1;t+=0.05){S.kx=-20+(92+20)*t;S.ky=40+Math.sin(t*Math.PI)*-16+(44-40)*t;await sleep(30);}S.kx=92;S.ky=44;
   await say('hero','Wo bin ich denn jetzt gelandet?');
-  await say('kraechz','In der Eingangshalle. Wir müssen zur Kellertreppe. Da unten geht es weiter.');
-  await say('hero','Da steht sie doch. Osten!');
+  await say('kraechz','In der Eingangshalle. Und da unten auf dem Boden liegt was.');
+  S.halleIntro=true;save();
+}
+async function spurLesen(){
+  S.spur=true;give('notiz');
+  await showPanel([['Ein zerknüllter Zettel, voller Krümel:','#5a3a18'],[''],['   Heft im Heizungskeller abgeben.'],['   Gleich. Oder später.'],['   Kekse nicht vergessen!'],[''],['Die Schrift ist sehr klein. Und sehr krakelig.','#5a3a18']]);
+  await say('hero','Das hat der Dieb verloren! Mein Heft soll in den Heizungskeller.');
+  await say('kraechz','Der Heizungskeller. Dahinter liegt das Land Später. Da landet alles, was jemand aufgeschoben hat.');
+  await say('hero','Dann muss ich zur Kellertreppe. Da steht sie doch. Osten!');
   await say('kraechz','Schön wär’s. Bei jedem Gong rücken die Räume eine Tür weiter. Im Uhrzeigersinn.');
   await say('kraechz','Nur der Musikraum bleibt im Süden. Das Orchester ist zu schwer. Die anderen Räume hüpfen an ihm vorbei.');
   await say('kraechz','Und der Gong schlägt jedes Mal, wenn jemand losläuft. Hau ruhig mal drauf und schau, was die Schilder machen.');
-  S.halleIntro=true;save();
 }
 async function actHalle(verb,h,item){
   const id=h.id;
+  if(id==='notiz'){if(verb==='nimm'||verb==='schau')return spurLesen();return say('hero','Ich sollte den Zettel erst mal aufheben.');}
+  if(h.exit&&!S.spur&&verb!=='schau')return say('hero','Erst mal schauen, was da auf dem Boden liegt.');
   if(item){
     if(id==='kraechz'&&verb==='gib')return say('kraechz','Behalte das mal schön selbst.');
     if(id==='gong'&&item==='lineal'){await reach();gongSchlag();return say('hero','Oh. Das war vielleicht keine gute Idee.');}
@@ -1555,7 +1568,7 @@ async function actHalle(verb,h,item){
 }
 
 // Speichern: nur die Teile des Zustands, die das Spiel ausmachen
-const KEEP=['room','takt','zettelGelesen','flureGeschafft','halleIntro','fehlwege','heft','kraechz','kx','ky','kflip','fenster','ziel','kruemelGesehen','gitter','federmappe','muenze','kreide','tipp','kraechzKennt','jonas','inv','gefragt','tschuess','eingangDone','kallFrozen','fertig'];
+const KEEP=['spur','room','takt','zettelGelesen','flureGeschafft','halleIntro','fehlwege','heft','kraechz','kx','ky','kflip','fenster','ziel','kruemelGesehen','gitter','federmappe','muenze','kreide','tipp','kraechzKennt','jonas','inv','gefragt','tschuess','eingangDone','kallFrozen','fertig'];
 function save(){const d={};KEEP.forEach(k=>{if(S[k]!==undefined)d[k]=S[k];});d.hero={x:S.hero.x,y:S.hero.y,flip:S.hero.flip};SAVE.write({prolog:d});}
 let looping=false;
 const API={onDone:null,

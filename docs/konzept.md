@@ -277,6 +277,8 @@ Die Hauptfigur muss durch die sich verschiebende Schule in den Heizungskeller, w
 | Kellerschlüssel | Grummelbart |  | Kellertor zum Land Später |
 | Kompass der Pläne | Grummelbart |  | Wegweiser bis zum Finale, Zahnrad der Stundenuhr (K4) |
 
+**Die Spur in der Halle.** Unter dem Lüftungsgitter, durch das die Hauptfigur in die Halle plumpst, liegt ein zerknüllter Zettel voller Krümel, den der Dieb verloren hat: „Heft im Heizungskeller abgeben. Gleich. Oder später. Kekse nicht vergessen!“ Die Schrift ist sehr klein und krakelig (ein Hinweis auf die Größe des Diebs). Erst mit dem Zettel wird klar, warum die Figur zur Kellertreppe muss: Sie verfolgt ihr Ziel aus dem Prolog. Krächz ergänzt, dass hinter dem Heizungskeller das Land Später liegt, wo alles Aufgeschobene landet. Vorher lassen sich die Türen nicht benutzen („Erst mal schauen, was da auf dem Boden liegt.“).
+
 **Regel der Flure.** Vier Flügel liegen im Kreis um die Halle, eine Kompassrose im Boden zeigt Norden, Osten, Süden und Westen. Bei jedem Gong rücken Kantine, Biologieraum und Kellertreppe eine Tür weiter im Uhrzeigersinn. Der Musikraum bleibt immer im Süden, weil das Blockflötenorchester zu schwer ist. Die anderen Räume hüpfen an ihm vorbei. Schilder über den Türen zeigen, was gerade dahinter liegt. Wer auf den Gong haut, sieht die Schilder weiterrücken. Es gongt außerdem jedes Mal, wenn jemand einen Flur betritt: Man kommt also dort an, wo der Raum nach dem nächsten Gong steht.
 
 | Takt | Nord | Ost | Süd | West |
