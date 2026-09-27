@@ -96,13 +96,19 @@ mit viel Licht und Schatten, der Graf unter der Kapuze nur mit zwei glühenden A
   mit festen Farbrampen, Licht von links und dunkler Umrisslinie. Figuren entstehen aus Einzelteilen (Klasse `Pup`),
   dadurch gibt es Laufphasen, Sprechen, Blinzeln und Greifen ohne neue Bilder. Spiellogik wie in Fassung 1.
   Anlass: In Fassung 1 wirkten die Figuren aufgesetzt. Zum Testen: `window.__act(verb, id, item)`, `window.__pick(i)`.
+- Intro Fassung 3, alles im Code gezeichnet wie Prolog Fassung 2: `intro/intro-v3-code.html` (eine Datei, keine Bilder).
+  Breitbild 320 × 144 mit schwarzen Balken, Untertitel in Pixelschrift im unteren Balken. Übernimmt Pixelwerkzeuge,
+  Farbrampen, Schrift und Figuren aus `prolog/prolog-v2-code.html` (bei Änderungen dort mitziehen).
+  Neu: Graf als Figur aus Einzelteilen (`makeGraf`, Laufen, Sitzen, Greifen, Tragen), `PupK` zeichnet Figuren in
+  jeder Größe neu statt sie zu skalieren. Szenen: Nacht am Schiefenberg (schiefe Schule, Mond, Weg, Stein zum Hinsetzen),
+  Glockenturm mit drehenden Zahnrädern und schwingender Unruh, Nebel, Logo, Klassenzimmer aus dem Prolog.
 - `scripts/alles_umrechnen.sh` baut Palette (224 Farben) und alle Bilder neu. Neue Bilder dort eintragen.
 
 ## Nächste Schritte
 
 1. Optional: „Schule bei Nacht“ in voller Auflösung aus der Canva-Arbeitsdatei exportieren und neu umrechnen.
 2. Graf: Stil prüfen (Rüstung wirkt noch etwas türkis), bei Bedarf Laufphasen oder weitere Posen erzeugen.
-3. Intro Version 2 abnehmen und verfeinern (z. B. Stein zum Hinsetzen). Die Leiter ist auf Wunsch gestrichen, die Greifpose ist eingebaut.
+3. Intro Fassung 3 (Code) abnehmen. Die Leiter ist gestrichen, der Stein zum Hinsetzen ist drin.
 4. Entscheiden: Fassung 1 (gemalte Bilder) oder Fassung 2 (Code-Pixelgrafik) für das Spiel. Danach verfeinern (Posen, Ton, Speichern).
 5. Offene Punkte aus dem Konzept klären (Namen der Nebenfiguren, Zielstufe, Speicherstand, Begleitmaterial).
 
