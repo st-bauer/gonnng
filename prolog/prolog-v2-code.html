@@ -560,24 +560,41 @@ async function tipp(){const st=stage();
   if(st==='fertig'){await say('kraechz','Worauf wartest du? Auf den Gong?');return;}
   const i=Math.min(S.tipp[st],2);S.tipp[st]=i+1;await say('kraechz',TIPPS[st][i]);}
 function choose(options){return new Promise(r=>{S.dialog={options,resolve:i=>{S.dialog=null;r(i);}};});}
+// Zielgespraech: jede Stufe hat mehrere Antworten, nur eine fuehrt weiter.
+// Ein gutes Ziel sagt, was genau, bis wann und woran man den Erfolg merkt (Locke & Latham, 2002).
+const ZIEL=[
+  {frage:'Also. Was ist dein Ziel? Und sag jetzt nicht „Pause“.',antworten:[
+    ['Irgendwie alles wieder normal machen.','„Irgendwie“ ist keine Himmelsrichtung. Noch mal.'],
+    ['Mein Bestes geben!','Das sagen alle, kurz bevor sie ein Nickerchen machen.'],
+    ['Das Aufschiebchen finden, das mein Heft hat.',null,'Oh. Konkret. Fast schon verdächtig.'],
+    ['Die ganze Welt retten.','Ehrgeizig. Fang doch mit diesem Klassenzimmer an. Es ist kleiner.'],
+    ['Erst mal einen Plan machen, wie ich einen Plan mache.','Klingt fleißig. Ist aber nur Aufschieben mit Klemmbrett.']]},
+  {frage:'Und bis wann?',antworten:[
+    ['Irgendwann.','So heißt diese Schule. Das ist keine Uhrzeit.'],
+    ['Gleich.','Das Wort ist hier gerade sehr beliebt. Schau dich mal um.'],
+    ['Sobald ich Lust dazu habe.','Die Lust kommt beim Anfangen. Meistens. Manchmal kommt auch nur Hunger.'],
+    ['Bevor es im Keller verschwindet.',null,'Eine Frist! Ich bekomme Herzklopfen. Das ist bei Vögeln aber normal.']]},
+  {frage:'Und woran merkst du, dass du es geschafft hast?',antworten:[
+    ['Wenn ich mich gut fühle.','Das tust du auch nach drei Keksen. Woran genau?'],
+    ['Wenn ich mein Heft wieder in der Hand habe.',null,null],
+    ['Wenn du endlich aufhörst zu fragen.','Da kennst du Schulleiter schlecht. Auch ehemalige.'],
+    ['Wenn Frau Kallweit mir eine Eins gibt.','Frau Kallweit gibt gerade gar nichts. Außer „Gleich“.']]}
+];
 async function zielGespraech(){
-  await say('kraechz','Also, was ist dein Ziel?');
-  const T=['Irgendwie alles wieder normal machen.','Mein Bestes geben!','Die ganze Welt retten.','Das Aufschiebchen finden, das mein Heft hat.'];
-  for(;;){
-    const a=await choose(T);await say('hero',T[a]);
-    if(a===0){await say('kraechz','„Irgendwie“ ist keine Himmelsrichtung. Noch mal.');continue;}
-    if(a===1){await say('kraechz','Das sagen alle, kurz bevor sie ein Nickerchen machen.');continue;}
-    if(a===2){await say('kraechz','Ehrgeizig. Und womit fängst du heute an?');continue;}
-    await say('kraechz','Schon besser. Bis wann?');
-    for(;;){const b=await choose(['Irgendwann.','Bevor es im Keller verschwindet.']);
-      if(b===0){await say('hero','Irgendwann.');await say('kraechz','So heißt diese Schule. Das ist keine Uhrzeit.');continue;}
-      await say('hero','Bevor es im Keller verschwindet.');break;}
-    await say('kraechz','Und woran merkst du, dass du es geschafft hast?');
-    await choose(['Wenn ich mein Heft wieder in der Hand habe.']);
-    await say('hero','Wenn ich mein Heft wieder in der Hand habe.');
-    await say('kraechz','Na bitte. Ein Ziel mit Anfang und Ende. Das ist selten geworden.');
-    S.ziel=true;return;
+  for(const stufe of ZIEL){
+    await say('kraechz',stufe.frage);
+    for(;;){
+      const a=stufe.antworten[await choose(stufe.antworten.map(x=>x[0]))];
+      await say('hero',a[0]);
+      if(a[1]){await say('kraechz',a[1]);continue;}
+      if(a[2])await say('kraechz',a[2]);
+      break;
+    }
   }
+  await say('kraechz','Dann sag es einmal am Stück. Ich schreibe mit.');
+  await say('hero','Ich finde das Aufschiebchen mit meinem Heft, bevor es im Keller verschwindet. Geschafft habe ich es, wenn ich das Heft wieder in der Hand habe.');
+  await say('kraechz','Na bitte. Ein Ziel mit Anfang und Ende. Das ist selten geworden.');
+  S.ziel=true;
 }
 async function redeKraechz(){
   if(S.kraechz==='aussen'){
@@ -771,11 +788,12 @@ const VCELL=(i)=>{const col=Math.floor(i/3),row=i%3;return[4+col*62,156+row*14,6
 const ORDER=['gib','nimm','benutze','oeffne','schau','druecke','schliesse','rede','ziehe'];
 const ICELL=i=>[196+(i%3)*41,156+Math.floor(i/3)*22,39,20];
 function inR(x,y,[a,b,w,h]){return x>=a&&x<a+w&&y>=b&&y<b+h;}
+const optDY=()=>S.dialog&&S.dialog.options.length>4?10:12;   // bei vielen Antworten enger
 function sentence(){let s=VNAME[S.verb];if(S.item)s+=' '+ITEMS[S.item].name+(S.verb==='gib'?' an':' mit');if(S.hover)s+=' '+S.hover;return s;}
 function drawUI(){
   R(ctx,0,SH,W,H-SH,'#000000');
   if(S.dialog){
-    S.dialog.options.forEach((o,i)=>{const hov=S.mouse&&S.mouse[1]>=148+i*12&&S.mouse[1]<160+i*12&&S.mouse[1]>=SH;text(o,8,149+i*12,hov?'#ffe060':'#a878ff',false);});
+    const dy=optDY();S.dialog.options.forEach((o,i)=>{const hov=S.mouse&&S.mouse[1]>=146+i*dy&&S.mouse[1]<146+(i+1)*dy&&S.mouse[1]>=SH;text(o,8,148+i*dy,hov?'#ffe060':'#a878ff',false);});
     return;
   }
   if(!S.busy){const s=sentence();text(s,Math.round((W-textW(s))/2),146,'#78d8ff',false);}
@@ -802,7 +820,7 @@ cv.addEventListener('pointerleave',()=>{S.mouse=null;S.hover=null;});
 cv.addEventListener('click',e=>{
   const [x,y]=toPx(e);
   if(skipLine){skipLine();return;}
-  if(S.dialog){if(y>=SH){const i=Math.floor((y-148)/12);if(i>=0&&i<S.dialog.options.length)S.dialog.resolve(i);}return;}
+  if(S.dialog){if(y>=SH){const i=Math.floor((y-146)/optDY());if(i>=0&&i<S.dialog.options.length)S.dialog.resolve(i);}return;}
   if(S.busy||S.over)return;
   if(y>=SH){
     const vi=ORDER.findIndex((v,i)=>inR(x,y,VCELL(i)));if(vi>=0){const v=ORDER[vi];S.verb=S.verb===v?'gehe':v;S.item=null;return;}

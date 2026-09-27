@@ -180,17 +180,39 @@ Der Prolog führt die Bedienung ein und endet damit, dass die Hauptfigur einem A
 | Poster Pflanzenzelle | „Zellwand, Zellkern, Chloroplasten. Ordentlicher als meine Federmappe.“ |  |
 | Globus | „Irgendwo darauf liegt ein Ort, an dem gerade niemand erstarrt ist.“ | Drücke: Globus dreht sich, „Wusch.“ |
 
-**Das Zielgespräch als Dialogbaum.** Falsche Antworten führen ohne Strafe zurück zur Frage.
+**Das Zielgespräch als Dialogbaum.** Drei Stufen: was genau, bis wann, woran der Erfolg sichtbar wird. Auf jeder Stufe gibt es mehrere Antworten, nur eine führt weiter, und sie steht nicht immer an derselben Stelle. Falsche Antworten führen ohne Strafe zurück zur Frage.
+
+*Stufe 1. Krächz: „Also. Was ist dein Ziel? Und sag jetzt nicht ‚Pause‘.“*
 
 | Antwort der Figur | Krächz |
 | --- | --- |
-| Irgendwie alles wieder normal machen. | „‚Irgendwie‘ ist keine Himmelsrichtung.“ |
+| Irgendwie alles wieder normal machen. | „‚Irgendwie‘ ist keine Himmelsrichtung. Noch mal.“ |
 | Mein Bestes geben! | „Das sagen alle, kurz bevor sie ein Nickerchen machen.“ |
-| Die ganze Welt retten. | „Ehrgeizig. Und womit fängst du heute an?“ |
-| Das Aufschiebchen finden, das mein Heft hat. | „Schon besser. Bis wann?“ |
-| → Irgendwann. | „So heißt diese Schule. Das ist keine Uhrzeit.“ |
-| → Bevor es im Keller verschwindet. | „Und woran merkst du, dass du es geschafft hast?“ |
-| → → Wenn ich mein Heft wieder in der Hand habe. | „Na bitte. Ein Ziel mit Anfang und Ende. Das ist selten geworden.“ |
+| **Das Aufschiebchen finden, das mein Heft hat.** | „Oh. Konkret. Fast schon verdächtig.“ Weiter zu Stufe 2 |
+| Die ganze Welt retten. | „Ehrgeizig. Fang doch mit diesem Klassenzimmer an. Es ist kleiner.“ |
+| Erst mal einen Plan machen, wie ich einen Plan mache. | „Klingt fleißig. Ist aber nur Aufschieben mit Klemmbrett.“ |
+
+*Stufe 2. Krächz: „Und bis wann?“*
+
+| Antwort der Figur | Krächz |
+| --- | --- |
+| Irgendwann. | „So heißt diese Schule. Das ist keine Uhrzeit.“ |
+| Gleich. | „Das Wort ist hier gerade sehr beliebt. Schau dich mal um.“ |
+| Sobald ich Lust dazu habe. | „Die Lust kommt beim Anfangen. Meistens. Manchmal kommt auch nur Hunger.“ |
+| **Bevor es im Keller verschwindet.** | „Eine Frist! Ich bekomme Herzklopfen. Das ist bei Vögeln aber normal.“ Weiter zu Stufe 3 |
+
+*Stufe 3. Krächz: „Und woran merkst du, dass du es geschafft hast?“*
+
+| Antwort der Figur | Krächz |
+| --- | --- |
+| Wenn ich mich gut fühle. | „Das tust du auch nach drei Keksen. Woran genau?“ |
+| **Wenn ich mein Heft wieder in der Hand habe.** | Weiter zum Abschluss |
+| Wenn du endlich aufhörst zu fragen. | „Da kennst du Schulleiter schlecht. Auch ehemalige.“ |
+| Wenn Frau Kallweit mir eine Eins gibt. | „Frau Kallweit gibt gerade gar nichts. Außer ‚Gleich‘.“ |
+
+*Abschluss.* Krächz: „Dann sag es einmal am Stück. Ich schreibe mit.“ Hauptfigur: „Ich finde das Aufschiebchen mit meinem Heft, bevor es im Keller verschwindet. Geschafft habe ich es, wenn ich das Heft wieder in der Hand habe.“ Krächz: „Na bitte. Ein Ziel mit Anfang und Ende. Das ist selten geworden.“
+
+Die falschen Antworten stehen jeweils für einen typischen Fehler beim Zielsetzen: zu vage, zu groß, ohne Frist, ohne sichtbares Ergebnis oder abhängig von anderen. Die Figur muss selbst merken, was fehlt, Krächz erklärt es nicht.
 
 **Hinweisstufen.** „Rede mit Krächz“ liefert je Rätsel bis zu drei Tipps. Stufe 1 erinnert an das Ziel, Stufe 2 an die passende Vorgehensweise, Stufe 3 nennt den konkreten Gegenstand. So bleibt Hilfe eine Unterstützung beim eigenen Lösen.
 

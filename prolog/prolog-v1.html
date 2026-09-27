@@ -281,27 +281,41 @@ function choose(options){
     options.forEach((o,i)=>{const b=document.createElement('button');b.textContent=o;b.onclick=()=>{dialogEl.hidden=true;controlsEl.hidden=false;r(i);};dialogEl.appendChild(b);});
   });
 }
+// Zielgespraech: jede Stufe hat mehrere Antworten, nur eine fuehrt weiter.
+// Ein gutes Ziel sagt, was genau, bis wann und woran man den Erfolg merkt (Locke & Latham, 2002).
+const ZIEL=[
+  {frage:'Also. Was ist dein Ziel? Und sag jetzt nicht „Pause“.',antworten:[
+    ['Irgendwie alles wieder normal machen.','„Irgendwie“ ist keine Himmelsrichtung. Noch mal.'],
+    ['Mein Bestes geben!','Das sagen alle, kurz bevor sie ein Nickerchen machen.'],
+    ['Das Aufschiebchen finden, das mein Heft hat.',null,'Oh. Konkret. Fast schon verdächtig.'],
+    ['Die ganze Welt retten.','Ehrgeizig. Fang doch mit diesem Klassenzimmer an. Es ist kleiner.'],
+    ['Erst mal einen Plan machen, wie ich einen Plan mache.','Klingt fleißig. Ist aber nur Aufschieben mit Klemmbrett.']]},
+  {frage:'Und bis wann?',antworten:[
+    ['Irgendwann.','So heißt diese Schule. Das ist keine Uhrzeit.'],
+    ['Gleich.','Das Wort ist hier gerade sehr beliebt. Schau dich mal um.'],
+    ['Sobald ich Lust dazu habe.','Die Lust kommt beim Anfangen. Meistens. Manchmal kommt auch nur Hunger.'],
+    ['Bevor es im Keller verschwindet.',null,'Eine Frist! Ich bekomme Herzklopfen. Das ist bei Vögeln aber normal.']]},
+  {frage:'Und woran merkst du, dass du es geschafft hast?',antworten:[
+    ['Wenn ich mich gut fühle.','Das tust du auch nach drei Keksen. Woran genau?'],
+    ['Wenn ich mein Heft wieder in der Hand habe.',null,null],
+    ['Wenn du endlich aufhörst zu fragen.','Da kennst du Schulleiter schlecht. Auch ehemalige.'],
+    ['Wenn Frau Kallweit mir eine Eins gibt.','Frau Kallweit gibt gerade gar nichts. Außer „Gleich“.']]}
+];
 async function zielGespraech(){
-  await say('kraechz','Also, was ist dein Ziel?');
-  for(;;){
-    const a=await choose(['Irgendwie alles wieder normal machen.','Mein Bestes geben!','Die ganze Welt retten.','Das Aufschiebchen finden, das mein Heft hat.']);
-    const T=['Irgendwie alles wieder normal machen.','Mein Bestes geben!','Die ganze Welt retten.','Das Aufschiebchen finden, das mein Heft hat.'];
-    await say('hero',T[a]);
-    if(a===0){await say('kraechz','„Irgendwie“ ist keine Himmelsrichtung. Noch mal.');continue;}
-    if(a===1){await say('kraechz','Das sagen alle, kurz bevor sie ein Nickerchen machen.');continue;}
-    if(a===2){await say('kraechz','Ehrgeizig. Und womit fängst du heute an?');continue;}
-    await say('kraechz','Schon besser. Bis wann?');
+  for(const stufe of ZIEL){
+    await say('kraechz',stufe.frage);
     for(;;){
-      const b=await choose(['Irgendwann.','Bevor es im Keller verschwindet.']);
-      if(b===0){await say('hero','Irgendwann.');await say('kraechz','So heißt diese Schule. Das ist keine Uhrzeit.');continue;}
-      await say('hero','Bevor es im Keller verschwindet.');break;
+      const a=stufe.antworten[await choose(stufe.antworten.map(x=>x[0]))];
+      await say('hero',a[0]);
+      if(a[1]){await say('kraechz',a[1]);continue;}
+      if(a[2])await say('kraechz',a[2]);
+      break;
     }
-    await say('kraechz','Und woran merkst du, dass du es geschafft hast?');
-    await choose(['Wenn ich mein Heft wieder in der Hand habe.']);
-    await say('hero','Wenn ich mein Heft wieder in der Hand habe.');
-    await say('kraechz','Na bitte. Ein Ziel mit Anfang und Ende. Das ist selten geworden.');
-    S.ziel=true;return;
   }
+  await say('kraechz','Dann sag es einmal am Stück. Ich schreibe mit.');
+  await say('hero','Ich finde das Aufschiebchen mit meinem Heft, bevor es im Keller verschwindet. Geschafft habe ich es, wenn ich das Heft wieder in der Hand habe.');
+  await say('kraechz','Na bitte. Ein Ziel mit Anfang und Ende. Das ist selten geworden.');
+  S.ziel=true;
 }
 async function redeKraechz(){
   if(S.kraechz==='aussen'){
