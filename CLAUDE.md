@@ -69,6 +69,10 @@ Canva-Arbeitsdatei: https://canva.link/mp6p64febvogrh4
   Start in Takt 2 (Kellertreppe im Osten, Lösung Westen). Kantine, Bio und Musikraum sind noch Texttafeln.
   Der Grund für den Keller ist eine Spur: der verlorene Zettel des Diebs unter dem Gitter („Heft im Heizungskeller abgeben“).
 - Im Prolog bleibt der Dieb des Hefts unbekannt (Licht aus, Trippeln). Erst im Flüstergang zeigt sich das Aufschiebchen.
+  Krächz macht das Heft zur Spur zur Unruh (wer das Heft hat, weiß vielleicht, wo die Unruh ist). Die Krümel liegen
+  immer sichtbar da, fallen der Figur aber erst nach dem Zielgespräch auf.
+- Zwischensequenzen (`runCut`, überspringbar, ohne Verbleiste): Rutschpartie durch den Schacht mit Kreidepfeil,
+  Abstieg über die Kellertreppe am Ende der Hallen-Vorschau.
 - Zum Testen: `window.__frame(sekunde)` im Intro, `window.__act(verb, id, item)` und `window.__pick(i)` im Prolog.
 - Entschieden: Die Unruh bleibt. Die Große Stundenuhr ist eine Sonderanfertigung (Turmuhren haben sonst meist ein Pendel),
   Krächz erklärt das auf Nachfrage. Die Namen Frau Kallweit, Jonas und Lina bleiben.

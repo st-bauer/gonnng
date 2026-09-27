@@ -182,6 +182,8 @@ Der Prolog führt die Bedienung ein und endet damit, dass die Hauptfigur einem A
 
 **Das Zielgespräch als Dialogbaum.** Drei Stufen: was genau, bis wann, woran der Erfolg sichtbar wird. Auf jeder Stufe gibt es mehrere Antworten, nur eine führt weiter, und sie steht nicht immer an derselben Stelle. Falsche Antworten führen ohne Strafe zurück zur Frage.
 
+*Vorher verbindet Krächz das Heft mit dem großen Problem.* Hauptfigur: „Und mein Heft ist auch weg. Gerade eben, im Dunkeln.“ Krächz: „Dann haben wir eine Spur. Wer heute hier etwas klaut, arbeitet bestimmt für denselben Dieb.“ „Die Unruh zurückholen ist ein Riesending. Aber wer dein Heft hat, weiß vielleicht, wo sie ist.“ So wird das Heft zum ersten, erreichbaren Teilziel auf dem Weg zum großen Ziel.
+
 *Stufe 1. Krächz: „Also. Was ist dein Ziel? Und sag jetzt nicht ‚Pause‘.“*
 
 | Antwort der Figur | Krächz |
@@ -189,7 +191,7 @@ Der Prolog führt die Bedienung ein und endet damit, dass die Hauptfigur einem A
 | Irgendwie alles wieder normal machen. | „‚Irgendwie‘ ist keine Himmelsrichtung. Noch mal.“ |
 | Mein Bestes geben! | „Das sagen alle, kurz bevor sie ein Nickerchen machen.“ |
 | **Herausfinden, wer mein Heft hat, und es zurückholen.** | „Oh. Konkret. Fast schon verdächtig.“ Weiter zu Stufe 2 |
-| Die ganze Welt retten. | „Ehrgeizig. Fang doch mit diesem Klassenzimmer an. Es ist kleiner.“ |
+| Die Unruh zurückholen und die Uhr reparieren. | „Das ist das große Ziel. Und womit fängst du heute an?“ |
 | Erst mal einen Plan machen, wie ich einen Plan mache. | „Klingt fleißig. Ist aber nur Aufschieben mit Klemmbrett.“ |
 
 *Stufe 2. Krächz: „Und bis wann?“*
@@ -239,7 +241,7 @@ Abschiede, abwechselnd: „Bis gleich.“ Krächz: „‚Gleich‘ sagen hier sc
 
 **Fachliche Anmerkungen zum Prolog**
 
-- **Warum die Krümel erst nach dem Zielgespräch sichtbar werden:** Ziele lenken Aufmerksamkeit und Anstrengung auf zielrelevante Tätigkeiten und weg von irrelevanten. Das ist der erste von vier Wirkmechanismen bei Locke und Latham (2002). Die Mechanik macht diesen Mechanismus direkt erlebbar.
+- **Warum die Krümel erst nach dem Zielgespräch auffallen:** Die Krümel liegen von Anfang an sichtbar auf dem Boden. Vorher sagt die Figur beim Anschauen nur „Dreck. Irgendwelcher.“, nach dem Zielgespräch bemerkt sie sie von selbst („Moment mal. Was liegt denn da auf dem Boden?“). Ziele lenken Aufmerksamkeit und Anstrengung auf zielrelevante Tätigkeiten und weg von irrelevanten. Das ist der erste von vier Wirkmechanismen bei Locke und Latham (2002). Die Mechanik macht diesen Mechanismus direkt erlebbar.
 - **Warum falsche Antworten keine Strafe kosten:** Fehler in Situationen ohne Druck, gefolgt von einer klaren Rückmeldung, fördern das Lernen (Metcalfe, 2017). Krächz’ Antworten sind diese Rückmeldung.
 - **Warum die Tipps gestuft sind:** Die erste Stufe verlangt von der Figur, selbst weiterzudenken. Das entspricht der Hilfe, die beim eigenen Lösen unterstützt (Nelson-Le Gall, 1981; Karabenick & Dembo, 2011).
 - **Das Hebelprinzip am Fenster** ist korrekt: Je länger der Hebelarm, desto weniger Kraft ist nötig. Für Klasse 5 reicht diese qualitative Form.
@@ -276,6 +278,8 @@ Die Hauptfigur muss durch die sich verschiebende Schule in den Heizungskeller, w
 | Wenn- und Dann-Karten | Flüstergang, Figuren | paarweise zu Wenn-dann-Plänen | Flüstergang (K1), Konterbuch (K4) |
 | Kellerschlüssel | Grummelbart |  | Kellertor zum Land Später |
 | Kompass der Pläne | Grummelbart |  | Wegweiser bis zum Finale, Zahnrad der Stundenuhr (K4) |
+
+**Zwischensequenzen.** Zwischen den Stationen gibt es kurze, überspringbare Szenen ohne Verbleiste: die Rutschpartie durch den Lüftungsschacht, bei der die Figur mit der Kreide einen Pfeil an die Wand malt (Krächz: „Mach Zeichen an die Wand! Sonst finden wir nie zurück!“), und der Abstieg über die kalte Kellertreppe („Die Heizung ist aus. Seit dem Gong steht hier alles still.“).
 
 **Die Spur in der Halle.** Unter dem Lüftungsgitter, durch das die Hauptfigur in die Halle plumpst, liegt ein zerknüllter Zettel voller Krümel, den der Dieb verloren hat: „Heft im Heizungskeller abgeben. Gleich. Oder später. Kekse nicht vergessen!“ Die Schrift ist sehr klein und krakelig (ein Hinweis auf die Größe des Diebs). Erst mit dem Zettel wird klar, warum die Figur zur Kellertreppe muss: Sie verfolgt ihr Ziel aus dem Prolog. Krächz ergänzt, dass hinter dem Heizungskeller das Land Später liegt, wo alles Aufgeschobene landet. Vorher lassen sich die Türen nicht benutzen („Erst mal schauen, was da auf dem Boden liegt.“).
 

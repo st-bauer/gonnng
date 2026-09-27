@@ -1043,7 +1043,7 @@ const ZIEL=[
     ['Irgendwie alles wieder normal machen.','„Irgendwie“ ist keine Himmelsrichtung. Noch mal.'],
     ['Mein Bestes geben!','Das sagen alle, kurz bevor sie ein Nickerchen machen.'],
     ['Herausfinden, wer mein Heft hat, und es zurückholen.',null,'Oh. Konkret. Fast schon verdächtig.'],
-    ['Die ganze Welt retten.','Ehrgeizig. Fang doch mit diesem Klassenzimmer an. Es ist kleiner.'],
+    ['Die Unruh zurückholen und die Uhr reparieren.','Das ist das große Ziel. Und womit fängst du heute an?'],
     ['Erst mal einen Plan machen, wie ich einen Plan mache.','Klingt fleißig. Ist aber nur Aufschieben mit Klemmbrett.']]},
   {frage:'Und bis wann?',antworten:[
     ['Irgendwann.','So heißt diese Schule. Das ist keine Uhrzeit.'],
@@ -1071,6 +1071,7 @@ async function zielGespraech(){
   await say('hero','Ich finde heraus, wer mein Heft hat, und hole es zurück, bevor der Dieb über alle Berge ist. Geschafft habe ich es, wenn ich das Heft wieder in der Hand habe.');
   await say('kraechz','Na bitte. Ein Ziel mit Anfang und Ende. Das ist selten geworden.');
   S.ziel=true;
+  await say('hero','Moment mal. Was liegt denn da auf dem Boden?');
 }
 // Gespraech mit Kraechz nach dem Zielgespraech. Wiederholte Fragen bekommen neue Antworten.
 const KRAECHZ={
@@ -1110,7 +1111,10 @@ async function redeKraechz(){
     await narrate(['Krächz klopft und deutet mit dem Schnabel auf den Spalt.','Krächz malt mit dem Schnabel einen Hebel an die beschlagene Scheibe.','Krächz hält ein Lineal hoch und zeigt auf deine Federmappe.'][i]);return;
   }
   if(!S.kraechzKennt){S.kraechzKennt=true;await say('hero','Warum sind alle erstarrt?');
-    await say('kraechz','Jemand hat die Unruh aus der Stundenuhr gestohlen. Ohne Unruh keine Uhr. Ohne Uhr kein Anfangen. Und ohne Anfangen sieht es aus wie hier.');}
+    await say('kraechz','Jemand hat die Unruh aus der Stundenuhr gestohlen. Ohne Unruh keine Uhr. Ohne Uhr kein Anfangen. Und ohne Anfangen sieht es aus wie hier.');
+    await say('hero','Und mein Heft ist auch weg. Gerade eben, im Dunkeln.');
+    await say('kraechz','Dann haben wir eine Spur. Wer heute hier etwas klaut, arbeitet bestimmt für denselben Dieb.');
+    await say('kraechz','Die Unruh zurückholen ist ein Riesending. Aber wer dein Heft hat, weiß vielleicht, wo sie ist.');}
   if(!S.ziel){await zielGespraech();return;}
   await kraechzMenue();
 }
@@ -1189,7 +1193,8 @@ async function ende(){
   await walkTo(290,104);face(false);
   await say('hero','Dann mal los. Bevor der Dieb über alle Berge ist.');
   S.hero.hidden=true;tone('triangle',400,0.8,0.05,120);await sleep(900);
-  S.fertig=true;await enterHalle();
+  S.fertig=true;await runCut(7.2,cutSchacht,[[0.3,2.2,'hero','Uiiiiii!'],[2.3,4.5,'kraechz','Mach Zeichen an die Wand! Sonst finden wir nie zurück!'],[4.6,6.9,'hero','Pfeil ist dran. Und da vorne wird es hell!']]);
+  await enterHalle();
 }
 async function eingang(){
   S.busy=true;gongStuck(9);
@@ -1232,12 +1237,13 @@ function spr(img,x,y,ax,ay,flip){
 // weicher Schatten unter den Fuessen, gerastert
 function shadow(x,y,w){for(let dy=-1;dy<=1;dy++)for(let dx=-w;dx<=w;dx++){const px=Math.round(x+dx),py=Math.round(y+dy);if((dx*dx)/(w*w)+dy*dy<=1&&bay(px,py)<0.5)R(ctx,px,py,1,1,'#1a0c06');}}
 function drawScene(now){
+  if(S.cut)return drawCut(now);
   if(S.room==='halle')return drawHalle(now);
   ctx.drawImage(ROOM,0,0);
   // Sekundenzeiger zittert auf der Stelle
   const a=-2.2+Math.sin(now/40)*0.08;line(ctx,226,24,226+Math.cos(a)*7,24+Math.sin(a)*7,'#c83030');
   // Staub im Sonnenlicht
-  for(let i=0;i<7;i++){const t=(now/9000+i*0.137)%1,x=24+i*9+t*40,y=20+((i*23+now/170)%70);if(Math.hypot(x-34,y-50)<50||x<120&&y>60)P(ctx,x|0,y|0,'#fff6d8');}
+  for(let i=0;i<7;i++){const t=(now/9000+i*0.137)%1,x=62+i*10+t*30,y=88+((i*23+now/170)%40);if(y<132)P(ctx,x|0,y|0,'#fff6d8');}
   // Fenster offen
   if(S.fenster){R(ctx,34,12,22,68,'#e0ecfa');dith(ctx,34,12,22,68,['#b8d0f0','#e0ecfa'],(x,y)=>(y-12)/68);
     polyFill(ctx,[[56,10],[64,14],[64,78],[56,82]],(x,y)=>x<58?'#ffffff':'#b8b8c8');R(ctx,60,14,1,64,'#e0e0ea');}
@@ -1247,7 +1253,7 @@ function drawScene(now){
   if(S.gitter){R(ctx,296,78,20,17,'#101016');dith(ctx,296,78,20,17,['#08080c','#1a1a24'],(x,y)=>(y-78)/30);R(ctx,280,104,16,3,'#6e6e7c');R(ctx,280,104,16,1,'#9a9aa8');}
   else[[297,79],[314,79],[297,93],[314,93]].forEach(([x,y])=>P(ctx,x,y,'#e0e0e8'));
   // Kruemelspur, erst sichtbar, wenn das Ziel klar ist
-  if(S.ziel)[[246,111],[252,109],[259,108],[266,107],[273,106],[280,105],[287,103],[293,101],[299,99],[304,97]].forEach(([x,y],i)=>{P(ctx,x,y,'#e8c080');if(i%2)P(ctx,x+2,y+1,'#b07c48');});
+  [[246,111],[252,109],[259,108],[266,107],[273,106],[280,105],[287,103],[293,101],[299,99],[304,97]].forEach(([x,y],i)=>{P(ctx,x,y,'#e8c080');if(i%2)P(ctx,x+2,y+1,'#b07c48');});
   // Globus dreht sich
   if(S.globus>0)for(let i=0;i<3;i++){const x=259+((now/25+i*4)%11);R(ctx,Math.round(x),4,1,11,'#b8d0f0');}
   // Kraechz draussen hinter der Scheibe
@@ -1303,6 +1309,7 @@ const optDY=()=>S.dialog&&S.dialog.options.length>4?10:12;   // bei vielen Antwo
 function sentence(){let s=VNAME[S.verb];if(S.item)s+=' '+ITEMS[S.item].name+(S.verb==='gib'?' an':' mit');if(S.hover)s+=' '+S.hover;return s;}
 function drawUI(){
   R(ctx,0,SH,W,H-SH,'#000000');
+  if(S.cut)return;
   if(S.dialog){
     const dy=optDY();S.dialog.options.forEach((o,i)=>{const hov=S.mouse&&S.mouse[1]>=146+i*dy&&S.mouse[1]<146+(i+1)*dy&&S.mouse[1]>=SH;text(o,8,148+i*dy,hov?'#ffe060':'#a878ff',false);});
     return;
@@ -1489,9 +1496,7 @@ async function travel(tuer){
   const unterwegs='Unterwegs macht es Gonnng, und die Flure rücken weiter. ';
   if(ziel==='keller'){
     S.flureGeschafft=true;
-    await showCard('Die Kellertreppe',unterwegs+'Von unten brummt der Heizungskeller. Es riecht nach Kohle und nach Kekskrümeln.');
-    S.hero.hidden=false;
-    await say('kraechz','Na bitte. Erst gedacht, dann gegangen. So macht man das.');
+    await runCut(9.6,cutKeller,[[0.3,2.4,'kraechz','Na bitte. Erst gedacht, dann gegangen.'],[2.5,4.6,'hero','Ganz schön kalt hier unten.'],[4.7,7.0,'kraechz','Die Heizung ist aus. Seit dem Gong steht hier alles still.'],[7.1,9.4,'hero','Irgendwo da unten ist mein Heft. Und vielleicht die Unruh.']]);
     S.over=true;save();if(API.onDone)API.onDone('kapitel1');return;
   }
   const T={musik:['Der Musikraum','Das Blockflötenorchester hält dich fest, bis du den Takt nachklatschst. Dieses Rätsel kommt noch. Für heute lässt man dich laufen.'],
@@ -1565,6 +1570,52 @@ async function actHalle(verb,h,item){
   }
   if(verb==='schau')return say('hero',FALLBACK.schau(h));
   return say('hero',FALLBACK[verb]?FALLBACK[verb](h):FALLBACK.benutze());
+}
+
+/* ---------- Zwischensequenzen zwischen den Stationen ---------- */
+async function runCut(dur,draw,lines){
+  S.cut={draw,lines,t0:performance.now(),pos:{}};
+  await new Promise(r=>{skipLine=r;setTimeout(r,dur*1000);});
+  skipLine=null;S.cut=null;await sleep(120);
+}
+function drawCut(now){
+  const c=S.cut,t=(now-c.t0)/1000;
+  R(ctx,0,0,W,SH,'#000000');c.draw(t,now);
+  for(const [a,b,who,txt] of c.lines)if(t>=a&&t<b&&c.pos[who]){const [x,y]=c.pos[who],lines=wrap(txt,170),top=Math.max(3,y-4-lines.length*LINEH);
+    lines.forEach((l,i)=>{const w=textW(l);text(l,clamp(Math.round(x-w/2),3,W-3-w),top+i*LINEH,K[who],true);});}
+  if(t<0.4){ctx.globalAlpha=1-t/0.4;R(ctx,0,0,W,SH,'#000000');ctx.globalAlpha=1;}
+}
+function rotSprite(img,x,y,ax,ay,ang,flip){ctx.save();ctx.translate(Math.round(x),Math.round(y));ctx.rotate(ang);if(flip)ctx.scale(-1,1);ctx.drawImage(img,-ax,-ay);ctx.restore();}
+// Rutschpartie durch den Lueftungsschacht, die Figur malt mit Kreide einen Pfeil an die Wand
+function cutSchacht(t,now){
+  const x0=-30,y0=18,x1=350,y1=128,ang=Math.atan2(y1-y0,x1-x0),wid=46;
+  for(let i=0;i<=1;i+=0.002){const cx=x0+(x1-x0)*i,cy=y0+(y1-y0)*i;
+    for(let d=-wid/2;d<=wid/2;d++){const px=Math.round(cx-Math.sin(ang)*d),py=Math.round(cy+Math.cos(ang)*d);
+      const edge=Math.abs(d)>wid/2-3,lit=0.25+0.5*i;
+      P(ctx,px,py,edge?(d<0?'#8a8a9c':'#343e52'):(bay(px,py)<lit*(1-Math.abs(d)/wid)?'#5a6880':'#1a2030'));}}
+  for(let i=0.05;i<1;i+=0.09){const cx=x0+(x1-x0)*i,cy=y0+(y1-y0)*i;for(let d=-wid/2+3;d<wid/2-3;d+=2)P(ctx,Math.round(cx-Math.sin(ang)*d),Math.round(cy+Math.cos(ang)*d),'#0e121c');}
+  ellFill(ctx,322,134,26,20,(x,y,dx,dy)=>bay(x,y)<0.6-(dx*dx+dy*dy)*0.5?'#fff0c0':null);
+  const p=clamp(t/6.6,0,1),d=30+(x1-x0-110)*p,hx=x0+d,hy=y0+(y1-y0)*d/(x1-x0)+8;
+  // Kreidepfeil, sobald die Figur an der Stelle vorbei ist
+  if(t>4.6){const ax=x0+(x1-x0)*0.62,ay=y0+(y1-y0)*0.62-14;line(ctx,ax-10,ay-3,ax+8,ay+2,'#f4f4f0');line(ctx,ax+8,ay+2,ax+3,ay-3,'#f4f4f0');line(ctx,ax+8,ay+2,ax+2,ay+5,'#f4f4f0');}
+  const img=t>4.3&&t<4.8?SPR.heroReach:SPR.heroStand;
+  rotSprite(img,hx,hy,16,46,ang-0.15,false);
+  const kx=hx-58+Math.sin(t*3)*6,ky=hy-34+Math.cos(t*5)*3;
+  spr(Math.floor(now/120)%2?SPR.ravenKnock:SPR.raven,kx,ky,11,19,true);
+  S.cut.pos={hero:[hx-6,hy-50],kraechz:[kx,ky-20]};
+}
+// Abstieg ueber die Kellertreppe in die Kaelte
+function cutKeller(t,now){
+  dith(ctx,0,0,W,SH,['#06080e','#0c1220','#141c30','#1e2a44'],(x,y)=>0.15+x/700+y/500);
+  for(let k=0;k<11;k++){const sx=20+k*26,sy=30+k*9;dith(ctx,sx,sy+9,40,SH-sy-9,['#1a2030','#242c40'],(x,y)=>0.5-(y-sy)/200);for(let y=sy+12;y<SH;y+=6)R(ctx,sx,y,40,1,'#10141e');R(ctx,sx,sy,40,3,'#6e6e80');R(ctx,sx,sy,40,1,'#9a9aa8');R(ctx,sx,sy+3,40,6,'#343e52');}
+  for(let i=0;i<30;i++){const x=(i*97)%320,y=(i*53)%144;if(bay(x,y)<0.5)P(ctx,x,y,'#c8dcf0');}
+  ellFill(ctx,300,128,30,16,(x,y,dx,dy)=>bay(x,y)<0.4-(dx*dx+dy*dy)*0.4?'#6a86b0':null);
+  R(ctx,262,60,3,40,'#2a160c');R(ctx,258,58,11,4,'#5c341c');
+  const p=clamp((t-0.5)/8.5,0,1),hx=36+p*248,hy=30+p*86-2,step=Math.floor(t*6)%6;
+  shadow(hx,hy,6);spr(SPR.heroWalk[step],hx,hy,16,46,false);
+  const kx=hx-34,ky=hy-40+Math.sin(t*6)*2;spr(Math.floor(now/140)%2?SPR.ravenKnock:SPR.raven,kx,ky,11,19,true);
+  if(Math.floor(t*2)%2)for(let i=0;i<3;i++)P(ctx,Math.round(hx+6+i*3),Math.round(hy-40-i*2-(t*8)%4),'#e0ecfa');
+  S.cut.pos={hero:[hx,hy-48],kraechz:[kx,ky-20]};
 }
 
 // Speichern: nur die Teile des Zustands, die das Spiel ausmachen
