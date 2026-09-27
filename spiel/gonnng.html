@@ -55,7 +55,7 @@ button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
     </div>
     <div class="overlay" id="end" hidden>
       <h1>Weiter geht’s …</h1>
-      <p>Ende des Prologs. Im Lüftungsschacht beginnt Kapitel 1: Die wandernden Flure. Das kommt als Nächstes.</p>
+      <p>Die Kellertreppe ist gefunden. Hier endet die Vorschau von Kapitel 1. Als Nächstes kommen Kantine, Musikraum, Flüstergang und Heizungskeller.</p>
       <button class="primary" id="zumTitel">Zum Titel</button>
     </div>
   </div>
@@ -942,7 +942,7 @@ function reset(saved){
   S={hero:{x:200,y:108,flip:false,path:[],walking:false,t:0,talk:false,reach:0,hidden:false},
     auf:null,heft:true,kraechz:'aussen',kx:44,ky:79,kflip:false,
     fenster:false,ziel:false,kruemelGesehen:false,gitter:false,federmappe:false,muenze:false,kreide:2,
-    tipp:{fenster:0,kruemel:0,gitter:0},kraechzKennt:false,jonas:0,
+    tipp:{fenster:0,kruemel:0,gitter:0,flure:0},kraechzKennt:false,jonas:0,
     inv:[],verb:'gehe',item:null,busy:false,globus:0,speech:null,narr:null,dialog:null,over:false,talker:null,mouse:null};
   if(saved)Object.assign(S,saved,{hero:Object.assign(S.hero,saved.hero||{})});
 }
@@ -983,7 +983,7 @@ const HS=[
   {id:'boden',name:'Boden',floor:true,rect:()=>[62,98,230,16],walk:[0,0],flip:false}
 ];
 const nameOf=h=>typeof h.name==='function'?h.name():h.name;
-function hotspotAt(x,y){for(const h of HS){if(h.vis&&!h.vis())continue;const [a,b,w,hh]=h.rect();if(x>=a&&x<a+w&&y>=b&&y<b+hh)return h;}return null;}
+function hotspotAt(x,y){for(const h of curHS()){if(h.vis&&!h.vis())continue;const [a,b,w,hh]=h.rect();if(x>=a&&x<a+w&&y>=b&&y<b+hh)return h;}return null;}
 
 /* ---------- Sprechen und Laufen ---------- */
 let skipLine=null;
@@ -998,7 +998,7 @@ async function narrate(text){
   skipLine=null;S.narr=null;await sleep(110);
 }
 function walkTo(x,y){
-  x=clamp(x,BAND.x0,BAND.x1);y=clamp(y,BAND.y0,BAND.y1);
+  const B=curBand();x=clamp(x,B.x0,B.x1);y=clamp(y,B.y0,B.y1);
   S.hero.path=[[x,y]];S.hero.walking=true;return new Promise(r=>{S.hero.done=r;});
 }
 const face=left=>{S.hero.flip=left;};
@@ -1025,8 +1025,8 @@ const FALLBACK={
   schliesse:()=>'Da gibt es nichts zu schließen.',druecke:()=>'Da tut sich nichts.',ziehe:()=>'Da tut sich nichts.',
   rede:()=>'Mit Gegenständen rede ich nur im Notfall.',gib:()=>'Das will hier niemand haben.',benutze:()=>'Das bringt nichts.'
 };
-function stage(){if(!S.fenster)return'fenster';if(!S.ziel)return'ziel';if(!S.kruemelGesehen)return'kruemel';if(!S.gitter)return'gitter';if(S.inv.indexOf('kreide')<0)return'kreide';return'fertig';}
-const TIPPS={kruemel:['Wohin wollte das Aufschiebchen?','Aufschiebchen essen ständig. Schau mal nach unten.','Die Krümel führen zum Gitter.'],
+function stage(){if(S.room==='halle')return S.flureGeschafft?'fertig':'flure';if(!S.fenster)return'fenster';if(!S.ziel)return'ziel';if(!S.kruemelGesehen)return'kruemel';if(!S.gitter)return'gitter';if(S.inv.indexOf('kreide')<0)return'kreide';return'fertig';}
+const TIPPS={flure:['Lies mal, was am Schwarzen Brett hängt.','Der Weg in einen Flügel dauert zwanzig Sekunden. Schau auf die Sanduhr, bevor du losläufst.','Ist weniger als ein Drittel Sand übrig, geh dahin, wo die Kellertreppe als Nächstes hinwandert. Im Uhrzeigersinn, den Süden lässt sie aus.'],kruemel:['Wohin wollte das Aufschiebchen?','Aufschiebchen essen ständig. Schau mal nach unten.','Die Krümel führen zum Gitter.'],
   gitter:['Schrauben brauchen einen Dreher.','Schlitzschrauben mag alles, was flach und rund ist.','In Pulten liegt oft Kleingeld.']};
 async function tipp(){const st=stage();
   if(st==='kreide'){await say('kraechz','Wer ins Dunkle geht, braucht Zeichen.');return;}
@@ -1093,7 +1093,7 @@ async function kraechzMenue(){
     await say('hero',opts[a]);
     if(a===0){
       const st=stage();
-      if(st==='kruemel'||st==='gitter')await say('kraechz',KRAECHZ.tipp.vorwort[Math.min(S.tipp[st],2)]);
+      if(st==='kruemel'||st==='gitter'||st==='flure')await say('kraechz',KRAECHZ.tipp.vorwort[Math.min(S.tipp[st],2)]);
       await tipp();continue;
     }
     if(a<=offen.length){const i=offen[a-1],n=S.gefragt[i]||0;S.gefragt[i]=n+1;await say('kraechz',KRAECHZ.fragen[i][1][Math.min(n,1)]);continue;}
@@ -1113,6 +1113,7 @@ async function redeKraechz(){
 }
 function give(id){if(S.inv.indexOf(id)<0)S.inv.push(id);}
 async function act(verb,h,item){
+  if(S.room==='halle')return actHalle(verb,h,item);
   const id=h.id;
   if(item){
     if(verb==='gib'){if(id==='kraechz')return say('kraechz','Behalte das mal schön selbst.');if(['jonas','lina','kallweit'].includes(id))return say(id,'Gleich.');return say('hero',FALLBACK.gib());}
@@ -1185,7 +1186,7 @@ async function ende(){
   await walkTo(290,104);face(false);
   await say('hero','Dann mal los. Bevor es im Keller verschwindet.');
   S.hero.hidden=true;tone('triangle',400,0.8,0.05,120);await sleep(900);
-  S.over=true;S.fertig=true;save();if(API.onDone)API.onDone();
+  S.fertig=true;await enterHalle();
 }
 async function eingang(){
   S.busy=true;gongStuck(9);
@@ -1228,6 +1229,7 @@ function spr(img,x,y,ax,ay,flip){
 // weicher Schatten unter den Fuessen, gerastert
 function shadow(x,y,w){for(let dy=-1;dy<=1;dy++)for(let dx=-w;dx<=w;dx++){const px=Math.round(x+dx),py=Math.round(y+dy);if((dx*dx)/(w*w)+dy*dy<=1&&bay(px,py)<0.5)R(ctx,px,py,1,1,'#1a0c06');}}
 function drawScene(now){
+  if(S.room==='halle')return drawHalle(now);
   ctx.drawImage(ROOM,0,0);
   // Sekundenzeiger zittert auf der Stelle
   const a=-2.2+Math.sin(now/40)*0.08;line(ctx,226,24,226+Math.cos(a)*7,24+Math.sin(a)*7,'#c83030');
@@ -1276,7 +1278,9 @@ function drawScene(now){
   L.push({y:143,d:()=>spr(SPR.jonas[Math.floor(now/180)%5===0?1:0],134,144,15,50,false)});
   L.push({y:142,d:()=>spr(SPR.lina,40,144,19,46,false)});
   L.sort((p,q)=>p.y-q.y).forEach(o=>o.d());
-  // Sprechtext
+  drawSpeech();
+}
+function drawSpeech(){
   if(S.speech){const [x,y]=S.speech.who==='hero'?heroHead():HEADS[S.speech.who]();
     const lines=wrap(S.speech.text,170);const top=Math.max(2,y-lines.length*LINEH-2);
     lines.forEach((l,i)=>{const w=textW(l),lx=clamp(Math.round(x-w/2),3,W-3-w);text(l,lx,top+i*LINEH,K[S.speech.who],true);});}
@@ -1317,7 +1321,7 @@ function itemClick(id){
 }
 function toPx(e){const r=cv.getBoundingClientRect();return[(e.clientX-r.left)/r.width*W,(e.clientY-r.top)/r.height*H];}
 cv.addEventListener('pointermove',e=>{if(MODE()!=='prolog')return;S.mouse=toPx(e);const [x,y]=S.mouse;
-  if(y<SH){const h=hotspotAt(x,y);S.hover=h&&!(h.id==='boden'&&S.verb==='gehe')?nameOf(h):null;}
+  if(y<SH){const h=hotspotAt(x,y);S.hover=h&&!((h.id==='boden'||h.id==='bodenH')&&S.verb==='gehe')?nameOf(h):null;}
   else{const i=S.inv.findIndex((_,k)=>inR(x,y,ICELL(k)));S.hover=i>=0?ITEMS[S.inv[i]].name:null;}});
 cv.addEventListener('pointerleave',()=>{S.mouse=null;S.hover=null;});
 cv.addEventListener('click',e=>{if(MODE()!=='prolog')return;
@@ -1330,27 +1334,227 @@ cv.addEventListener('click',e=>{if(MODE()!=='prolog')return;
     const ii=S.inv.findIndex((_,k)=>inR(x,y,ICELL(k)));if(ii>=0)itemClick(S.inv[ii]);return;
   }
   const h=hotspotAt(x,y);
-  if(!h||(h.floor&&S.verb==='gehe'&&h.id==='boden')){run(()=>walkTo(x,y));return;}
-  const verb=S.verb==='gehe'?'schau':S.verb,item=S.item;
+  if(!h||(h.floor&&S.verb==='gehe'&&(h.id==='boden'||h.id==='bodenH'))){run(()=>walkTo(x,y));return;}
+  const verb=S.verb==='gehe'?(h.exit?'gehe':'schau'):S.verb,item=S.item;
   if(verb==='gib'&&!item){run(()=>say('hero','Was soll ich denn geben?'));return;}
-  const wx=h.floor?clamp(x,BAND.x0,BAND.x1):h.walk[0],wy=h.floor?clamp(y,BAND.y0,BAND.y1):h.walk[1];
+  const B=curBand(),wx=h.floor?clamp(x,B.x0,B.x1):h.walk[0],wy=h.floor?clamp(y,B.y0,B.y1):h.walk[1];
   run(async()=>{await walkTo(wx,wy);face(h.flip);await act(verb,h,item);});
 });
 document.addEventListener('keydown',e=>{if(MODE()!=='prolog')return;if((e.key===' '||e.key==='Enter')&&skipLine){e.preventDefault();skipLine();}});
 
 /* ---------- Schleife ---------- */
 let last=performance.now();
-function loop(now){if(MODE()!=='prolog'){looping=false;return;}const dt=Math.min(0.05,(now-last)/1000);last=now;stepHero(dt);if(S.globus>0)S.globus-=dt;drawScene(now);drawUI();requestAnimationFrame(loop);}
+function loop(now){if(MODE()!=='prolog'){looping=false;return;}const dt=Math.min(0.05,(now-last)/1000);last=now;stepHero(dt);if(S.globus>0)S.globus-=dt;if(S.room==='halle'&&!S.speech&&!S.dialog&&!S.narr&&!S.card&&!S.panel)hallTick(dt);drawScene(now);drawUI();requestAnimationFrame(loop);}
+
+
+/* =====================================================================
+   Kapitel 1: Die Eingangshalle mit den wandernden Fluren
+   Regel (Konzept): Bei jedem Gong ruecken Kantine, Biologieraum und Kellertreppe einen Fluegel
+   im Uhrzeigersinn weiter und ueberspringen dabei den Sueden. Der Musikraum bleibt im Sueden.
+   Ein Gong kommt jede Minute, der Weg in einen Fluegel dauert 20 Sekunden.
+   ===================================================================== */
+const GONG_S=60,WEG_S=20;
+const RING=['nord','ost','west'];                 // Uhrzeigersinn ohne Sueden
+const START=['kantine','bio','keller'];           // Takt 0: Nord, Ost, West
+const RAUM_NAME={kantine:'Kantine',bio:'Biologieraum',keller:'Kellertreppe',musik:'Musikraum'};
+function raumAn(tuer,takt){if(tuer==='sued')return'musik';const i=RING.indexOf(tuer);return START[((i-takt)%3+3)%3];}
+const BAND_HALLE={x0:22,x1:298,y0:98,y1:136};
+const curBand=()=>S.room==='halle'?BAND_HALLE:BAND;
+
+let HALLE=null;
+function drawHalleBg(){
+  const [c,g]=mk(W,SH);
+  const warm=['#5a4038','#6e5044','#846252','#9a7662','#b08c74','#c8a68a'];
+  // Rueckwand mit Licht aus den hohen Fenstern
+  dith(g,56,0,208,92,warm,(x,y)=>0.62-Math.abs(x-160)/500-y/260+Math.max(0,34-Math.hypot(x-86,y-20))/90+Math.max(0,34-Math.hypot(x-234,y-20))/90);
+  // Seitenwaende in Flucht
+  polyFill(g,[[0,0],[56,0],[56,92],[0,112]],(x,y)=>{const t=0.35-x/300-y/400;return bay(x,y)<t+0.3?warm[1]:warm[0];});
+  polyFill(g,[[264,0],[320,0],[320,112],[264,92]],(x,y)=>{const t=0.25+(x-264)/400-y/400;return bay(x,y)<t+0.3?warm[1]:warm[0];});
+  line(g,56,0,56,92,'#3a2a24');line(g,264,0,264,92,'#3a2a24');
+  // Holzvertaefelung
+  dith(g,56,64,208,28,RAMP.wood,(x,y)=>0.7-(y-64)/70-Math.abs(x-160)/600);R(g,56,64,208,2,'#b07c48');R(g,56,66,208,1,'#2a160c');
+  for(let x=60;x<264;x+=16){R(g,x,67,1,24,'#2a160c');R(g,x+1,67,1,24,'#a06a38');}
+  polyFill(g,[[0,78],[56,70],[56,92],[0,112]],(x,y)=>bay(x,y)<0.4?'#5c341c':'#422414');
+  polyFill(g,[[264,70],[320,78],[320,112],[264,92]],(x,y)=>bay(x,y)<0.3?'#5c341c':'#422414');
+  // Balken oben
+  R(g,0,0,W,5,'#2a160c');R(g,0,5,W,1,'#845028');
+  // hohe Fenster mit Lichtbahnen
+  [[72,100],[220,248]].forEach(([a,b])=>{for(let y=8;y<36;y++)for(let x=a;x<b;x++){const inn=y>14||Math.hypot(x+0.5-(a+b)/2,y-14)<(b-a)/2;if(!inn)continue;
+    const fr=x===a||x===b-1||y===35||x===Math.floor((a+b)/2)||y===22;P(g,x,y,fr?'#e0e0ea':(y<20?'#b8d0f0':'#e0ecfa'));}});
+  polyFill(g,[[72,36],[100,36],[150,96],[106,96]],(x,y)=>bay(x,y)<0.18?'#e8d0a8':null);
+  polyFill(g,[[220,36],[248,36],[230,96],[186,96]],(x,y)=>bay(x,y)<0.18?'#e8d0a8':null);
+  // Nordtuer mit Bogen
+  for(let y=34;y<92;y++)for(let x=136;x<184;x++){const top=y<46&&Math.hypot(x+0.5-160,y-46)>24;if(top)continue;
+    const frame=x<139||x>180||(y<49&&Math.hypot(x+0.5-160,y-46)>21);
+    P(g,x,y,frame?'#2a160c':(x===160?'#1a0c06':(bay(x,y)<0.3?'#6e4020':'#5c341c')));}
+  R(g,154,64,2,4,'#d8b040');R(g,165,64,2,4,'#d8b040');
+  // Seitentueren, schraeg in der Wand
+  polyFill(g,[[12,44],[40,38],[40,92],[12,103]],(x,y)=>x<15||x>37?'#2a160c':(bay(x,y)<0.3?'#6e4020':'#5c341c'));
+  polyFill(g,[[280,38],[308,44],[308,103],[280,92]],(x,y)=>x<283||x>305?'#2a160c':(bay(x,y)<0.3?'#6e4020':'#5c341c'));
+  P(g,34,70,'#d8b040');P(g,286,70,'#d8b040');
+  // Schwarzes Brett mit Zetteln
+  R(g,68,44,44,32,'#5c341c');R(g,70,46,40,28,'#a0703c');dith(g,70,46,40,28,['#8a5a2c','#a0703c','#b8864c'],(x,y)=>0.6-(x-70)/120+(Math.sin(x*3+y*5)*0.1));
+  R(g,74,49,12,9,'#e8e0c8');R(g,90,50,9,11,'#f0d060');R(g,101,48,7,8,'#c8e0f0');R(g,76,61,14,10,'#ffffff');R(g,76,61,14,1,'#c83030');
+  for(let y=63;y<70;y+=2)R(g,78,y,10,1,'#8a8aa0');
+  // Luefungsgitter, durch das die Hauptfigur kommt
+  R(g,58,78,18,13,'#383840');R(g,59,79,16,11,'#6e6e7c');for(let y=80;y<89;y+=2){R(g,60,y,14,1,'#1c1c24');}
+  // Gemaelde des Schulgruenders
+  R(g,232,42,26,22,'#b08a40');R(g,234,44,22,18,'#3a2a24');
+  ellFill(g,245,52,5,6,(x,y)=>'#d0a080');R(g,240,57,11,5,'#1c2030');R(g,241,46,9,3,'#e8e8f0');P(g,243,52,'#101018');P(g,247,52,'#101018');R(g,243,55,5,1,'#6a3424');
+  // Boden mit Schachbrettfliesen in Flucht
+  polyFill(g,[[56,92],[264,92],[320,112],[320,SH],[0,SH],[0,112]],(x,y)=>{
+    const vx=160,vy=20,t=(y-vy)/(92-vy),u=(x-vx)/t,row=Math.floor(Math.log(t)*9),col=Math.floor(u/22);
+    const dark=(row+col)%2===0,f=(y-92)/60;return dark?(bay(x,y)<f?'#2a201c':'#3a2e2a'):(bay(x,y)<f*0.8?'#b8a888':'#d8ccb0');});
+  R(g,56,92,208,1,'#1a0c06');
+  // Sueden: Schild auf dem Boden zum Musikraum
+  R(g,136,137,48,7,'#5c341c');R(g,137,138,46,5,'#845028');
+  return c;
+}
+function drawGongDisc(x,y,sw){
+  // Schulgong mit Gestell, schwingt nach einem Schlag
+  R(ctx,x-18,y-18,2,34,'#2a160c');R(ctx,x+16,y-18,2,34,'#2a160c');R(ctx,x-18,y-18,36,2,'#5c341c');
+  const dx=Math.round(Math.sin(sw)*2);
+  ellFill(ctx,x+dx,y,13,13,(px,py,a,b)=>{const d=a*a+b*b;return d>0.85?'#6a4a10':d<0.08?'#fff0a0':(a+b<-0.3?'#e8c060':d>0.5?'#9a7418':'#c89a30');});
+  line(ctx,x+dx,y-13,x,y-17,'#383840');
+}
+function drawHourglass(x,y,frac){
+  // Sanduhr auf einer Saeule, frac = Anteil Sand oben
+  R(ctx,x-7,y,14,22,'#8a8a9c');R(ctx,x-7,y,2,22,'#b8b8c8');R(ctx,x-9,y+20,18,3,'#6e6e7c');
+  R(ctx,x-8,y-2,16,2,'#5c341c');R(ctx,x-8,y-22,16,2,'#5c341c');R(ctx,x-7,y-20,1,18,'#845028');R(ctx,x+6,y-20,1,18,'#845028');
+  for(let j=0;j<18;j++){const yy=y-20+j,w=Math.round(1+5*Math.abs(j-8.5)/8.5);R(ctx,x-w,yy,w*2,1,'#c8dcf0');}
+  const top=Math.round(8*frac);
+  for(let j=8-top;j<9;j++){const yy=y-20+j,w=Math.max(0,Math.round(1+5*Math.abs(j-8.5)/8.5)-1);R(ctx,x-w,yy,w*2,1,'#e0b858');}
+  const bot=Math.round(8*(1-frac));for(let j=0;j<bot;j++){const yy=y-3-j,w=Math.max(0,Math.round(1+5*Math.abs(17-j-8.5)/8.5)-1);R(ctx,x-w,yy,w*2,1,'#d0a040');}
+  if(frac>0.01)R(ctx,x,y-11,1,8,'#e0b858');
+}
+function plaque(x,y,label){const w=textW(label)+6;x=clamp(x,Math.ceil(w/2)+1,W-Math.ceil(w/2)-1);R(ctx,x-Math.ceil(w/2),y,w,10,'#2a160c');R(ctx,x-Math.ceil(w/2)+1,y+1,w-2,8,'#e8d8a0');text(label,x-Math.floor(textW(label)/2),y+2,'#3a2410',false);}
+function drawHalle(now){
+  if(!HALLE)HALLE=drawHalleBg();
+  if(S.card){R(ctx,0,0,W,SH,'#000000');const t=S.card.title;text(t,Math.round((W-textW(t))/2),34,'#ffe060',false);
+    wrap(S.card.text,260).forEach((l,i)=>text(l,Math.round((W-textW(l))/2),56+i*LINEH,'#e8e0ff',false));return;}
+  const sh=S.shake>0?Math.round((Math.random()-.5)*3):0;
+  ctx.save();ctx.translate(sh,0);
+  ctx.drawImage(HALLE,0,0);
+  // Tuerschilder zeigen, welcher Raum gerade hinter der Tuer liegt
+  plaque(160,23,RAUM_NAME[raumAn('nord',S.takt)]);plaque(27,28,RAUM_NAME[raumAn('west',S.takt)]);plaque(294,28,RAUM_NAME[raumAn('ost',S.takt)]);
+  text('Süden: Musikraum',Math.round(160-textW('Süden: Musikraum')/2),128,'#e8d8a0',true);
+  drawGongDisc(212,36,S.gongSw||0);
+  drawHourglass(206,94,clamp(S.sand/GONG_S,0,1));
+  const L=[];
+  L.push({y:S.ky,d:()=>spr(S.speech&&S.talker==='kraechz'&&Math.floor(now/140)%2?SPR.ravenTalk:SPR.raven,S.kx,S.ky,11,19,S.kflip)});
+  const h=S.hero;
+  if(!h.hidden)L.push({y:h.y,d:()=>{let img;
+    if(h.walking)img=SPR.heroWalk[Math.floor(h.t*9)%6];else if(h.reach)img=SPR.heroReach;
+    else if(S.talker==='hero'&&Math.floor(now/120)%2)img=SPR.heroTalk;else img=(now%4200<140)?SPR.heroBlink:SPR.heroStand;
+    shadow(h.x,h.y,6);spr(img,h.x,h.y,16,46,h.flip);}});
+  L.sort((p,q)=>p.y-q.y).forEach(o=>o.d());
+  ctx.restore();
+  if(S.panel){R(ctx,40,14,240,116,'#5c341c');R(ctx,42,16,236,112,'#f0e8d0');
+    S.panel.forEach((l,i)=>text(l[0],50,22+i*11,l[1]||'#3a2410',false));}
+  drawSpeech();
+}
+function hallTick(dt){
+  if(S.gongSw>0)S.gongSw=Math.max(0,S.gongSw-dt*4);if(S.shake>0)S.shake-=dt;
+  if(S.flureGeschafft)return;
+  S.sand-=dt;if(S.sand<=0){S.sand+=GONG_S;gongSchlag();}
+}
+function gongSchlag(){S.takt++;S.gongSw=6;S.shake=0.6;gongStuck(2.5);}
+function zeitVergeht(sek){S.sand-=sek;while(S.sand<=0){S.sand+=GONG_S;S.takt++;}}
+async function showCard(title,txt){S.card={title,text:txt};await new Promise(r=>{skipLine=r;setTimeout(r,lineTime(txt)+800);});skipLine=null;S.card=null;await sleep(100);}
+async function showPanel(lines){S.panel=lines;await new Promise(r=>{skipLine=r;setTimeout(r,9000);});skipLine=null;S.panel=null;await sleep(100);}
+const HS_HALLE=[
+  {id:'kraechz',name:'Krächz',rect:()=>[S.kx-11,S.ky-19,22,19],walk:[96,100],flip:true},
+  {id:'zettel',name:'Zettel am Schwarzen Brett',rect:()=>[74,59,18,14],walk:[90,99],flip:true},
+  {id:'brett',name:'Schwarzes Brett',rect:()=>[68,44,44,32],walk:[90,99],flip:true},
+  {id:'sanduhr',name:'Sanduhr',rect:()=>[196,70,20,48],walk:[188,116],flip:false},
+  {id:'gong',name:'Schulgong',rect:()=>[194,18,36,34],walk:[196,100],flip:false},
+  {id:'bild',name:'Gemälde',rect:()=>[232,42,26,22],walk:[244,100],flip:false},
+  {id:'gitterH',name:'Lüftungsgitter',rect:()=>[58,78,18,13],walk:[70,100],flip:true},
+  {id:'nord',name:()=>'Tür nach Norden',exit:true,rect:()=>[136,34,48,58],walk:[160,99],flip:false},
+  {id:'west',name:()=>'Tür nach Westen',exit:true,rect:()=>[10,36,32,68],walk:[26,118],flip:true},
+  {id:'ost',name:()=>'Tür nach Osten',exit:true,rect:()=>[278,36,32,68],walk:[294,118],flip:false},
+  {id:'sued',name:()=>'Weg nach Süden',exit:true,rect:()=>[120,124,80,20],walk:[160,136],flip:false},
+  {id:'bodenH',name:'Boden',floor:true,rect:()=>[20,98,280,40],walk:[0,0],flip:false}
+];
+const curHS=()=>S.room==='halle'?HS_HALLE:HS;
+async function travel(tuer){
+  const vorher=S.takt;
+  S.hero.hidden=true;tone('triangle',300,0.3,0.04,200);
+  zeitVergeht(WEG_S);
+  const ziel=raumAn(tuer,S.takt);
+  if(S.takt!==vorher){gongStuck(2.5);}
+  const unterwegs=S.takt!==vorher?' Unterwegs macht es Gonnng. Die Flure rücken weiter.':'';
+  if(ziel==='keller'){
+    S.flureGeschafft=true;
+    await showCard('Die Kellertreppe','Von unten brummt der Heizungskeller. Es riecht nach Kohle und nach Kekskrümeln.'+unterwegs);
+    S.hero.hidden=false;
+    await say('kraechz','Na bitte. Geplant, gewartet, getroffen.');
+    S.over=true;save();if(API.onDone)API.onDone('kapitel1');return;
+  }
+  const T={musik:['Der Musikraum','Das Blockflötenorchester hält dich fest, bis du den Takt nachklatschst. Dieses Rätsel kommt noch. Für heute lässt man dich laufen.'],
+    kantine:['Die Kantine','Frau Brösel seufzt über vierhundert Portionen. Hier geht es später weiter.'],
+    bio:['Der Biologieraum','Die Topfpflanzen streiten sich, wer mehr Licht bekommt. Keine Kellertreppe weit und breit.']}[ziel];
+  await showCard(T[0],T[1]+unterwegs);
+  zeitVergeht(WEG_S);
+  S.hero.hidden=false;
+  await say('hero',['Wieder in der Halle. Das war wohl der falsche Flügel.','Zurück in der Halle. Die Kellertreppe war da nicht.','Wieder hier. Ich sollte vorher auf die Sanduhr schauen.'][S.fehlwege++%3]);
+}
+async function enterHalle(){
+  S.room='halle';S.hero.hidden=true;S.hero.x=68;S.hero.y=100;S.hero.flip=false;S.kraechz='halle';S.kx=-20;S.ky=40;S.kflip=true;
+  S.takt=1;S.sand=GONG_S*0.75;S.fehlwege=0;S.tipp.flure=0;
+  await showCard('Kapitel 1','Die wandernden Flure');
+  tone('square',140,0.2,0.08,60);S.hero.hidden=false;S.hero.y=100;
+  await walkTo(84,108);
+  for(let t=0;t<=1;t+=0.05){S.kx=-20+(92+20)*t;S.ky=40+Math.sin(t*Math.PI)*-16+(44-40)*t;await sleep(30);}S.kx=92;S.ky=44;
+  await say('hero','Wo bin ich denn jetzt gelandet?');
+  await say('kraechz','In der Eingangshalle. Hier sortieren sich die Flure bei jedem Gong neu.');
+  await say('kraechz','Wir müssen zur Kellertreppe. Da unten liegt der Eingang ins Land Später.');
+  await say('hero','Und wo ist die Kellertreppe?');
+  await say('kraechz','Mal hier, mal da. Wie meine Lesebrille früher.');
+  S.halleIntro=true;save();
+}
+async function actHalle(verb,h,item){
+  const id=h.id;
+  if(item){
+    if(id==='kraechz'&&verb==='gib')return say('kraechz','Behalte das mal schön selbst.');
+    if(id==='sanduhr')return say('hero','Die Sanduhr läuft auch ohne meine Hilfe.');
+    if(id==='gong'&&item==='lineal'){await reach();gongSchlag();return say('hero','Oh. Das war vielleicht keine gute Idee.');}
+    return say('hero',FALLBACK.benutze());
+  }
+  if(h.exit&&(verb==='gehe'||verb==='oeffne'||verb==='benutze'))return travel(id);
+  switch(id+':'+verb){
+    case 'kraechz:rede':return redeKraechz();
+    case 'kraechz:schau':return say('hero','Krächz sitzt auf dem Schwarzen Brett und tut so, als würde er nicht mitlesen.');
+    case 'zettel:schau':case 'zettel:nimm':case 'brett:schau':
+      S.zettelGelesen=true;
+      await showPanel([['Aushang: Wo ist was?','#a02234'],['Takt 0: Nord Kantine, Ost Bio,'],['        Süd Musik, West Kellertreppe'],['Takt 1: Nord Kellertreppe, Ost Kantine,'],['        Süd Musik, West Bio'],[''],['Bei jedem Gong ein Takt weiter.','#5a3a18'],['Der Musikraum rührt sich nicht.','#5a3a18'],['Weg in einen Flügel: 20 Sekunden.','#5a3a18']]);
+      return say('hero','Takt 2 steht nicht drauf. Den muss ich mir wohl selbst ausrechnen.');
+    case 'sanduhr:schau':{const s=Math.max(5,Math.round(S.sand/5)*5);return say('hero','Bis zum nächsten Gong sind es noch ungefähr '+s+' Sekunden.');}
+    case 'sanduhr:nimm':return say('hero','Die ist festgeschraubt. Jemand kennt diese Schule.');
+    case 'sanduhr:druecke':case 'sanduhr:ziehe':return say('hero','Umdrehen geht nicht. Die Zeit hier läuft nur in eine Richtung. Leider.');
+    case 'gong:schau':return say('hero','Der Schulgong. Bei jedem Schlag rücken die Flure weiter.');
+    case 'gong:druecke':await reach();gongSchlag();return say('hero','Oh. Das war vielleicht keine gute Idee.');
+    case 'bild:schau':return say('hero','Der Schulgründer. Er guckt, als fände er Pendel zu gewöhnlich.');
+    case 'gitterH:schau':return say('hero','Da bin ich rausgefallen. Elegant war anders.');
+    case 'gitterH:benutze':case 'gitterH:oeffne':return say('hero','Zurück ins Klassenzimmer? Da sagen alle nur „gleich“.');
+    case 'bodenH:schau':return say('hero','Schachbrettfliesen. Irgendwer hat hier mal sehr lange überlegt, welcher Zug der nächste ist.');
+    case 'nord:schau':case 'west:schau':case 'ost:schau':
+      return say('hero','Auf dem Schild steht „'+RAUM_NAME[raumAn(id,S.takt)]+'“. Jedenfalls im Moment.');
+    case 'sued:schau':return say('hero','Der Weg zum Musikraum. Der bleibt immer da. Das Blockflötenorchester ist zu schwer zum Wandern.');
+  }
+  if(verb==='schau')return say('hero',FALLBACK.schau(h));
+  return say('hero',FALLBACK[verb]?FALLBACK[verb](h):FALLBACK.benutze());
+}
 
 // Speichern: nur die Teile des Zustands, die das Spiel ausmachen
-const KEEP=['heft','kraechz','kx','ky','kflip','fenster','ziel','kruemelGesehen','gitter','federmappe','muenze','kreide','tipp','kraechzKennt','jonas','inv','gefragt','tschuess','eingangDone','kallFrozen','fertig'];
+const KEEP=['room','takt','sand','zettelGelesen','flureGeschafft','halleIntro','fehlwege','heft','kraechz','kx','ky','kflip','fenster','ziel','kruemelGesehen','gitter','federmappe','muenze','kreide','tipp','kraechzKennt','jonas','inv','gefragt','tschuess','eingangDone','kallFrozen','fertig'];
 function save(){const d={};KEEP.forEach(k=>{if(S[k]!==undefined)d[k]=S[k];});d.hero={x:S.hero.x,y:S.hero.y,flip:S.hero.flip};SAVE.write({prolog:d});}
 let looping=false;
 const API={onDone:null,
-  start(saved){reset(saved);build();last=performance.now();if(!looping){looping=true;requestAnimationFrame(loop);}if(!S.eingangDone)eingang();},
+  start(saved){reset(saved);build();last=performance.now();if(!looping){looping=true;requestAnimationFrame(loop);}if(!S.eingangDone)eingang();else if(S.room==='halle'&&!S.halleIntro)run(()=>enterHalle());},
   mute(m){if(M)M.gain.value=m?0:0.5;}};
 window.__S=()=>S;window.__skip=()=>{if(skipLine)skipLine();};
-window.__act=(verb,id,item)=>{const h=HS.find(x=>x.id===id);return run(async()=>{await walkTo(h.walk[0],h.walk[1]);face(h.flip);await act(verb,h,item);});};
+window.__act=(verb,id,item)=>{const h=curHS().find(x=>x.id===id);return run(async()=>{await walkTo(h.walk[0],h.walk[1]);face(h.flip);await act(verb,h,item);});};
 window.__pick=i=>{if(S.dialog)S.dialog.resolve(i);};
 return API;
 })();
