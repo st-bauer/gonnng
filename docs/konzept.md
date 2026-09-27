@@ -297,6 +297,8 @@ Tippstufen von Krächz: „Hau mal auf den Gong und schau, was mit den Schildern
 
 **Die Karten im Flüstergang.** Drei Aufschiebchen stören. Jede Störung schickt die Figur an den Anfang zurück.
 
+**Ablauf im Flüstergang.** Der Gang liegt unten an der Kellertreppe und endet an der Eisentür zum Heizungskeller. Beim ersten Betreten sieht die Figur den Dieb: Ein Aufschiebchen mit ihrem Heft gähnt („Heft abgeben. Gleich. Oder später.“) und verschwindet durch die Tür. Krächz: „Ein Aufschiebchen. Die sind überall, wo etwas liegen bleibt.“ Drei weitere Aufschiebchen sitzen im Gang: eins in einer Mauernische („Pssst. Das schaffst du eh nicht.“), eins in einer Hängematte zwischen den Rohren („Mach doch später. Später ist viel gemütlicher.“), eins futtert auf einer Kiste laut Schokokekse (der Magen knurrt). Wer ohne passenden Plan vorbeiwill, fällt auf den Satz herein, trottet zurück zur Treppe und findet die Wenn-Karte dazu. Krächz gibt auf Nachfrage die Dann-Karte „… dann frage ich Krächz nach einem Tipp.“ Mit dem ersten Plan kommt die Figur an der Nische vorbei und scheitert an der Hängematte. Für „später“ schickt Krächz sie zu Frau Brösel („Die kocht jeden Tag vierhundert Portionen und fängt trotzdem an.“). Die Figur muss also zurück durch die wandernden Flure, diesmal zur Kantine. So wird das Flur-Rätsel ein zweites Mal gebraucht. Die Karte „Wenn ich Lust habe“ liegt abgegriffen am Fuß der Treppe.
+
 | Wenn-Karte | Passende Dann-Karte |
 | --- | --- |
 | Wenn ein Aufschiebchen „Mach doch später“ flüstert | dann mache ich sofort den nächsten kleinen Schritt |
