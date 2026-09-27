@@ -23,94 +23,48 @@ Konter im Finale („Ausreden-Duell“). Das vollständige Konzept steht in `doc
 - Ton: per Web Audio im Browser erzeugt (Chiptune), startet erst nach einem Tipp.
 - Speicherstand: noch offen (localStorage mit try/catch wäre die schlanke Lösung).
 
-## Grafik-Pipeline (Entscheidung: „Weg 2“)
+## Grafik (Entscheidung vom 27.09.2026: alles im Code gezeichnet)
 
-Reine Code-Pixelgrafik (siehe `intro/intro-v1-code-pixel.html`) sah nicht nach LucasArts aus.
-Neuer Weg: gemalte Bilder erzeugen und in echte VGA-Optik umrechnen.
+Raum, Figuren, Schrift und Verbleiste werden im Browser per Code gezeichnet. Maßstab dafür sind
+`intro/intro-v3-code.html` und `prolog/prolog-v2-code.html`. Gemalte Bilder aus Canva wirkten im Spiel
+aufgesetzt, weil Figuren und Hintergrund nicht dieselbe Pixelgröße und dasselbe Licht hatten.
 
-1. Hintergründe und Figuren in Canva (oder einem anderen Bildgenerator) erzeugen.
-   Prompt-Muster für Hintergründe: „Background art for a 1990s VGA point-and-click adventure game,
-   hand-painted pixel art style with rich dithered color gradients … no people, no characters, no text“.
-   Figuren einzeln auf schlichtem Hintergrund erzeugen und den Hintergrund entfernen.
-2. Originale in voller Auflösung nach `assets/raw/` legen.
-3. Einmal eine gemeinsame Palette für alle Szenen bauen, damit alles zusammenpasst:
-   `python scripts/vga.py assets/raw/*.png --make-palette assets/palette.png --colors 128`
-4. Hintergründe umrechnen: `python scripts/vga.py assets/raw/schule_nacht.png assets/bg/schule_nacht.png --palette assets/palette.png`
-5. Figuren umrechnen: `python scripts/vga.py assets/raw/graf.png assets/sprites/graf.png --sprite --height 90 --palette assets/palette.png`
+Regeln für neue Grafik:
+- Alles in echten Pixeln bei 320 × 200, nichts skalieren. Figuren in anderer Größe werden mit `PupK` neu gezeichnet.
+- Nur Farben aus den festen Rampen (`RAMP`, je dunkel, Schatten, Grundton, Licht), Verläufe gerastert (`dith`, Bayer).
+- Licht kommt in jeder Szene aus einer klaren Richtung, Figuren sind auf der Lichtseite heller.
+- Figuren entstehen aus Einzelteilen (`Pup.part` mit Kopf, Rumpf, Armen, Beinen) und bekommen eine dunkle Umrisslinie.
+  So gibt es Laufen, Sprechen, Blinzeln und Greifen ohne neue Bilder.
+- Szenen haben 320 × 144 Pixel, darunter liegt die Verbleiste (Spiel) oder ein schwarzer Balken mit Untertiteln (Zwischensequenz).
+- Text in der eigenen Pixelschrift (`G`, mit Umlauten und ß), Sprechtext farbig mit schwarzem Rand über der Figur.
 
-LucasArts-Merkmale, auf die zu achten ist: große Figuren (ein Drittel bis halbe Bildhöhe) mit Gesicht,
-filmische Einstellungen (Nahaufnahmen, Untersicht, Silhouetten vor dem Mond), gemalte Hintergründe
-mit viel Licht und Schatten, der Graf unter der Kapuze nur mit zwei glühenden Augen.
+LucasArts-Merkmale, auf die zu achten ist: große Figuren mit Gesicht, filmische Einstellungen, viel Licht und Schatten,
+der Graf unter der Kapuze nur mit zwei glühenden Augen.
 
-## Stand (26.09.2026)
+Archiv: Die frühere Canva-Pipeline (`assets/`, `scripts/vga.py`, `scripts/lauf.py`, `scripts/alles_umrechnen.sh`,
+`intro/intro-v2-gemalt.html`, `prolog/prolog-v1.html`) bleibt zum Vergleich liegen, wird aber nicht weiterentwickelt.
+Canva-Arbeitsdatei: https://canva.link/mp6p64febvogrh4
+
+## Stand (27.09.2026)
 
 - Konzept komplett: Welt, Figuren, Intro-Storyboard, Prolog im Detail, Kapitel 1 bis 4 mit Rätseln,
   Inventarlisten, Kombinationsrätseln, Ausreden-Duell, Fachcheck, geprüfte Quellen (`docs/konzept.md`).
 - Titel: „Gonnng!“. Gegenspieler: Graf Nimmerjetzt. Schule: Sankt Irgendwann auf dem Schiefenberg.
-- Intro Version 1 als Code-Pixelgrafik (`intro/intro-v1-code-pixel.html`), abgelöst durch
-  Intro Version 2 mit den gemalten Bildern (`intro/intro-v2-gemalt.html`, lädt die Bilder aus `assets/`).
-  `intro/gonnng-intro-vorschau.html` ist dieselbe Datei mit eingebetteten Bildern zum Weitergeben;
-  nach Änderungen neu erzeugen (Bilder als data-URI einsetzen). Zum Testen zeigt `window.__frame(sekunde)` ein Standbild.
-- Teststandbild im neuen Stil: `assets/test/vga_test_standbild.png` (aus einer 199-Pixel-Vorschau, daher zu grob).
-  Das alte Canva-Original (https://www.canva.com/M/MAHWUmwXVTw) ist verworfen, weil die Schule darin wie eine Kirche aussah.
-- Neues Standbild „Schule bei Nacht“ (Variante 1): breites Schulgebäude aus Backstein, kleines eckiges Uhrtürmchen
-  auf dem Dach, Schulhof mit Tor und Fußballtor. Gerade Fassung: https://www.canva.com/M/MAHWUzxEJaM,
-  leicht schiefe Fassung: https://www.canva.com/M/MAHWUzkGKy8.
-  Lokal liegen beide nur als 600 × 338 Pixel große Canva-Vorschau in `assets/raw/` (`schule_nacht_600px.png`,
-  `schule_nacht_gerade_600px.png`), weil die Cloud-Umgebung `export-download.canva.com` nicht erreicht.
-  Für 320 × 200 reicht das. Die schiefe Fassung ist schon umgerechnet: `assets/bg/schule_nacht.png`
-  (mit gemeinsamer Palette). Die Canva-Arbeitsdatei mit allen Bildern: https://canva.link/mp6p64febvogrh4
-- Graf Nimmerjetzt als Figur: in Canva vor Grün erzeugt (https://www.canva.com/M/MAHWVEdRLfQ), Rohbild
-  `assets/raw/graf_gruen_600px.png`, freigestellt und umgerechnet nach `assets/sprites/graf.png` (52 × 90).
-  `scripts/vga.py` kann dafür jetzt mit `--key-green` Figuren vor Grün freistellen.
-- Laufphasen (je 4 Bilder, in Canva mit der Figur als Referenzbild als Bildreihe erzeugt):
-  `assets/sprites/graf_lauf.png` und `assets/sprites/aufschiebchen_lauf.png`, gebaut mit `scripts/lauf.py`
-  (schneidet die Figuren aus, richtet sie an Kopf und Füßen aus). Canva-Bildreihen: https://www.canva.com/M/MAHWVG04uGg
-  und https://www.canva.com/M/MAHWVCKMXrs. Tipp: In der Arbeitsdatei zwei Phasen pro Seite zeigen (Bild 1,4-fach), sonst ist die Vorschau zu klein.
-- Greifpose des Grafen: `assets/sprites/graf_greifen.png` (69 × 87, gleicher Maßstab wie die stehende Figur,
-  Kopfmitte 39 px vom linken Rand), https://www.canva.com/M/MAHWVKVjA2M.
-- Intro: Klick, Tippen, Leertaste, Enter oder Pfeil rechts springen zum nächsten Satz, ans Satzende oder zur nächsten Einstellung.
-  Der Ton wird dabei ab der neuen Stelle neu geplant.
-- Weitere Bilder (alle in der Canva-Arbeitsdatei, Rohbilder in `assets/raw/`):
-  Uhrwerk im Glockenturm mit großer Unruh (`assets/bg/uhrwerk.png`, 320 × 200, https://www.canva.com/M/MAHWVGRLFcE),
-  Klassenzimmer am Morgen mit kühlem Tageslicht (https://www.canva.com/M/MAHWVIXOb4c; die ältere Abendfassung liegt als
-  `assets/raw/klassenzimmer_abend_600px.png`) mit Tafel, Wanduhr und Lüftungsgitter rechts (`assets/bg/klassenzimmer.png`,
-  320 × 180, damit das Gitter nicht abgeschnitten wird und unten Platz für die Verbleiste bleibt,
-  https://www.canva.com/M/MAHWVMHQKLw), Aufschiebchen in Schlafanzug und Zipfelmütze
-  (`assets/sprites/aufschiebchen.png`, 40 × 48, https://www.canva.com/M/MAHWVF1FGcM).
-- Gemeinsame Palette (224 Farben) aus allen Bildern: `assets/palette.png`. Mit 128 Farben wurde der Mond zu blass. Bei neuen Bildern neu bauen und alles neu umrechnen.
-  Bei Figuren vor Grün (Dateiname mit „gruen“) zählen dabei nur die Pixel der Figur.
-- Probemontagen: `assets/test/intro_huegel.png`, `assets/test/intro_uhrwerk.png`, `assets/test/prolog_klassenzimmer.png`,
-  Übersicht `assets/test/uebersicht_x2.png`. Figuren in Nachtszenen wirken noch zu hell, das Spiel sollte sie dort abdunkeln.
-- Fachcheck offen: Große Turmuhren laufen in der Regel mit einem Pendel, die Unruh sitzt eher in Taschen- und Tischuhren.
-  Entweder im Spiel begründen (besondere Uhr) oder auf Pendel umstellen.
-
-- Prolog als spielbare Vorschau: `prolog/prolog-v1.html` (Bilder aus `assets/`), `prolog/gonnng-prolog-vorschau.html`
-  mit eingebetteten Bildern. Enthält Eingangssequenz, neun Verben, Inventar, alle Hotspots, Zielgespräch als Dialogbaum,
-  Tippstufen von Krächz und den kompletten Lösungsweg aus dem Konzept. Neue Figuren (Canva, vor Grün):
-  Hauptfigur mit Laufphasen (`held.png`, `held_lauf.png`), Krächz, Frau Kallweit, Jonas, Lina.
-  Laufwege sind ein Netz aus Linien (NODES/EDGES), Teile des Hintergrunds verdecken Figuren dahinter (OCC).
-  Die Hauptfigur ist bewusst so gestaltet, dass sie als Mädchen oder Junge durchgeht.
-- Prolog Fassung 2, alles im Code gezeichnet: `prolog/prolog-v2-code.html` (eine Datei, keine Bilder nötig).
-  Raum, Figuren, Pixelschrift mit Umlauten und Verbleiste werden im Browser gezeichnet, alle in derselben Pixelgröße
-  mit festen Farbrampen, Licht von links und dunkler Umrisslinie. Figuren entstehen aus Einzelteilen (Klasse `Pup`),
-  dadurch gibt es Laufphasen, Sprechen, Blinzeln und Greifen ohne neue Bilder. Spiellogik wie in Fassung 1.
-  Anlass: In Fassung 1 wirkten die Figuren aufgesetzt. Zum Testen: `window.__act(verb, id, item)`, `window.__pick(i)`.
-- Intro Fassung 3, alles im Code gezeichnet wie Prolog Fassung 2: `intro/intro-v3-code.html` (eine Datei, keine Bilder).
-  Breitbild 320 × 144 mit schwarzen Balken, Untertitel in Pixelschrift im unteren Balken. Übernimmt Pixelwerkzeuge,
-  Farbrampen, Schrift und Figuren aus `prolog/prolog-v2-code.html` (bei Änderungen dort mitziehen).
-  Neu: Graf als Figur aus Einzelteilen (`makeGraf`, Laufen, Sitzen, Greifen, Tragen), `PupK` zeichnet Figuren in
-  jeder Größe neu statt sie zu skalieren. Szenen: Nacht am Schiefenberg (schiefe Schule, Mond, Weg, Stein zum Hinsetzen),
-  Glockenturm mit drehenden Zahnrädern und schwingender Unruh, Nebel, Logo, Klassenzimmer aus dem Prolog.
-- `scripts/alles_umrechnen.sh` baut Palette (224 Farben) und alle Bilder neu. Neue Bilder dort eintragen.
+- Intro im Code-Stil: `intro/intro-v3-code.html`. Breitbild mit Untertiteln, Graf als Figur (`makeGraf`),
+  Nacht am Schiefenberg mit Stein, Glockenturm mit schwingender Unruh, Nebel, Logo, Klassenzimmer.
+  Die Gestalt erklärt den Aufschiebchen ihren Plan, ohne dass verraten wird, wer sie ist.
+  Veröffentlicht: https://claude.ai/artifact/BS5pGKmyXccQH7ACNqeexc
+- Prolog im Code-Stil: `prolog/prolog-v2-code.html`. Neun Verben, Inventar, alle Hotspots, Zielgespräch mit
+  mehreren witzigen Antworten pro Stufe, erweitertes Gespräch mit Krächz, Tippstufen, kompletter Lösungsweg.
+  Veröffentlicht: https://claude.ai/artifact/NR1J7CbkmNjAhoJp5bv4YM
+- Zum Testen: `window.__frame(sekunde)` im Intro, `window.__act(verb, id, item)` und `window.__pick(i)` im Prolog.
+- Fachcheck offen: Große Turmuhren laufen meist mit Pendel, die Unruh sitzt eher in Taschen- und Tischuhren.
 
 ## Nächste Schritte
 
-1. Optional: „Schule bei Nacht“ in voller Auflösung aus der Canva-Arbeitsdatei exportieren und neu umrechnen.
-2. Graf: Stil prüfen (Rüstung wirkt noch etwas türkis), bei Bedarf Laufphasen oder weitere Posen erzeugen.
-3. Intro Fassung 3 (Code) abnehmen. Die Leiter ist gestrichen, der Stein zum Hinsetzen ist drin.
-4. Entscheiden: Fassung 1 (gemalte Bilder) oder Fassung 2 (Code-Pixelgrafik) für das Spiel. Danach verfeinern (Posen, Ton, Speichern).
-5. Offene Punkte aus dem Konzept klären (Namen der Nebenfiguren, Zielstufe, Speicherstand, Begleitmaterial).
+1. Intro und Prolog zu einer Spieldatei zusammenführen, mit Speicherstand, Namenswahl und Wahl Mädchen oder Junge.
+2. Offene Punkte klären: Unruh oder Pendel, Namen der Nebenfiguren (Frau Kallweit, Jonas, Lina).
+3. Kapitel 1 „Die wandernden Flure“: erst einen Raum bauen und zeigen, dann den Rest.
 
 ## Online-Dokument
 
