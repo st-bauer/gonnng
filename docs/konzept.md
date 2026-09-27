@@ -91,10 +91,10 @@ Das Intro läuft als Zwischensequenz im Spiel, im gleichen Pixelstil, mit Textta
 | --- | --- | --- | --- | --- |
 | 1 | Schwarzer Bildschirm | Lautes, gleichmäßiges Ticken |  | 5 s |
 | 2 | Nacht. Die schiefe Schule auf dem Schiefenberg, Mond, im Glockenturm leuchtet das Zifferblatt der Großen Stundenuhr | Ticken, leise Melodie setzt ein | „Sankt Irgendwann. Die Schule, in der jeder Anfang pünktlich beginnt.“ | 10 s |
-| 3 | Eine Gestalt im Morgenmantel schlurft den Hügel hinauf, dahinter tapsen zwei Aufschiebchen | Schlurfen, Gähnen |  | 10 s |
-| 4 | Die Gestalt bleibt stehen, setzt sich auf einen Stein |  | Gestalt: „Ich mach das gleich.“ | 5 s |
-| 5 | Die Aufschiebchen seufzen und schieben die Gestalt weiter zum Turm | Seufzen im Chor |  | 8 s |
-| 6 | Im Glockenturm: Die Gestalt greift ins Uhrwerk und zieht die Unruh heraus | Letztes Ticken, dann Stille |  | 8 s |
+| 3 | Eine Gestalt im Morgenmantel schlurft den Hügel hinauf, dahinter tapsen zwei Aufschiebchen | Schlurfen, Gähnen | Gestalt: „Heute Nacht holen wir uns die Unruh aus der großen Uhr.“ Aufschiebchen: „Und dann, Chef?“ Gestalt: „Dann steht die Uhr. Und wenn die Uhr steht, fängt keiner mehr was an.“ | 10 s |
+| 4 | Die Gestalt bleibt stehen, setzt sich auf einen Stein |  | Gestalt: „Aber erst mal eine kleine Pause. Ich mach das gleich.“ Aufschiebchen: „Chef, das sagen Sie seit vierzig Jahren.“ | 5 s |
+| 5 | Die Aufschiebchen seufzen und schieben die Gestalt weiter zum Turm | Seufzen im Chor | Aufschiebchen: „Seufz.“ Gestalt: „Schon gut. Ich geh ja schon.“ | 8 s |
+| 6 | Im Glockenturm: Die Gestalt greift ins Uhrwerk und zieht die Unruh heraus | Letztes Ticken, dann Stille | Gestalt: „So. Ohne dich tickt hier gar nichts mehr.“ Danach: „Ab jetzt ist hier für immer später.“ | 8 s |
 | 7 | Grauer Nebel kriecht aus dem Turm und legt sich über die ganze Schule | Tiefes Brummen |  | 8 s |
 | 8 | Schwarz. Dann das Logo „Gonnng!“, die Buchstaben vibrieren wie ein angeschlagener Gong | Ein Gong, der nicht aufhört zu schwingen |  | 8 s |
 | 9 | Überblendung ins Klassenzimmer am nächsten Morgen. Der Schulgong setzt an und bleibt hängen: „Gonnnnn…“ | Gong bleibt hängen |  | 8 s |

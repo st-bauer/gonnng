@@ -636,6 +636,7 @@ function nightScene(t,fog){
     else{gs=P_STONE+(1-P_STONE)*clamp((t-30.3)/4,0,1);walk=t<34.3;push=true;lag=0.028;}
     const fade=t>=34.3?clamp(1-(t-34.3)/0.8,0,1):1;
     const g=alongN(gs),i1=alongN(gs-lag),i2=alongN(gs-lag-0.035);
+    const gh=sit?GSIT.height:GSTAND[kIndex(g[1])].height;POS.graf=sit?[112,127-gh]:[g[0],g[1]-gh];POS.imp=[i1[0],i1[1]-ISTAND[kIndex(i1[1])].height];
     const items=[];
     items.push({y:g[1],d:()=>{
       if(sit){shadowK(112,125,6);sprK(GSIT,112,127,GRAF_AX,false,fade);return;}
@@ -721,7 +722,7 @@ function towerScene(t){
   if(gone){ellFill(ctx,WX,WY,WR-1,WR-1,(x,y)=>bay(x,y)<0.2?'#1c2250':'#0c0a14');}
   if(!gone||pose!=='carry'&&pose!=='carryWalk')drawBalance(wx,wy,wr,ua);
   const img=pose==='walk'?GBIG.walk[Math.floor(t*5)%4]:pose==='carryWalk'?GBIG.carryWalk[Math.floor(t*5)%4]:GBIG[pose];
-  shadowK(gx,gy,14);sprK(img,gx,gy,GRAF_AX,flip);
+  shadowK(gx,gy,14);sprK(img,gx,gy,GRAF_AX,flip);POS.gross=[Math.min(gx-58,150),gy-img.height-6];
   if(gone&&(pose==='carry'||pose==='carryWalk'))drawBalance(wx,wy,wr,0);
 }
 
@@ -783,7 +784,20 @@ const FADES=[[5,0,0.8],[38,0.6,0.6],[46,0.6,0.6],[54,0.6,0],[62,0.6,0.6]];
 function fadeA(t){let a=0;for(const [c,o,i] of FADES){if(o&&t>c-o&&t<c)a=Math.max(a,(t-(c-o))/o);if(i&&t>=c&&t<c+i)a=Math.max(a,1-(t-c)/i);}return a;}
 const CAPS=[[6,14,'Sankt Irgendwann. Die Schule, in der jeder Anfang pünktlich beginnt.'],[47.5,53.5,'In dieser Nacht blieb die Zeit stehen. Jedenfalls für alle, die etwas anfangen wollten.'],[62.6,64.3,'Am nächsten Morgen. Erste Stunde.']];
 // Sprechtexte: Zeit von, bis, Text, Farbe, Position im Bild
-const SAYS=[[26,29.8,'Ich mach das gleich.','#ff9ac8',()=>[112,86]],[31,33,'Seufz.','#b8d0ff',()=>{const p=alongN(P_STONE+(1-P_STONE)*clamp((31.5-30.3)/4,0,1)-0.03);return[p[0],p[1]-22];}]];
+// Sprechtexte: Zeit von, bis, Text, Farbe, Position ueber der Figur
+const POS={graf:[112,90],imp:[100,110],gross:[214,64]};
+const GRAF_C='#ff9ac8',IMP_C='#c8b0ff';
+const SAYS=[
+  [15.8,19.3,'Heute Nacht holen wir uns die Unruh aus der großen Uhr.',GRAF_C,()=>POS.graf],
+  [19.5,21,'Und dann, Chef?',IMP_C,()=>POS.imp],
+  [21.2,25.2,'Dann steht die Uhr. Und wenn die Uhr steht, fängt keiner mehr was an.',GRAF_C,()=>POS.graf],
+  [25.5,28.6,'Aber erst mal eine kleine Pause. Ich mach das gleich.',GRAF_C,()=>POS.graf],
+  [28.7,30.6,'Chef, das sagen Sie seit vierzig Jahren.',IMP_C,()=>POS.imp],
+  [30.8,32.3,'Seufz.',IMP_C,()=>POS.imp],
+  [32.5,34.5,'Schon gut. Ich geh ja schon.',GRAF_C,()=>POS.graf],
+  [38.8,41.6,'So. Ohne dich tickt hier gar nichts mehr.',GRAF_C,()=>POS.gross],
+  [43.6,45.8,'Ab jetzt ist hier für immer später.',GRAF_C,()=>POS.gross]
+];
 function bigGong(t){const s='GO'+'N'.repeat(3+Math.floor((t-64)*4))+'…';const k=2;let w=textW(s)*k;const x0=Math.round((W-w)/2)+(RM?0:Math.round((Math.random()-.5)*4)),y0=TOP+18;
   for(const [dx,dy] of [[-1,0],[1,0],[0,-1],[0,1],[1,1]]){let x=x0;for(const ch of s){const g=G[ch]||G['?'];for(let r=0;r<g.length;r++)for(let c=0;c<g[r].length;c++)if(g[r][c]==='#')R(ctx,x+c*k+dx*2,y0+r*k+dy*2,k,k,'#000000');x+=(gw(ch)+1)*k;}}
   let x=x0;for(const ch of s){const g=G[ch]||G['?'];for(let r=0;r<g.length;r++)for(let c=0;c<g[r].length;c++)if(g[r][c]==='#')R(ctx,x+c*k,y0+r*k,k,k,r<2?'#fff0b0':'#ffd060');x+=(gw(ch)+1)*k;}}
@@ -799,7 +813,8 @@ function frame(t){
     else if(t<54)fogScene(t);
     else classScene(t);
     // Sprechtext in der Szene
-    for(const q of SAYS)if(t>=q[0]&&t<q[1]){const [x,y]=q[4](),w=textW(q[2]);text(q[2],clamp(Math.round(x-w/2),3,W-3-w),y-10,q[3],true);}
+    for(const q of SAYS)if(t>=q[0]&&t<q[1]){const [x,y]=q[4](),lines=wrap(q[2],180),top=Math.max(3,y-4-lines.length*LINEH);
+      lines.forEach((l,i)=>{const w=textW(l);text(l,clamp(Math.round(x-w/2),3,W-3-w),top+i*LINEH,q[3],true);});}
     ctx.restore();
     if(t>=64&&t<END)bigGong(t);
   }
