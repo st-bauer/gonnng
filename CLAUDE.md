@@ -21,7 +21,7 @@ Konter im Finale („Ausreden-Duell“). Das vollständige Konzept steht in `doc
 - Bedienung wie im Vorbild: neun Verben (Gib, Nimm, Benutze, Öffne, Schau an, Drücke, Schließe, Rede mit, Ziehe),
   Standardverb „Gehe zu“, Inventar, „Benutze X mit Y“, Sprechtext farbig über der Figur.
 - Ton: per Web Audio im Browser erzeugt (Chiptune), startet erst nach einem Tipp.
-- Speicherstand: noch offen (localStorage mit try/catch wäre die schlanke Lösung).
+- Speicherstand: localStorage mit try/catch, nach jeder Aktion (siehe `spiel/gonnng.html`).
 
 ## Grafik (Entscheidung vom 27.09.2026: alles im Code gezeichnet)
 
@@ -57,14 +57,18 @@ Canva-Arbeitsdatei: https://canva.link/mp6p64febvogrh4
 - Prolog im Code-Stil: `prolog/prolog-v2-code.html`. Neun Verben, Inventar, alle Hotspots, Zielgespräch mit
   mehreren witzigen Antworten pro Stufe, erweitertes Gespräch mit Krächz, Tippstufen, kompletter Lösungsweg.
   Veröffentlicht: https://claude.ai/artifact/NR1J7CbkmNjAhoJp5bv4YM
+- **Das Spiel: `spiel/gonnng.html`** (eine Datei, keine Bilder). Titel mit „Neues Spiel“ und „Weiterspielen“,
+  Namenswahl, Wahl Mädchen oder Junge (Mädchen mit Pferdeschwanz), dann Intro und Prolog am Stück.
+  Speicherstand im Browser (`localStorage`, Schlüssel `gonnng.spielstand.v1`, mit try/catch), gespeichert nach jeder Aktion.
+  Aufbau: gemeinsame Werkzeuge, Figuren und Schrift, dazu die Module `Intro` und `Prolog` mit eigenem Namensraum.
+  Die Dateien `intro/intro-v3-code.html` und `prolog/prolog-v2-code.html` bleiben als Einzelansichten, neue Arbeit geht in `spiel/gonnng.html`.
 - Zum Testen: `window.__frame(sekunde)` im Intro, `window.__act(verb, id, item)` und `window.__pick(i)` im Prolog.
 - Fachcheck offen: Große Turmuhren laufen meist mit Pendel, die Unruh sitzt eher in Taschen- und Tischuhren.
 
 ## Nächste Schritte
 
-1. Intro und Prolog zu einer Spieldatei zusammenführen, mit Speicherstand, Namenswahl und Wahl Mädchen oder Junge.
-2. Offene Punkte klären: Unruh oder Pendel, Namen der Nebenfiguren (Frau Kallweit, Jonas, Lina).
-3. Kapitel 1 „Die wandernden Flure“: erst einen Raum bauen und zeigen, dann den Rest.
+1. Offene Punkte klären: Unruh oder Pendel, Namen der Nebenfiguren (Frau Kallweit, Jonas, Lina).
+2. Kapitel 1 „Die wandernden Flure“: erst einen Raum bauen und zeigen, dann den Rest.
 
 ## Online-Dokument
 
