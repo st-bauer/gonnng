@@ -241,7 +241,7 @@ Abschiede, abwechselnd: „Bis gleich.“ Krächz: „‚Gleich‘ sagen hier sc
 
 **Fachliche Anmerkungen zum Prolog**
 
-- **Warum die Krümel erst nach dem Zielgespräch auffallen:** Die Krümel liegen von Anfang an sichtbar auf dem Boden. Vorher sagt die Figur beim Anschauen nur „Dreck. Irgendwelcher.“, nach dem Zielgespräch bemerkt sie sie von selbst („Moment mal. Was liegt denn da auf dem Boden?“). Ziele lenken Aufmerksamkeit und Anstrengung auf zielrelevante Tätigkeiten und weg von irrelevanten. Das ist der erste von vier Wirkmechanismen bei Locke und Latham (2002). Die Mechanik macht diesen Mechanismus direkt erlebbar.
+- **Warum die Krümel erst nach dem Zielgespräch auffallen:** Die Krümel liegen ab dem Licht-aus sichtbar auf dem Boden, denn der Dieb hat sie im Dunkeln verloren. Vorher sagt die Figur beim Anschauen nur „Dreck. Irgendwelcher.“, nach dem Zielgespräch bemerkt sie sie von selbst („Moment mal. Was liegt denn da auf dem Boden?“). Ziele lenken Aufmerksamkeit und Anstrengung auf zielrelevante Tätigkeiten und weg von irrelevanten. Das ist der erste von vier Wirkmechanismen bei Locke und Latham (2002). Die Mechanik macht diesen Mechanismus direkt erlebbar.
 - **Warum falsche Antworten keine Strafe kosten:** Fehler in Situationen ohne Druck, gefolgt von einer klaren Rückmeldung, fördern das Lernen (Metcalfe, 2017). Krächz’ Antworten sind diese Rückmeldung.
 - **Warum die Tipps gestuft sind:** Die erste Stufe verlangt von der Figur, selbst weiterzudenken. Das entspricht der Hilfe, die beim eigenen Lösen unterstützt (Nelson-Le Gall, 1981; Karabenick & Dembo, 2011).
 - **Das Hebelprinzip am Fenster** ist korrekt: Je länger der Hebelarm, desto weniger Kraft ist nötig. Für Klasse 5 reicht diese qualitative Form.
@@ -279,7 +279,7 @@ Die Hauptfigur muss durch die sich verschiebende Schule in den Heizungskeller, w
 | Kellerschlüssel | Grummelbart |  | Kellertor zum Land Später |
 | Kompass der Pläne | Grummelbart |  | Wegweiser bis zum Finale, Zahnrad der Stundenuhr (K4) |
 
-**Zwischensequenzen.** Zwischen den Stationen gibt es kurze, überspringbare Szenen ohne Verbleiste: die Rutschpartie durch den Lüftungsschacht, bei der die Figur mit der Kreide einen Pfeil an die Wand malt (Krächz: „Mach Zeichen an die Wand! Sonst finden wir nie zurück!“), und der Abstieg über die kalte Kellertreppe („Die Heizung ist aus. Seit dem Gong steht hier alles still.“).
+**Zwischensequenzen.** Zwischen den Stationen gibt es kurze, überspringbare Szenen ohne Verbleiste: die Rutschpartie durch den Lüftungsschacht (Krächz: „Flügel sind in Schächten übrigens völlig nutzlos!“) und der Abstieg über die kalte Kellertreppe („Die Heizung ist aus. Seit dem Gong steht hier alles still.“).
 
 **Die Spur in der Halle.** Unter dem Lüftungsgitter, durch das die Hauptfigur in die Halle plumpst, liegt ein zerknüllter Zettel voller Krümel, den der Dieb verloren hat: „Heft im Heizungskeller abgeben. Gleich. Oder später. Kekse nicht vergessen!“ Die Schrift ist sehr klein und krakelig (ein Hinweis auf die Größe des Diebs). Erst mit dem Zettel wird klar, warum die Figur zur Kellertreppe muss: Sie verfolgt ihr Ziel aus dem Prolog. Krächz ergänzt, dass hinter dem Heizungskeller das Land Später liegt, wo alles Aufgeschobene landet. Vorher lassen sich die Türen nicht benutzen („Erst mal schauen, was da auf dem Boden liegt.“).
 

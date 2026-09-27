@@ -1193,7 +1193,7 @@ async function ende(){
   await walkTo(290,104);face(false);
   await say('hero','Dann mal los. Bevor der Dieb über alle Berge ist.');
   S.hero.hidden=true;tone('triangle',400,0.8,0.05,120);await sleep(900);
-  S.fertig=true;await runCut(7.2,cutSchacht,[[0.3,2.2,'hero','Uiiiiii!'],[2.3,4.5,'kraechz','Mach Zeichen an die Wand! Sonst finden wir nie zurück!'],[4.6,6.9,'hero','Pfeil ist dran. Und da vorne wird es hell!']]);
+  S.fertig=true;await runCut(7.2,cutSchacht,[[0.3,2.2,'hero','Uiiiiii!'],[2.3,4.5,'kraechz','Flügel sind in Schächten übrigens völlig nutzlos!'],[4.6,6.9,'hero','Da vorne wird es hell!']]);
   await enterHalle();
 }
 async function eingang(){
@@ -1253,7 +1253,7 @@ function drawScene(now){
   if(S.gitter){R(ctx,296,78,20,17,'#101016');dith(ctx,296,78,20,17,['#08080c','#1a1a24'],(x,y)=>(y-78)/30);R(ctx,280,104,16,3,'#6e6e7c');R(ctx,280,104,16,1,'#9a9aa8');}
   else[[297,79],[314,79],[297,93],[314,93]].forEach(([x,y])=>P(ctx,x,y,'#e0e0e8'));
   // Kruemelspur, erst sichtbar, wenn das Ziel klar ist
-  [[246,111],[252,109],[259,108],[266,107],[273,106],[280,105],[287,103],[293,101],[299,99],[304,97]].forEach(([x,y],i)=>{P(ctx,x,y,'#e8c080');if(i%2)P(ctx,x+2,y+1,'#b07c48');});
+  if(!S.heft)[[246,111],[252,109],[259,108],[266,107],[273,106],[280,105],[287,103],[293,101],[299,99],[304,97]].forEach(([x,y],i)=>{P(ctx,x,y,'#e8c080');if(i%2)P(ctx,x+2,y+1,'#b07c48');});
   // Globus dreht sich
   if(S.globus>0)for(let i=0;i<3;i++){const x=259+((now/25+i*4)%11);R(ctx,Math.round(x),4,1,11,'#b8d0f0');}
   // Kraechz draussen hinter der Scheibe
@@ -1586,7 +1586,7 @@ function drawCut(now){
   if(t<0.4){ctx.globalAlpha=1-t/0.4;R(ctx,0,0,W,SH,'#000000');ctx.globalAlpha=1;}
 }
 function rotSprite(img,x,y,ax,ay,ang,flip){ctx.save();ctx.translate(Math.round(x),Math.round(y));ctx.rotate(ang);if(flip)ctx.scale(-1,1);ctx.drawImage(img,-ax,-ay);ctx.restore();}
-// Rutschpartie durch den Lueftungsschacht, die Figur malt mit Kreide einen Pfeil an die Wand
+// Rutschpartie durch den Lueftungsschacht
 function cutSchacht(t,now){
   const x0=-30,y0=18,x1=350,y1=128,ang=Math.atan2(y1-y0,x1-x0),wid=46;
   for(let i=0;i<=1;i+=0.002){const cx=x0+(x1-x0)*i,cy=y0+(y1-y0)*i;
@@ -1596,10 +1596,7 @@ function cutSchacht(t,now){
   for(let i=0.05;i<1;i+=0.09){const cx=x0+(x1-x0)*i,cy=y0+(y1-y0)*i;for(let d=-wid/2+3;d<wid/2-3;d+=2)P(ctx,Math.round(cx-Math.sin(ang)*d),Math.round(cy+Math.cos(ang)*d),'#0e121c');}
   ellFill(ctx,322,134,26,20,(x,y,dx,dy)=>bay(x,y)<0.6-(dx*dx+dy*dy)*0.5?'#fff0c0':null);
   const p=clamp(t/6.6,0,1),d=30+(x1-x0-110)*p,hx=x0+d,hy=y0+(y1-y0)*d/(x1-x0)+8;
-  // Kreidepfeil, sobald die Figur an der Stelle vorbei ist
-  if(t>4.6){const ax=x0+(x1-x0)*0.62,ay=y0+(y1-y0)*0.62-14;line(ctx,ax-10,ay-3,ax+8,ay+2,'#f4f4f0');line(ctx,ax+8,ay+2,ax+3,ay-3,'#f4f4f0');line(ctx,ax+8,ay+2,ax+2,ay+5,'#f4f4f0');}
-  const img=t>4.3&&t<4.8?SPR.heroReach:SPR.heroStand;
-  rotSprite(img,hx,hy,16,46,ang-0.15,false);
+  rotSprite(SPR.heroStand,hx,hy,16,46,ang-0.15,false);
   const kx=hx-58+Math.sin(t*3)*6,ky=hy-34+Math.cos(t*5)*3;
   spr(Math.floor(now/120)%2?SPR.ravenKnock:SPR.raven,kx,ky,11,19,true);
   S.cut.pos={hero:[hx-6,hy-50],kraechz:[kx,ky-20]};
