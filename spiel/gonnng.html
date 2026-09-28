@@ -1994,6 +1994,7 @@ async function combine(a,b){
 }
 // Grummelbarts Tafel lesen: seine Plaene und die eigenen
 async function tafelLesen(){
+  await say('hero',S.tafelGelesen?'Grummelbarts Tafel. Mal sehen, was da jetzt steht.':'Eine Tafel vom Hausmeister. Da hat er aufgeschrieben, wie er selbst durch diesen Gang kommt.');
   S.tafelGelesen=true;
   await showPanel([['Hausmeister Grummelbart. So komme ich hier durch:','#5a3a18'],[''],
     ['Wenn einer „Mach doch Feierabend!“ flüstert,'],['  dann pfeife ich mein Lied und schiebe den Besen weiter.'],
