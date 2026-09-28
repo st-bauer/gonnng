@@ -364,8 +364,12 @@ function makeImp(o){
   p.part(RAMP.imp,m=>m.ell(17,10-b,2.1,2),true);
   p.part(RAMP.cap,m=>{m.poly([[5,6-b],[16,4-b],[12,0-b],[4,2-b],[1,9-b]]);});
   p.part(RAMP.white,m=>m.ell(1.6,10-b,1.7,1.7),true);
-  if(o.yawn){p.px(13,12-b,'#3a0a0e').px(14,12-b,'#3a0a0e').px(13,13-b,'#3a0a0e').px(14,13-b,'#7a2a2e');p.px(13,8-b,'#3a2e48').px(14,8-b,'#3a2e48');}
-  else{p.px(13,8-b,'#ffffff').px(14,8-b,'#101018').px(13,7-b,'#6a5a80').px(14,7-b,'#6a5a80').px(12,12-b,'#3a2e48').px(13,12-b,'#3a2e48').px(14,11-b,'#3a2e48');}
+  // Augen: offen oder zu (gaehnen, schlafen). Mund: geschlossen, gaehnend oder sprechend.
+  const zu=o.yawn||o.zu;
+  if(zu)p.px(13,8-b,'#3a2e48').px(14,8-b,'#3a2e48');else p.px(13,8-b,'#ffffff').px(14,8-b,'#101018').px(13,7-b,'#6a5a80').px(14,7-b,'#6a5a80');
+  if(o.yawn)p.px(13,12-b,'#3a0a0e').px(14,12-b,'#3a0a0e').px(13,13-b,'#3a0a0e').px(14,13-b,'#7a2a2e');
+  else if(o.talk)p.px(12,12-b,'#3a0a0e').px(13,12-b,'#3a0a0e').px(14,12-b,'#3a0a0e').px(13,13-b,'#7a2a2e');
+  else p.px(12,12-b,'#3a2e48').px(13,12-b,'#3a2e48').px(14,11-b,'#3a2e48');
   p.part(RAMP.imp,m=>m.ell(16,17-b,1.6,1.6),true);
   if(o.heft){p.part(['#6a5a10','#b09a30','#e8d070','#fff0a0'],m=>m.rect(14,14-b,7,5),true);}
   if(o.keks){p.part(RAMP.wood,m=>m.ell(17,13-b,2.6,2.6),true);p.px(16,12-b,'#2a160c').px(18,14-b,'#2a160c');}
@@ -1384,7 +1388,8 @@ function build(){
   SPR.kall=makeKallweit({});SPR.kallTalk=makeKallweit({talk:1});
   SPR.jonas=[makeJonas({shake:0}),makeJonas({shake:1})];SPR.lina=makeLina();
   SPR.raven=makeRaven({});SPR.ravenKnock=makeRaven({knock:1});SPR.ravenTalk=makeRaven({talk:1});
-  SPR.imp=makeImp({});SPR.impYawn=makeImp({yawn:1,heft:1});SPR.impHeft=makeImp({heft:1});SPR.impSleep=makeImp({yawn:1});SPR.impKeks=makeImp({keks:1});
+  SPR.imp=makeImp({});SPR.impYawn=makeImp({yawn:1,heft:1});SPR.impHeft=makeImp({heft:1});SPR.impSleep=makeImp({zu:1});SPR.impKeks=makeImp({keks:1});
+  SPR.impTalk=makeImp({talk:1});SPR.impHeftTalk=makeImp({heft:1,talk:1});SPR.impSleepTalk=makeImp({zu:1,talk:1});SPR.impKeksTalk=makeImp({keks:1,talk:1});
   SPR.broesel=makeBroesel({});SPR.broeselTalk=makeBroesel({talk:1});SPR.broeselRuehr=makeBroesel({stir:1});SPR.broeselRuehr2=makeBroesel({stir:2});
   SPR.impWalk=[0,1,2,3].map(i=>makeImp({walk:1,phase:i/4}));SPR.impWalkHeft=[0,1,2,3].map(i=>makeImp({walk:1,phase:i/4,heft:1}));
 }
@@ -1843,8 +1848,8 @@ function drawGangBg(){
   for(let y=40;y<72;y++)for(let x=54;x<98;x++){const rand=x<56||x>95||y<42||y>69;
     P(g,x,y,rand?pick(KR.holz,0.5+(x<56||y<42?0.2:-0.2)+lampe(x,y)*0.2,x,y):pick(KR.tafel,0.25+lampe(x,y)*0.3-(y-42)/200,x,y));}
   R(g,58,44,26,1,'#9aa2b0');
-  [[58,47,34],[60,50,30],[58,53,32],[60,56,28]].forEach(([x,y,w])=>{for(let i=0;i<w;i++)if(bay(x+i,y)<0.7)P(g,x+i,y,'#c8ccd4');});
-  for(let i=0;i<26;i++)if(bay(58+i,59)<0.35)P(g,58+i,59,'#6e7488');
+  [[58,47,34],[60,49,28],[58,52,32],[60,54,24]].forEach(([x,y,w])=>{for(let i=0;i<w;i++)if(bay(x+i,y)<0.7)P(g,x+i,y,'#c8ccd4');});
+  for(let i=0;i<36;i+=2)P(g,57+i,57,'#8a90a4');for(let i=0;i<18;i++)if(bay(58+i,60)<0.7)P(g,58+i,60,'#e8b0b0');
   for(let x=60;x<66;x++){P(g,x,72,pick(KR.holz,0.7,x,72));P(g,x,73,pick(KR.holz,0.3,x,73));}
   // Eiserne Tuer zum Heizungskeller mit Nieten und Bullauge
   for(let y=40;y<106;y++)for(let x=280;x<312;x++){const rand=x<282||x>309||y<42;
@@ -1885,19 +1890,19 @@ function drawGang(now){
   ctx.drawImage(GANG,0,0);
   if(S.tuerAuf)R(ctx,282,42,28,64,'#05070c');
   // eigene Plaene der Figur als frische Kreidezeilen unten auf der Tafel
-  Object.keys(S.plaene||{}).forEach((k,i)=>{for(let x=0;x<24+i*3;x++)if(bay(58+x,62+i*3)<0.7)P(ctx,58+x,62+i*3,'#ffffff');});
+  Object.keys(S.plaene||{}).forEach((k,i)=>{for(let x=0;x<24+i*3;x++)if(bay(58+x,63+i*2)<0.7)P(ctx,58+x,63+i*2,'#ffffff');});
   // Lampe flackert ab und zu
   if(now%3700<80)R(ctx,157,8,7,7,'#343e52');
   drawHammock();drawKiste();
   const L=[];
   const whisp=id=>S.speech&&S.talker===id;
-  L.push({y:104,d:()=>{shadow(119,104,4);spr(whisp('auf1')&&Math.floor(now/140)%2?SPR.impYawn:SPR.imp,119,104,11,27,true);}});
-  L.push({y:70,d:()=>{rotSprite(whisp('auf2')&&Math.floor(now/140)%2?SPR.imp:SPR.impSleep,187,73,11,24,-Math.PI/2,false);}});
-  L.push({y:92,d:()=>{spr(SPR.impKeks,252,92,11,27,true);
+  L.push({y:104,d:()=>{shadow(119,104,4);spr(whisp('auf1')&&Math.floor(now/140)%2?SPR.impTalk:SPR.imp,119,104,11,27,true);}});
+  L.push({y:70,d:()=>{rotSprite(whisp('auf2')&&Math.floor(now/140)%2?SPR.impSleepTalk:SPR.impSleep,187,73,11,24,-Math.PI/2,false);}});
+  L.push({y:92,d:()=>{spr(whisp('auf3')&&Math.floor(now/140)%2?SPR.impKeksTalk:SPR.impKeks,252,92,11,27,true);
     if(Math.floor(now/400)%3===0){P(ctx,246,82+(now/60)%8|0,'#e8c080');}}});
   L.push({y:S.ky,d:()=>spr(S.speech&&S.talker==='kraechz'&&Math.floor(now/140)%2?SPR.ravenTalk:SPR.raven,S.kx,S.ky,11,19,S.kflip)});
   if(S.auf){const au=S.auf;L.push({y:au.y,d:()=>{
-    const img=au.walk?SPR.impWalkHeft[Math.floor(now/110)%4]:(au.yawn?SPR.impYawn:SPR.impHeft);shadow(au.x,au.y,4);spr(img,au.x,au.y,11,27,au.flip);}});}
+    const img=au.walk?SPR.impWalkHeft[Math.floor(now/110)%4]:au.yawn?SPR.impYawn:(S.speech&&S.talker==='auf'&&Math.floor(now/140)%2?SPR.impHeftTalk:SPR.impHeft);shadow(au.x,au.y,4);spr(img,au.x,au.y,11,27,au.flip);}});}
   const h=S.hero;
   if(!h.hidden)L.push({y:h.y,d:()=>{let img;
     if(h.walking)img=SPR.heroWalk[Math.floor(h.t*9)%6];else if(h.reach)img=SPR.heroReach;
@@ -1951,7 +1956,8 @@ async function stoer(d,plan){
   await walkTo(30,122);face(false);
   S.erlebt=S.erlebt||{};const neu=!S.erlebt[d.w];S.erlebt[d.w]=true;
   await say('hero','Moment mal. Warum stehe ich wieder an der Treppe?');
-  if(neu&&Object.keys(S.erlebt).length===1)await say('hero','Die flüstern einem genau das, worauf man reinfällt.');
+  if(neu&&Object.keys(S.erlebt).length===1){await say('hero','Die flüstern einem genau das, worauf man reinfällt.');
+    if(!S.tafelGelesen)await say('hero','Und an der Tafel neben mir hat jemand etwas dazu geschrieben.');}
 }
 async function enterGang(){
   S.room='gang';S.hero.hidden=false;S.hero.x=26;S.hero.y=120;S.hero.flip=false;S.kraechz='gang';S.kx=92;S.ky=20;S.kflip=false;
@@ -1987,14 +1993,17 @@ async function combine(a,b){
 // Grummelbarts Tafel lesen: seine Plaene und die eigenen
 async function tafelLesen(){
   S.tafelGelesen=true;
-  await showPanel([['Hausmeister Grummelbart:','#5a3a18'],['So komme ich durch den Flüstergang.','#5a3a18'],[''],
-    ['Wenn einer „Feierabend!“ flüstert,'],['  dann pfeife ich mein Lied und gehe weiter.'],
-    ['Wenn es nach Kaffee riecht,'],['  dann trinke ich aus meiner Thermoskanne.'],['Wenn … (verwischt) … dann …','#6e6e7c']]);
+  await showPanel([['Hausmeister Grummelbart. So komme ich hier durch:','#5a3a18'],[''],
+    ['Wenn einer „Mach doch Feierabend!“ flüstert,'],['  dann pfeife ich mein Lied und schiebe den Besen weiter.'],
+    ['Wenn die Lampe flackert,'],['  dann zähle ich laut die Schritte bis zur Tür.'],[''],
+    ['Platz für eure eigenen Pläne:','#a02234'],['  ………………………………………………','#8a8aa0'],
+    ['Kreide selbst mitbringen. Die wird hier ständig geklaut.','#5a3a18']]);
   const eig=Object.keys(S.plaene||{});
   if(eig.length){await showPanel([['Darunter, in frischer Kreide:','#5a3a18'],[''],
     ...eig.flatMap(w=>{const d=DANN.find(x=>x.id===S.plaene[w]);
       return[...wrap(WENN[w].replace(' …',','),280).map(t=>[t]),...wrap(d.text.replace('… ',''),272).map(t=>['  '+t])];})]);return;}
-  await say('hero','Der Hausmeister hat sich für jede Falle vorher überlegt, was er dann tut.');
+  if(has('kreide'))return say('hero','Platz für eigene Pläne. Und Kreide habe ich ja noch aus dem Klassenzimmer.');
+  return say('hero','Platz für eigene Pläne. Jetzt bräuchte ich nur Kreide.');
 }
 // Einen eigenen Plan mit Kreide an die Tafel schreiben
 async function planSchreiben(){
@@ -2318,7 +2327,7 @@ function drawKammer(now){
   const L=[];
   L.push({y:110,d:()=>{
     if(S.lappenGegeben){drawLappen(250,104);rotSprite(SPR.impSleep,262,104,11,24,-Math.PI/2,false);}
-    else rotSprite(S.speech&&S.talker==='aufK'&&Math.floor(now/140)%2?SPR.imp:SPR.impSleep,198,100,11,24,-Math.PI/2,false);
+    else rotSprite(S.speech&&S.talker==='aufK'&&Math.floor(now/140)%2?SPR.impSleepTalk:SPR.impSleep,198,100,11,24,-Math.PI/2,false);
     if(Math.floor(now/900)%2)text('z',S.lappenGegeben?252:188,S.lappenGegeben?84:80,'#c4b6d4',true);}});
   heroLayer(L,now);
   L.sort((p,q)=>p.y-q.y).forEach(o=>o.d());
