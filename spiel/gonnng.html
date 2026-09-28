@@ -54,6 +54,7 @@ button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
       <button data-szene="gang">Der Flüstergang</button>
       <button data-szene="kantine">Die Kantine</button>
       <button data-szene="keller">Der Heizungskeller</button>
+      <button data-szene="musik">Der Musikraum</button>
       <button id="szenenZurueck">Zurück</button>
     </div>
     <div class="overlay setup" id="setup" hidden>
@@ -1104,6 +1105,9 @@ const ITEMS={
   pulver:{name:'Puddingpulver',look:'Vanillepuddingpulver. Leicht angesabbert.'},
   topflappen:{name:'Topflappen',look:'Dick, gesteppt, weich. Ein Kissen für sehr kleine Köpfe.'},
   kekse:{name:'Kekse',look:'Frau Brösels Kekse. Noch warm. Riechen nach Schokolade und Anfang.'},
+  kordel:{name:'Kordel',look:'Eine rote Kordel von Emils Flötenbeutel. Lang genug zum Festbinden.'},
+  angel:{name:'Angel',look:'Ein Lineal mit einer Kordel dran. Fehlt nur noch der Köder.'},
+  keksangel:{name:'Keks-Angel',look:'Ein Keks an der Kordel, die Kordel am Lineal. Brikett, ich komme.'},
   notiz:{name:'Zettel',look:'„Heft im Heizungskeller abgeben. Gleich. Oder später.“ Voller Kekskrümel. Die Schrift ist sehr klein.'}
 };
 function icon(g,id,x,y){
@@ -1117,12 +1121,15 @@ function icon(g,id,x,y){
   if(id==='pulver'){kastenG(g,x+11,y+4,10,12,KR.buchY,0.55);beutelG(g,x+16,y+10,2.5,2.5,KR.buchR,0.5);}
   if(id==='topflappen'){kastenG(g,x+10,y+4,12,12,KR.buchR,0.5);for(let k=0;k<12;k+=3)for(let j=0;j<12;j++)if((j+k)%2===0)P(g,x+11+k,y+4+j,pick(KR.buchR,0.2,x,y));P(g,x+15,y+2,'#383840');P(g,x+15,y+3,'#383840');}
   if(id==='kekse'){keksG(g,x+10,y+7,4);keksG(g,x+19,y+9,4);keksG(g,x+14,y+12,4);}
+  if(id==='kordel'){ellFill(g,x+16,y+9,7,5,(px,py,dx,dy)=>{const r=dx*dx+dy*dy;return r>0.45&&r<1?pick(KR.buchR,0.6-dy*0.3,px,py):r<0.2?pick(KR.buchR,0.4,px,py):null;});line(g,x+22,y+11,x+27,y+15,'#b02a3c');}
+  if(id==='angel'||id==='keksangel'){for(let i=0;i<22;i++){P(g,x+4+i,y+14-Math.floor(i/2),pick(KR.dielen,0.8,i,0));P(g,x+4+i,y+15-Math.floor(i/2),pick(KR.dielen,0.5,i,0));}
+    line(g,x+26,y+3,x+27,y+12,'#e0606a');if(id==='keksangel')keksG(g,x+27,y+14,3);}
   if(id==='notiz'){kastenG(g,x+10,y+3,12,11,KR.papier,0.8);for(let i=5;i<13;i+=2)for(let k=12;k<20;k++)P(g,x+k,y+i,'#8a8aa0');P(g,x+19,y+11,'#b07c48');P(g,x+13,y+12,'#b07c48');}
 }
 
-const K={hero:'#ffffff',kraechz:'#9ab8ff',kallweit:'#ff9ac8',jonas:'#8af08a',lina:'#ffd070',auf:'#d0a8ff',auf1:'#d0a8ff',auf2:'#d0a8ff',auf3:'#d0a8ff',broesel:'#ffb070',aufK:'#d0a8ff',grummel:'#b8dcf0',brikett:'#ffa040'};
+const K={hero:'#ffffff',kraechz:'#9ab8ff',kallweit:'#ff9ac8',jonas:'#8af08a',lina:'#ffd070',auf:'#d0a8ff',auf1:'#d0a8ff',auf2:'#d0a8ff',auf3:'#d0a8ff',broesel:'#ffb070',aufK:'#d0a8ff',grummel:'#b8dcf0',brikett:'#ffa040',fermate:'#ffb8e0',emil:'#a0e8ff',kind2:'#c8f0a0',kind3:'#c8f0a0',kind4:'#c8f0a0'};
 const heroHead=()=>[S.hero.x,S.hero.y-46];
-const HEADS={kallweit:()=>[102,42],jonas:()=>[132,94],lina:()=>[42,96],kraechz:()=>[S.kx,S.ky-20],auf:()=>S.auf?[S.auf.x,S.auf.y-28]:[250,80],auf1:()=>[119,74],auf2:()=>[187,52],auf3:()=>[252,62],broesel:()=>S.broesel>=1?[196,52]:[132,52],aufK:()=>S.lappenGegeben?[262,80]:[198,78],grummel:()=>[94,50],brikett:()=>[240,70]};
+const HEADS={kallweit:()=>[102,42],jonas:()=>[132,94],lina:()=>[42,96],kraechz:()=>[S.kx,S.ky-20],auf:()=>S.auf?[S.auf.x,S.auf.y-28]:[250,80],auf1:()=>[119,74],auf2:()=>[187,52],auf3:()=>[252,62],broesel:()=>S.broesel>=1?[196,52]:[132,52],aufK:()=>S.lappenGegeben?[262,80]:[198,78],grummel:()=>[94,50],brikett:()=>[240,70],fermate:()=>[262,50],emil:()=>[120,62],kind2:()=>[152,62],kind3:()=>[184,62],kind4:()=>[216,62]};
 
 const HS=[
   {id:'kraechz',name:'Krächz',rect:()=>S.kraechz==='aussen'?[34,62,22,18]:[S.kx-11,S.ky-19,22,19],walk:[80,106],flip:true},
@@ -1185,7 +1192,7 @@ const FALLBACK={
   schliesse:()=>'Da gibt es nichts zu schließen.',druecke:()=>'Da tut sich nichts.',ziehe:()=>'Da tut sich nichts.',
   rede:()=>'Mit Gegenständen rede ich nur im Notfall.',gib:()=>'Das will hier niemand haben.',benutze:()=>'Das bringt nichts.'
 };
-function stage(){if(S.room==='heiz')return'heiz';if(S.room==='gang')return'gang';if(S.room==='halle'&&S.brauchSchnur&&!has('kordel'))return'musik';if(S.room==='kantine'||S.room==='kammer')return'kueche';if(S.room==='halle')return S.suchKantine&&!has('kekse')?'kantine':has('kekse')?'flure':S.flureGeschafft?'fertig':(S.spur?'flure':'spur');if(!S.fenster)return'fenster';if(!S.ziel)return'ziel';if(!S.kruemelGesehen)return'kruemel';if(!S.gitter)return'gitter';if(S.inv.indexOf('kreide')<0)return'kreide';return'fertig';}
+function stage(){if(S.room==='heiz')return'heiz';if(S.room==='musik')return'musikraum';if(S.room==='gang')return'gang';if(S.room==='halle'&&S.brauchSchnur&&!has('kordel'))return'musik';if(S.room==='kantine'||S.room==='kammer')return'kueche';if(S.room==='halle')return S.suchKantine&&!has('kekse')?'kantine':has('kekse')?'flure':S.flureGeschafft?'fertig':(S.spur?'flure':'spur');if(!S.fenster)return'fenster';if(!S.ziel)return'ziel';if(!S.kruemelGesehen)return'kruemel';if(!S.gitter)return'gitter';if(S.inv.indexOf('kreide')<0)return'kreide';return'fertig';}
 const TIPPS={flure:['Hau mal auf den Gong und schau, was mit den Schildern passiert.','Wenn du losläufst, gongt es. Geh also dahin, wo die Kellertreppe nach dem nächsten Gong steht.','Die Räume rücken im Uhrzeigersinn eine Tür weiter und hüpfen am Musikraum vorbei. Von Osten geht es also direkt nach Westen.'],kruemel:['Wohin ist der Dieb wohl verschwunden?','Wer klaut, hat es eilig. Und wer es eilig hat, krümelt. Schau mal nach unten.','Die Krümel führen zum Gitter.'],
   kantine:['Diesmal suchst du die Kantine. Hau auf den Gong und schau, wohin sie wandert.','Beim Losgehen gongt es. Geh also dahin, wo die Kantine nach dem nächsten Gong steht.','Such das Schild „Kantine“. Die Tür im Uhrzeigersinn daneben ist deine, der Süden zählt nicht mit.'],
   gitter:['Schrauben brauchen einen Dreher.','Schlitzschrauben mag alles, was flach und rund ist.','In Pulten liegt oft Kleingeld.']};
@@ -1196,6 +1203,7 @@ async function tipp(){const st=stage();
   if(st==='gang')return gangTipp();
   if(st==='kueche')return kantineTipp();
   if(st==='heiz')return heizTipp();
+  if(st==='musikraum')return musikTipp();
   if(st==='musik'){await say('kraechz','Eine Kordel suchst du. Der Musikraum bleibt immer im Süden, da kannst du gar nicht falsch laufen.');return;}
   const i=Math.min(S.tipp[st]||0,2);S.tipp[st]=i+1;await say('kraechz',TIPPS[st][i]);}
 function choose(options){return new Promise(r=>{S.dialog={options,resolve:i=>{S.dialog=null;r(i);}};});}
@@ -1288,6 +1296,7 @@ async function act(verb,h,item){
   if(S.room==='kantine')return actKantine(verb,h,item);
   if(S.room==='kammer')return actKammer(verb,h,item);
   if(S.room==='heiz')return actHeiz(verb,h,item);
+  if(S.room==='musik')return actMusik(verb,h,item);
   const id=h.id;
   if(item){
     if(verb==='gib'){if(id==='kraechz')return say('kraechz','Behalte das mal schön selbst.');if(['jonas','lina','kallweit'].includes(id))return say(id,'Gleich.');return say('hero',FALLBACK.gib());}
@@ -1394,7 +1403,7 @@ function build(){
   SPR.raven=makeRaven({});SPR.ravenKnock=makeRaven({knock:1});SPR.ravenTalk=makeRaven({talk:1});
   SPR.imp=makeImp({});SPR.impYawn=makeImp({yawn:1,heft:1});SPR.impHeft=makeImp({heft:1});SPR.impSleep=makeImp({zu:1});SPR.impKeks=makeImp({keks:1});
   SPR.impTalk=makeImp({talk:1});SPR.impHeftTalk=makeImp({heft:1,talk:1});SPR.impSleepTalk=makeImp({zu:1,talk:1});SPR.impKeksTalk=makeImp({keks:1,talk:1});
-  SPR.grummel=makeGrummel({});SPR.grummelTalk=makeGrummel({talk:1});SPR.broesel=makeBroesel({});SPR.broeselTalk=makeBroesel({talk:1});SPR.broeselRuehr=makeBroesel({stir:1});SPR.broeselRuehr2=makeBroesel({stir:2});
+  SPR.kinder=kinderSprites();SPR.fermate=[0,1,2].map(a=>makeFermate({arm:a,wach:a>0}));SPR.fermateTalk=[makeFermate({talk:1}),makeFermate({arm:1,wach:1,talk:1})];SPR.grummel=makeGrummel({});SPR.grummelTalk=makeGrummel({talk:1});SPR.broesel=makeBroesel({});SPR.broeselTalk=makeBroesel({talk:1});SPR.broeselRuehr=makeBroesel({stir:1});SPR.broeselRuehr2=makeBroesel({stir:2});
   SPR.impWalk=[0,1,2,3].map(i=>makeImp({walk:1,phase:i/4}));SPR.impWalkHeft=[0,1,2,3].map(i=>makeImp({walk:1,phase:i/4,heft:1}));
 }
 // Figur mit Fusspunkt zeichnen, ax = Ankerpunkt im Bild
@@ -1412,6 +1421,7 @@ function drawScene(now){
   if(S.room==='kantine')return drawKantine(now);
   if(S.room==='kammer')return drawKammer(now);
   if(S.room==='heiz')return drawHeiz(now);
+  if(S.room==='musik')return drawMusik(now);
   ctx.drawImage(ROOM,0,0);
   // Sekundenzeiger zittert auf der Stelle
   const a=-2.2+Math.sin(now/40)*0.08;line(ctx,226,24,226+Math.cos(a)*7,24+Math.sin(a)*7,'#c83030');
@@ -1479,7 +1489,7 @@ const VCELL=(i)=>{const col=Math.floor(i/3),row=i%3;return[4+col*62,156+row*14,6
 const ORDER=['gib','nimm','benutze','oeffne','schau','druecke','schliesse','rede','ziehe'];
 const ICELL=i=>[208+(i%3)*37,156+Math.floor(i/3)*22,35,20];
 const IUP=[195,156,11,20],IDOWN=[195,178,11,20];
-const isFloor=id=>id==='boden'||id==='bodenH'||id==='bodenG'||id==='bodenZ';
+const isFloor=id=>id==='boden'||id==='bodenH'||id==='bodenG'||id==='bodenZ'||id==='bodenM';
 function invAt(x,y){for(let k=0;k<6;k++){const i=(S.invOff||0)*3+k;if(i<S.inv.length&&inR(x,y,ICELL(k)))return i;}return -1;}
 function inR(x,y,[a,b,w,h]){return x>=a&&x<a+w&&y>=b&&y<b+h;}
 const optDY=()=>S.dialog&&S.dialog.options.length>4?10:12;   // bei vielen Antworten enger
@@ -1517,6 +1527,7 @@ cv.addEventListener('pointermove',e=>{if(MODE()!=='prolog')return;S.mouse=toPx(e
 cv.addEventListener('pointerleave',()=>{S.mouse=null;S.hover=null;});
 cv.addEventListener('click',e=>{if(MODE()!=='prolog')return;
   const [x,y]=toPx(e);
+  if(S.klatsch)return;
   if(skipLine){skipLine();return;}
   if(S.sort){S.sort.click(x,y);return;}
   if(S.dialog){if(y>=SH){const i=Math.floor((y-146)/optDY());if(i>=0&&i<S.dialog.options.length)S.dialog.resolve(i);}return;}
@@ -1536,7 +1547,8 @@ cv.addEventListener('click',e=>{if(MODE()!=='prolog')return;
   if(verb==='gehe'&&!h.exit){run(async()=>{if(await goTo(wx,wy))face(h.flip);});return;}
   run(async()=>{if(!await goTo(wx,wy))return;face(h.flip);await act(verb,h,item);});
 });
-document.addEventListener('keydown',e=>{if(MODE()!=='prolog')return;if((e.key===' '||e.key==='Enter')&&skipLine){e.preventDefault();skipLine();}});
+cv.addEventListener('pointerdown',()=>{if(MODE()==='prolog'&&S.klatsch)klatsch();});
+document.addEventListener('keydown',e=>{if(MODE()!=='prolog')return;if(S.klatsch&&(e.key===' '||e.key==='Enter')){e.preventDefault();if(!e.repeat)klatsch();return;}if((e.key===' '||e.key==='Enter')&&skipLine){e.preventDefault();skipLine();}});
 
 /* ---------- Schleife ---------- */
 let last=performance.now();
@@ -1555,7 +1567,7 @@ const START=['kantine','bio','keller'];           // Takt 0: Nord, Ost, West
 const RAUM_NAME={kantine:'Kantine',bio:'Biologieraum',keller:'Kellertreppe',musik:'Musikraum'};
 function raumAn(tuer,takt){if(tuer==='sued')return'musik';const i=RING.indexOf(tuer);return START[((i-takt)%3+3)%3];}
 const BAND_HALLE={x0:22,x1:298,y0:98,y1:136};
-const curBand=()=>S.room==='halle'?BAND_HALLE:S.room==='gang'?BAND_GANG:S.room==='kantine'?BAND_KANTINE:S.room==='kammer'?BAND_KAMMER:S.room==='heiz'?BAND_HEIZ:BAND;
+const curBand=()=>S.room==='halle'?BAND_HALLE:S.room==='gang'?BAND_GANG:S.room==='kantine'?BAND_KANTINE:S.room==='kammer'?BAND_KAMMER:S.room==='heiz'?BAND_HEIZ:S.room==='musik'?BAND_MUSIK:BAND;
 
 let HALLE=null;
 function drawHalleBg(){
@@ -1724,7 +1736,7 @@ const HS_HALLE=[
   {id:'sued',name:()=>'Weg nach Süden',exit:true,rect:()=>[120,124,80,20],walk:[160,136],flip:false},
   {id:'bodenH',name:'Boden',floor:true,rect:()=>[20,98,280,40],walk:[0,0],flip:false}
 ];
-const curHS=()=>S.room==='halle'?HS_HALLE:S.room==='gang'?HS_GANG:S.room==='kantine'?HS_KANTINE:S.room==='kammer'?HS_KAMMER:S.room==='heiz'?HS_HEIZ:HS;
+const curHS=()=>S.room==='halle'?HS_HALLE:S.room==='gang'?HS_GANG:S.room==='kantine'?HS_KANTINE:S.room==='kammer'?HS_KAMMER:S.room==='heiz'?HS_HEIZ:S.room==='musik'?HS_MUSIK:HS;
 async function travel(tuer){
   S.hero.hidden=true;tone('triangle',300,0.3,0.04,200);
   await sleep(500);gongSchlag();await sleep(700);
@@ -1740,7 +1752,11 @@ async function travel(tuer){
     await showCard('Die Kantine',unterwegs+'Es riecht nach kalter Küche.');
     return enterKantine();
   }
-  const T={musik:['Der Musikraum','Das Blockflötenorchester hält dich fest, bis du den Takt nachklatschst. Dieses Rätsel kommt noch. Für heute lässt man dich laufen.'],
+  if(ziel==='musik'&&(S.brauchSchnur||S.orchesterWach)){
+    await showCard('Der Musikraum',unterwegs+'Nur der Musikraum bleibt, wo er ist. Das Blockflötenorchester ist zu schwer zum Wandern.');
+    return enterMusik();
+  }
+  const T={musik:['Der Musikraum','Das Blockflötenorchester sitzt erstarrt da, die Flöten am Mund. Ohne Grund willst du hier nicht rein.'],
     kantine:['Die Kantine','Frau Brösel seufzt über zweihundert Mittagessen. Ohne Grund willst du hier nicht rein.'],
     bio:['Der Biologieraum','Die Topfpflanzen streiten sich, wer mehr Licht bekommt. Keine Kellertreppe weit und breit.']}[ziel];
   await showCard(T[0],unterwegs+T[1]);
@@ -2024,6 +2040,10 @@ async function leaveGang(){
 // Gegenstaende miteinander benutzen. Bisher passt hier nichts zusammen.
 async function combine(a,b){
   if(a===b)return say('hero','Mit sich selbst? Philosophisch.');
+  const paar=(p,q)=>[a,b].includes(p)&&[a,b].includes(q);
+  if(paar('lineal','kordel')){take('lineal');take('kordel');give('angel');tone('triangle',660,0.2,0.05);return say('hero','Kordel ans Lineal gebunden. Eine Angel. Fehlt nur noch der Köder.');}
+  if(paar('angel','kekse')){take('angel');give('keksangel');tone('triangle',880,0.2,0.05);return say('hero','Ein Keks, gut festgeknotet. Die Keks-Angel ist fertig.');}
+  if(paar('kordel','kekse'))return say('hero','Ein Keks an der Kordel baumelt nur herum. Damit komme ich nicht in den Spalt. Da braucht es was Langes und Steifes.');
   if([a,b].includes('lineal')&&[a,b].includes('kekse')){S.brauchSchnur=true;
     return say('hero','Den Keks auf das Lineal legen? Der rutscht sofort runter. Ich müsste ihn festbinden. Mit einer Schnur oder einer Kordel.');}
   return say('hero','Das passt nicht zusammen.');
@@ -2824,6 +2844,9 @@ async function actHeiz(verb,h,item){
       if(item==='kekse'&&verb==='gib'){await reach();await say('hero','Hier, ein Keks. Komm schon.');S.brikettScheu=true;tone('triangle',200,0.2,0.04,120);
         return say('hero','Die Augen wandern tiefer in den Spalt. Ich bin ihm zu nah.');}
       if(item==='kekse')return say('hero','Reinwerfen? Dann liegt der Keks im Dreck hinterm Kessel, und Brikett bleibt trotzdem drin. Er soll ja zu mir kommen.');
+      if(item==='angel')return say('hero','Ohne Köder beißt da keiner an.');
+      if(item==='kordel')return say('hero','Die Kordel ist zu schlapp. Die rutscht nicht in den Spalt.');
+      if(item==='keksangel'){await reach();return showCard('Hier endet die Vorschau','Im nächsten Schritt beißt Brikett an.');}
       if(item==='lineal'){await reach();S.linealPasst=true;return say('hero','Das Lineal passt in den Spalt. Lang und flach eben. Nur locken kann man damit keinen.');}
       return say('hero','Das passt da nicht rein.');
     }
@@ -2883,6 +2906,291 @@ async function heizTipp(){
   if(!S.brikettBekannt)t='Grummelbart friert. Frag ihn doch mal, warum es hier so kalt ist.';
   else if(!S.brauchSchnur)t='Brikett mag Kekse. Aber wie hält man ihm einen Keks vor die Nase, ohne selbst in den Spalt zu greifen?';
   else t='Schnüre, Bänder, Kordeln. Jede Blockflöte in dieser Schule wohnt in einem Beutel mit Kordel. Und die Blockflöten wohnen im Musikraum.';
+  await say('kraechz',t);
+}
+
+/* =====================================================================
+   Kapitel 1: Der Musikraum mit Frau Fermate und dem Blockflötenorchester
+   Alle sind erstarrt, die Flöten am Mund. Das Metronom steht, seit es gegongt hat, und ohne Tempo zählt Frau Fermate nicht ein.
+   Die Figur stößt das Pendel an (80 Schläge in der Minute) und zählt mit vier Klatschern im Takt ein.
+   Das Orchester setzt ein und wird dabei wach. Zum Dank gibt Emil die Kordel von seinem Flötenbeutel.
+   ===================================================================== */
+const BAND_MUSIK={x0:40,x1:296,y0:112,y1:134};
+const TAKT_MS=750;                                   // 80 Schläge in der Minute
+const KINDER=[{id:'emil',x:118},{id:'kind2',x:150},{id:'kind3',x:182},{id:'kind4',x:214}];
+let MUSIK=null;
+function drawMusikBg(){
+  const [c,g]=mk(W,SH);
+  const hash=(a,b)=>((a*73856093)^(b*19349663))>>>0;
+  const WB=100,VX=160,VY=40;
+  const MIX=mkMix(KR.putz,KR.putzW,8);
+  // Licht: Morgensonne durch das Fenster links, sonst kuehles Raumlicht
+  const sonne=(x,y)=>Math.max(0,1-Math.hypot(x-66,(y-28)*1.1)/190);
+  const L=(x,y)=>0.14+sonne(x,y)*0.62;
+  const w=(x,y)=>clamp(sonne(x,y)*1.5-0.15,0,1);
+  for(let y=0;y<WB;y++)for(let x=0;x<W;x++){let t=L(x,y)-Math.max(0,8-y)/30-Math.max(0,y-90)/40-Math.max(0,x-280)/150;
+    if(y>=78)t-=0.08;if(y===78)t+=0.12;if(y===79)t-=0.1;                    // Sockel aus Holz unten an der Wand
+    P(g,x,y,y>=78?pick(KR.holz,t+0.1,x,y):pickMix(MIX,w(x,y),t+((hash(x>>2,y>>2)%5)-2)*0.008,x,y));}
+  // Parkett in der Flucht mit Sonnenfleck unter dem Fenster
+  for(let y=WB;y<SH;y++)for(let x=0;x<W;x++){const d=y-VY,u=(x-VX)*50/d,pl=Math.floor(u/10),fu=u/10-pl,v=820/d+(hash(pl,5)%10)/3,st=Math.floor(v/4),fv=v/4-st;
+    let t=0.22+Math.max(0,1-Math.hypot(x-110,(y-120)*2)/110)*0.35+((hash(pl,st)%5)-2)*0.02-(y-WB)/320;
+    if(inPoly(x+0.5,y+0.5,[[46,100],[92,100],[168,140],[96,144]]))t+=0.22;
+    if(fu<0.07||fv<0.05)t-=0.1;t-=Math.max(0,3-(y-WB))*0.07;
+    P(g,x,y,pick(KR.dielen,t,x,y));}
+  // Tuer zur Halle links
+  for(let y=30;y<WB;y++)for(let x=4;x<34;x++){const rand=x<7||x>30||y<33;let t=0.35+sonne(x,y)*0.3-(x-4)/120+Math.sin(x*0.9+Math.sin(y*0.15)*2)*0.04;
+    const fuell=(y>38&&y<60||y>64&&y<WB-4)&&x>10&&x<28;if(fuell)t-=0.08;P(g,x,y,pick(KR.holz,rand?0.12:t,x,y));}
+  R(g,26,66,3,2,'#b08820');P(g,26,66,'#fff0a0');
+  // Fenster mit Himmel und Fensterkreuz, darunter ein Klavier
+  for(let y=8;y<52;y++)for(let x=42;x<94;x++){const rand=x<45||x>90||y<11||y>48;
+    P(g,x,y,rand?pick(KR.email,0.7-(y-8)/200,x,y):pick(KR.himmel,0.35+(y-11)/50+(Math.abs((x-45)-(y-11)*0.9-10)<2?0.2:0),x,y));}
+  for(let y=11;y<49;y++){P(g,67,y,'#ffffff');P(g,68,y,'#c8cedc');}for(let x=45;x<91;x++){P(g,x,29,'#ffffff');P(g,x,30,'#c8cedc');}
+  polyFill(g,[[40,52],[96,52],[98,55],[38,55]],(x,y)=>pick(KR.email,y<54?0.95:0.6,x,y));
+  // Klavier: Korpus, Deckel, Tastatur mit schwarzen Tasten, Pedale
+  for(let y=58;y<WB;y++)for(let x=38;x<100;x++){let t=0.14+sonne(x,y)*0.3-(x-38)/300+Math.sin(x*0.7+Math.sin(y*0.2)*2)*0.03;if(y<61)t+=0.18;if(y>=78&&y<=80)t+=0.08;
+    P(g,x,y,pick(KR.holz,t,x,y));}
+  for(let x=40;x<98;x++){for(let y=72;y<77;y++)P(g,x,y,(x-40)%4===3?'#8a8a98':pick(KR.email,0.95-(y-72)/12,x,y));
+    const k=(x-40)%28;if([2,3,6,7,14,15,18,19,22,23].includes(k))for(let y=72;y<75;y++)P(g,x,y,'#141018');}
+  for(let x=40;x<98;x++){P(g,x,77,pick(KR.holz,0.1,x,77));P(g,x,71,pick(KR.holz,0.5,x,71));}
+  [62,68,74].forEach(x=>kastenG(g,x,96,3,2,KR.gold,0.6));
+  // Tafel mit Notenlinien und Noten
+  for(let y=12;y<48;y++)for(let x=118;x<222;x++){const rand=x<120||x>219||y<14||y>45;
+    P(g,x,y,rand?pick(KR.holz,0.35+sonne(x,y)*0.3,x,y):pick(KR.tafel,0.35+sonne(x,y)*0.4-(y-14)/150,x,y));}
+  for(let r=0;r<2;r++)for(let l=0;l<5;l++)for(let x=124;x<216;x++)if(bay(x,l)<0.8)P(g,x,20+r*14+l*2,'#a8b8b0');
+  const noten=[[0,4],[1,4],[2,1],[3,1],[4,0],[5,0],[6,1],[8,2],[9,2],[10,3],[11,3],[12,4]];
+  noten.forEach(([i,h])=>{const x=130+i*6,y=21+h*2;P(g,x,y,'#f4f6f0');P(g,x+1,y,'#f4f6f0');P(g,x,y+1,'#f4f6f0');P(g,x+1,y+1,'#f4f6f0');for(let k=1;k<6;k++)P(g,x+2,y+1-k,'#f4f6f0');});
+  // Schrank rechts mit Trommel und Triangel
+  for(let y=34;y<WB;y++)for(let x=280;x<318;x++){let t=0.3+L(x,y)*0.3-(x-280)/140;if(y===34||y===66)t+=0.12;if(x===298)t-=0.12;P(g,x,y,pick(KR.holz,t,x,y));}
+  zylG(g,284,24,16,10,KR.buchR,0.45);ellFill(g,292,24,8,2,(x,y,dx,dy)=>pick(KR.papier,0.8-dx*0.2,x,y));
+  line(g,306,20,302,31,'#9aa8bc');line(g,306,20,310,31,'#9aa8bc');line(g,302,31,310,31,'#9aa8bc');
+  // Stuehle fuer das Orchester: Sitzflaeche, Lehne, Metallbeine, Schatten gleich mit
+  KINDER.forEach(k=>{const x=k.x;
+    for(let yy=100;yy<104;yy++)for(let xx=x-12;xx<x+6;xx++)if(bay(xx,yy)<0.5)P(g,xx+3,yy+2,'#2a1408');
+  });
+  return c;
+}
+// Kind im Orchester, sitzend auf einem Stuhl: 38 x 46, Fusspunkt (16,45), schaut nach rechts, Floete am Mund
+function makeKind(o){
+  const p=new Pup(38,46);
+  p.part(RAMP.chair,m=>{m.rect(8,10,2,36);m.rect(8,29,14,3);m.rect(20,31,2,15);});
+  // Floetenbeutel an der Lehne, mit Kordel
+  p.part(o.bag,m=>m.poly([[3,17],[9,17],[10,28],[2,28]]),true);
+  if(!o.ohneKordel)[[9,11],[8,12],[7,13],[7,14],[6,15],[5,16],[4,17]].forEach(([x,y])=>p.px(x,y,'#f0dca8'));
+  p.part(RAMP.jeans,m=>{m.limb(13,29,25,29,2.6,2.3);m.limb(25,29,26,38,2.2,2);});
+  p.part(RAMP.shoe,m=>{m.ell(27.5,42,3.2,1.6);m.rect(24,38,4,4);},true);
+  p.part(o.shirt,m=>m.poly([[10,15],[19,15],[21,29],[9,30]]));
+  if(o.zopf)p.part(o.hair,m=>m.limb(10,10,7,19,1.8,1.4));
+  p.part(RAMP.skin,m=>{m.rect(14,13,3,3);m.ell(16,8.5,5.3,5.6);m.ell(21,9,1.3,1.4);});
+  p.part(o.hair,m=>{m.ell(14.5,4.6,6,3.6);m.ell(11.5,8,2.4,4);});
+  const f=o.play?1:0;
+  // Floete schraeg vom Mund nach unten, beide Haende daran; beim Reden sinkt sie etwas
+  const fy=o.talk?3:0;
+  p.part(['#5a3a14','#9a7440','#d0b078','#f0dcb0'],m=>m.limb(22,12+fy,29,22+fy,0.9,1.2),true);
+  p.part(o.shirt,m=>{m.limb(17,17,24,15+fy,2,1.6);m.limb(15,19,26,19+fy,2,1.6);},true);
+  p.part(RAMP.skin,m=>{m.ell(24.5,15+fy-f*0.5,1.7,1.7);m.ell(26.5,19+fy+f*0.5,1.7,1.7);},true);
+  p.px(18,7,'#ffffff').px(19,7,'#241a24').px(17,6,'#241a24').px(18,6,'#241a24');
+  if(o.talk)p.px(20,11,'#3a0a0e').px(21,11,'#7a2a2e');
+  if(o.play)p.px(20,10,'#e86050');
+  return p.canvas();
+}
+// Frau Fermate, Musiklehrerin: 34 x 58, Fusspunkt (16,56), schaut nach rechts, Taktstock in der rechten Hand
+function makeFermate(o){
+  const p=new Pup(34,58),a=o.arm||0;
+  p.part(RAMP.skin,m=>{m.rect(12,48,3,6);m.rect(18,48,3,6);});
+  p.part(RAMP.bshoe,m=>{m.ell(13.5,55,3,1.4);m.ell(20.5,55,3,1.4);},true);
+  p.part(RAMP.tie,m=>m.poly([[10,22],[23,22],[27,49],[6,49]]));
+  p.part(RAMP.blouse,m=>m.poly([[11,22],[22,22],[22,30],[11,30]]),true);
+  p.part(RAMP.tie,m=>m.limb(12,24,10,36,2.4,2),true);
+  p.part(RAMP.skin,m=>m.ell(10,37.5,1.8,1.8),true);
+  // Taktstockarm: erhoben (erstarrt) oder beim Dirigieren oben, seitlich, unten
+  const hx=[27,29,28][a],hy=[9,16,22][a];
+  p.part(RAMP.tie,m=>m.limb(21,24,hx-1,hy+2,2.4,2),true);
+  p.part(RAMP.skin,m=>m.ell(hx,hy,1.8,1.8),true);
+  p.part(RAMP.white,m=>m.limb(hx+1,hy-1,hx+6,hy-7+a*3,0.5,0.5),true);
+  p.part(RAMP.skin,m=>{m.rect(15,17,4,5);m.ell(17,12,5.8,6.4);m.ell(22.5,13,1.3,1.6);});
+  p.part(RAMP.grey,m=>{m.ell(15,8,6.4,3.8);m.ell(11,11,2.6,4.6);m.ell(10,5,3.2,3.2);},true);
+  // Brille und Augen
+  p.px(19,11,'#343e52').px(20,11,'#343e52').px(21,11,'#343e52').px(22,11,'#343e52').px(20,12,o.wach?'#ffffff':'#c8d4e4').px(21,12,'#101018');
+  if(o.talk)p.px(20,16,'#3a0a0e').px(21,16,'#3a0a0e').px(20,17,'#7a2a2e');else p.px(19,16,'#6a3424').px(20,16,'#6a3424').px(21,16,'#6a3424');
+  return p.canvas();
+}
+function kinderSprites(){
+  const T=[{hair:RAMP.hairBr,shirt:RAMP.teal,bag:RAMP.shoe},{hair:RAMP.hairRed,shirt:RAMP.stripe,bag:RAMP.book,zopf:1},
+    {hair:RAMP.braid,shirt:RAMP.blouse,bag:RAMP.bag,zopf:1},{hair:RAMP.hood,shirt:RAMP.shoe,bag:RAMP.lilac}];
+  return T.map((t,i)=>({starr:makeKind(t),wach:makeKind(Object.assign({wach:1},t)),play:makeKind(Object.assign({wach:1,play:1},t)),
+    talk:makeKind(Object.assign({wach:1,talk:1},t)),ohne:makeKind(Object.assign({wach:1,ohneKordel:i===0},t))}));
+}
+function drawMetronom(now){
+  const x=80,y=58;
+  polyFill(ctx,[[x-6,y],[x+6,y],[x+3,y-17],[x-3,y-17]],(px,py)=>pick(KR.holz,0.55-(px-x+6)/24+(py===y-17?0.2:0),px,py));
+  polyFill(ctx,[[x-3,y-2],[x+3,y-2],[x+1,y-15],[x-1,y-15]],(px,py)=>pick(KR.holz,0.12,px,py));
+  let a=0;
+  if(S.metronom){if(S.metT0==null)S.metT0=now;const ph=(now-S.metT0)/TAKT_MS,b=Math.floor(ph);a=Math.sin(ph*Math.PI)*0.45;
+    if(b!==S.metBeat){S.metBeat=b;tone('square',b%4===0?2200:1700,0.025,0.035);}}
+  const px=x+Math.sin(a)*15,py=y-3-Math.cos(a)*15;line(ctx,x,y-3,Math.round(px),Math.round(py),'#d8dce4');
+  const gx=x+Math.sin(a)*9,gy=y-3-Math.cos(a)*9;R(ctx,Math.round(gx)-1,Math.round(gy),3,2,'#e8c050');
+}
+function drawMusik(now){
+  if(!MUSIK)MUSIK=drawMusikBg();
+  if(S.card){R(ctx,0,0,W,SH,'#000000');const t=S.card.title;text(t,Math.round((W-textW(t))/2),34,'#ffe060',false);
+    wrap(S.card.text,260).forEach((l,i)=>text(l,Math.round((W-textW(l))/2),56+i*LINEH,'#e8e0ff',false));return;}
+  ctx.drawImage(MUSIK,0,0);
+  plaque(19,20,'Halle');
+  drawMetronom(now);
+  const L=[];
+  const wach=S.orchesterWach,spielt=S.orchester==='spielt';
+  KINDER.forEach((k,i)=>L.push({y:106,d:()=>{const s=SPR.kinder[i];
+    const img=S.speech&&S.talker===k.id&&Math.floor(now/140)%2?s.talk:spielt?(Math.floor(now/(TAKT_MS/2)+i)%2?s.play:s.wach):wach?(i===0&&has('kordel')?s.ohne:s.wach):s.starr;
+    spr(img,k.x,106,16,45,false);}}));
+  const arm=spielt?1+Math.floor(now/TAKT_MS)%2:wach&&!S.speech?1:0;
+  L.push({y:106,d:()=>{shadow(262,106,8);spr(S.speech&&S.talker==='fermate'&&Math.floor(now/140)%2?SPR.fermateTalk[wach?1:0]:SPR.fermate[arm],262,106,16,56,true);}});
+  L.push({y:106,d:()=>{line(ctx,244,78,244,104,'#343e52');line(ctx,240,104,248,104,'#343e52');polyFill(ctx,[[237,72],[251,72],[252,79],[236,79]],(x,y)=>pick(KR.stahl,0.5-(y-72)/20,x,y));
+    kastenG(ctx,239,70,10,7,KR.papier,0.8);}});
+  L.push({y:S.ky,d:()=>spr(S.speech&&S.talker==='kraechz'&&Math.floor(now/140)%2?SPR.ravenTalk:SPR.raven,S.kx,S.ky,11,19,S.kflip)});
+  heroLayer(L,now);
+  L.sort((p,q)=>p.y-q.y).forEach(o=>o.d());
+  if(S.klatsch){const k=S.klatsch;R(ctx,60,2,200,20,'#0c0a14');R(ctx,61,3,198,18,'#241a34');
+    text('Zähl ein: viermal im Takt tippen!',66,5,'#ffe060',false);
+    for(let i=0;i<4;i++){const cx=112+i*26,cy=16;ellFill(ctx,cx,cy,3,3,(px,py,dx,dy)=>i<k.t.length?'#ffe060':dx*dx+dy*dy>0.5?'#8a8aa0':null);}}
+  drawPanel();drawSpeech();
+}
+const HS_MUSIK=[
+  {id:'kraechz',name:'Krächz',rect:()=>[S.kx-11,S.ky-19,22,19],walk:[276,116],flip:false},
+  {id:'metronom',name:'Metronom',rect:()=>[72,36,16,24],walk:[84,114],flip:true},
+  {id:'beutel',name:'Flötenbeutel',rect:()=>[102,75,10,15],walk:[112,116],flip:true},
+  {id:'emil',name:()=>S.orchesterWach?'Emil':'Junge mit Blockflöte',rect:()=>[106,62,26,44],walk:[124,118],flip:false},
+  {id:'kind2',name:'Mädchen mit Blockflöte',rect:()=>[138,62,26,44],walk:[156,118],flip:false},
+  {id:'kind3',name:'Mädchen mit Blockflöte',rect:()=>[170,62,26,44],walk:[188,118],flip:false},
+  {id:'kind4',name:'Junge mit Blockflöte',rect:()=>[202,62,26,44],walk:[218,118],flip:false},
+  {id:'pult',name:'Notenständer',rect:()=>[234,68,20,38],walk:[236,118],flip:false},
+  {id:'fermate',name:'Frau Fermate',rect:()=>[250,48,26,58],walk:[240,120],flip:false},
+  {id:'klavier',name:'Klavier',rect:()=>[38,58,62,42],walk:[70,114],flip:true},
+  {id:'tafelM',name:'Tafel',rect:()=>[118,12,104,36],walk:[170,114],flip:false},
+  {id:'fensterM',name:'Fenster',rect:()=>[42,8,52,44],walk:[70,114],flip:true},
+  {id:'schrank',name:'Schrank mit Instrumenten',rect:()=>[280,18,38,82],walk:[284,118],flip:false},
+  {id:'tuerM',name:'Tür zur Halle',exit:true,rect:()=>[4,28,30,74],walk:[30,120],flip:true},
+  {id:'bodenM',name:'Boden',floor:true,rect:()=>[36,100,262,44],walk:[0,0],flip:false}
+];
+async function enterMusik(){
+  S.room='musik';S.kraechz='musik';S.kx=298;S.ky=18;S.kflip=true;S.hero.x=30;S.hero.y=120;S.hero.flip=false;S.hero.hidden=false;
+  await walkTo(70,122);
+  if(S.musikIntro)return say('hero',S.orchesterWach?'Hier wird geübt. Laut.':'Immer noch alle erstarrt. Und das Metronom '+(S.metronom?'tickt vor sich hin.':'steht.'));
+  await say('hero','Der Musikraum. Alle sitzen da, die Flöten am Mund, und keiner spielt.');
+  await say('hero','Und an jedem Stuhl hängt ein Flötenbeutel. Mit Kordel.');
+  S.musikIntro=true;save();
+}
+async function leaveMusik(){
+  S.hero.hidden=true;tone('triangle',300,0.3,0.04,500);await sleep(500);
+  S.room='halle';S.kraechz='halle';S.kx=92;S.ky=44;S.kflip=true;S.hero.x=160;S.hero.y=132;S.hero.flip=false;S.hero.hidden=false;
+  await walkTo(160,118);
+  if(has('kordel')||has('angel')||has('keksangel'))return say('hero','Die Kordel habe ich. Jetzt zurück zur Kellertreppe.');
+  return say('hero','Wieder in der Halle.');
+}
+async function metronomAn(){
+  if(S.metronom)return say('hero','Es tickt schon. Tick, tack, tick, tack.');
+  await reach();S.metronom=true;S.metT0=null;S.metBeat=null;
+  await say('hero','Ich stoße das Pendel an.');await sleep(TAKT_MS*3);
+  await say('fermate','Ah. Achtzig. Das ist unser Tempo.');
+  await say('fermate','Jetzt müsste nur noch jemand einzählen. Ich mache das gleich. Gleich.');
+}
+// Einzaehlen: vier Klatscher, gemessen werden die Abstaende
+function klatschen(){
+  return new Promise(res=>{S.klatsch={t:[],res};
+    S.klatsch.timer=setTimeout(()=>{if(S.klatsch){S.klatsch=null;res(null);}},9000);});
+}
+function klatsch(){const k=S.klatsch;if(!k)return;const t=performance.now();k.t.push(t);
+  tone('square',900,0.04,0.06,300);tone('sawtooth',2400,0.03,0.03,1200);
+  S.hero.reach=1;setTimeout(()=>{S.hero.reach=0;},120);
+  if(k.t.length===4){clearTimeout(k.timer);S.klatsch=null;setTimeout(()=>k.res(k.t),250);}}
+async function einzaehlen(){
+  if(!S.metronom)return say('fermate','Einzählen? In welchem Tempo denn? Das Metronom steht, seit es so laut gegongt hat.');
+  if(S.orchesterWach)return say('fermate','Danke, wir sind schon mittendrin.');
+  await say('hero','Ich zähle ein. Hört auf das Metronom.');
+  const t=await klatschen();
+  if(!t)return say('hero','Hm. Ich sollte einfach losklatschen. Viermal, im Takt vom Metronom.');
+  const d=[t[1]-t[0],t[2]-t[1],t[3]-t[2]],m=(d[0]+d[1]+d[2])/3,schief=d.some(x=>Math.abs(x-m)>m*0.25);
+  if(m<TAKT_MS*0.8)return say('fermate','Zu schnell. Bei dem Tempo fällt uns die Flöte aus dem Mund.');
+  if(m>TAKT_MS*1.2)return say('fermate','Zu langsam. Da schlafen wir ja wieder ein.');
+  if(schief)return say('fermate','Ungleichmäßig. Wie ein Stuhl mit drei Beinen. Noch mal.');
+  return orchesterSpielt();
+}
+async function orchesterSpielt(){
+  S.orchester='spielt';S.orchesterWach=true;
+  // „Morgen kommt der Weihnachtsmann“, erste Zeile, als Flötenklang
+  const N=[[523,1],[523,1],[784,1],[784,1],[880,1],[880,1],[784,2],[698,1],[698,1],[659,1],[659,1],[587,1],[587,1],[523,2]];let d=0;
+  N.forEach(([f,l])=>{tone('triangle',f,l*TAKT_MS/1000*0.9,0.06,null,d);tone('sine',f*2,l*TAKT_MS/1000*0.6,0.015,null,d);d+=l*TAKT_MS/1000;});
+  await sleep(d*1000+200);S.orchester=null;
+  await say('fermate','Wunderbar! Wer hat denn da eingezählt?');
+  await say('hero','Ich. Sie haben ja nicht angefangen.');
+  await say('fermate','Stimmt. Ich wollte erst den perfekten Moment abwarten. Der kommt aber nie von allein.');
+  await say('hero','Du da vorne? Könnte ich die Kordel von deinem Flötenbeutel haben? Ich muss einen Drachen angeln.');
+  await say('emil','Ich bin Emil. Einen Drachen? Klar. Nimm ruhig. Meinen Beutel mache ich sowieso nie zu.');
+  await reach();give('kordel');tone('triangle',990,0.3,0.05);
+  await say('hero','Danke. Die ist genau richtig.');
+}
+async function redeFermate(){
+  if(S.orchesterWach)return say('fermate',['Noch mal von vorn, Kinder! Und diesmal ohne Quietschen.','Morgen kommt der Weihnachtsmann. Im September. Wir üben eben früh.'][(S.fermateRede=(S.fermateRede||0)+1)%2]);
+  for(;;){
+    const o=['Warum spielt hier keiner?','Was spielen Sie denn?'];
+    if(S.metronom)o.push('Soll ich für Sie einzählen?');
+    o.push('Kann ich eine Kordel von einem Flötenbeutel haben?','Bis gleich.');
+    const a=await choose(o),q=o[a];await say('hero',q);
+    if(a===0){await say('fermate','Wir fangen gleich an. Ich warte nur auf das Tempo.');
+      await say('fermate','Das Metronom steht still, seit es so laut gegongt hat. Und ohne Tempo zähle ich nicht ein.');continue;}
+    if(a===1){await say('fermate','„Morgen kommt der Weihnachtsmann.“ Im September. Wir üben eben früh.');continue;}
+    if(q==='Soll ich für Sie einzählen?')return einzaehlen();
+    if(q==='Kann ich eine Kordel von einem Flötenbeutel haben?'){await say('fermate','Die Beutel gehören den Kindern. Frag sie. Wenn sie wieder wach sind.');continue;}
+    return say('fermate','Gleich. Nach dem Einzählen.');
+  }
+}
+async function actMusik(verb,h,item){
+  const id=h.id,kind=KINDER.some(k=>k.id===id);
+  if(item){
+    if(id==='fermate'&&verb==='gib')return say('fermate','Danke, aber ich brauche nur ein Tempo.');
+    if(kind&&verb==='gib')return say(S.orchesterWach?id:'hero',S.orchesterWach?'Später. Wir üben.':'Mit der Flöte im Mund nimmt hier keiner was.');
+    if(id==='kraechz'&&verb==='gib')return say('kraechz','Behalte das mal schön selbst.');
+    return say('hero',FALLBACK.benutze());
+  }
+  switch(id+':'+verb){
+    case 'tuerM:gehe':case 'tuerM:benutze':case 'tuerM:oeffne':return leaveMusik();
+    case 'tuerM:schau':return say('hero','Da geht es zurück in die Halle.');
+    case 'metronom:schau':return say('hero',S.metronom?'Das Metronom tickt. Das Gewicht steht auf 80. Achtzig Schläge in der Minute.':'Ein Metronom auf dem Klavier. Das Pendel steht still. Das Gewicht steht auf 80.');
+    case 'metronom:druecke':case 'metronom:benutze':case 'metronom:ziehe':case 'metronom:nimm':return verb==='nimm'?say('hero','Das gehört aufs Klavier. Und es ist schwerer, als es aussieht.'):metronomAn();
+    case 'metronom:schliesse':if(S.metronom&&!S.orchesterWach){S.metronom=false;return say('hero','Ich halte das Pendel an. Wieder still.');}break;
+    case 'fermate:rede':return redeFermate();
+    case 'fermate:schau':return say('hero',S.orchesterWach?'Frau Fermate dirigiert. Sie strahlt.':'Die Musiklehrerin. Auf ihrem Schild steht „Frau Fermate“. Sie hält den Taktstock hoch und wartet. Seit heute früh.');
+    case 'fermate:nimm':return say('hero','Den Taktstock? Den lässt sie nicht los. Sie hält ihn wie ein Versprechen.');
+    case 'pult:schau':return say('hero','Ein Notenständer. „Morgen kommt der Weihnachtsmann“. Oben steht: Tempo 80.');
+    case 'pult:benutze':return einzaehlen();
+    case 'beutel:schau':return say('hero','Flötenbeutel an den Stuhllehnen. Jeder hat eine Kordel zum Zuziehen.');
+    case 'beutel:nimm':case 'beutel:ziehe':
+      if(has('kordel'))return say('hero','Eine Kordel reicht mir.');
+      if(S.orchesterWach)return say('emil','Frag doch einfach.');
+      return say('hero','Die gehören den Kindern. Einfach wegnehmen, während alle erstarrt sind? Dann wäre ich nicht besser als mein Dieb.');
+    case 'klavier:schau':return say('hero','Ein altes Klavier. Obendrauf steht ein Metronom.');
+    case 'klavier:benutze':case 'klavier:druecke':tone('triangle',262,0.4,0.05);tone('triangle',311,0.4,0.05,null,0.02);return say('hero','Pling. Schief. Ich bleibe beim Klatschen.');
+    case 'tafelM:schau':return say('hero','Notenlinien und die erste Zeile von „Morgen kommt der Weihnachtsmann“. Im September.');
+    case 'fensterM:schau':return say('hero','Draußen scheint die Sonne. Sie weiß noch nichts vom Gong.');
+    case 'schrank:schau':return say('hero','Trommel, Triangel und ein Kasten Rasseln. Für den Ernstfall.');
+    case 'schrank:oeffne':return say('hero','Lieber nicht. Wenn da die Rasseln rausfallen, wacht die ganze Schule auf. Auf die falsche Art.');
+    case 'kraechz:rede':return redeKraechz();
+    case 'kraechz:schau':return say('hero','Krächz sitzt auf dem Schrank neben der Trommel und hält sich die Ohren zu. Soweit Raben Ohren haben.');
+    case 'bodenM:schau':return say('hero','Parkett. Hier wurde schon viel mit dem Fuß gewippt.');
+  }
+  if(kind){
+    if(verb==='schau')return say('hero',S.orchesterWach?'Die Flöte am Mund, die Backen rund.':'Die Flöte am Mund, die Finger auf den Löchern. Erstarrt.');
+    if(verb==='rede'){if(!S.orchesterWach)return say(id,'Mmh. Mmh-mmh.');
+      if(id==='emil')return say('emil',has('kordel')?'Viel Glück beim Drachenangeln.':'Was ist?');return say(id,'Pssst. Wir üben.');}
+    if(verb==='nimm')return say('hero','Ihnen die Flöte wegnehmen? Nie im Leben.');
+  }
+  if(verb==='schau')return say('hero',FALLBACK.schau(h));
+  return say('hero',FALLBACK[verb]?FALLBACK[verb](h):FALLBACK.benutze());
+}
+async function musikTipp(){
+  let t;
+  if(!S.metronom)t='Frau Fermate wartet auf das Tempo. Und auf dem Klavier steht ein Ding, das Tempo macht.';
+  else if(!S.orchesterWach)t='Das Metronom tickt. Jetzt braucht es nur noch jemanden, der einzählt. Viermal klatschen, genau im Takt.';
+  else t='Die Kordel hast du. Zurück in den Heizungskeller.';
   await say('kraechz',t);
 }
 
@@ -2999,11 +3307,11 @@ function cutKeller(t,now){
 }
 
 // Speichern: nur die Teile des Zustands, die das Spiel ausmachen
-const KEEP=['spur','room','takt','zettelGelesen','flureGeschafft','halleIntro','fehlwege','heft','kraechz','kx','ky','kflip','fenster','ziel','kruemelGesehen','gitter','federmappe','muenze','kreide','tipp','kraechzKennt','jonas','inv','gefragt','tschuess','eingangDone','kallFrozen','fertig','gangIntro','passed','erlebt','plaene','tafelGelesen','suchKantine','kantineErklaert','invOff','kantineIntro','broesel','broeselKekse','broeselRede','sortiert','bereit','lappenGegeben','kammerIntro','heizIntro','brikettBekannt','brikettErklaert','brikettGesehen','brikettScheu','linealPasst','brauchSchnur','grummelTor'];
+const KEEP=['spur','room','takt','zettelGelesen','flureGeschafft','halleIntro','fehlwege','heft','kraechz','kx','ky','kflip','fenster','ziel','kruemelGesehen','gitter','federmappe','muenze','kreide','tipp','kraechzKennt','jonas','inv','gefragt','tschuess','eingangDone','kallFrozen','fertig','gangIntro','passed','erlebt','plaene','tafelGelesen','suchKantine','kantineErklaert','invOff','kantineIntro','broesel','broeselKekse','broeselRede','sortiert','bereit','lappenGegeben','kammerIntro','heizIntro','brikettBekannt','brikettErklaert','brikettGesehen','brikettScheu','linealPasst','brauchSchnur','grummelTor','musikIntro','metronom','orchesterWach','fermateRede'];
 function save(){const d={};KEEP.forEach(k=>{if(S[k]!==undefined)d[k]=S[k];});d.hero={x:S.hero.x,y:S.hero.y,flip:S.hero.flip};SAVE.write({prolog:d});}
 let looping=false;
 const API={onDone:null,
-  start(saved){reset(saved);build();last=performance.now();if(!looping){looping=true;requestAnimationFrame(loop);}if(!S.eingangDone)eingang();else if(S.room==='halle'&&!S.halleIntro)run(()=>enterHalle());else if(S.room==='gang'&&!S.gangIntro)run(()=>enterGang());else if(S.room==='kantine'&&!S.kantineIntro)run(()=>enterKantine());else if(S.room==='heiz'&&!S.heizIntro)run(()=>enterHeiz());},
+  start(saved){reset(saved);build();last=performance.now();if(!looping){looping=true;requestAnimationFrame(loop);}if(!S.eingangDone)eingang();else if(S.room==='halle'&&!S.halleIntro)run(()=>enterHalle());else if(S.room==='gang'&&!S.gangIntro)run(()=>enterGang());else if(S.room==='kantine'&&!S.kantineIntro)run(()=>enterKantine());else if(S.room==='heiz'&&!S.heizIntro)run(()=>enterHeiz());else if(S.room==='musik'&&!S.musikIntro)run(()=>enterMusik());},
   mute(m){if(M)M.gain.value=m?0:0.5;}};
 window.__S=()=>S;window.__skip=()=>{if(skipLine)skipLine();};
 window.__act=(verb,id,item)=>{const h=curHS().find(x=>x.id===id);return run(async()=>{if(!await goTo(h.walk[0],h.walk[1]))return;face(h.flip);await act(verb,h,item);});};
@@ -3033,6 +3341,7 @@ const SZENEN={
     passed:{auf1:true,auf2:true,auf3:true},suchKantine:true,kantineIntro:true,sortiert:true,broesel:2,broeselKekse:true,lappenGegeben:true,
     bereit:{topf:true,milch:true,zucker:true,pulver:true},tuerAuf:true,inv:['lineal','radiergummi','muenze','kreide','notiz','kekse']})
 };
+SZENEN.musik=Object.assign({},SZENEN.keller,{room:'musik',musikIntro:false,heizIntro:true,brikettBekannt:true,brikettErklaert:true,brikettGesehen:true,brauchSchnur:true,linealPasst:true});
 function szeneStarten(id){
   const s=SAVE.read();PLAYER.name=(s&&s.name)||PLAYER.name||'Robin';PLAYER.girl=s?!!s.girl:PLAYER.girl;
   SAVE.clear();

@@ -98,7 +98,7 @@ Canva-Arbeitsdatei: https://canva.link/mp6p64febvogrh4
   Mit den Keksen kommt die Figur durch den Flüstergang in den Heizungskeller.
 - Zwischensequenzen (`runCut`, überspringbar, ohne Verbleiste): Rutschpartie durch den Schacht,
   Abstieg über die Kellertreppe am Ende der Hallen-Vorschau.
-- Szenenwahl nur zum Testen (versteckt, erscheint nach fünfmal schnellem Tippen auf den Titel „Gonnng!“): Intro, Prolog, Eingangshalle, Flüstergang, Kantine, Heizungskeller, jeweils mit passendem Spielstand (`SZENEN`).
+- Szenenwahl nur zum Testen (versteckt, erscheint nach fünfmal schnellem Tippen auf den Titel „Gonnng!“): Intro, Prolog, Eingangshalle, Flüstergang, Kantine, Heizungskeller, Musikraum, jeweils mit passendem Spielstand (`SZENEN`).
   Neue Räume dort mit ergänzen.
 - Zum Testen: `window.__frame(sekunde)` im Intro, `window.__act(verb, id, item)` und `window.__pick(i)` im Prolog.
 - Entschieden: Die Unruh bleibt. Die Große Stundenuhr ist eine Sonderanfertigung (Turmuhren haben sonst meist ein Pendel),
@@ -110,10 +110,14 @@ Canva-Arbeitsdatei: https://canva.link/mp6p64febvogrh4
   Entschieden: Kordel aus einem Flötenbeutel (Blockflöten haben keine Schnur). Das Metronom läuft nach einem Anstoß weiter, einen Aufziehschlüssel gibt es nicht,
   das Orchester braucht nur jemanden, der einzählt.
 
+- Kapitel 1, fünfter Raum: der Musikraum (Raum `musik`, `drawMusikBg`, `makeKind`, `makeFermate`, `actMusik`). Frau Fermate und vier Kinder erstarrt,
+  Metronom auf dem Klavier (`S.metronom`, 80 Schläge in der Minute, `TAKT_MS`), Einzählen mit vier Klatschern (`klatschen`, `einzaehlen`,
+  per Tippen oder Leertaste). Emil schenkt die Kordel. Kombinationen: Lineal plus Kordel ergibt `angel`, Angel plus Kekse ergibt `keksangel`.
+  Den Musikraum betritt man erst, wenn die Figur eine Schnur braucht (`S.brauchSchnur`).
+
 ## Nächste Schritte
 
-1. Musikraum: Metronom anstoßen, im Takt einzählen, Kordel als Dank.
-2. Keks-Angel, Brikett heizt an, Grummelbart taut auf. Danach das Kompass-Rätsel.
+1. Keks-Angel am Spalt: Brikett beißt an, heizt an, Grummelbart taut auf. Danach das Kompass-Rätsel.
 
 ## Online-Dokument
 
