@@ -31,7 +31,12 @@ aufgesetzt, weil Figuren und Hintergrund nicht dieselbe Pixelgröße und dasselb
 
 Regeln für neue Grafik:
 - Alles in echten Pixeln bei 320 × 200, nichts skalieren. Figuren in anderer Größe werden mit `PupK` neu gezeichnet.
-- Nur Farben aus den festen Rampen (`RAMP`, je dunkel, Schatten, Grundton, Licht), Verläufe gerastert (`dith`, Bayer).
+- Räume (Entscheidung vom 28.09.2026): lange Farbrampen mit 8 bis 14 Stufen (`KR`, erzeugt mit `mkRamp`), Farbe pro Pixel mit `pick`
+  (Bayer-Rasterung nur zwischen zwei benachbarten Stufen). Licht aus klaren Quellen, auch zwei (etwa kühles Fenster und warme Lampe,
+  gemischt über den Anteil der Lampe). Schatten werden in die Flächen gerechnet, nicht als Punkte aufgelegt. Perspektive mit Fluchtpunkt,
+  Möbel als Körper mit Ober- und Seitenfläche, Materialien mit Struktur (Fugen, Maserung, Glanz). Keine Lichtstrahlen aus hellen Einzelpunkten.
+  Maßstab dafür ist die Kantine (`drawKantineBg`).
+- Figuren nutzen weiter die kurzen Rampen (`RAMP`, je dunkel, Schatten, Grundton, Licht).
 - Licht kommt in jeder Szene aus einer klaren Richtung, Figuren sind auf der Lichtseite heller.
 - Figuren entstehen aus Einzelteilen (`Pup.part` mit Kopf, Rumpf, Armen, Beinen) und bekommen eine dunkle Umrisslinie.
   So gibt es Laufen, Sprechen, Blinzeln und Greifen ohne neue Bilder.

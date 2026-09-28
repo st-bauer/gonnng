@@ -399,7 +399,9 @@ const KR={
   marmorD:mkRamp(['#0c0a0a','#221c1a','#3a302c','#5a4c44','#86766a'],12),
   gold:mkRamp(['#3a2404','#7a5410','#b88a24','#e8c050','#fff4b0'],12),
   oel:mkRamp(['#141018','#2a2230','#3e3448','#5a4c60'],8),
-  haut:mkRamp(['#6a3424','#b86e50','#e0a07a','#f8c8a0'],8)
+  haut:mkRamp(['#6a3424','#b86e50','#e0a07a','#f8c8a0'],8),
+  stein:mkRamp(['#04060a','#0e1420','#1e2638','#34405a','#5a6884','#8a98b4'],12),    // kalter Kellerstein
+  steinW:mkRamp(['#0c0806','#261a12','#4a3222','#7a5638','#b08458','#e0b886'],12)    // Kellerstein im Lampenlicht
 };
 // Farbe aus einer Rampe waehlen, mit Bayer-Rasterung nur zwischen zwei benachbarten Stufen
 function pick(r,t,x,y){const n=r.length-1,v=clamp(t,0,0.9999)*n,k=Math.floor(v);return (v-k)>bay(x,y)?r[Math.min(n,k+1)]:r[k];}
@@ -1756,36 +1758,58 @@ function take(id){const i=S.inv.indexOf(id);if(i>=0)S.inv.splice(i,1);S.invOff=M
 let GANG=null;
 function drawGangBg(){
   const [c,g]=mk(W,SH);
-  // Gewoelbe und Ziegelwand, Licht von der Lampe in der Mitte und schwach von der Treppe links oben
-  const kegel=(x,y)=>Math.abs(x-160)<6+(y-14)*0.45?0.14:0;
-  const licht=(x,y)=>0.12+Math.max(0,90-Math.hypot(x-160,(y-12)*1.4))/170+Math.max(0,60-Math.hypot(x-10,y-30))/260+kegel(x,y);
-  dith(g,0,0,W,106,STEIN,(x,y)=>licht(x,y));
-  for(let y=12;y<106;y+=6){R(g,0,y,W,1,'#0c1018');const o=(y/6)%2?0:8;for(let x=o;x<W;x+=16)R(g,x,y+1,1,5,'#0c1018');}
-  for(let x=0;x<W;x++){const top=8+Math.round(4*Math.sin(x/W*Math.PI*3));R(g,x,0,1,top,'#0c1018');P(g,x,top,'#2a3448');}
-  // Rohre an der Wand, kalt
-  [[20,3],[29,2]].forEach(([y,d])=>{for(let x=40;x<W;x++){for(let k=0;k<d;k++)P(g,x,y+k,k===0?'#8a9ab4':k===d-1?'#1e2638':'#5a6880');}});
-  for(let x=60;x<W;x+=48){R(g,x,18,3,15,'#141a28');R(g,x,18,1,15,'#5a6880');}
-  ellFill(g,232,24,5,5,(x,y,dx,dy)=>{const d=dx*dx+dy*dy;return d>0.7?'#6a1024':d<0.2?'#343e52':null;});line(g,227,24,237,24,'#a02234');line(g,232,19,232,29,'#a02234');
-  // Nische fuer das erste Aufschiebchen
-  for(let y=70;y<106;y++)for(let x=104;x<134;x++){if(y<82&&Math.hypot(x+0.5-119,y-82)>15)continue;P(g,x,y,bay(x,y)<0.3?'#141a28':'#0c1018');}
-  // Kellertreppe links, von oben kommt Licht aus der Halle
-  for(let k=0;k<7;k++){const sx=0,sy=36+k*10,sw=46-k*3;R(g,sx,sy,sw,10,'#1e2638');R(g,sx,sy,sw,2,'#4a5670');R(g,sx+sw-1,sy,1,10,'#0c1018');}
+  const hash=(a,b)=>((a*73856093)^(b*19349663))>>>0;
+  // Licht: warme Gluehbirne in der Mitte, schwaches warmes Licht von der Treppe oben links, sonst kalt
+  const lampe=(x,y)=>Math.max(0,1-Math.hypot(x-160,(y-12)*1.1)/120);
+  const treppe=(x,y)=>Math.max(0,1-Math.hypot(x-8,(y-30)*0.9)/70);
+  const hell=(x,y)=>0.12+lampe(x,y)*0.85+treppe(x,y)*0.35;
+  const farbe=(x,y,t,xo)=>{const w=clamp((lampe(x,y)+treppe(x,y)*0.8)*1.4-0.25,0,1);return w>bay(x+(xo||1),y+2)?pick(KR.steinW,t,x,y):pick(KR.stein,t,x,y);};
+  // Gewoelbe
+  for(let x=0;x<W;x++){const top=8+Math.round(4*Math.sin(x/W*Math.PI*3));for(let y=0;y<top;y++)P(g,x,y,pick(KR.stein,0.05+lampe(x,y)*0.15,x,y));P(g,x,top,farbe(x,top,hell(x,top)*0.8));}
+  // Ziegelwand mit Fugen, Kanten und Unregelmaessigkeiten
+  for(let y=4;y<106;y++)for(let x=0;x<W;x++){
+    const ry=Math.floor((y-12)/6),o=ry%2?0:8,bx=Math.floor((x+o)/16),ly=(y-12)%6,lx=(x+o)%16;
+    if(y<=8+Math.round(4*Math.sin(x/W*Math.PI*3)))continue;
+    const fuge=ly===0||lx===0;
+    let t=hell(x,y)*0.85+((hash(bx,ry)%9)-4)*0.02-Math.max(0,y-98)/30;
+    if(fuge)t-=0.18;else if(ly===1||lx===1)t+=0.07;else if(ly===5||lx===15)t-=0.06;
+    if(!fuge&&hash(bx*3+lx,ry*7+ly)%41===0)t-=0.12;
+    P(g,x,y,farbe(x,y,t));
+  }
+  // Rohre an der Wand, kalt, mit Glanz oben
+  [[20,3],[29,2]].forEach(([y,d])=>{for(let x=40;x<W;x++){for(let k=0;k<d;k++){const t=(k===0?0.75:k===d-1?0.15:0.45)+lampe(x,y)*0.25;P(g,x,y+k,pick(KR.stahl,t,x,y+k));}}});
+  for(let x=60;x<W;x+=48)for(let y=18;y<33;y++){P(g,x,y,pick(KR.stahl,0.55,x,y));P(g,x+1,y,pick(KR.stahl,0.3,x,y));P(g,x+2,y,pick(KR.stahl,0.1,x,y));}
+  ellFill(g,232,24,5,5,(x,y,dx,dy)=>{const d=dx*dx+dy*dy;return d>0.7?pick(KR.buchR,0.45-dx*0.3-dy*0.3,x,y):d<0.2?pick(KR.stahl,0.4,x,y):null;});line(g,227,24,237,24,'#a02234');line(g,232,19,232,29,'#a02234');
+  // Nische fuer das erste Aufschiebchen, tief und dunkel
+  for(let y=70;y<106;y++)for(let x=104;x<134;x++){if(y<82&&Math.hypot(x+0.5-119,y-82)>15)continue;
+    const innen=y<82?Math.hypot(x+0.5-119,y-82)<13:x>105&&x<132;P(g,x,y,innen?pick(KR.stein,0.06+(x-104)/300,x,y):pick(KR.stein,0.3,x,y));}
+  // Kellertreppe links, oben faellt Licht aus der Halle herein
+  for(let k=0;k<7;k++){const sy=36+k*10,sw=46-k*3;for(let y=sy;y<sy+10;y++)for(let x=0;x<sw;x++){
+    let t=(y<sy+2?0.8:0.3)+treppe(x,y)*0.4-(x>sw-3?0.2:0);P(g,x,y,y<sy+2?pick(KR.steinW,t,x,y):farbe(x,y,t));}}
   // Grummelbarts Tafel mit Holzrahmen und Kreidezeilen
-  R(g,54,40,44,32,'#2a160c');R(g,55,41,42,1,'#845028');dith(g,56,42,40,28,COL.board,(x,y)=>0.55-(x-56)/120-(y-42)/140);
-  R(g,58,44,26,1,'#9a9aa8');
-  [[58,47,34],[60,50,30],[58,53,32],[60,56,28]].forEach(([x,y,w])=>{for(let i=0;i<w;i++)if(bay(x+i,y)<0.7)P(g,x+i,y,'#b8b8c8');});
-  for(let i=0;i<26;i++)if(bay(58+i,59)<0.35)P(g,58+i,59,'#6e6e7c');
-  R(g,60,72,6,2,'#845028');
-  // Eiserne Tuer zum Heizungskeller
-  R(g,280,40,32,66,'#0c1018');dith(g,282,42,28,64,EISEN,(x,y)=>0.55-(x-282)/60+Math.max(0,50-Math.hypot(x-160,y))/300);
-  for(let y=46;y<104;y+=10){P(g,284,y,'#8a9ab4');P(g,307,y,'#8a9ab4');}
-  ellFill(g,296,58,6,6,(x,y,dx,dy)=>dx*dx+dy*dy>0.6?'#141a28':'#05070c');R(g,288,80,4,2,'#d8b040');
-  // Boden aus Steinplatten
-  dith(g,0,106,W,SH-106,STEIN,(x,y)=>0.1+Math.max(0,80-Math.hypot(x-160,(y-120)*2))/200+(y-106)/400+(Math.abs(x-160)<6+(y-14)*0.45&&y<126?0.1:0));
-  R(g,0,106,W,1,'#05070c');
-  for(let y=112;y<SH;y+=9){R(g,0,y,W,1,'#0c1018');const o=(y/9)%2?0:20;for(let x=o;x<W;x+=40)R(g,x,y+1,1,8,'#0c1018');}
-  // Lampe im Gitterkaefig
-  R(g,159,0,1,8,'#141a28');ellFill(g,160,11,4,4,(x,y,dx,dy)=>dx*dx+dy*dy<0.4?'#fff0c0':'#e8c060');
+  for(let y=40;y<72;y++)for(let x=54;x<98;x++){const rand=x<56||x>95||y<42||y>69;
+    P(g,x,y,rand?pick(KR.holz,0.5+(x<56||y<42?0.2:-0.2)+lampe(x,y)*0.2,x,y):pick(KR.tafel,0.25+lampe(x,y)*0.3-(y-42)/200,x,y));}
+  R(g,58,44,26,1,'#9aa2b0');
+  [[58,47,34],[60,50,30],[58,53,32],[60,56,28]].forEach(([x,y,w])=>{for(let i=0;i<w;i++)if(bay(x+i,y)<0.7)P(g,x+i,y,'#c8ccd4');});
+  for(let i=0;i<26;i++)if(bay(58+i,59)<0.35)P(g,58+i,59,'#6e7488');
+  for(let x=60;x<66;x++){P(g,x,72,pick(KR.holz,0.7,x,72));P(g,x,73,pick(KR.holz,0.3,x,73));}
+  // Eiserne Tuer zum Heizungskeller mit Nieten und Bullauge
+  for(let y=40;y<106;y++)for(let x=280;x<312;x++){const rand=x<282||x>309||y<42;
+    let t=rand?0.08:0.28-(x-282)/90+lampe(x,y)*0.35+((hash(x>>3,y>>3)%3)-1)*0.02;P(g,x,y,pick(KR.stahl,t,x,y));}
+  for(let y=46;y<104;y+=10){P(g,284,y,'#e4eaf2');P(g,285,y+1,'#10141c');P(g,307,y,'#e4eaf2');P(g,308,y+1,'#10141c');}
+  ellFill(g,296,58,6,6,(x,y,dx,dy)=>{const d=dx*dx+dy*dy;return d>0.6?pick(KR.stahl,0.6-dx*0.3-dy*0.3,x,y):'#05070c';});
+  R(g,288,80,4,2,'#b88a24');P(g,288,80,'#fff4b0');
+  // Boden aus Steinplatten in Flucht, Lichtkreis unter der Lampe
+  for(let y=106;y<SH;y++)for(let x=0;x<W;x++){
+    const d=y-50,u=(x-160)*56/d,col=Math.floor(u/26),row=Math.floor(700/d),fu=u/26-col,fv=700/d-row;
+    let t=0.1+lampe(x,(y-106)*2.5+12)*0.7+treppe(x,y-60)*0.25+((hash(col,row)%7)-3)*0.02;
+    if(fu<0.04||fv<0.08)t-=0.12;else if(fv<0.14)t+=0.04;
+    t-=Math.max(0,3-(y-106))*0.07;
+    P(g,x,y,farbe(x,y,t,3));
+  }
+  // Lampe im Gitterkaefig mit Kabel
+  for(let y=0;y<8;y++)P(g,160,y,'#10141c');
+  ellFill(g,160,11,4,4,(x,y,dx,dy)=>dx*dx+dy*dy<0.35?'#fffbe8':pick(KR.gold,0.85-dy*0.3,x,y));
   R(g,156,8,9,1,'#343e52');R(g,160,7,1,9,'#343e52');R(g,156,15,9,1,'#343e52');
   return c;
 }
@@ -2120,23 +2144,35 @@ function drawKantineBg(){
 }
 function drawKammerBg(){
   const [c,g]=mk(W,SH);
-  // enge Kammer, Licht faellt nur durch die offene Tuer links herein
-  const licht=(x,y)=>0.1+Math.max(0,120-Math.hypot(x-20,(y-80)*0.8))/220;
-  dith(g,0,0,W,106,RAMP.wood,(x,y)=>licht(x,y)*0.8);
-  // Regale mit Glaesern, Dosen und Saecken
-  [34,58,82].forEach(y=>{R(g,50,y,250,3,'#845028');R(g,50,y+3,250,1,'#2a160c');});
-  for(let i=0;i<22;i++){const x=56+i*11,y=[34,58,82][i%3],h=8+(i*7)%6,col=[['#b0683a','#d8b040'],['#6a94d4','#c8cce0'],['#a02234','#e86050'],['#5a6a2e','#7a8c44']][i%4];
-    R(g,x,y-h,8,h,col[0]);R(g,x,y-h,8,2,col[1]);R(g,x+1,y-h+3,1,h-4,'#fff6d8');}
+  const hash=(a,b)=>((a*73856093)^(b*19349663))>>>0;
+  // enge Kammer, Licht faellt nur durch die offene Tuer links herein und verliert sich nach rechts
+  const licht=(x,y)=>Math.max(0,1-Math.hypot(x-14,(y-70)*0.8)/260);
+  // Bretterwand
+  for(let y=0;y<106;y++)for(let x=0;x<W;x++){const b=Math.floor(x/12),lx=x%12;
+    let t=0.05+licht(x,y)*0.75+Math.sin(x*0.9+Math.sin(y*0.12+b)*2)*0.03+((hash(b,3)%5)-2)*0.02;if(lx===0)t-=0.15;else if(lx===1)t+=0.05;
+    P(g,x,y,pick(KR.holz,t*0.85,x,y));}
+  // Regalbretter mit Vorderkante
+  [34,58,82].forEach(y=>{for(let x=50;x<300;x++){const l=licht(x,y);P(g,x,y,pick(KR.holz,0.35+l*0.6,x,y));P(g,x,y+1,pick(KR.holz,0.2+l*0.4,x,y));P(g,x,y+2,pick(KR.holz,0.1+l*0.3,x,y));P(g,x,y+3,'#0e0604');}});
+  // Dosen, Glaeser und Schachteln, auf der Lichtseite heller, mit Glanzkante
+  const RP=[KR.terra,KR.meer,KR.buchR,KR.blatt,KR.buchY];
+  for(let i=0;i<22;i++){const x=56+i*11,y=[34,58,82][i%3],h=8+(i*7)%6,rp=RP[i%5],glas=i%4===1;
+    for(let yy=y-h;yy<y;yy++)for(let xx=x;xx<x+8;xx++){const l=licht(xx,yy);let t=0.15+l*0.7-(xx-x)/30+(xx===x+1?0.25:0);
+      if(yy<y-h+2)t+=0.15;P(g,xx,yy,glas&&xx>x&&xx<x+7&&yy>y-h+2?pick(KR.dunst,t,xx,yy):pick(rp,t,xx,yy));}
+    if(glas)for(let yy=y-h+3;yy<y-1;yy++)P(g,x+2,yy,'#e8eef8');
+    if(!glas&&h>10)for(let xx=x;xx<x+8;xx++)P(g,xx,y-h+4,pick(KR.papier,0.4+licht(xx,y)*0.5,xx,y));}
   // Einmachglaeser mit Gurken
-  [[70,98],[84,98],[98,98]].forEach(([x,y])=>{R(g,x,y-12,10,12,'#7a8c44');R(g,x,y-13,10,2,'#c8c8d4');R(g,x+2,y-10,1,8,'#c8cce0');});
-  // offene Tuer links
-  R(g,0,30,28,76,'#2a160c');dith(g,2,32,24,74,FLIESE,(x,y)=>0.8);
-  // Boden
-  dith(g,0,106,W,SH-106,RAMP.wood,(x,y)=>0.35-(y-106)/100+Math.max(0,60-Math.hypot(x-30,(y-110)*2))/150);R(g,0,106,W,1,'#2a160c');
-  for(let y=112;y<SH;y+=8)R(g,0,y,W,1,'#2a160c');
-  // Lichtkeil auf dem Boden
-  polyFill(g,[[28,106],[28,130],[110,144],[70,106]],(x,y)=>bay(x,y)<0.25?'#b07c48':null);
-  for(let y=0;y<SH;y++)for(let x=0;x<W;x++){const d=W-x;if(d<60&&bay(x,y)*60>d)P(g,x,y,'#1a0c06');}
+  [[70,98],[84,98],[98,98]].forEach(([x,y])=>{for(let yy=y-12;yy<y;yy++)for(let xx=x;xx<x+10;xx++)P(g,xx,yy,pick(KR.blatt,0.2+licht(xx,yy)*0.6-(xx-x)/40,xx,yy));
+    for(let xx=x;xx<x+10;xx++){P(g,xx,y-13,pick(KR.stahl,0.7,xx,y));P(g,xx,y-12,pick(KR.stahl,0.4,xx,y));}
+    for(let yy=y-10;yy<y-2;yy++)P(g,x+2,yy,'#e8f4e0');});
+  // offene Tuer links: helle Kueche dahinter
+  for(let y=30;y<106;y++)for(let x=0;x<28;x++){const rand=x>=25||y<32;P(g,x,y,rand?pick(KR.holz,0.35,x,y):pick(KR.kachel,0.85-(y-32)/300,x,y));}
+  // Dielenboden mit Lichtkeil von der Tuer
+  for(let y=106;y<SH;y++)for(let x=0;x<W;x++){const d=y-60,u=(x-160)*46/d,pl=Math.floor(u/14),fu=u/14-pl;
+    let t=0.05+licht(x,y)*0.45+((hash(pl,2)%5)-2)*0.02;if(fu<0.08)t-=0.1;
+    if(inPoly(x+0.5,y+0.5,[[28,106],[28,130],[110,144],[70,106]]))t+=0.3;t-=Math.max(0,3-(y-106))*0.07;
+    P(g,x,y,pick(KR.dielen,t,x,y));}
+  // Mehlstaub in der Luft der Kammer, fein und fest
+  for(let i=0;i<14;i++){const x=(i*53)%120+30,y=(i*37)%70+30;if(licht(x,y)>0.4)P(g,x,y,'#f6ead0');}
   return c;
 }
 // Zutaten und Werkzeug einzeln gezeichnet, fuer Wand, Herd und Kammer
