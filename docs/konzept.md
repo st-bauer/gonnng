@@ -307,7 +307,7 @@ Tippstufen von Krächz: „Hau mal auf den Gong und schau, was mit den Schildern
 
 *Grummelbarts Tafel.* Neben der Treppe hängt eine kleine Tafel von Hausmeister Grummelbart. Er muss jeden Tag durch den Gang und hat sich seine Pläne mit Kreide notiert: „Wenn einer ‚Feierabend!‘ flüstert, dann pfeife ich mein Lied und gehe weiter.“ „Wenn es nach Kaffee riecht, dann trinke ich aus meiner Thermoskanne.“ Eine dritte Zeile ist verwischt. So sieht man, wie ein Plan aussieht, ohne dass ihn jemand erklärt.
 
-*Eigene Pläne.* „Benutze Kreide mit Tafel“ öffnet zuerst die Wahl des Wenn. Angeboten werden nur Stolperstellen, die die Figur schon erlebt hat. Dann folgt die Wahl des Dann:
+*Eigene Pläne.* „Benutze Kreide mit Tafel“ öffnet zuerst die Wahl des Wenn. Angeboten werden die erlebten Stolperstellen, für die noch kein Plan steht, und zwei vage Wenns: „Wenn ich Lust habe …“ („Wenn ich Lust habe? Da wartet der Plan ewig.“) und „Wenn es gerade passt …“ („Passt es jetzt? Oder jetzt? Da weiß ich doch nie, wann der Plan losgehen soll.“). Die vagen Wenns scheitern, weil ein Plan eine Situation braucht, die man erkennt, wenn sie eintritt. Dann folgt die Wahl des Dann:
 
 | Dann | passt bei | Reaktion, wenn es nicht passt |
 | --- | --- | --- |

@@ -1808,9 +1808,14 @@ async function planSchreiben(){
   const offen=Object.keys(WENN).filter(w=>S.erlebt[w]&&!S.plaene[w]);
   if(!Object.keys(S.erlebt).length)return say('hero','Was soll ich denn aufschreiben? Ich weiß ja noch gar nicht, was mich da drin erwartet.');
   if(!offen.length)return say('hero','Für alles, was mir passiert ist, steht schon ein Plan da.');
-  const wa=await choose([...offen.map(w=>WENN[w]),'Ach, doch nichts.']);
-  if(wa===offen.length)return say('hero','Später. … Moment, nein. Das Wort streiche ich.');
-  const w=offen[wa];
+  // Neben den erlebten Stolperstellen stehen vage Wenns zur Auswahl. Die taugen nicht, weil man nie merkt, wann der Plan losgehen soll.
+  const wahl=[{v:'Wenn ich Lust habe …',nein:'Wenn ich Lust habe? Da wartet der Plan ewig.'},...offen.map(w=>({w,v:WENN[w]})),
+    {v:'Wenn es gerade passt …',nein:'Passt es jetzt? Oder jetzt? Da weiß ich doch nie, wann der Plan losgehen soll.'},{v:'Ach, doch nichts.'}];
+  const c=wahl[await choose(wahl.map(x=>x.v))];
+  if(!c.w&&!c.nein)return say('hero','Später. … Moment, nein. Das Wort streiche ich.');
+  await reach();tone('square',1200,0.06,0.02);
+  if(c.nein){await say('hero',c.nein);return say('hero','Ich wische es wieder weg.');}
+  const w=c.w;
   await reach();tone('square',1200,0.06,0.02);
   const d=DANN[await choose(DANN.map(x=>x.text))];
   await reach();tone('square',1100,0.06,0.02);tone('square',1300,0.06,0.02,null,0.12);
