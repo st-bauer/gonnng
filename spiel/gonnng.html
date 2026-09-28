@@ -367,6 +367,43 @@ function makeImp(o){
 /* =====================================================================
    Der Raum
    ===================================================================== */
+// Lange Farbrampen fuer alle Raeume: aus wenigen Stuetzfarben mit vielen Zwischenstufen, so werden Licht und Schatten weich
+function mkRamp(keys,n){const h=c=>[1,3,5].map(i=>parseInt(c.substr(i,2),16)),out=[];
+  for(let i=0;i<n;i++){const t=i/(n-1)*(keys.length-1),k=Math.min(keys.length-2,Math.floor(t)),f=t-k,a=h(keys[k]),b=h(keys[k+1]);
+    out.push('#'+a.map((v,j)=>Math.round(v+(b[j]-v)*f).toString(16).padStart(2,'0')).join(''));}return out;}
+const KR={
+  kachel:mkRamp(['#2a3040','#5a6480','#98a2bc','#d4dae8','#f4f6fa'],12),     // kuehle Wandkacheln
+  kachelW:mkRamp(['#3a3028','#7a6a58','#c0ac90','#ecdcc0','#fff4e0'],12),    // Kacheln im warmen Lampenlicht
+  terra:mkRamp(['#1e0c06','#4a1e0e','#8a3c1c','#c0622e','#e8925a'],12),      // Terrakottaboden
+  stahl:mkRamp(['#10141c','#2e3848','#5c6a80','#9aa8bc','#e4eaf2'],12),
+  holz:mkRamp(['#1a0c06','#3e2010','#6e3c1c','#a0622e','#d09458'],10),
+  email:mkRamp(['#3a4252','#7a8498','#b8c0d0','#e4e8f0','#ffffff'],10),
+  kork:mkRamp(['#3a200c','#6e4420','#a0703c','#c89a5c'],8),
+  himmel:mkRamp(['#6a90d0','#9ab8e8','#cce0f8','#f0f6ff'],8),
+  decke:mkRamp(['#141820','#262c38','#3a4252','#505a6c'],8),
+  putz:mkRamp(['#1e2034','#3a3e5c','#5a6082','#8a90b4','#bcc0dc','#e4e6f4'],12),    // Wandputz im Schatten, kuehl
+  putzW:mkRamp(['#3a2e34','#6e5a5c','#a8908a','#dcc4b0','#fbecd8','#fff8ec'],12),   // Wandputz in der Morgensonne
+  dielen:mkRamp(['#140804','#321608','#5c3016','#8a5226','#b87c42','#e0aa6a','#f6d49c'],14),
+  papier:mkRamp(['#8a8272','#c0b8a0','#e8e0c8','#fbf6ea'],8),
+  tafel:mkRamp(['#08140f','#10261c','#1c3a2c','#2c5242','#467060'],10),
+  blatt:mkRamp(['#12301a','#26582a','#3e8a3a','#6ab85a','#a8e08a'],10),
+  meer:mkRamp(['#0c1c48','#1c3a86','#2e5cc0','#5a8ae8','#9ac0f8'],10),
+  buchR:mkRamp(['#3a0610','#7a1428','#b02a3c','#e0606a'],8),
+  buchB:mkRamp(['#0a1440','#1c3278','#2c4ca8','#6a90e0'],8),
+  buchG:mkRamp(['#0c2a14','#1e5a2a','#2e8a40','#6ac070'],8),
+  buchY:mkRamp(['#4a3408','#9a7418','#d8b040','#fff0a0'],8),
+  dunst:mkRamp(['#5a6680','#7a88a8','#9aa8c8','#c0cce0'],8),
+  ziegel:mkRamp(['#4a1a14','#8a3a2a','#b85a44','#e08a6a'],8),
+  hallwand:mkRamp(['#1e1410','#3e2a22','#6a4c3e','#9a7662','#c8a68a','#ecd4b4'],12),
+  marmorH:mkRamp(['#6a5e50','#9a8c78','#c8b89c','#e4d8c0','#faf2e2'],12),
+  marmorD:mkRamp(['#0c0a0a','#221c1a','#3a302c','#5a4c44','#86766a'],12),
+  gold:mkRamp(['#3a2404','#7a5410','#b88a24','#e8c050','#fff4b0'],12),
+  oel:mkRamp(['#141018','#2a2230','#3e3448','#5a4c60'],8),
+  haut:mkRamp(['#6a3424','#b86e50','#e0a07a','#f8c8a0'],8)
+};
+// Farbe aus einer Rampe waehlen, mit Bayer-Rasterung nur zwischen zwei benachbarten Stufen
+function pick(r,t,x,y){const n=r.length-1,v=clamp(t,0,0.9999)*n,k=Math.floor(v);return (v-k)>bay(x,y)?r[Math.min(n,k+1)]:r[k];}
+const _rc={};function mkRampCache(n){return _rc[n]||(_rc[n]=mkRamp(['#0e3a36','#1e6a60','#34a894','#7cd8c4','#c8f4e8'],10));}
 const COL={
   wall:['#4a4e6e','#5a6082','#6e7498','#848aac','#9aa0c0','#b0b6d2','#c8cce0'],
   floor:['#2a160c','#422414','#5c341c','#784828','#946034','#b07c48'],
@@ -376,99 +413,137 @@ const COL={
 };
 function drawRoom(){
   const [c,g]=mk(W,SH);
-  // Wand mit Licht vom Fenster links
-  dith(g,0,0,W,72,COL.wall,(x,y)=>0.72-x/W*0.55-Math.abs(y-36)/200+Math.max(0,60-Math.hypot(x-34,y-40))/200);
+  const VX=160,VY=30,WB=96;
+  const hash=(a,b)=>((a*73856093)^(b*19349663))>>>0;
+  // Morgensonne durch das Bogenfenster links: warmer Schein auf Wand und Boden
+  const sonne=(x,y)=>Math.max(0,1-Math.hypot(x-34,(y-44)*0.9)/130);
+  const imFleck=(x,y)=>inPoly(x,y,[[26,97],[74,97],[150,135],[86,135]]);
   // Deckenbalken
-  dith(g,0,0,W,6,RAMP.wood,(x,y)=>0.2+y/12);R(g,0,6,W,1,'#b07c48');R(g,0,7,W,1,'#2a160c');
-  // Holzvertaefelung unten an der Wand
-  dith(g,0,70,W,26,RAMP.wood,(x,y)=>0.72-x/W*0.35-(y-70)/80);
-  R(g,0,70,W,2,'#b07c48');R(g,0,72,W,1,'#2a160c');
-  for(let x=6;x<W;x+=14){R(g,x,73,1,21,'#2a160c');R(g,x+1,73,1,21,'#a06a38');}
-  R(g,0,94,W,2,'#1a0c06');
-  // Boden aus Dielen mit Fluchtpunkt
-  dith(g,0,96,W,SH-96,COL.floor,(x,y)=>0.78-(y-96)/80-Math.abs(x-150)/700);
-  for(let x=-260;x<=580;x+=22){const x0=160+(x-160)*(96-20)/(SH-20);line(g,x0,96,x,SH,'#2a160c');}
-  for(let i=0;i<14;i++){const y=100+((i*37)%40),x=(i*71)%300;R(g,x,y,10,1,'#3a1e10');}
-  // Sonnenfleck auf dem Boden
-  polyFill(g,[[26,97],[74,97],[150,135],[86,135]],(x,y)=>bay(x,y)<0.5?(y<116?'#c89a64':'#b07c48'):null);
-  // Fenster
+  for(let y=0;y<8;y++)for(let x=0;x<W;x++){let t=0.35-y/30+sonne(x,y)*0.3+Math.sin(x*0.7+Math.sin(y)*2)*0.03;if(y===6)t+=0.25;if(y===7)t=0.05;P(g,x,y,pick(KR.holz,t,x,y));}
+  // Wand aus Putz: hell am Fenster, rechts kuehler und dunkler, unter der Decke und ueber der Vertaefelung etwas Schatten
+  for(let y=8;y<70;y++)for(let x=0;x<W;x++){
+    const s=sonne(x,y),ao=Math.max(0,14-y)/16+Math.max(0,y-62)/20+Math.max(0,x-300)/30;
+    const t=0.3+s*0.62-ao*0.25-x/1400+((hash(x>>2,y>>2)%5)-2)*0.008;
+    P(g,x,y,clamp(s*1.8-0.35,0,1)>bay(x+1,y+2)?pick(KR.putzW,t,x,y):pick(KR.putz,t,x,y));
+  }
+  // Holzvertaefelung mit Fuellungen und Handlauf
+  for(let y=70;y<WB;y++)for(let x=0;x<W;x++){
+    const px=x%28,s=sonne(x,y);let t=0.42+s*0.35-x/900+Math.sin(x*0.6+Math.sin(y*0.3))*0.04;
+    if(y<73)t=y===70?0.85:y===71?0.6:0.2;
+    else if(px===0)t-=0.3;else if(px===1)t+=0.15;
+    else if(px>4&&px<24&&y>76&&y<92){t-=0.08;if(y===77||px===5)t-=0.15;if(y===91||px===23)t+=0.12;}
+    if(y>=WB-2)t=0.05;
+    P(g,x,y,pick(KR.holz,t,x,y));
+  }
+  // Dielenboden in Flucht, Sonnenfleck, Glanz und Schatten unter den Tischen
+  const schatten=[[[4,124],[74,124],[94,144],[20,144]],[[98,124],[168,124],[188,144],[114,144]],[[222,124],[292,124],[312,144],[238,144]],[[128,100],[200,100],[214,106],[140,106]]];
+  for(let y=WB;y<SH;y++)for(let x=0;x<W;x++){
+    const d=y-VY,u=(x-VX)*66/d,pl=Math.floor(u/14),fu=u/14-pl,v=900/d+(hash(pl,7)%10)/3,st=Math.floor(v/3),fv=v/3-st;
+    let t=0.36-(y-WB)/200-Math.max(0,x-120)/700+((hash(pl,st)%7)-3)*0.02+Math.sin(u*0.9+st)*0.02+sonne(x,y-50)*0.2;
+    if(fu<0.07)t-=0.2;else if(fu<0.14)t+=0.05;if(fv<0.03)t-=0.15;
+    if(imFleck(x+0.5,y+0.5))t+=0.28;
+    if(schatten.some(p=>inPoly(x+0.5,y+0.5,p)))t-=0.16;
+    t-=Math.max(0,3-(y-WB))*0.08;
+    P(g,x,y,pick(KR.dielen,t,x,y));
+  }
   drawWindow(g);
-  // Poster Pflanzenzelle
-  R(g,62,20,30,38,'#3a2e20');R(g,63,21,28,36,'#e8e0c8');dith(g,63,21,28,36,['#d8d0b4','#e8e0c8','#f4eed8'],(x,y)=>0.8-(x-63)/60);
-  ellFill(g,77,39,11,14,(x,y,dx,dy)=>{const d=dx*dx+dy*dy;return d>0.8?'#2e6a2e':d>0.66?'#5aa04a':'#a8d888';});
-  ellFill(g,80,43,5,6,()=> '#cfe8f4');ellFill(g,80,43,5,6,(x,y,dx,dy)=>dx*dx+dy*dy>0.7?'#8ab8d0':null);
-  ellFill(g,72,34,3.6,3.6,(x,y,dx,dy)=>dx*dx+dy*dy>0.6?'#4a2a5a':'#8a5aa0');P(g,72,34,'#2a1030');
-  [[71,43],[75,48],[83,33],[69,39],[78,30],[84,50]].forEach(([x,y])=>{R(g,x,y,3,2,'#2e7a2e');P(g,x,y,'#5ab05a');});
-  R(g,66,22,1,1,'#c83030');R(g,87,22,1,1,'#c83030');
-  // Tafel
-  R(g,103,15,106,51,'#5c341c');R(g,104,16,104,49,'#845028');R(g,104,16,104,1,'#b07c48');
-  dith(g,106,18,100,45,COL.board,(x,y)=>0.55-(x-106)/400+(y-18)/300+(Math.sin(x/9+y/13)*0.05));
-  for(let i=0;i<5;i++){const cx=120+i*19,cy=30+(i%3)*8;for(let a=0;a<3;a+=0.15){const x=Math.round(cx+Math.cos(a)*10),y=Math.round(cy+Math.sin(a)*3);if(bay(x,y)<0.35)P(g,x,y,'#3e6e5a');}}
-  R(g,102,63,108,3,'#b07c48');R(g,102,65,108,1,'#2a160c');
-  // Uhr
-  ellFill(g,226,24,10,10,(x,y,dx,dy)=>{const d=dx*dx+dy*dy;return d>0.78?(dx<0?'#946034':'#422414'):'#f0ecd8';});
+  // Lichtkante des Fensters auf der Wand rechts daneben
+  for(let y=16;y<80;y++)for(let x=58;x<64;x++)if(bay(x,y)<0.5-(x-58)/12)P(g,x,y,pick(KR.putzW,0.9,x,y));
+  // Poster Pflanzenzelle mit Schatten
+  R(g,64,22,30,38,'#3a3448');
+  for(let y=20;y<58;y++)for(let x=62;x<92;x++){const rand=x===62||x===91||y===20||y===57;P(g,x,y,rand?'#5a4a38':pick(KR.papier,0.7+sonne(x,y)*0.3-(x-62)/120,x,y));}
+  ellFill(g,77,39,11,14,(x,y,dx,dy)=>{const d=dx*dx+dy*dy;return d>0.8?'#2e6a2e':d>0.66?'#5aa04a':pick(KR.blatt,0.75-dx*0.2-dy*0.2,x,y);});
+  ellFill(g,80,43,5,6,(x,y,dx,dy)=>dx*dx+dy*dy>0.7?'#8ab8d0':'#cfe8f4');
+  ellFill(g,72,34,3.6,3.6,(x,y,dx,dy)=>dx*dx+dy*dy>0.6?'#4a2a5a':dx+dy<-0.4?'#b07ad0':'#8a5aa0');P(g,72,34,'#2a1030');
+  [[71,43],[75,48],[83,33],[69,39],[78,30],[84,50]].forEach(([x,y])=>{R(g,x,y,3,2,'#2e7a2e');P(g,x,y,'#7ac86a');});
+  P(g,66,22,'#c83030');P(g,87,22,'#c83030');
+  // Tafel mit Holzrahmen, Wischspuren und Ablage
+  R(g,106,18,106,50,'#262030');
+  for(let y=15;y<66;y++)for(let x=103;x<209;x++){
+    const rand=x<106||x>205||y<18||y>62;
+    if(rand){let t=0.5+(x<106||y<18?0.25:-0.2)+sonne(x,y)*0.2;P(g,x,y,pick(KR.holz,t,x,y));continue;}
+    let t=0.32-(x-106)/500+sonne(x,y)*0.25+Math.sin(x/9+y/13)*0.03;
+    for(let i=0;i<5;i++){const cx=120+i*19,cy=30+(i%3)*8,r=Math.hypot((x-cx)/10,(y-cy)/3);if(r>0.8&&r<1.2&&y<cy)t+=0.09;}
+    P(g,x,y,pick(KR.tafel,t,x,y));
+  }
+  for(let x=102;x<210;x++){P(g,x,63,pick(KR.holz,0.85,x,63));P(g,x,64,pick(KR.holz,0.55,x,64));P(g,x,65,pick(KR.holz,0.2,x,65));}
+  for(let x=102;x<210;x++)if(bay(x,66)<0.6)P(g,x,66,'#262030');
+  // Uhr mit Schatten
+  ellFill(g,227,25,10,10,()=> '#3a3448');
+  ellFill(g,226,24,10,10,(x,y,dx,dy)=>{const d=dx*dx+dy*dy;return d>0.78?pick(KR.holz,0.55-dx*0.4-dy*0.2,x,y):pick(KR.papier,0.9-dy*0.15-dx*0.1,x,y);});
   for(let i=0;i<12;i++){const a=i/12*Math.PI*2;P(g,Math.round(226+Math.cos(a)*6.5),Math.round(24+Math.sin(a)*6.5),'#383840');}
-  line(g,226,24,222,21,'#101018');line(g,226,24,227,17,'#101018');
-  // Buecherregal mit Globus
-  R(g,238,18,52,78,'#2a160c');dith(g,240,20,48,74,RAMP.wood,(x,y)=>0.45-(x-240)/160);
-  [38,58].forEach(y=>{R(g,240,y,48,3,'#b07c48');R(g,240,y+3,48,1,'#1a0c06');});
-  R(g,240,78,48,2,'#b07c48');R(g,242,80,21,14,'#5c341c');R(g,265,80,21,14,'#5c341c');P(g,261,87,'#d8b040');P(g,267,87,'#d8b040');
-  const BK=['#a02234','#2c4ca8','#2e8a40','#d8b040','#8a44aa','#6a1024','#4a70d0','#b0683a'];
-  [[22,38],[42,58],[62,78]].forEach(([y0,y1],r)=>{let x=242;let i=r*3;while(x<284){const w=3+((i*7)%3),h=10+((i*5)%6);if(i%9===4){line(g,x,y1-1,x+5,y1-h,BK[i%8]);x+=6;i++;continue;}R(g,x,y1-h,w,h,BK[i%8]);R(g,x,y1-h,1,h,'#ffffff30'.slice(0,7));R(g,x+w-1,y1-h,1,h,'#1a0c06');x+=w+1;i++;}});
+  line(g,226,24,222,21,'#101018');line(g,226,24,227,17,'#101018');P(g,226,24,'#c83030');
+  // Buecherregal mit Seitenwand in der Flucht, Buechern und Schrankfach
+  polyFill(g,[[238,18],[234,20],[234,94],[238,96]],(x,y)=>pick(KR.holz,0.55+sonne(x,y)*0.2,x,y));
+  for(let y=18;y<96;y++)for(let x=238;x<290;x++){const rand=x<240||x>287||y<20;P(g,x,y,rand?pick(KR.holz,x<240?0.6:0.3,x,y):pick(KR.holz,0.12+(y-20)/400,x,y));}
+  [38,58,78].forEach(y=>{for(let x=240;x<288;x++){P(g,x,y,pick(KR.holz,0.75,x,y));P(g,x,y+1,pick(KR.holz,0.5,x,y));P(g,x,y+2,pick(KR.holz,0.3,x,y));P(g,x,y+3,'#1a0c06');}});
+  const BK=[KR.buchR,KR.buchB,KR.buchG,KR.buchY];
+  [[22,38],[42,58],[62,78]].forEach(([y0,y1],r)=>{let x=242,i=r*3;while(x<284){const w=3+((i*7)%3),h=10+((i*5)%6),rp=BK[i%4];
+    if(i%9===4){for(let k=0;k<h;k++)for(let j=0;j<3;j++)P(g,x+j+Math.round(k*0.4),y1-1-k,pick(rp,0.5,x,k));x+=7;i++;continue;}
+    for(let yy=y1-h;yy<y1;yy++)for(let xx=x;xx<x+w;xx++)P(g,xx,yy,pick(rp,0.35+(xx===x?0.35:0)-(xx===x+w-1?0.2:0)+(yy-y1+h<2?0.1:0),xx,yy));
+    if(h>12)R(g,x,y1-h+3,w,1,'#e8d070');x+=w+1;i++;}});
+  for(let y=80;y<94;y++)for(let x=242;x<286;x++){const tuerR=x===263||x===264;let t=0.4-(x-242)/150;if(tuerR)t=0.1;if(y===80)t+=0.3;P(g,x,y,pick(KR.holz,t,x,y));}
+  P(g,261,87,'#fff0a0');P(g,267,87,'#fff0a0');
   R(g,262,16,4,2,'#5c341c');R(g,258,18,12,1,'#2a160c');
-  ellFill(g,264,9,7,7,(x,y,dx,dy)=>{const d=dx*dx+dy*dy,land=Math.sin(x*1.3)+Math.cos(y*1.7+x*0.4)>0.6;const lit=dx+dy<-0.3;return d>0.8?'#10245a':land?(lit?'#5ab05a':'#2e7a2e'):(lit?'#6090e0':'#26489a');});
+  ellFill(g,264,9,7,7,(x,y,dx,dy)=>{const d=dx*dx+dy*dy,land=Math.sin(x*1.3)+Math.cos(y*1.7+x*0.4)>0.6,l=0.7-dx*0.35-dy*0.35;return d>0.85?'#10245a':land?pick(KR.blatt,l,x,y):pick(KR.meer,l,x,y);});
   // Lueftungsgitter unten rechts
-  R(g,295,77,22,19,'#383840');R(g,296,78,20,17,'#6e6e7c');
-  for(let y=80;y<93;y+=2){R(g,297,y,18,1,'#1c1c24');R(g,297,y+1,18,1,'#9a9aa8');}
-  // Ecke rechts im Schatten
-  dith(g,312,0,8,96,['#2a2a3e','#3c3c58'],(x,y)=>(x-312)/8);
-  // Pult
-  R(g,128,72,72,4,'#b07c48');R(g,128,72,72,1,'#c89a64');R(g,128,76,72,1,'#2a160c');
-  dith(g,130,77,68,23,RAMP.wood,(x,y)=>0.55-(x-130)/200-(y-77)/90);
-  R(g,134,80,30,16,'#5c341c');R(g,135,81,28,14,'#6e4020');R(g,168,80,26,8,'#5c341c');R(g,169,81,24,6,'#845028');R(g,180,83,3,2,'#d8b040');
-  R(g,128,99,72,1,'#1a0c06');
-  R(g,136,66,14,6,'#1c3278');R(g,136,66,14,1,'#4a70d0');R(g,138,63,12,3,'#a02234');R(g,138,63,12,1,'#d04a5a');
+  for(let y=77;y<96;y++)for(let x=295;x<317;x++){const rand=x===295||x===316||y===77||y===95;let t=rand?0.5:((y-80)%2?0.75:0.1);if(!rand&&(y<80||y>92))t=0.3;P(g,x,y,pick(KR.stahl,t-(x-295)/100,x,y));}
+  // Lehrerpult als Koerper mit Oberseite, Schubladen und Buechern
+  polyFill(g,[[128,74],[200,74],[198,69],[132,69]],(x,y)=>pick(KR.holz,0.8+sonne(x,y)*0.2,x,y));
+  for(let y=74;y<100;y++)for(let x=128;x<200;x++){let t=0.5-(x-128)/180-(y-74)/70+Math.sin(x*0.7+Math.sin(y*0.2)*2)*0.03;
+    if(y===74)t=0.9;if(y===75)t=0.2;
+    if(x>=134&&x<164&&y>=79&&y<95){t-=0.1;if(x===134||y===79)t-=0.15;if(x===163||y===94)t+=0.12;}
+    if(x>=168&&x<194&&y>=79&&y<87){t-=0.1;if(y===79)t-=0.15;}
+    if(y>=98)t=0.05;P(g,x,y,pick(KR.holz,t,x,y));}
+  R(g,180,82,3,2,'#b08820');P(g,180,82,'#fff0a0');
+  for(let y=66;y<72;y++)for(let x=136;x<150;x++)P(g,x,y,pick(KR.buchB,y===66?0.9:0.45-(x-136)/60,x,y));
+  for(let y=63;y<66;y++)for(let x=138;x<150;x++)P(g,x,y,pick(KR.buchR,y===63?0.9:0.5,x,y));
   return c;
 }
 function drawWindow(g){
   const x0=10,y0=12,w=46,h=68,cx=x0+w/2;
   const inWin=(x,y)=>x>=x0&&x<x0+w&&y>=y0+18&&y<y0+h||Math.hypot(x+0.5-cx,y+0.5-(y0+23))<23&&y<y0+23;
-  for(let y=y0-3;y<y0+h+3;y++)for(let x=x0-3;x<x0+w+3;x++){
-    const inner=inWin(x,y),outer=inWin(x-3,y)||inWin(x+3,y)||inWin(x,y-3)||inWin(x,y+3);
+  for(let y=y0-4;y<y0+h+3;y++)for(let x=x0-4;x<x0+w+4;x++){
+    const inner=inWin(x,y),outer=inWin(x-4,y)||inWin(x+4,y)||inWin(x,y-4)||inWin(x,y+4);
     if(inner){
-      let col;const t=(y-y0)/h;
-      col=t<0.3?COL.sky[0]:t<0.55?COL.sky[1]:t<0.75?COL.sky[2]:COL.sky[3];
-      if((t*4%1)>bay(x,y)&&t<0.99)col=COL.sky[Math.min(3,Math.floor(t*4)+1)]||col;
-      // Daecher der Stadt im Morgendunst
+      let t=0.25+(y-y0)/h*0.7;
       const roof=y0+h-10-Math.round(4*Math.abs(Math.sin(x/6)))-(x>36&&x<44?8:0);
-      if(y>roof)col=y>roof+3?'#8a9ab8':'#a05a4a';
-      if(x>=39&&x<42&&y>y0+h-26&&y<=roof)col='#7a8aa8';
+      let col=pick(KR.himmel,t,x,y);
+      if(y>roof)col=y>roof+3?pick(KR.dunst,0.5+(y-roof)/30,x,y):pick(KR.ziegel,0.6,x,y);
+      if(x>=39&&x<42&&y>y0+h-26&&y<=roof)col=pick(KR.dunst,0.4,x,y);
+      if(Math.abs((x-x0)-(y-y0)*0.6-6)<1.5&&y<roof)col=pick(KR.himmel,t+0.25,x,y);
       P(g,x,y,col);
-    }else if(outer)P(g,x,y,(x<cx?'#ffffff':'#b8b8c8'));
+    }else if(outer)P(g,x,y,pick(KR.email,x<cx?0.95:0.55,x,y));
   }
   // Fensterkreuz
-  R(g,cx-1,y0,2,h,'#e0e0ea');R(g,cx,y0,1,h,'#9a9aa8');R(g,x0,y0+34,w,2,'#e0e0ea');R(g,x0,y0+35,w,1,'#9a9aa8');
+  for(let y=y0;y<y0+h;y++){P(g,cx-1,y,'#ffffff');P(g,cx,y,pick(KR.email,0.5,cx,y));}
+  for(let x=x0;x<x0+w;x++){P(g,x,y0+34,'#ffffff');P(g,x,y0+35,pick(KR.email,0.5,x,y0+35));}
   // Fensterbank mit Pflanze
-  R(g,x0-6,y0+h+2,w+12,3,'#e0e0ea');R(g,x0-6,y0+h+2,w+12,1,'#ffffff');R(g,x0-6,y0+h+5,w+12,1,'#6e6e7c');
-  R(g,14,y0+h-3,7,5,'#a05030');R(g,14,y0+h-3,7,1,'#c87050');
-  ellFill(g,17,y0+h-7,5,4,(x,y,dx,dy)=>dx+dy<-0.2?'#5ab05a':'#2e7a2e');
+  for(let x=x0-6;x<x0+w+6;x++){P(g,x,y0+h+2,'#ffffff');P(g,x,y0+h+3,pick(KR.email,0.8,x,0));P(g,x,y0+h+4,pick(KR.email,0.6,x,1));P(g,x,y0+h+5,pick(KR.putz,0.2,x,0));}
+  for(let y=y0+h-3;y<y0+h+2;y++)for(let x=14;x<21;x++)P(g,x,y,pick(KR.terra,y===y0+h-3?0.85:0.55-(x-14)/20,x,y));
+  ellFill(g,17,y0+h-7,5,4,(x,y,dx,dy)=>pick(KR.blatt,0.6-dx*0.3-dy*0.3,x,y));
 }
 // Pulte im Vordergrund, sie verdecken Figuren, die dahinter stehen
 function drawDesks(){
   const [c,g]=mk(W,SH);
-  const desk=(x,w,item)=>{
-    R(g,x+2,121,2,SH-121,'#2a2a34');R(g,x+w-4,121,2,SH-121,'#2a2a34');R(g,x+3,121,1,SH-121,'#6e6e80');
-    polyFill(g,[[x+3,113],[x+w-3,113],[x+w,118],[x,118]],(px,py)=>py<114?'#c89a64':bay(px,py)<0.3?'#946034':'#b07c48');
-    dith(g,x,118,w,5,RAMP.wood,(px,py)=>0.5-(py-118)/10-(px-x)/(w*4));R(g,x,123,w,1,'#1a0c06');
+  const desk=(x,w)=>{
+    // Beine aus Stahlrohr
+    for(let y=121;y<SH;y++){[x+2,x+w-4].forEach((lx,i)=>{P(g,lx,y,pick(KR.stahl,0.6,lx,y));P(g,lx+1,y,pick(KR.stahl,0.25,lx,y));});}
+    // Tischplatte mit Oberseite in der Flucht und Kante
+    polyFill(g,[[x+3,113],[x+w-3,113],[x+w,118],[x,118]],(px,py)=>pick(KR.holz,0.72-(px-x)/(w*3)+(py<114?0.2:0)+Math.sin(px*0.5)*0.03,px,py));
+    for(let py=118;py<123;py++)for(let px=x;px<x+w;px++)P(g,px,py,pick(KR.holz,0.45-(py-118)/12-(px-x)/(w*3),px,py));
+    for(let px=x;px<x+w;px++){P(g,px,118,pick(KR.holz,0.85,px,118));P(g,px,123,'#1a0c06');}
   };
   desk(4,70);desk(98,70);desk(222,70);
   // leerer Stuhl der Hauptfigur
-  R(g,246,126,22,4,'#7e4a24');R(g,246,126,22,1,'#a06a38');R(g,246,129,22,1,'#2a1408');R(g,247,126,2,18,'#5a3218');R(g,265,126,2,18,'#5a3218');
+  for(let y=126;y<130;y++)for(let x=246;x<268;x++)P(g,x,y,pick(KR.holz,y===126?0.85:0.5-(y-126)/8,x,y));
+  for(let y=130;y<SH;y++){P(g,247,y,pick(KR.holz,0.5,247,y));P(g,248,y,pick(KR.holz,0.25,248,y));P(g,265,y,pick(KR.holz,0.4,265,y));P(g,266,y,pick(KR.holz,0.2,266,y));}
   // Heft und Buch auf den anderen Tischen
   R(g,24,114,12,3,'#e8e0c8');R(g,24,114,12,1,'#ffffff');R(g,30,114,1,3,'#9a9aa8');
   R(g,118,114,10,3,'#2e8a40');R(g,118,114,10,1,'#50b060');
   return c;
 }
+
 
 /* =====================================================================
    Schrift: eigene Pixelschrift mit Umlauten
@@ -1419,57 +1494,75 @@ const curBand=()=>S.room==='halle'?BAND_HALLE:S.room==='gang'?BAND_GANG:S.room==
 let HALLE=null;
 function drawHalleBg(){
   const [c,g]=mk(W,SH);
-  const warm=['#5a4038','#6e5044','#846252','#9a7662','#b08c74','#c8a68a'];
-  // Rueckwand mit Licht aus den hohen Fenstern
-  dith(g,56,0,208,92,warm,(x,y)=>0.62-Math.abs(x-160)/500-y/260+Math.max(0,34-Math.hypot(x-86,y-20))/90+Math.max(0,34-Math.hypot(x-234,y-20))/90);
-  // Seitenwaende in Flucht
-  polyFill(g,[[0,0],[56,0],[56,92],[0,112]],(x,y)=>{const t=0.35-x/300-y/400;return bay(x,y)<t+0.3?warm[1]:warm[0];});
-  polyFill(g,[[264,0],[320,0],[320,112],[264,92]],(x,y)=>{const t=0.25+(x-264)/400-y/400;return bay(x,y)<t+0.3?warm[1]:warm[0];});
-  line(g,56,0,56,92,'#3a2a24');line(g,264,0,264,92,'#3a2a24');
-  // Holzvertaefelung
-  dith(g,56,64,208,28,RAMP.wood,(x,y)=>0.7-(y-64)/70-Math.abs(x-160)/600);R(g,56,64,208,2,'#b07c48');R(g,56,66,208,1,'#2a160c');
-  for(let x=60;x<264;x+=16){R(g,x,67,1,24,'#2a160c');R(g,x+1,67,1,24,'#a06a38');}
-  polyFill(g,[[0,78],[56,70],[56,92],[0,112]],(x,y)=>bay(x,y)<0.4?'#5c341c':'#422414');
-  polyFill(g,[[264,70],[320,78],[320,112],[264,92]],(x,y)=>bay(x,y)<0.3?'#5c341c':'#422414');
-  // Balken oben
-  R(g,0,0,W,5,'#2a160c');R(g,0,5,W,1,'#845028');
-  // hohe Fenster mit Lichtbahnen
-  [[72,100],[220,248]].forEach(([a,b])=>{for(let y=8;y<36;y++)for(let x=a;x<b;x++){const inn=y>14||Math.hypot(x+0.5-(a+b)/2,y-14)<(b-a)/2;if(!inn)continue;
-    const fr=x===a||x===b-1||y===35||x===Math.floor((a+b)/2)||y===22;P(g,x,y,fr?'#e0e0ea':(y<20?'#b8d0f0':'#e0ecfa'));}});
-  polyFill(g,[[72,36],[100,36],[150,96],[106,96]],(x,y)=>bay(x,y)<0.18?'#e8d0a8':null);
-  polyFill(g,[[220,36],[248,36],[230,96],[186,96]],(x,y)=>bay(x,y)<0.18?'#e8d0a8':null);
-  // Nordtuer mit Bogen
-  for(let y=34;y<92;y++)for(let x=136;x<184;x++){const top=y<46&&Math.hypot(x+0.5-160,y-46)>24;if(top)continue;
+  const hash=(a,b)=>((a*73856093)^(b*19349663))>>>0;
+  // Licht: zwei hohe Fenster in der Rueckwand, dazu warmes Grundlicht
+  const fen=(x,y)=>Math.max(0,1-Math.hypot(x-86,(y-22)*1.2)/70)+Math.max(0,1-Math.hypot(x-234,(y-22)*1.2)/70);
+  const inFleckL=(x,y)=>inPoly(x,y,[[72,94],[100,94],[150,132],[106,132]]),inFleckR=(x,y)=>inPoly(x,y,[[220,94],[248,94],[232,132],[186,132]]);
+  // Rueckwand aus warmem Putz
+  for(let y=5;y<64;y++)for(let x=56;x<264;x++){const t=0.28+fen(x,y)*0.45-Math.max(0,12-y)/30-Math.abs(x-160)/900+((hash(x>>2,y>>2)%5)-2)*0.008;P(g,x,y,pick(KR.hallwand,t,x,y));}
+  // Seitenwaende in Flucht, vom Licht abgewandt und dunkler
+  polyFill(g,[[0,0],[56,0],[56,92],[0,112]],(x,y)=>pick(KR.hallwand,0.14+x/400-y/900,x,y));
+  polyFill(g,[[264,0],[320,0],[320,112],[264,92]],(x,y)=>pick(KR.hallwand,0.16+(320-x)/500-y/900,x,y));
+  // Kanten der Raumecken
+  for(let y=0;y<92;y++){P(g,56,y,'#2a1c18');P(g,264,y,'#2a1c18');P(g,57,y,pick(KR.hallwand,0.5,57,y));}
+  // Holzvertaefelung ringsum, mit Fuellungen
+  for(let y=64;y<92;y++)for(let x=56;x<264;x++){const px=(x-60)%16;let t=0.42+fen(x,y)*0.25-(y-64)/90+Math.sin(x*0.8+Math.sin(y*0.3)*2)*0.03;
+    if(y<66)t=y===64?0.9:0.6;else if(y===66)t=0.1;else if(px===0)t-=0.3;else if(px===1)t+=0.15;else if(y>70&&y<88&&px>3&&px<13){t-=0.07;if(y===71||px===4)t-=0.12;}
+    P(g,x,y,pick(KR.holz,t,x,y));}
+  polyFill(g,[[0,78],[56,70],[56,92],[0,112]],(x,y)=>pick(KR.holz,0.2+x/300+Math.sin(x*0.8)*0.03,x,y));
+  polyFill(g,[[264,70],[320,78],[320,112],[264,92]],(x,y)=>pick(KR.holz,0.18+(320-x)/300+Math.sin(x*0.8)*0.03,x,y));
+  // Deckenbalken
+  for(let y=0;y<5;y++)for(let x=0;x<W;x++)P(g,x,y,pick(KR.holz,y===4?0.6:0.15,x,y));
+  // hohe Fenster mit Sprossen und Rundbogen
+  [[72,100],[220,248]].forEach(([a,b])=>{for(let y=6;y<38;y++)for(let x=a-2;x<b+2;x++){const m=(a+b)/2,inn=x>=a&&x<b&&(y>14||Math.hypot(x+0.5-m,y-14)<(b-a)/2),rand=!inn&&(x>=a-2&&x<b+2)&&(y>13||Math.hypot(x+0.5-m,y-14)<(b-a)/2+2);
+    if(inn){const kreuz=x===Math.floor(m)||y===22;P(g,x,y,kreuz?pick(KR.holz,0.7,x,y):pick(KR.himmel,0.45+(y-6)/60+(Math.abs(x-a-(y-6)*0.5-4)<2?0.3:0),x,y));}
+    else if(rand)P(g,x,y,pick(KR.holz,x<m?0.6:0.3,x,y));}
+    for(let x=a-3;x<b+3;x++){P(g,x,38,pick(KR.holz,0.85,x,38));P(g,x,39,pick(KR.holz,0.35,x,39));}});
+  // Nordtuer mit Rundbogen, doppelfluegelig, Laibung
+  for(let y=34;y<92;y++)for(let x=134;x<186;x++){const top=y<46&&Math.hypot(x+0.5-160,y-46)>26;if(top)continue;
     const frame=x<139||x>180||(y<49&&Math.hypot(x+0.5-160,y-46)>21);
-    P(g,x,y,frame?'#2a160c':(x===160?'#1a0c06':(bay(x,y)<0.3?'#6e4020':'#5c341c')));}
-  R(g,154,64,2,4,'#d8b040');R(g,165,64,2,4,'#d8b040');
+    let t;if(frame)t=0.55+(x<150?0.2:-0.15)-(y-34)/200;else{t=0.35-Math.abs(x-160)/80+fen(x,y)*0.2+Math.sin(x*0.9+Math.sin(y*0.15)*2)*0.04;if(x===160||x===159)t=0.05;
+      const fx=x<160?x-141:x-161;if(fx>2&&fx<16&&(y>52&&y<68||y>72&&y<88)){t-=0.08;if(fx===3||y===53||y===73)t-=0.12;}}
+    P(g,x,y,pick(KR.holz,t,x,y));}
+  [[154,64],[165,64]].forEach(([x,y])=>{R(g,x,y,2,4,'#b08820');P(g,x,y,'#fff0a0');});
   // Seitentueren, schraeg in der Wand
-  polyFill(g,[[12,44],[40,38],[40,92],[12,103]],(x,y)=>x<15||x>37?'#2a160c':(bay(x,y)<0.3?'#6e4020':'#5c341c'));
-  polyFill(g,[[280,38],[308,44],[308,103],[280,92]],(x,y)=>x<283||x>305?'#2a160c':(bay(x,y)<0.3?'#6e4020':'#5c341c'));
-  P(g,34,70,'#d8b040');P(g,286,70,'#d8b040');
-  // Schwarzes Brett mit Zetteln
-  R(g,68,44,44,32,'#5c341c');R(g,70,46,40,28,'#a0703c');dith(g,70,46,40,28,['#8a5a2c','#a0703c','#b8864c'],(x,y)=>0.6-(x-70)/120+(Math.sin(x*3+y*5)*0.1));
-  R(g,74,49,12,9,'#e8e0c8');R(g,90,50,9,11,'#f0d060');R(g,101,48,7,8,'#c8e0f0');R(g,76,61,14,10,'#ffffff');R(g,76,61,14,1,'#c83030');
-  for(let y=63;y<70;y+=2)R(g,78,y,10,1,'#8a8aa0');
-  // Luefungsgitter, durch das die Hauptfigur kommt
-  R(g,58,78,18,13,'#383840');R(g,59,79,16,11,'#6e6e7c');for(let y=80;y<89;y+=2){R(g,60,y,14,1,'#1c1c24');}
-  // Gemaelde des Schulgruenders
-  R(g,232,42,26,22,'#b08a40');R(g,234,44,22,18,'#3a2a24');
-  ellFill(g,245,52,5,6,(x,y)=>'#d0a080');R(g,240,57,11,5,'#1c2030');R(g,241,46,9,3,'#e8e8f0');P(g,243,52,'#101018');P(g,247,52,'#101018');R(g,243,55,5,1,'#6a3424');
-  // Boden mit Schachbrettfliesen in Flucht
-  polyFill(g,[[56,92],[264,92],[320,112],[320,SH],[0,SH],[0,112]],(x,y)=>{
-    const vx=160,vy=20,t=(y-vy)/(92-vy),u=(x-vx)/t,row=Math.floor(Math.log(t)*9),col=Math.floor(u/22);
-    const dark=(row+col)%2===0,f=(y-92)/60;return dark?(bay(x,y)<f?'#2a201c':'#3a2e2a'):(bay(x,y)<f*0.8?'#b8a888':'#d8ccb0');});
-  R(g,56,92,208,1,'#1a0c06');
+  const seiten=(pts,links)=>polyFill(g,pts,(x,y)=>{const rand=links?(x<15||x>37):(x<283||x>305);return pick(KR.holz,rand?0.2:0.3+(links?(x-12)/120:(308-x)/120)+Math.sin(x*1.1)*0.03,x,y);});
+  seiten([[12,44],[40,38],[40,92],[12,103]],true);seiten([[280,38],[308,44],[308,103],[280,92]],false);
+  P(g,34,70,'#fff0a0');P(g,35,70,'#b08820');P(g,286,70,'#fff0a0');P(g,285,70,'#b08820');
+  // Schwarzes Brett mit Zetteln, Schlagschatten
+  R(g,71,47,44,32,'#3a2820');
+  for(let y=44;y<76;y++)for(let x=68;x<112;x++){const rand=x<70||x>109||y<46||y>73;P(g,x,y,rand?pick(KR.holz,0.4+(x<70||y<46?0.25:0),x,y):pick(KR.kork,0.45+fen(x,y)*0.2+((hash(x,y)%9)-4)*0.04,x,y));}
+  [[74,49,12,9,'#fbf6ea'],[90,50,9,11,'#f0d060'],[101,48,7,8,'#c8e0f0'],[76,61,14,10,'#ffffff']].forEach(([x,y,w,h,col])=>{R(g,x+1,y+1,w,h,'#3a200c');R(g,x,y,w,h,col);});
+  R(g,76,61,14,1,'#c83030');for(let y=63;y<70;y+=2)R(g,78,y,10,1,'#8a8aa0');[[80,49],[94,50],[104,48]].forEach(([x,y])=>P(g,x,y,'#c83030'));
+  // Lueftungsgitter, durch das die Hauptfigur kommt
+  for(let y=78;y<91;y++)for(let x=58;x<76;x++){const rand=x===58||x===75||y===78||y===90;P(g,x,y,pick(KR.stahl,rand?0.5:((y-80)%2?0.7:0.1),x,y));}
+  // Gemaelde des Schulgruenders im Goldrahmen
+  R(g,234,44,26,22,'#2a1c18');
+  for(let y=42;y<64;y++)for(let x=232;x<258;x++){const rand=x<234||x>255||y<44||y>61;P(g,x,y,rand?pick(KR.gold,0.55+(x<236||y<46?0.3:-0.2),x,y):pick(KR.oel,0.3+(y-44)/60-(x-234)/80,x,y));}
+  ellFill(g,245,52,5,6,(x,y,dx,dy)=>pick(KR.haut,0.7-dx*0.3-dy*0.2,x,y));
+  R(g,240,57,11,5,'#1c2030');R(g,241,46,9,3,'#e8e8f0');P(g,243,52,'#101018');P(g,247,52,'#101018');R(g,243,55,5,1,'#6a3424');
+  // Marmorboden im Schachbrett, glaenzend: Fenster spiegeln sich, Lichtflecken der Fenster
+  for(let y=92;y<SH;y++)for(let x=0;x<W;x++){
+    if(y<112&&!inPoly(x+0.5,y+0.5,[[56,92],[264,92],[320,112],[320,SH],[0,SH],[0,112]]))continue;
+    const vx=160,vy=20,tt=(y-vy)/(92-vy),u=(x-vx)/tt,row=Math.floor(Math.log(tt)*9),col=Math.floor(u/22),fu=u/22-col;
+    const dark=(row+col)%2===0,ader=Math.sin(u*0.9+y*1.3+Math.sin(u*0.3+y*0.2)*4)>0.96;
+    let t=(dark?0.3:0.55)-(y-92)/250+(inFleckL(x+0.5,y+0.5)||inFleckR(x+0.5,y+0.5)?0.25:0);
+    if(((x>=74&&x<98)||(x>=222&&x<246))&&y<110&&(x%6<4))t+=0.14*(1-(y-92)/18);   // Spiegelung der Fenster
+    if(ader)t+=dark?0.08:-0.07;if(fu<0.03)t-=0.08;t-=Math.max(0,3-(y-92))*0.08;
+    P(g,x,y,pick(dark?KR.marmorD:KR.marmorH,t,x,y));
+  }
   // Sueden: Schild auf dem Boden zum Musikraum
-  R(g,136,137,48,7,'#5c341c');R(g,137,138,46,5,'#845028');
+  for(let y=137;y<144;y++)for(let x=136;x<184;x++)P(g,x,y,pick(KR.holz,y===137?0.8:0.4,x,y));
   return c;
 }
 function drawGongDisc(x,y,sw){
-  // Schulgong mit Gestell, schwingt nach einem Schlag
-  R(ctx,x-18,y-18,2,34,'#2a160c');R(ctx,x+16,y-18,2,34,'#2a160c');R(ctx,x-18,y-18,36,2,'#5c341c');
+  // Schulgong mit Gestell, schwingt nach einem Schlag, Glanz von links oben
+  for(let k=0;k<34;k++){P(ctx,x-18,y-18+k,pick(KR.holz,0.55,0,k));P(ctx,x-17,y-18+k,pick(KR.holz,0.25,0,k));P(ctx,x+16,y-18+k,pick(KR.holz,0.45,0,k));P(ctx,x+17,y-18+k,pick(KR.holz,0.15,0,k));}
+  for(let k=0;k<36;k++){P(ctx,x-18+k,y-18,pick(KR.holz,0.75,k,0));P(ctx,x-18+k,y-17,pick(KR.holz,0.35,k,1));}
   const dx=Math.round(Math.sin(sw)*2);
-  ellFill(ctx,x+dx,y,13,13,(px,py,a,b)=>{const d=a*a+b*b;return d>0.85?'#6a4a10':d<0.08?'#fff0a0':(a+b<-0.3?'#e8c060':d>0.5?'#9a7418':'#c89a30');});
+  ellFill(ctx,x+dx,y,13,13,(px,py,a,b)=>{const d=a*a+b*b;if(d>0.86)return pick(KR.gold,0.2,px,py);
+    const ring=Math.abs(Math.sqrt(d)-0.55)<0.06,glanz=Math.max(0,1-Math.hypot(a+0.35,b+0.35)*1.8);
+    return pick(KR.gold,0.35+glanz*0.6-(a+b)*0.12+(ring?-0.15:0),px,py);});
   line(ctx,x+dx,y-13,x,y-17,'#383840');
 }
 function plaque(x,y,label){label=label||' ... ';const w=textW(label)+6;x=clamp(x,Math.ceil(w/2)+1,W-Math.ceil(w/2)-1);R(ctx,x-Math.ceil(w/2),y,w,10,'#2a160c');R(ctx,x-Math.ceil(w/2)+1,y+1,w-2,8,'#e8d8a0');text(label,x-Math.floor(textW(label)/2),y+2,'#3a2410',false);}
@@ -1509,9 +1602,10 @@ function drawPanel(){if(!S.panel)return;
 // Kompassrose im Boden: Himmelsrichtungen und Pfeil im Uhrzeigersinn
 function kompass(){
   const cx=160,cy=113;
-  ellFill(ctx,cx,cy,30,9,(x,y,dx,dy)=>{const d=dx*dx+dy*dy;return d>0.82?'#5c341c':d>0.62?'#b08a40':null;});
-  for(let a=-2.6;a<1.9;a+=0.05){P(ctx,Math.round(cx+Math.cos(a)*22),Math.round(cy+Math.sin(a)*6),'#8a5a20');}
-  const ax=Math.round(cx+Math.cos(1.9)*22),ay=Math.round(cy+Math.sin(1.9)*6);R(ctx,ax-2,ay-1,3,1,'#8a5a20');R(ctx,ax-1,ay-2,1,3,'#8a5a20');
+  // eingelassener Messingring, Glanz von links oben
+  ellFill(ctx,cx,cy,30,9,(x,y,dx,dy)=>{const d=dx*dx+dy*dy;if(d>0.84)return pick(KR.gold,0.15,x,y);if(d>0.6)return pick(KR.gold,0.55-dx*0.25-dy*0.2,x,y);return null;});
+  for(let a=-2.6;a<1.9;a+=0.05){const x=Math.round(cx+Math.cos(a)*22),y=Math.round(cy+Math.sin(a)*6);P(ctx,x,y,pick(KR.gold,0.4,x,y));}
+  const ax=Math.round(cx+Math.cos(1.9)*22),ay=Math.round(cy+Math.sin(1.9)*6);R(ctx,ax-2,ay-1,3,1,'#b88a24');R(ctx,ax-1,ay-2,1,3,'#b88a24');
   text('N',cx-2,cy-15,'#f0d890',true);text('S',cx-2,cy+8,'#f0d890',true);text('W',cx-39,cy-4,'#f0d890',true);text('O',cx+34,cy-4,'#f0d890',true);
 }
 function hallTick(dt){
@@ -1930,23 +2024,6 @@ const BAND_KANTINE={x0:40,x1:300,y0:110,y1:134};
 const BAND_KAMMER={x0:34,x1:290,y0:112,y1:134};
 const ZUTATEN=['topf','milch','zucker','pulver'];
 let KANTINE=null,KAMMER=null;
-// Lange Farbrampen fuer die Kantine: aus wenigen Stuetzfarben mit vielen Zwischenstufen, so werden Licht und Schatten weich
-function mkRamp(keys,n){const h=c=>[1,3,5].map(i=>parseInt(c.substr(i,2),16)),out=[];
-  for(let i=0;i<n;i++){const t=i/(n-1)*(keys.length-1),k=Math.min(keys.length-2,Math.floor(t)),f=t-k,a=h(keys[k]),b=h(keys[k+1]);
-    out.push('#'+a.map((v,j)=>Math.round(v+(b[j]-v)*f).toString(16).padStart(2,'0')).join(''));}return out;}
-const KR={
-  kachel:mkRamp(['#2a3040','#5a6480','#98a2bc','#d4dae8','#f4f6fa'],12),     // kuehle Wandkacheln
-  kachelW:mkRamp(['#3a3028','#7a6a58','#c0ac90','#ecdcc0','#fff4e0'],12),    // Kacheln im warmen Lampenlicht
-  terra:mkRamp(['#1e0c06','#4a1e0e','#8a3c1c','#c0622e','#e8925a'],12),      // Terrakottaboden
-  stahl:mkRamp(['#10141c','#2e3848','#5c6a80','#9aa8bc','#e4eaf2'],12),
-  holz:mkRamp(['#1a0c06','#3e2010','#6e3c1c','#a0622e','#d09458'],10),
-  email:mkRamp(['#3a4252','#7a8498','#b8c0d0','#e4e8f0','#ffffff'],10),
-  kork:mkRamp(['#3a200c','#6e4420','#a0703c','#c89a5c'],8),
-  himmel:mkRamp(['#6a90d0','#9ab8e8','#cce0f8','#f0f6ff'],8),
-  decke:mkRamp(['#141820','#262c38','#3a4252','#505a6c'],8)
-};
-// Farbe aus einer Rampe waehlen, mit Bayer-Rasterung nur zwischen zwei benachbarten Stufen
-function pick(r,t,x,y){const n=r.length-1,v=clamp(t,0,0.9999)*n,k=Math.floor(v);return (v-k)>bay(x,y)?r[Math.min(n,k+1)]:r[k];}
 function drawKantineBg(){
   const [c,g]=mk(W,SH);
   const VX=160,VY=44,WB=96;
@@ -2041,7 +2118,6 @@ function drawKantineBg(){
   R(g,226,25,4,2,'#fff4c0');P(g,227,27,'#fff0a0');
   return c;
 }
-const _rc={};function mkRampCache(n){return _rc[n]||(_rc[n]=mkRamp(['#0e3a36','#1e6a60','#34a894','#7cd8c4','#c8f4e8'],10));}
 function drawKammerBg(){
   const [c,g]=mk(W,SH);
   // enge Kammer, Licht faellt nur durch die offene Tuer links herein
