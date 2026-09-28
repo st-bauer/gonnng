@@ -72,7 +72,7 @@ SRL-Trainings wirken in der Grundschule und in der Sekundarstufe nachweislich au
 | Strategie | Phase | Wo im Spiel | Beleg |
 | --- | --- | --- | --- |
 | Konkrete, nahe Ziele setzen | Planen | Prolog, Kompass der Pläne, Kantine (K1) | Locke & Latham, 2002; Bandura & Schunk, 1981 |
-| Wenn-dann-Pläne | Planen | Wenn- und Dann-Karten (K1), Finale | Gollwitzer & Sheeran, 2006 (Meta-Analyse, 94 Studien, d = 0,65) |
+| Wenn-dann-Pläne | Planen | Grummelbarts Tafel im Flüstergang (K1), Finale | Gollwitzer & Sheeran, 2006 (Meta-Analyse, 94 Studien, d = 0,65) |
 | Lernumgebung gestalten | Planen, Ausführung | Irrlicht-Glas (K2) | Zimmerman & Martinez-Pons, 1986 |
 | Selbstbeobachtung und Protokoll | Überwachen | Kreidemarken im Moor, Fernrohr (K2) | Kitsantas & Zimmerman, 2006; Zimmerman, 2002 |
 | Sich selbst abfragen (Abrufübung) | Überwachen | Die Wiederleser (K2) | Roediger & Karpicke, 2006; Dunlosky et al., 2013 |
@@ -261,7 +261,7 @@ Die Hauptfigur muss durch die sich verschiebende Schule in den Heizungskeller, w
 | 1 | Die wandernden Flure | Allgemein, Logik | Siehe Regel unten. Die Figur schaut durch die Türspalten, liest die Regel am Aushang ab und läuft in den Flügel, in dem die Kellertreppe nach dem nächsten Gong stehen wird |
 | 2 | Der Musikraum | Allgemein, Rhythmus | Einmal muss die Figur absichtlich im Musikraum landen. Das Blockflötenorchester lässt sie erst gehen, wenn sie den Takt des Metronoms nachklatscht. Zum Dank gibt es eine Blockflötenschnur |
 | 3 | Frau Brösels Festessen | SRL: nahe Teilziele | Zwölf Rezeptkarten in eine sinnvolle Reihenfolge legen und in drei Viertelstunden-Ziele aufteilen. Der Pudding muss zuerst gekocht werden, weil er am längsten zum Festwerden braucht. Frau Brösel erwacht und schenkt Kekse und ein Einmachglas. In der Kantine liegen außerdem Plastiktüten, Gummiringe und eine leere Küchenrolle |
-| 4 | Der Flüstergang | SRL: Wenn-dann-Pläne | Jede Störung wirft die Figur an den Anfang zurück und hinterlässt eine Wenn-Karte mit genau dieser Situation. Die Dann-Karten sammelt sie bei Figuren: von Frau Brösel, aus der Keksdose und von Krächz. Drei richtige Paare ergeben drei Wenn-dann-Pläne, danach läuft die Figur durch |
+| 4 | Der Flüstergang | SRL: Wenn-dann-Pläne | Drei Aufschiebchen flüstern, wer reinfällt, trottet zurück zur Treppe. Auf der Tafel von Hausmeister Grummelbart stehen seine eigenen Wenn-dann-Pläne. Mit Kreide schreibt die Figur dort für jede erlebte Stolperstelle einen Plan, nur konkrete Handlungen helfen. Danach läuft sie an der Störung von allein vorbei. Der Keks-Plan braucht einen Keks aus der Kantine |
 | 5 | Brikett und die Keks-Angel | Kombination | Brikett ist scheu. „Gib Keks an Brikett“ scheitert: Er versteckt sich hinter dem Schlüsselhaken. Lineal plus Blockflötenschnur ergibt eine Angel, Angel plus Keks die Keks-Angel. Brikett schnappt nach dem Keks, niest vor Freude Funken in den Kessel, die Heizung springt an, Grummelbart taut auf |
 | 6 | Der Kompass | SRL: konkrete Ziele | Grummelbart gibt Schlüssel und Kompass. Bei vagen Zielen dreht die Nadel wild. Erst ein Ziel mit Was, Bis wann und Woran erkenne ich den Erfolg richtet sie aus |
 
@@ -270,12 +270,12 @@ Die Hauptfigur muss durch die sich verschiebende Schule in den Heizungskeller, w
 | Gegenstand | Herkunft | Kombination | Einsatz |
 | --- | --- | --- | --- |
 | Blockflötenschnur | Musikraum | mit Lineal zur Angel | Keks-Angel (K1) |
-| Kekse | Frau Brösel | mit Angel zur Keks-Angel; Krümel für die Verkleidung | Brikett (K1), Dann-Karte (K1), Verkleidung (K4) |
+| Kekse | Frau Brösel | mit Angel zur Keks-Angel; Krümel für die Verkleidung | Brikett (K1), Keks-Plan im Flüstergang (K1), Verkleidung (K4) |
 | Einmachglas | Frau Brösel | mit Deckel und Monokel zur Irrlicht-Falle | Irrlichter (K2), Laterne (K4) |
 | Plastiktüten | Kantine | mit Gummiringen zu Moorgamaschen | Schlamm im Moor (K2) |
 | Gummiringe | Kantine, Einmachglas-Regal | siehe Plastiktüten | Schlamm im Moor (K2) |
 | Papprolle | leere Küchenrolle, Kantine | mit Monokel und Lupe zum Fernrohr | Fernrohr (K2) |
-| Wenn- und Dann-Karten | Flüstergang, Figuren | paarweise zu Wenn-dann-Plänen | Flüstergang (K1), Konterbuch (K4) |
+| Kreide (aus dem Prolog) |  | mit Grummelbarts Tafel | eigene Wenn-dann-Pläne im Flüstergang (K1) |
 | Kellerschlüssel | Grummelbart |  | Kellertor zum Land Später |
 | Kompass der Pläne | Grummelbart |  | Wegweiser bis zum Finale, Zahnrad der Stundenuhr (K4) |
 
@@ -295,28 +295,33 @@ Beim Betreten der Halle gilt Takt 2: Das Schild über der Osttür zeigt die Kell
 
 Tippstufen von Krächz: „Hau mal auf den Gong und schau, was mit den Schildern passiert.“ Dann: „Wenn du losläufst, gongt es. Geh also dahin, wo die Kellertreppe nach dem nächsten Gong steht.“ Dann: „Die Räume rücken im Uhrzeigersinn eine Tür weiter und hüpfen am Musikraum vorbei. Von Osten geht es also direkt nach Westen.“
 
-**Die Karten im Flüstergang.** Drei Aufschiebchen stören. Jede Störung schickt die Figur an den Anfang zurück.
+**Ablauf im Flüstergang.** Der Gang liegt unten an der Kellertreppe und endet an der Eisentür zum Heizungskeller. Beim ersten Betreten sieht die Figur den Dieb: Ein Aufschiebchen mit ihrem Heft gähnt („Heft abgeben. Gleich. Oder später.“) und verschwindet durch die Tür. Krächz: „Ein Aufschiebchen. Die sind überall, wo etwas liegen bleibt.“
 
-**Ablauf im Flüstergang.** Der Gang liegt unten an der Kellertreppe und endet an der Eisentür zum Heizungskeller. Beim ersten Betreten sieht die Figur den Dieb: Ein Aufschiebchen mit ihrem Heft gähnt („Heft abgeben. Gleich. Oder später.“) und verschwindet durch die Tür. Krächz: „Ein Aufschiebchen. Die sind überall, wo etwas liegen bleibt.“ Drei weitere Aufschiebchen sitzen im Gang: eins in einer Mauernische („Pssst. Das schaffst du eh nicht.“), eins in einer Hängematte zwischen den Rohren („Mach doch später. Später ist viel gemütlicher.“), eins futtert auf einer Kiste laut Schokokekse (der Magen knurrt). Wer ohne passenden Plan vorbeiwill, fällt auf den Satz herein, trottet zurück zur Treppe und findet die Wenn-Karte dazu.
+*Die Stolperstellen.* Drei weitere Aufschiebchen sitzen im Gang. Wer ohne Plan vorbeiwill, fällt auf sie herein und trottet zurück zur Treppe („Moment mal. Warum stehe ich wieder an der Treppe?“). Welche Stolperstellen es gibt, erfährt die Figur also durch eigene Erfahrung.
 
-Das erste Dann schreibt die Figur selbst. Am Fuß der Treppe liegt die abgegriffene Karte „Wenn ich Lust habe“, mit Bleistift geschrieben. Sie passt zu nichts („Darauf warten hier alle seit vierzig Jahren.“). Radiergummi plus Lust-Karte ergibt eine leere Karte. Kreide plus leere Karte öffnet eine Auswahl, was hinter „dann“ stehen soll:
+| Ort | Störung | Die Figur fällt herein |
+| --- | --- | --- |
+| Mauernische | „Pssst. Das schaffst du eh nicht.“ | „Stimmt eigentlich. Ich bin ja auch erst seit heute hier.“ |
+| Hängematte zwischen den Rohren | „Pssst. Leg dich doch kurz hin. Später ist viel gemütlicher.“ | „Kurz hinlegen klingt gut. Ich such mir mal ein Plätzchen.“ |
+| Kiste mit Keksdose | Knuspern und Schokoduft, der Magen knurrt | „Mein Magen knurrt. Damit komme ich keinen Meter weiter.“ |
 
-| Auswahl | Reaktion |
-| --- | --- |
-| … dann glaube ich ganz fest an mich. | „Und wenn das Aufschiebchen fester glaubt? Da fehlt was, das ich wirklich tun kann.“ |
-| … dann gebe ich auf. Aber nur ganz kurz. | „Kurz aufgeben ist auch aufgeben.“ |
-| … dann strenge ich mich eben mehr an. | „Mehr als was? Das ist kein Plan, das ist ein Seufzer.“ |
-| … dann denke ich an das Gitter, das ich mit einer Münze aufgeschraubt habe. | richtig: „Genau. Das hätte ich mir heute früh auch nicht zugetraut.“ |
+*Grummelbarts Tafel.* Neben der Treppe hängt eine kleine Tafel von Hausmeister Grummelbart. Er muss jeden Tag durch den Gang und hat sich seine Pläne mit Kreide notiert: „Wenn einer ‚Feierabend!‘ flüstert, dann pfeife ich mein Lied und gehe weiter.“ „Wenn es nach Kaffee riecht, dann trinke ich aus meiner Thermoskanne.“ Eine dritte Zeile ist verwischt. So sieht man, wie ein Plan aussieht, ohne dass ihn jemand erklärt.
 
-Falsche Sätze wischt die Figur mit dem Ärmel wieder weg. Wenn-Karte plus Dann-Karte ergibt den Wenn-dann-Plan, damit kommt die Figur an der Nische vorbei. Wer lieber fragt, bekommt von Krächz als zweiten Weg die Dann-Karte „… dann frage ich Krächz nach einem Tipp.“ An der Hängematte scheitert die Figur und denkt laut: „Gegen „später“ bräuchte ich jemanden, der trotzdem anfängt.“ Auf der Kiste steht eine Keksdose mit der Aufschrift „Eigentum der Kantine, Frau Brösel“. Wer sie anschaut, kommt selbst auf Frau Brösel, die jeden Tag vierhundert Portionen kocht. Krächz verrät das nur auf Nachfrage. Die Figur muss also zurück durch die wandernden Flure, diesmal zur Kantine. So wird das Flur-Rätsel ein zweites Mal gebraucht. Krächz ist in allen Rätseln nur Hilfe, nie Pflicht.
+*Eigene Pläne.* „Benutze Kreide mit Tafel“ öffnet zuerst die Wahl des Wenn. Angeboten werden nur Stolperstellen, die die Figur schon erlebt hat. Dann folgt die Wahl des Dann:
 
-| Wenn-Karte | Passende Dann-Karte |
-| --- | --- |
-| Wenn ein Aufschiebchen „Mach doch später“ flüstert | dann mache ich sofort den nächsten kleinen Schritt |
-| Wenn mein Magen knurrt | dann esse ich einen Keks aus der Tasche und gehe weiter |
-| Wenn ich denke, dass ich es nicht schaffe | dann frage ich Krächz nach einem Tipp |
+| Dann | passt bei | Reaktion, wenn es nicht passt |
+| --- | --- | --- |
+| … dann reiße ich mich zusammen. | nirgends | „Zusammenreißen. Und dann? Da steht gar nicht, was ich tue.“ |
+| … dann mache ich eben später weiter. | nirgends | „Das hätte ein Aufschiebchen auch geschrieben.“ |
+| … dann sage ich: Einen Schritt schaffe ich immer. Und gehe ihn. | Nische, Hängematte | beim Hunger: „Der Magen geht jeden Schritt mit. Und knurrt dabei.“ |
+| … dann schaue ich nur auf die Tür und gehe weiter. | Nische, Hängematte | beim Hunger: „Auf die Tür schauen? Mein Magen schaut nicht mit.“ |
+| … dann esse ich meinen eigenen Keks und gehe weiter. | Kiste | bei der Nische: „Ein Keks gegen Zweifel? Mit vollem Mund zweifelt es sich genauso.“ Bei der Hängematte: „Mit Keks liegt es sich in der Hängematte nur noch gemütlicher.“ |
 
-Falsche Paare scheitern komisch. „Wenn mein Magen knurrt, dann frage ich Krächz.“ Krächz: „Ich hätte Regenwürmer.“ Eine Karte „Wenn ich Lust habe“ lässt sich mit nichts kombinieren. Krächz: „Darauf wartet der Graf seit vierzig Jahren.“
+Unpassende Sätze wischt die Figur wieder weg. Steht ein Plan, greift er im Gang von allein: Das Aufschiebchen flüstert, die Figur sagt ihren Plan („Einen Schritt schaffe ich immer.“ Aufschiebchen: „… Und noch einen?“ Figur: „Genau.“) und geht weiter.
+
+*Der Keks fehlt.* Den Keks-Plan kann die Figur aufschreiben, aber sie hat keinen Keks („Dann esse ich meinen eigenen Keks und … Moment. Ich habe gar keinen Keks.“). Wer das Aufschiebchen auf der Kiste fragt, woher es die Kekse hat, erfährt: „Aus der Kantine. Die backt Frau Brösel. Die merkt gerade nichts, die ist erstarrt.“ Auf der Dose steht außerdem „Eigentum der Kantine, Frau Brösel“. Die Figur muss also zurück durch die wandernden Flure, diesmal zur Kantine, und Frau Brösel mit dem Festessen-Rätsel wecken. So wird das Flur-Rätsel ein zweites Mal gebraucht. Grummelbart hatte für seinen Kaffee-Plan auch die Thermoskanne dabei.
+
+Krächz gibt auf Wunsch Tipps (zum Beispiel „Hausmeister Grummelbart muss hier jeden Tag durch. Schau dir mal seine Tafel an.“), ist aber für keine Lösung nötig.
 
 **Dialogprobe**
 
@@ -337,8 +342,9 @@ Falsche Paare scheitern komisch. „Wenn mein Magen knurrt, dann frage ich Kräc
 **SRL-Check**
 
 - **Nahe Teilziele.** Bei Bandura und Schunk (1981) übten 40 Kinder zwischen 7 und 10 Jahren mit großen Rechenschwierigkeiten das Subtrahieren. Kinder, die sich nahe Teilziele setzten (sechs Seiten pro Sitzung), entwickelten mehr Können, mehr Selbstwirksamkeit und mehr Interesse als Kinder mit fernen Zielen oder ohne Ziele. Das Festessen bildet genau das ab: Eine überwältigende Aufgabe wird in kurze, prüfbare Schritte zerlegt. Die Pudding-Regel ergänzt eine Planungsgrundlage: Was am längsten dauert, kommt zuerst.
-- **Wenn-dann-Pläne.** Die Meta-Analyse von Gollwitzer und Sheeran (2006) über 94 Studien zeigt einen mittleren bis großen Effekt (d = 0,65) auf das Erreichen von Zielen. Sie wirken, weil eine konkrete Situation fest mit einer Handlung verknüpft wird und die Handlung dann fast automatisch startet. Im Spiel läuft die Figur deshalb nach dem Kombinieren ohne weiteres Zutun durch. „Wenn ich Lust habe“ ist bewusst unkombinierbar, weil es keine konkrete Situation beschreibt.
-- **Selbstwirksamkeit durch eigene Erfolge.** Nach Bandura (1997) sind eigene Erfolgserlebnisse die stärkste Quelle der Selbstwirksamkeit, also der Überzeugung, etwas zu schaffen. Das selbst geschriebene Dann gegen „Das schaffst du eh nicht“ ruft deshalb ein echtes Erfolgserlebnis aus dem Prolog auf: das Gitter, das die Figur mit einer Münze aufgeschraubt hat. Die falschen Auswahlen sind vage Vorsätze ohne Handlung, sie erfüllen die Bedingung eines Wenn-dann-Plans nicht.
+- **Wenn-dann-Pläne.** Die Meta-Analyse von Gollwitzer und Sheeran (2006) über 94 Studien zeigt einen mittleren bis großen Effekt (d = 0,65) auf das Erreichen von Zielen. Sie wirken, weil eine konkrete Situation fest mit einer Handlung verknüpft wird und die Handlung dann fast automatisch startet. Im Spiel läuft die Figur deshalb mit fertigem Plan ohne weiteres Zutun durch. Die vagen Sätze („dann reiße ich mich zusammen“) scheitern, weil sie keine Handlung nennen.
+- **Wenn-dann-Pläne bei Kindern gegen Ablenkung.** Wieber, von Suchodoletz, Heikamp, Trommsdorff und Gollwitzer (2011) zeigten bei Schulkindern: Gegen mäßig und stark reizvolle Ablenkungen half nur der Wenn-dann-Plan „Wenn eine Ablenkung kommt, dann ignoriere ich sie“, der bloße Vorsatz „Ich ignoriere Ablenkungen“ reichte nicht. Das Dann „dann schaue ich nur auf die Tür und gehe weiter“ ist dieser Plan in greifbarer Form.
+- **Stolperstellen aus Erfahrung.** Das Wenn muss eine Situation sein, die tatsächlich vorkommt. Deshalb kann die Figur nur für Störungen einen Plan schreiben, die sie schon erlebt hat.
 - **Konkrete Ziele.** Der Kompass wiederholt die Zielregel aus dem Prolog als Werkzeug (Locke & Latham, 2002).
 
 ## Kapitel 2: Der Sumpf der Ablenkung (Überwachen)
@@ -594,7 +600,6 @@ Das Spiel behauptet nichts, was die Forschung nicht trägt, und nimmt verbreitet
 
 **Lernpsychologie und SRL**
 
-- Bandura, A. (1997). *Self-efficacy: The exercise of control.* New York: W. H. Freeman.
 - Bandura, A. & Schunk, D. H. (1981). Cultivating competence, self-efficacy, and intrinsic interest through proximal self-motivation. *Journal of Personality and Social Psychology, 41*(3), 586–598. [doi](https://doi.org/10.1037/0022-3514.41.3.586)
 - Cepeda, N. J., Pashler, H., Vul, E., Wixted, J. T. & Rohrer, D. (2006). Distributed practice in verbal recall tasks: A review and quantitative synthesis. *Psychological Bulletin, 132*(3), 354–380. [doi](https://doi.org/10.1037/0033-2909.132.3.354)
 - Dignath, C. & Büttner, G. (2008). Components of fostering self-regulated learning among students. *Metacognition and Learning, 3*(3), 231–264. [doi](https://doi.org/10.1007/s11409-008-9029-x)
@@ -615,6 +620,7 @@ Das Spiel behauptet nichts, was die Forschung nicht trägt, und nimmt verbreitet
 - Sisk, V. F., Burgoyne, A. P., Sun, J., Butler, J. L. & Macnamara, B. N. (2018). To what extent and under which circumstances are growth mind-sets important to academic achievement? *Psychological Science, 29*(4), 549–571. [doi](https://doi.org/10.1177/0956797617739704)
 - Steel, P. (2007). The nature of procrastination: A meta-analytic and theoretical review of quintessential self-regulatory failure. *Psychological Bulletin, 133*(1), 65–94. [doi](https://doi.org/10.1037/0033-2909.133.1.65)
 - Weiner, B. (1985). An attributional theory of achievement motivation and emotion. *Psychological Review, 92*(4), 548–573. [ERIC](https://eric.ed.gov/?id=EJ324684)
+- Wieber, F., von Suchodoletz, A., Heikamp, T., Trommsdorff, G. & Gollwitzer, P. M. (2011). If-then planning helps school-aged children to ignore attractive distractions. *Social Psychology, 42*(1), 39–47. [doi](https://doi.org/10.1027/1864-9335/a000041)
 - Zimmerman, B. J. (2002). Becoming a self-regulated learner: An overview. *Theory Into Practice, 41*(2), 64–70. [doi](https://doi.org/10.1207/s15430421tip4102_2)
 - Zimmerman, B. J. & Martinez-Pons, M. (1986). Development of a structured interview for assessing student use of self-regulated learning strategies. *American Educational Research Journal, 23*(4), 614–628. [doi](https://doi.org/10.3102/00028312023004614)
 

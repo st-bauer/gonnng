@@ -72,10 +72,11 @@ Canva-Arbeitsdatei: https://canva.link/mp6p64febvogrh4
   Krächz macht das Heft zur Spur zur Unruh (wer das Heft hat, weiß vielleicht, wo die Unruh ist). Die Krümel liegen
   ab dem Licht-aus sichtbar da, fallen der Figur aber erst nach dem Zielgespräch auf.
 - Kapitel 1, zweiter Raum: der Flüstergang (Raum `gang`). Der Dieb zeigt sich und verschwindet im Heizungskeller.
-  Drei flüsternde Aufschiebchen, Wenn-Karten nach jedem Reinfallen. Das Dann schreibt die Figur selbst (Lust-Karte ausradieren,
-  mit Kreide beschriften, Auswahl `DANN_WAHL`), Kombinieren zum Wenn-dann-Plan (`combine`), Laufen mit Störungen über `goTo`.
-  Die Keksdose („Eigentum der Kantine“) führt zur Kantine, die Flure werden ein zweites Mal gebraucht.
-  Grundsatz: Krächz hilft nur, jedes Rätsel ist auch ohne ihn lösbar.
+  Drei flüsternde Aufschiebchen, wer reinfällt, trottet zurück (`goTo`, `stoer`, erlebte Stolperstellen in `S.erlebt`).
+  Grummelbarts Tafel zeigt seine eigenen Wenn-dann-Pläne. Mit Kreide schreibt die Figur dort eigene Pläne (`planSchreiben`,
+  Auswahl aus `WENN` und `DANN`, gespeichert in `S.plaene`). Nur konkrete Handlungen passen, dann läuft die Figur von allein vorbei.
+  Der Keks-Plan braucht einen Keks: Im Gespräch mit dem Aufschiebchen auf der Kiste erfährt man, dass Frau Brösel in der Kantine die Kekse backt.
+  Grundsatz: Krächz hilft nur, jedes Rätsel ist auch ohne ihn lösbar. Vorschläge vor dem Einbau auf Sinn in der Spielwelt prüfen.
   Die Vorschau endet beim Erreichen der Kantine. Inventar mit Blättern (Pfeile links neben den Feldern).
 - Zwischensequenzen (`runCut`, überspringbar, ohne Verbleiste): Rutschpartie durch den Schacht,
   Abstieg über die Kellertreppe am Ende der Hallen-Vorschau.
