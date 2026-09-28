@@ -46,6 +46,8 @@ Regeln für neue Grafik:
   So gibt es Laufen, Sprechen, Blinzeln und Greifen ohne neue Bilder.
 - Szenen haben 320 × 144 Pixel, darunter liegt die Verbleiste (Spiel) oder ein schwarzer Balken mit Untertiteln (Zwischensequenz).
 - Text in der eigenen Pixelschrift (`G`, mit Umlauten und ß), Sprechtext farbig mit schwarzem Rand über der Figur.
+- Schilder mit `plaque`: offizielle Schulschilder als Emailleschild (dunkelblau, weißer Rand, Schrauben), Grummelbarts Schilder im Keller
+  und im Flüstergang als handbeschriftetes Brett (`plaque(x,y,text,'holz')`).
 
 LucasArts-Merkmale, auf die zu achten ist: große Figuren mit Gesicht, filmische Einstellungen, viel Licht und Schatten,
 der Graf unter der Kapuze nur mit zwei glühenden Augen.

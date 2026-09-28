@@ -1631,11 +1631,23 @@ function drawGongDisc(x,y,sw){
     return pick(KR.gold,0.35+glanz*0.6-(a+b)*0.12+(ring?-0.15:0),px,py);});
   line(ctx,x+dx,y-13,x,y-17,'#383840');
 }
+// Grummelbarts Schilder im Keller: ein Brett, von Hand beschriftet, mit zwei Naegeln und leicht schief aufgehaengt
+function brettSchild(x,y,label){
+  const w=textW(label)+10,h=12,x0=clamp(x,Math.ceil(w/2)+1,W-Math.ceil(w/2)-2)-Math.ceil(w/2),dy=i=>Math.floor(i*1.6/w);
+  for(let i=1;i<=w;i++)for(let j=1;j<=h;j++)if(bay(x0+i,y+j+dy(i))<0.55)P(ctx,x0+i,y+j+dy(i),'#05040a');
+  for(let i=0;i<w;i++)for(let j=0;j<h;j++){const px=x0+i,py=y+j+dy(i);
+    if((i===0||i===w-1)&&(j===0||j===h-1))continue;
+    if(i===0||j===0||i===w-1||j===h-1){P(ctx,px,py,'#140804');continue;}
+    let t=0.42+Math.sin(i*0.55+Math.sin(j*0.8+i*0.05)*2.2)*0.07-(j-1)/(h*2.4)+(j===1?0.16:0)-(j===h-2?0.14:0);
+    if(j===6)t-=0.18;P(ctx,px,py,pick(KR.holz,t,px,py));}
+  [x0+2,x0+w-3].forEach(nx=>{const ny=y+2+dy(nx-x0);P(ctx,nx,ny,'#c8ccd4');P(ctx,nx,ny+1,'#4a4e58');});
+  text(label,x0+Math.floor((w-textW(label))/2),y+3+dy(Math.floor(w/2)),'#f4e6c0',false);
+}
 // Tuerschild aus Emaille: dunkelblau mit weissem Rand und weisser Schrift, Schrauben links und rechts,
 // Licht von oben, Schlagschatten auf der Wand und eine abgeplatzte Stelle, die bei jedem Schild woanders sitzt
 let SCHILD=null;
-function plaque(x,y,label){
-  label=label||' ... ';SCHILD=SCHILD||mkRamp(['#060c26','#0e1c4c','#1a327e','#2c50a8','#5a82d0'],10);
+function plaque(x,y,label,art){
+  label=label||' ... ';if(art==='holz')return brettSchild(x,y,label);SCHILD=SCHILD||mkRamp(['#060c26','#0e1c4c','#1a327e','#2c50a8','#5a82d0'],10);
   const w=textW(label)+16,h=12,x0=clamp(x,Math.ceil(w/2)+1,W-Math.ceil(w/2)-2)-Math.ceil(w/2);
   let hs=0;for(const ch of label)hs=(hs*31+ch.charCodeAt(0))>>>0;
   const ecke=(i,j)=>(i===0||i===w-1)&&(j===0||j===h-1);
@@ -1935,8 +1947,8 @@ function drawGang(now){
   L.sort((p,q)=>p.y-q.y).forEach(o=>o.d());
   // kaltes Dunkel an den Raendern
   for(let y=0;y<SH;y++)for(let x=0;x<W;x++){const d=Math.min(x,W-x);if(d<14&&bay(x,y)*14>d)P(ctx,x,y,'#05070c');}
-  plaque(270,30,'Heizungskeller');
-  plaque(36,12,'Flüstergang');
+  plaque(270,30,'Heizungskeller','holz');
+  plaque(36,12,'Flüstergang','holz');
   drawPanel();drawSpeech();
 }
 const HS_GANG=[
@@ -2742,7 +2754,7 @@ function makeGrummel(o){
 function drawHeiz(now){
   if(!HEIZ)HEIZ=drawHeizBg();
   ctx.drawImage(HEIZ,0,0);
-  plaque(292,14,'Land Später');plaque(20,20,'Gang');
+  plaque(292,14,'Land Später','holz');plaque(20,20,'Gang','holz');
   // Brikett im Spalt: zwei gluehende Augen, die zurueckweichen, wenn jemand zu nah kommt
   const nah=S.hero.x>214,blink=now%3300<160,ey=nah?78:88,ex=nah?240:239;
   if(!blink){const hell=nah?'#a04010':'#ffb040';P(ctx,ex,ey,hell);P(ctx,ex+3,ey,hell);if(!nah){P(ctx,ex,ey-1,'#ff7010');P(ctx,ex+3,ey-1,'#ff7010');}}
