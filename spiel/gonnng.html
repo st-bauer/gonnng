@@ -422,6 +422,10 @@ const KR={
 };
 // Farbe aus einer Rampe waehlen, mit Bayer-Rasterung nur zwischen zwei benachbarten Stufen
 function pick(r,t,x,y){const n=r.length-1,v=clamp(t,0,0.9999)*n,k=Math.floor(v);return (v-k)>bay(x,y)?r[Math.min(n,k+1)]:r[k];}
+// Mischrampen zwischen zwei Lichtfarben: benachbarte Rampen liegen dicht beieinander, so wird der Uebergang weich
+function mkMix(a,b,n){const h=c=>[1,3,5].map(i=>parseInt(c.substr(i,2),16)),out=[];
+  for(let k=0;k<n;k++){const f=k/(n-1);out.push(a.map((ca,i)=>{const A=h(ca),B=h(b[i]);return '#'+A.map((v,j)=>Math.round(v+(B[j]-v)*f).toString(16).padStart(2,'0')).join('');}));}return out;}
+function pickMix(ramps,w,t,x,y){const n=ramps.length-1,v=clamp(w,0,0.9999)*n,k=Math.floor(v);return pick((v-k)>bay(x+2,y+1)?ramps[Math.min(n,k+1)]:ramps[k],t,x,y);}
 const _rc={};function mkRampCache(n){return _rc[n]||(_rc[n]=mkRamp(['#0e3a36','#1e6a60','#34a894','#7cd8c4','#c8f4e8'],10));}
 const COL={
   wall:['#4a4e6e','#5a6082','#6e7498','#848aac','#9aa0c0','#b0b6d2','#c8cce0'],
@@ -838,7 +842,8 @@ function drawTowerRoom(){
   // zwei Lichtquellen: warme Laterne links, kuehles Mondlicht durch das Zifferblatt rechts
   const lat=(x,y)=>Math.max(0,1-Math.hypot(x-30,(y-50)*1.1)/140);
   const mnd=(x,y)=>Math.max(0,1-Math.hypot(x-262,(y-56)*1.1)/120);
-  const farbe=(x,y,t)=>{const w=clamp(lat(x,y)*1.6-mnd(x,y)*1.0,0,1);return w>bay(x+1,y+2)?pick(KR.steinW,t,x,y):pick(KR.stein,t,x,y);};
+  const MIX=mkMix(KR.stein,KR.steinW,8);
+  const farbe=(x,y,t)=>pickMix(MIX,clamp(lat(x,y)*1.6-mnd(x,y)*1.0,0,1),t,x,y);
   // Mauerwerk aus grossen Quadern
   for(let y=0;y<118;y++)for(let x=0;x<W;x++){const ry=Math.floor(y/9),o=ry%2?0:11,bx=Math.floor((x+o)/22),ly=y%9,lx=(x+o)%22;
     let t=0.08+lat(x,y)*0.6+mnd(x,y)*0.45+((hash(bx,ry)%7)-3)*0.02;if(ly===0||lx===0)t-=0.12;else if(ly===1||lx===1)t+=0.05;
@@ -1803,7 +1808,8 @@ function drawGangBg(){
   const lampe=(x,y)=>Math.max(0,1-Math.hypot(x-160,(y-12)*1.1)/120);
   const treppe=(x,y)=>Math.max(0,1-Math.hypot(x-8,(y-30)*0.9)/70);
   const hell=(x,y)=>0.12+lampe(x,y)*0.85+treppe(x,y)*0.35;
-  const farbe=(x,y,t,xo)=>{const w=clamp((lampe(x,y)+treppe(x,y)*0.8)*1.4-0.25,0,1);return w>bay(x+(xo||1),y+2)?pick(KR.steinW,t,x,y):pick(KR.stein,t,x,y);};
+  const MIX=mkMix(KR.stein,KR.steinW,8);
+  const farbe=(x,y,t)=>pickMix(MIX,clamp((lampe(x,y)+treppe(x,y)*0.8)*1.4-0.25,0,1),t,x,y);
   // Gewoelbe
   for(let x=0;x<W;x++){const top=8+Math.round(4*Math.sin(x/W*Math.PI*3));for(let y=0;y<top;y++)P(g,x,y,pick(KR.stein,0.05+lampe(x,y)*0.15,x,y));P(g,x,top,farbe(x,top,hell(x,top)*0.8));}
   // Ziegelwand mit Fugen, Kanten und Unregelmaessigkeiten
@@ -1845,7 +1851,7 @@ function drawGangBg(){
     let t=0.1+lampe(x,(y-106)*2.5+12)*0.7+treppe(x,y-60)*0.25+((hash(col,row)%7)-3)*0.02;
     if(fu<0.04||fv<0.08)t-=0.12;else if(fv<0.14)t+=0.04;
     t-=Math.max(0,3-(y-106))*0.07;
-    P(g,x,y,farbe(x,y,t,3));
+    P(g,x,y,farbe(x,y,t));
   }
   // Lampe im Gitterkaefig mit Kabel
   for(let y=0;y<8;y++)P(g,160,y,'#10141c');
@@ -2088,6 +2094,7 @@ const BAND_KANTINE={x0:40,x1:300,y0:110,y1:134};
 const BAND_KAMMER={x0:34,x1:290,y0:112,y1:134};
 const ZUTATEN=['topf','milch','zucker','pulver'];
 let KANTINE=null,KAMMER=null;
+let KACHELMIX=null;
 function drawKantineBg(){
   const [c,g]=mk(W,SH);
   const VX=160,VY=44,WB=96;
@@ -2105,8 +2112,8 @@ function drawKantineBg(){
     const f=fenster(x,y),l=lampe(x,y),ao=Math.max(0,y-86)/14+Math.max(0,14-y)/10+Math.max(0,x-290)/60;
     let t=0.22+f*0.62+l*0.45-ao*0.3+((hash(tx,ty)%7)-3)*0.012;
     if(fuge)t-=0.16;else if(lx===1||ly===1)t+=0.06;else if(lx===7||ly===7)t-=0.05;
-    const anteil=clamp(l*1.5-f*1.1,0,1),warm=anteil>bay(x+3,y+1),streifen=ty===6;
-    P(g,x,y,streifen&&!fuge?pick(mkRampCache('streifen'),t,x,y):pick(warm?KR.kachelW:KR.kachel,t,x,y));
+    const anteil=clamp(l*1.5-f*1.1,0,1),streifen=ty===6;
+    P(g,x,y,streifen&&!fuge?pick(mkRampCache('streifen'),t,x,y):pickMix(KACHELMIX||(KACHELMIX=mkMix(KR.kachel,KR.kachelW,8)),anteil,t,x,y));
   }
   // Boden: Fliesen in Flucht, Fensterlicht und Lampenlicht, Spiegelung des Fensters, Schlagschatten gleich mitgerechnet
   const schattenPolys=[[[154,106],[196,106],[214,124],[170,124]],[[252,106],[262,106],[300,126],[280,126]],[[80,106],[154,106],[160,110],[86,110]],[[204,106],[252,106],[254,109],[206,109]]];
@@ -2624,24 +2631,34 @@ function cutSchacht(t,now){
 function kellerBg(){
   const [c,g]=mk(W,SH);
   const hash=(a,b)=>((a*73856093)^(b*19349663))>>>0;
-  const halle=(x,y)=>Math.max(0,1-Math.hypot(x-10,(y-10)*1.1)/220);
-  const kalt=(x,y)=>Math.max(0,1-Math.hypot(x-300,(y-128)*1.2)/120);
-  const farbe=(x,y,t)=>clamp(halle(x,y)*1.5-kalt(x,y)-0.2,0,1)>bay(x+1,y+2)?pick(KR.steinW,t,x,y):pick(KR.stein,t,x,y);
-  // Gewoelbte Wand aus Bruchstein
+  const MIX=mkMix(KR.stein,KR.steinW,8);
+  const halle=(x,y)=>Math.max(0,1-Math.hypot(x-10,(y-10)*1.1)/240);
+  const kalt=(x,y)=>Math.max(0,1-Math.hypot(x-302,(y-112)*1.1)/130);
+  const w=(x,y)=>clamp(halle(x,y)*1.5-kalt(x,y)*0.9-0.05,0,1);
+  const hell=(x,y)=>0.08+halle(x,y)*0.5+kalt(x,y)*0.4;
+  // Treppenlinie: Oberkante der Stufen fuer jedes x
+  const stufeOben=x=>{const k=clamp(Math.floor((x-20)/26),0,10);return 30+k*9;};
+  // Wand aus Bruchstein
   for(let y=0;y<SH;y++)for(let x=0;x<W;x++){const ry=Math.floor(y/8),o=ry%2?0:9,bx=Math.floor((x+o)/18),ly=y%8,lx=(x+o)%18;
-    let t=0.06+halle(x,y)*0.5+kalt(x,y)*0.35+((hash(bx,ry)%7)-3)*0.02;if(ly===0||lx===0)t-=0.1;else if(ly===1||lx===1)t+=0.04;P(g,x,y,farbe(x,y,t));}
-  // Stufen: Trittflaeche im Licht, Setzstufe dunkler, darunter Schatten
-  for(let k=0;k<11;k++){const sx=20+k*26,sy=30+k*9;
-    for(let y=sy;y<SH;y++)for(let x=sx;x<sx+40;x++){let t;
-      if(y<sy+3)t=0.55+halle(x,y)*0.45-(y-sy)*0.08;else if(y<sy+9)t=0.25+halle(x,y)*0.3;else t=0.08+halle(x,y)*0.2-(y-sy)/400;
-      if(x===sx)t+=0.12;if(x>=sx+38)t-=0.1;
-      P(g,x,y,y<sy+3?pick(KR.stein,t+kalt(x,y)*0.3,x,y):farbe(x,y,t));}}
-  // Handlauf aus Holz schraeg an der Wand
-  for(let x=10;x<300;x++){const y=Math.round(16+(x-10)*0.34);P(g,x,y,pick(KR.holz,0.7+halle(x,y)*0.3,x,y));P(g,x,y+1,pick(KR.holz,0.35,x,y));P(g,x,y+2,'#0e0604');}
-  for(let x=40;x<300;x+=60){const y=Math.round(16+(x-10)*0.34);for(let k=3;k<9;k++)P(g,x,y+k,pick(KR.stahl,0.4,x,y));}
-  // kaltes Licht vom Kellergang unten rechts
-  for(let y=84;y<SH;y++)for(let x=280;x<W;x++){const r=Math.hypot(x+0.5-302,y-100),innen=y>=100?x>=284:r<18,rand=!innen&&(y>=100?x>=280:r<22);
-    if(innen)P(g,x,y,pick(KR.himmel,0.15+(y-84)/200+(x-284)/300,x,y));else if(rand)P(g,x,y,pick(KR.stein,0.45+kalt(x,y)*0.3,x,y));}
+    let t=hell(x,y)*0.9+((hash(bx,ry)%7)-3)*0.02;if(ly===0||lx===0)t-=0.1;else if(ly===1||lx===1)t+=0.04;
+    P(g,x,y,pickMix(MIX,w(x,y),t,x,y));}
+  // Torbogen unten rechts, dahinter kaltes Licht aus dem Kellergang
+  for(let y=84;y<SH;y++)for(let x=278;x<W;x++){const r=Math.hypot(x+0.5-302,y-100),innen=y>=100?x>=284:r<18,rand=!innen&&(y>=100?x>=280:r<22);
+    if(innen)P(g,x,y,pick(KR.himmel,0.12+(y-84)/220+(x-284)/320,x,y));else if(rand)P(g,x,y,pick(KR.stein,0.5+kalt(x,y)*0.3-(x<290?0.1:0),x,y));}
+  // Treppe als geschlossener Mauerblock, darauf die Stufen
+  for(let x=20;x<282;x++){const top=stufeOben(x);
+    for(let y=top;y<SH;y++){const k=Math.floor((x-20)/26),sx=20+k*26,dy=y-top,lx=x-sx;let t;
+      if(dy<3){t=0.6+hell(x,y)*0.5-dy*0.07;if(dy===0)t+=0.08;}                       // Trittflaeche
+      else if(dy<9){t=0.3+hell(x,y)*0.45-(dy-3)*0.02;}                                 // Setzstufe
+      else{const by=Math.floor(y/7),bx=Math.floor((x+(by%2)*8)/16),fuge=y%7===0||(x+(by%2)*8)%16===0;
+        t=0.12+hell(x,y)*0.4-(dy-9)/260+((hash(bx,by)%5)-2)*0.02;if(fuge)t-=0.08;}
+      if(dy>=3&&dy<9&&lx<2)t+=0.06;
+      P(g,x,y,pickMix(MIX,w(x,y)*(dy<3?1.1:0.9),t,x,y));}
+    // Schatten der naechsten Stufe auf der Setzstufe darunter
+    const k=Math.floor((x-20)/26);if(k<10&&x>=20+(k+1)*26-3)for(let y=top+9;y<top+12;y++)if(y<SH)P(g,x,y,pickMix(MIX,w(x,y),0.06,x,y));}
+  // Handlauf aus Holz schraeg an der Wand, mit Halterungen
+  for(let x=10;x<280;x++){const y=Math.round(16+(x-10)*0.34),ww=w(x,y);P(g,x,y,pick(KR.holz,0.55+ww*0.4,x,y));P(g,x,y+1,pick(KR.holz,0.3+ww*0.2,x,y));P(g,x,y+2,pickMix(MIX,ww,0.03,x,y));}
+  for(let x=40;x<280;x+=60){const y=Math.round(16+(x-10)*0.34);for(let k=3;k<9;k++)P(g,x,y+k,pick(KR.stahl,0.35+halle(x,y)*0.3,x,y));}
   return c;
 }
 function cutKeller(t,now){
