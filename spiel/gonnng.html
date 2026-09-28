@@ -2101,7 +2101,6 @@ async function enterKantine(){
   await walkTo(76,120);
   await say('hero','Die Kantine. Und da steht Frau Brösel.');
   await say('broesel','Zweihundert Mittagessen. Zweihundert! Ich fang gleich an. Gleich nach dem Seufzen.');
-  await say('broesel','Ich weiß nur nicht, womit. Suppe, Pudding, Kekse, Salat. Alle rufen gleichzeitig: Ich zuerst!');
   S.kantineIntro=true;save();
 }
 async function leaveKantine(){
@@ -2203,7 +2202,8 @@ async function redeBroesel(){
     if(q==='Haben Sie Kekse für mich?'){await say('broesel','Alle weg. Da waren kleine Wichte im Schlafanzug. Mit Krümeln im Gesicht.');
       await say('broesel','Neue backe ich, wenn das Mittagessen läuft. Also nie.');S.broeselKekse=true;continue;}
     if(q==='Womit fangen Sie denn an?'){await say('broesel','Mit dem Seufzen. Da bin ich schon ziemlich weit.');
-      await say('broesel','Danach? Suppe, Pudding, Kekse, Salat? Die Rezepte hängen da drüben. Ich schaue sie seit einer Stunde an, und sie schauen zurück.');continue;}
+      await say('broesel','Und danach? Keine Ahnung. Suppe, Pudding, Kekse, Salat. Alle rufen gleichzeitig: Ich zuerst!');
+      await say('broesel','Die Rezepte hängen da drüben. Ich schaue sie seit einer Stunde an, und sie schauen zurück.');continue;}
     if(q==='Warum stehen Sie hier so herum?'){await say('broesel','Ich stehe nicht herum. Ich sammle Kraft. Seit heute früh.');continue;}
     if(q==='Was brauchen Sie denn alles?'){const b=S.bereit||{},f=[['topf','den großen Topf'],['milch','Milch'],['zucker','Zucker'],['pulver','Puddingpulver']].filter(z=>!b[z[0]]).map(z=>z[1]);
       await say('broesel','Auf dem Herd fehlen noch: '+f.join(', ').replace(/, ([^,]*)$/,' und $1')+'.');

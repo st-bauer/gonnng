@@ -323,12 +323,12 @@ Jede Stolperstelle hat genau ein passendes Dann, weil jede einen anderen Grund h
 
 Krächz gibt auf Wunsch Tipps (zum Beispiel „Hausmeister Grummelbart muss hier jeden Tag durch. Schau dir mal seine Tafel an.“), ist aber für keine Lösung nötig.
 
-**Ablauf in der Kantine.** Die Figur kommt über die wandernden Flure in die Kantine, sobald sie weiß, dass Frau Brösel die Kekse backt. Frau Brösel steht erstarrt vor der Theke, den Kochlöffel erhoben: „Zweihundert Mittagessen. Zweihundert! Ich fang gleich an. Gleich nach dem Seufzen.“ Und gleich danach: „Ich weiß nur nicht, womit. Suppe, Pudding, Kekse, Salat. Alle rufen gleichzeitig: Ich zuerst!“ Das Gespräch ist ironisch und erklärt nichts:
+**Ablauf in der Kantine.** Die Figur kommt über die wandernden Flure in die Kantine, sobald sie weiß, dass Frau Brösel die Kekse backt. Frau Brösel steht erstarrt vor der Theke, den Kochlöffel erhoben: „Zweihundert Mittagessen. Zweihundert! Ich fang gleich an. Gleich nach dem Seufzen.“ Das Gespräch ist ironisch und erklärt nichts:
 
 | Frage | Frau Brösel |
 | --- | --- |
 | Haben Sie Kekse für mich? | „Alle weg. Da waren kleine Wichte im Schlafanzug. Mit Krümeln im Gesicht.“ „Neue backe ich, wenn das Mittagessen läuft. Also nie.“ |
-| Womit fangen Sie denn an? | „Mit dem Seufzen. Da bin ich schon ziemlich weit.“ „Danach? Suppe, Pudding, Kekse, Salat? Die Rezepte hängen da drüben. Ich schaue sie seit einer Stunde an, und sie schauen zurück.“ |
+| Womit fangen Sie denn an? | „Mit dem Seufzen. Da bin ich schon ziemlich weit.“ „Und danach? Keine Ahnung. Suppe, Pudding, Kekse, Salat. Alle rufen gleichzeitig: Ich zuerst!“ „Die Rezepte hängen da drüben. Ich schaue sie seit einer Stunde an, und sie schauen zurück.“ |
 | Warum stehen Sie hier so herum? | „Ich stehe nicht herum. Ich sammle Kraft. Seit heute früh.“ |
 
 *Rätsel 1: Rezeptkarten sortieren.* „Benutze Rezeptkarten“ legt vier Karten nebeneinander. Man tippt sie in der Reihenfolge an, in der gekocht wird. Das Essen gibt es um halb eins.
