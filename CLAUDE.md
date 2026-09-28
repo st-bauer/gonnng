@@ -20,6 +20,7 @@ Konter im Finale („Ausreden-Duell“). Das vollständige Konzept steht in `doc
 - Bildformat: 320 × 200 Pixel (VGA), per CSS pixelgenau hochskaliert (`image-rendering: pixelated`).
 - Bedienung wie im Vorbild: neun Verben (Gib, Nimm, Benutze, Öffne, Schau an, Drücke, Schließe, Rede mit, Ziehe),
   Standardverb „Gehe zu“, Inventar, „Benutze X mit Y“, Sprechtext farbig über der Figur.
+  Mit „Gehe zu“ läuft die Figur nur hin (Ausgänge führen weiter). Anschauen, Nehmen usw. gibt es nur mit dem passenden Verb.
 - Ton: per Web Audio im Browser erzeugt (Chiptune), startet erst nach einem Tipp.
 - Speicherstand: localStorage mit try/catch, nach jeder Aktion (siehe `spiel/gonnng.html`).
 

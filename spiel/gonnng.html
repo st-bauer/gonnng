@@ -1524,9 +1524,11 @@ cv.addEventListener('click',e=>{if(MODE()!=='prolog')return;
   }
   const h=hotspotAt(x,y);
   if(!h||(h.floor&&S.verb==='gehe'&&isFloor(h.id))){run(()=>goTo(x,y));return;}
-  const verb=S.verb==='gehe'?(h.exit?'gehe':'schau'):S.verb,item=S.item;
+  const verb=S.verb,item=S.item;
   if(verb==='gib'&&!item){run(()=>say('hero','Was soll ich denn geben?'));return;}
   const B=curBand(),wx=h.floor?clamp(x,B.x0,B.x1):h.walk[0],wy=h.floor?clamp(y,B.y0,B.y1):h.walk[1];
+  // Wie im Vorbild: Ohne gewaehltes Verb laeuft die Figur nur hin. Ausgaenge fuehren weiter, alles andere braucht ein Verb.
+  if(verb==='gehe'&&!h.exit){run(async()=>{if(await goTo(wx,wy))face(h.flip);});return;}
   run(async()=>{if(!await goTo(wx,wy))return;face(h.flip);await act(verb,h,item);});
 });
 document.addEventListener('keydown',e=>{if(MODE()!=='prolog')return;if((e.key===' '||e.key==='Enter')&&skipLine){e.preventDefault();skipLine();}});
