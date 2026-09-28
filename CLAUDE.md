@@ -64,7 +64,8 @@ Canva-Arbeitsdatei: https://canva.link/mp6p64febvogrh4
   Die Dateien `intro/intro-v3-code.html` und `prolog/prolog-v2-code.html` bleiben als Einzelansichten, neue Arbeit geht in `spiel/gonnng.html`.
 - Kapitel 1, erster Raum: die Eingangshalle in `spiel/gonnng.html` (Raum `halle` im selben Modul wie das Klassenzimmer).
   Der Prolog endet im Lüftungsschacht und führt direkt in die Halle. Flur-Rätsel (Regel im Konzept): Schilder zeigen
-  die Räume, Kompassrose im Boden, Krächz erklärt die Regel, der Gong lässt sich zum Ausprobieren anschlagen.
+  die Räume, Kompassrose im Boden, der Gong lässt sich zum Ausprobieren anschlagen.
+  Die Regel muss man selbst herausfinden, Krächz erklärt sie nur über die Tippstufen auf Nachfrage.
   Beim Losgehen gongt es immer, man muss also dorthin, wo die Kellertreppe nach dem nächsten Gong steht.
   Start in Takt 2 (Kellertreppe im Osten, Lösung Westen). Kantine, Bio und Musikraum sind noch Texttafeln.
   Der Grund für den Keller ist eine Spur: der verlorene Zettel des Diebs unter dem Gitter („Heft im Heizungskeller abgeben“).

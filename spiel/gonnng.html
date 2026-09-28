@@ -1538,7 +1538,6 @@ async function travel(tuer){
   S.hero.hidden=false;S.fehlwege=(S.fehlwege||0)+1;
   const gesucht=S.suchKantine?'Kantine':'Kellertreppe';
   await say('hero',['Wieder in der Halle. Das war wohl der falsche Flügel.','Zurück in der Halle. Die '+gesucht+' war da nicht.','Wieder hier. Ich sollte erst denken und dann laufen.'][(S.fehlwege-1)%3]);
-  if(S.fehlwege===3)await say('kraechz','Raten dauert. Hau auf den Gong und schau genau hin, wohin die '+gesucht+' wandert.');
 }
 async function peek(tuer){
   S.peek=tuer;tone('sawtooth',180,0.25,0.03,120);await sleep(250);
@@ -1566,9 +1565,7 @@ async function spurLesen(){
   await say('hero','Das hat der Dieb verloren! Mein Heft soll in den Heizungskeller.');
   await say('kraechz','Der Heizungskeller. Dahinter liegt das Land Später. Da landet alles, was jemand aufgeschoben hat.');
   await say('hero','Dann muss ich zur Kellertreppe. Da steht sie doch. Osten!');
-  await say('kraechz','Schön wär’s. Bei jedem Gong rücken die Räume eine Tür weiter. Im Uhrzeigersinn.');
-  await say('kraechz','Nur der Musikraum bleibt im Süden. Das Orchester ist zu schwer. Die anderen Räume hüpfen an ihm vorbei.');
-  await say('kraechz','Und der Gong schlägt jedes Mal, wenn jemand losläuft. Hau ruhig mal drauf und schau, was die Schilder machen.');
+  await say('kraechz','Da würde ich nicht drauf wetten. In dieser Halle bleibt nichts lange da, wo es ist.');
 }
 async function actHalle(verb,h,item){
   const id=h.id;
@@ -1586,13 +1583,13 @@ async function actHalle(verb,h,item){
     case 'kraechz:schau':return say('hero','Krächz sitzt auf dem Schwarzen Brett und tut so, als würde er nicht mitlesen.');
     case 'zettel:schau':case 'zettel:nimm':case 'brett:schau':
       S.zettelGelesen=true;
-      await showPanel([['Aushang: Wo ist was?','#a02234'],['Vor dem Gong:'],['  Nord Kantine, Ost Bio,'],['  Süd Musik, West Kellertreppe'],['Nach dem Gong:'],['  Nord Kellertreppe, Ost Kantine,'],['  Süd Musik, West Bio'],['Der Musikraum rührt sich nicht.','#5a3a18'],['Wer losläuft, hört unterwegs den Gong.','#5a3a18']]);
-      return say('hero','Aha. Der Biologieraum hüpft von Osten gleich nach Westen. Am Musikraum vorbei.');
+      await showPanel([['Aushang: Wo ist was?','#a02234'],['Vor dem Gong:'],['  Nord Kantine, Ost Bio,'],['  Süd Musik, West Kellertreppe'],['Nach dem Gong:'],['  Nord Kellertreppe, Ost Kantine,'],['  Süd Musik, West Bio']]);
+      return say('hero','Vor dem Gong, nach dem Gong. Was hat denn der Gong mit den Räumen zu tun?');
     case 'gong:schau':return say('hero','Der Schulgong. Ich könnte ja mal draufhauen. Nur um zu sehen, was passiert.');
     case 'gong:druecke':case 'gong:benutze':case 'gong:ziehe':
       await reach();gongSchlag();await sleep(700);
       S.gongProbe=(S.gongProbe||0)+1;
-      return say('hero',S.gongProbe===1?'Gonnng! Die Schilder sind alle eine Tür weitergerückt. Nur der Musikraum nicht.':'Gonnng! Wieder eine Tür weiter.');
+      return say('hero',S.gongProbe===1?'Gonnng! Moment. Die Schilder über den Türen sind jetzt anders.':'Gonnng! Schon wieder anders.');
     case 'bild:schau':return say('hero','Der Schulgründer. Er guckt, als fände er Pendel zu gewöhnlich.');
     case 'gitterH:schau':return say('hero','Da bin ich rausgefallen. Elegant war anders.');
     case 'gitterH:benutze':case 'gitterH:oeffne':return say('hero','Zurück ins Klassenzimmer? Da sagen alle nur „gleich“.');
@@ -1627,18 +1624,16 @@ const WENN={nicht:'Wenn einer „Das schaffst du eh nicht“ flüstert …',spae
 const DANN=[
   {id:'zusammen',text:'… dann reiße ich mich zusammen.',nein:'Zusammenreißen. Und dann? Da steht gar nicht, was ich tue.'},
   {id:'spaeter',text:'… dann mache ich eben später weiter.',nein:'Das hätte ein Aufschiebchen auch geschrieben.'},
-  {id:'schritt',text:'… dann sage ich: Einen Schritt schaffe ich immer. Und gehe ihn.',passt:['nicht','spaeter'],
-    nein:'Der Magen geht jeden Schritt mit. Und knurrt dabei.'},
-  {id:'tuer',text:'… dann schaue ich nur auf die Tür und gehe weiter.',passt:['nicht','spaeter'],
-    nein:'Auf die Tür schauen? Mein Magen schaut nicht mit.'},
+  {id:'schritt',text:'… dann sage ich: Einen Schritt schaffe ich immer. Und gehe ihn.',passt:['nicht'],
+    nein:{spaeter:'Schaffen würde ich den Schritt ja. Ich will nur nicht, die Hängematte ist so bequem.',hunger:'Der Magen geht jeden Schritt mit. Und knurrt dabei.'}},
+  {id:'tuer',text:'… dann schaue ich nur auf die Tür und gehe weiter.',passt:['spaeter'],
+    nein:{nicht:'Auf die Tür schauen? Die ist ganz schön weit weg. Da denke ich erst recht, dass ich das nie schaffe.',hunger:'Auf die Tür schauen? Mein Magen schaut nicht mit.'}},
   {id:'keks',text:'… dann esse ich meinen eigenen Keks und gehe weiter.',passt:['hunger'],
     nein:{nicht:'Ein Keks gegen Zweifel? Mit vollem Mund zweifelt es sich genauso.',spaeter:'Mit Keks liegt es sich in der Hängematte nur noch gemütlicher.'}}
 ];
 // was die Figur im Gang sagt, wenn ihr Plan greift, und was das Aufschiebchen darauf antwortet
 const VORBEI={
   'nicht:schritt':[['hero','Einen Schritt schaffe ich immer.'],['auf1','… Und noch einen?'],['hero','Genau.']],
-  'nicht:tuer':[['hero','Ich schaue nur auf die Tür.'],['auf1','Pssst! Hallo? … Unhöflich.']],
-  'spaeter:schritt':[['hero','Einen Schritt schaffe ich immer. Und noch einen.'],['auf2','Schritte. Wie anstrengend.']],
   'spaeter:tuer':[['hero','Ich schaue nur auf die Tür.'],['auf2','Die Hängematte ist aber viel schöner als die Tür!']],
   'hunger:keks':[['hero','Ich esse meinen eigenen Keks.'],['auf3','Mmpf! Das ist ja … auch ein Brösel-Keks.']]
 };

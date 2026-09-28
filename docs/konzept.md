@@ -258,7 +258,7 @@ Die Hauptfigur muss durch die sich verschiebende Schule in den Heizungskeller, w
 
 | # | Rätsel | Art | Lösung |
 | --- | --- | --- | --- |
-| 1 | Die wandernden Flure | Allgemein, Logik | Siehe Regel unten. Die Figur schaut durch die Türspalten, liest die Regel am Aushang ab und läuft in den Flügel, in dem die Kellertreppe nach dem nächsten Gong stehen wird |
+| 1 | Die wandernden Flure | Allgemein, Logik | Siehe Regel unten. Die Figur schaut durch die Türspalten, leitet die Regel aus Gong, Schildern und Aushang selbst ab und läuft in den Flügel, in dem die Kellertreppe nach dem nächsten Gong stehen wird |
 | 2 | Der Musikraum | Allgemein, Rhythmus | Einmal muss die Figur absichtlich im Musikraum landen. Das Blockflötenorchester lässt sie erst gehen, wenn sie den Takt des Metronoms nachklatscht. Zum Dank gibt es eine Blockflötenschnur |
 | 3 | Frau Brösels Festessen | SRL: nahe Teilziele | Zwölf Rezeptkarten in eine sinnvolle Reihenfolge legen und in drei Viertelstunden-Ziele aufteilen. Der Pudding muss zuerst gekocht werden, weil er am längsten zum Festwerden braucht. Frau Brösel erwacht und schenkt Kekse und ein Einmachglas. In der Kantine liegen außerdem Plastiktüten, Gummiringe und eine leere Küchenrolle |
 | 4 | Der Flüstergang | SRL: Wenn-dann-Pläne | Drei Aufschiebchen flüstern, wer reinfällt, trottet zurück zur Treppe. Auf der Tafel von Hausmeister Grummelbart stehen seine eigenen Wenn-dann-Pläne. Mit Kreide schreibt die Figur dort für jede erlebte Stolperstelle einen Plan, nur konkrete Handlungen helfen. Danach läuft sie an der Störung von allein vorbei. Der Keks-Plan braucht einen Keks aus der Kantine |
@@ -291,7 +291,7 @@ Die Hauptfigur muss durch die sich verschiebende Schule in den Heizungskeller, w
 | 1 | Kellertreppe | Kantine | Musik | Bio |
 | 2 | Bio | Kellertreppe | Musik | Kantine |
 
-Beim Betreten der Halle gilt Takt 2: Das Schild über der Osttür zeigt die Kellertreppe. Krächz erklärt die Regel in drei Sätzen und fordert auf, den Gong auszuprobieren. Wer trotzdem nach Osten läuft, landet in der Kantine oder im Biologieraum. Wer „einen Schritt weiter“ denkt, landet im Süden beim Musikraum. Richtig ist die Tür, an der die Kellertreppe nach dem nächsten Gong steht; aus dem Osten ist das der Westen. Der Aushang am Schwarzen Brett zeigt ein Beispiel vor und nach dem Gong.
+Beim Betreten der Halle gilt Takt 2: Das Schild über der Osttür zeigt die Kellertreppe. Die Regel muss man selbst herausfinden. Krächz sagt nur: „Da würde ich nicht drauf wetten. In dieser Halle bleibt nichts lange da, wo es ist.“ Wer auf den Gong haut, sieht die Schilder wandern („Moment. Die Schilder über den Türen sind jetzt anders.“). Wer losläuft und falsch landet, erfährt: „Unterwegs macht es Gonnng, und die Flure rücken weiter.“ Erklärungen gibt es nur über die Tippstufen, wenn man Krächz ausdrücklich fragt. Wer trotzdem nach Osten läuft, landet in der Kantine oder im Biologieraum. Wer „einen Schritt weiter“ denkt, landet im Süden beim Musikraum. Richtig ist die Tür, an der die Kellertreppe nach dem nächsten Gong steht; aus dem Osten ist das der Westen. Der Aushang am Schwarzen Brett zeigt nur ein Beispiel vor und nach dem Gong, ohne Erklärung („Vor dem Gong, nach dem Gong. Was hat denn der Gong mit den Räumen zu tun?“).
 
 Tippstufen von Krächz: „Hau mal auf den Gong und schau, was mit den Schildern passiert.“ Dann: „Wenn du losläufst, gongt es. Geh also dahin, wo die Kellertreppe nach dem nächsten Gong steht.“ Dann: „Die Räume rücken im Uhrzeigersinn eine Tür weiter und hüpfen am Musikraum vorbei. Von Osten geht es also direkt nach Westen.“
 
@@ -313,11 +313,11 @@ Tippstufen von Krächz: „Hau mal auf den Gong und schau, was mit den Schildern
 | --- | --- | --- |
 | … dann reiße ich mich zusammen. | nirgends | „Zusammenreißen. Und dann? Da steht gar nicht, was ich tue.“ |
 | … dann mache ich eben später weiter. | nirgends | „Das hätte ein Aufschiebchen auch geschrieben.“ |
-| … dann sage ich: Einen Schritt schaffe ich immer. Und gehe ihn. | Nische, Hängematte | beim Hunger: „Der Magen geht jeden Schritt mit. Und knurrt dabei.“ |
-| … dann schaue ich nur auf die Tür und gehe weiter. | Nische, Hängematte | beim Hunger: „Auf die Tür schauen? Mein Magen schaut nicht mit.“ |
+| … dann sage ich: Einen Schritt schaffe ich immer. Und gehe ihn. | Nische (Zweifel am Können) | bei der Hängematte: „Schaffen würde ich den Schritt ja. Ich will nur nicht, die Hängematte ist so bequem.“ Beim Hunger: „Der Magen geht jeden Schritt mit. Und knurrt dabei.“ |
+| … dann schaue ich nur auf die Tür und gehe weiter. | Hängematte (Verlockung) | bei der Nische: „Auf die Tür schauen? Die ist ganz schön weit weg. Da denke ich erst recht, dass ich das nie schaffe.“ Beim Hunger: „Auf die Tür schauen? Mein Magen schaut nicht mit.“ |
 | … dann esse ich meinen eigenen Keks und gehe weiter. | Kiste | bei der Nische: „Ein Keks gegen Zweifel? Mit vollem Mund zweifelt es sich genauso.“ Bei der Hängematte: „Mit Keks liegt es sich in der Hängematte nur noch gemütlicher.“ |
 
-Unpassende Sätze wischt die Figur wieder weg. Steht ein Plan, greift er im Gang von allein: Das Aufschiebchen flüstert, die Figur sagt ihren Plan („Einen Schritt schaffe ich immer.“ Aufschiebchen: „… Und noch einen?“ Figur: „Genau.“) und geht weiter.
+Jede Stolperstelle hat genau ein passendes Dann, weil jede einen anderen Grund hat: Zweifel am eigenen Können (ein kleiner Schritt, den man sicher schafft), eine Verlockung (wegschauen und weitergehen) und Hunger (etwas essen). Unpassende Sätze wischt die Figur wieder weg. Steht ein Plan, greift er im Gang von allein: Das Aufschiebchen flüstert, die Figur sagt ihren Plan („Einen Schritt schaffe ich immer.“ Aufschiebchen: „… Und noch einen?“ Figur: „Genau.“) und geht weiter.
 
 *Der Keks fehlt.* Den Keks-Plan kann die Figur aufschreiben, aber sie hat keinen Keks („Dann esse ich meinen eigenen Keks und … Moment. Ich habe gar keinen Keks.“). Wer das Aufschiebchen auf der Kiste fragt, woher es die Kekse hat, erfährt: „Aus der Kantine. Die backt Frau Brösel. Die merkt gerade nichts, die ist erstarrt.“ Auf der Dose steht außerdem „Eigentum der Kantine, Frau Brösel“. Die Figur muss also zurück durch die wandernden Flure, diesmal zur Kantine, und Frau Brösel mit dem Festessen-Rätsel wecken. So wird das Flur-Rätsel ein zweites Mal gebraucht. Grummelbart hatte für seinen Kaffee-Plan auch die Thermoskanne dabei.
 
