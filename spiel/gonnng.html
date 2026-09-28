@@ -957,7 +957,10 @@ const ITEMS={
   wennNicht:{name:'Wenn-Karte',look:'„Wenn ich denke, dass ich es nicht schaffe …“ Mehr steht nicht drauf.'},
   wennSpaeter:{name:'Wenn-Karte',look:'„Wenn ein Aufschiebchen „Mach doch später“ flüstert …“ Und dann?'},
   wennHunger:{name:'Wenn-Karte',look:'„Wenn mein Magen knurrt …“ Er knurrt übrigens gerade.'},
-  wennLust:{name:'Wenn-Karte',look:'„Wenn ich Lust habe …“ Ganz abgegriffen.'},
+  wennLust:{name:'Wenn-Karte',look:'„Wenn ich Lust habe …“ Mit Bleistift geschrieben und ganz abgegriffen.'},
+  leereKarte:{name:'Leere Karte',look:'Eine leere Karte. Da passt genau ein Dann drauf.'},
+  dannGitter:{name:'Dann-Karte',look:'„… dann denke ich an das Gitter, das ich mit einer Münze aufgeschraubt habe.“ In Kreide, etwas krakelig.'},
+  planGitter:{name:'Wenn-dann-Plan',look:'„Wenn ich denke, dass ich es nicht schaffe, dann denke ich an das Gitter, das ich mit einer Münze aufgeschraubt habe.“'},
   dannKraechz:{name:'Dann-Karte',look:'„… dann frage ich Krächz nach einem Tipp.“ In Krächz’ Krallenschrift.'},
   planKraechz:{name:'Wenn-dann-Plan',look:'„Wenn ich denke, dass ich es nicht schaffe, dann frage ich Krächz nach einem Tipp.“'}
 };
@@ -967,6 +970,7 @@ function icon(g,id,x,y){
   if(id==='radiergummi'){r(9,5,8,7,'#f08aa8');r(17,5,7,7,'#5a8ae0');r(9,11,15,1,'#803050');r(10,6,3,1,'#ffc8d8');}
   if(id==='muenze'){ellFill(g,x+16,y+8,6,6,(px,py,dx,dy)=>dx*dx+dy*dy>0.55?'#b08820':dx+dy<-0.4?'#fff0a0':'#d8b040');}
   if(id==='kreide'){r(7,7,18,3,'#f4f4f0');r(7,9,18,1,'#c8c8c0');r(24,7,1,3,'#ffffff');}
+  if(id==='leereKarte'){r(8,4,17,12,'#48485a');r(8,4,16,11,'#e8e0c8');r(8,4,16,2,'#9a9aa8');}
   if(id.startsWith('wenn')||id.startsWith('dann')){r(8,4,17,12,'#48485a');r(8,4,16,11,'#e8e0c8');r(8,4,16,2,id.startsWith('wenn')?'#3a64c4':'#e07020');for(let i=8;i<14;i+=2)r(10,i,11,1,'#9a9aa8');}
   if(id.startsWith('plan')){r(5,3,15,11,'#e8e0c8');r(5,3,15,2,'#3a64c4');r(12,6,16,11,'#48485a');r(12,6,15,10,'#e8e0c8');r(12,6,15,2,'#e07020');for(let i=10;i<15;i+=2)r(14,i,10,1,'#9a9aa8');r(11,4,3,5,'#d8b040');}
   if(id==='notiz'){r(10,3,12,11,'#e8e0c8');r(10,3,12,1,'#ffffff');for(let i=5;i<13;i+=2)r(12,i,8,1,'#6e6e7c');r(19,11,1,1,'#b07c48');r(13,12,1,1,'#b07c48');}
@@ -1121,7 +1125,7 @@ async function kraechzMenue(){
 // Im Gang fragt die Figur Kraechz nach einem Dann zu ihren Wenn-Karten
 function kartenFragen(){
   const f=[];if(S.room!=='gang')return f;
-  if(has('wennNicht')&&!S.dannK)f.push(['Was mache ich, wenn ich denke, dass ich es nicht schaffe?',async()=>{
+  if(has('wennNicht')&&!S.dannK&&!has('dannGitter'))f.push(['Was mache ich, wenn ich denke, dass ich es nicht schaffe?',async()=>{
     await say('kraechz','Dann fragst du mich. Ich schreib’s dir auf, damit du es nicht vergisst.');
     await reach();S.dannK=true;give('dannKraechz');tone('triangle',880,0.2,0.05);
     await say('kraechz','Und damit ich mal wieder gefragt werde.');}]);
@@ -1538,7 +1542,7 @@ async function travel(tuer){
     else await showCard('Die Kellertreppe',unterwegs+'Es geht wieder hinunter in den Flüstergang.');
     return enterGang();
   }
-  if(ziel==='kantine'&&S.suchKantine){
+  if(ziel==='kantine'&&(S.suchKantine||has('wennSpaeter'))){
     await showCard('Die Kantine',unterwegs+'Frau Brösel steht erstarrt vor vierhundert Portionen. Hier geht es als Nächstes weiter.');
     S.over=true;save();if(API.onDone)API.onDone('kapitel1');return;
   }
@@ -1627,12 +1631,13 @@ const STEIN=['#0c1018','#141a28','#1e2638','#2a3448','#343e52','#4a5670'];
 const EISEN=['#141a28','#343e52','#5a6880','#8a9ab4'];
 const BAND_GANG={x0:22,x1:304,y0:112,y1:134};
 const STOER=[
-  {id:'auf1',x:118,wenn:'wennNicht',plan:'planKraechz',satz:'Pssst. Das schaffst du eh nicht.',
+  {id:'auf1',x:118,wenn:'wennNicht',plan:['planKraechz','planGitter'],satz:'Pssst. Das schaffst du eh nicht.',
     rein:'Stimmt eigentlich. Ich bin ja auch erst seit heute hier.',karte:['Wenn ich denke,','dass ich es nicht schaffe …'],
-    vorbei:[['hero','Krächz? Ich bräuchte mal einen Tipp.'],['kraechz','Geradeaus weiter. Und nicht hinhören.'],['auf1','… Na gut. Vielleicht schaffst du es doch.']]},
-  {id:'auf2',x:186,wenn:'wennSpaeter',plan:'planBroesel',satz:'Pssst. Mach doch später. Später ist viel gemütlicher.',
+    vorbei:()=>has('planGitter')?[['hero','Moment. Ich habe heute schon ein Gitter mit einer Münze aufgeschraubt.'],['auf1','… Mit einer Münze? Na gut. Vielleicht schaffst du es doch.']]
+      :[['hero','Krächz? Ich bräuchte mal einen Tipp.'],['kraechz','Geradeaus weiter. Und nicht hinhören.'],['auf1','… Na gut. Vielleicht schaffst du es doch.']]},
+  {id:'auf2',x:186,wenn:'wennSpaeter',plan:['planBroesel'],satz:'Pssst. Mach doch später. Später ist viel gemütlicher.',
     rein:'Gemütlicher klingt gut. Ich geh mal zurück und setz mich kurz hin.',karte:['Wenn ein Aufschiebchen','„Mach doch später“ flüstert …']},
-  {id:'auf3',x:252,wenn:'wennHunger',plan:'planKeks',satz:'Mmmh. Schokokeks. Knusper, knusper.',
+  {id:'auf3',x:252,wenn:'wennHunger',plan:['planKeks'],satz:'Mmmh. Schokokeks. Knusper, knusper.',
     rein:'Mein Magen knurrt. So kann doch niemand arbeiten.',karte:['Wenn mein Magen knurrt …']}
 ];
 const has=id=>S.inv.indexOf(id)>=0;
@@ -1712,6 +1717,7 @@ const HS_GANG=[
   {id:'lust',name:'Karte auf dem Boden',vis:()=>!S.lust,rect:()=>[62,118,16,12],walk:[80,124],flip:true},
   {id:'auf1',name:'Aufschiebchen in der Nische',rect:()=>[106,74,26,32],walk:[98,116],flip:false},
   {id:'auf2',name:'Aufschiebchen in der Hängematte',rect:()=>[168,52,38,22],walk:[176,114],flip:false},
+  {id:'dose',name:'Keksdose',rect:()=>[256,86,11,7],walk:[166,116],flip:false},
   {id:'auf3',name:'Aufschiebchen auf der Kiste',rect:()=>[238,62,30,46],walk:[236,116],flip:false},
   {id:'tuer',name:'Tür zum Heizungskeller',exit:true,rect:()=>[280,40,32,66],walk:[292,116],flip:false},
   {id:'treppe',name:'Kellertreppe',exit:true,rect:()=>[0,34,46,76],walk:[26,120],flip:true},
@@ -1726,7 +1732,7 @@ async function goTo(x,y){
   for(const d of STOER){
     if(x<=d.x-14||S.hero.x>=d.x)continue;
     const yy=clamp(y,BAND_GANG.y0,BAND_GANG.y1);
-    if(has(d.plan)){if(!S.passed[d.id]){await walkTo(d.x-14,yy);S.passed[d.id]=true;for(const [w,t] of d.vorbei)await say(w,t);}continue;}
+    if(d.plan.some(has)){if(!S.passed[d.id]){await walkTo(d.x-14,yy);S.passed[d.id]=true;for(const [w,t] of d.vorbei())await say(w,t);}continue;}
     await walkTo(d.x-14,yy);face(true);await stoer(d);return false;
   }
   await walkTo(x,y);return true;
@@ -1744,7 +1750,8 @@ async function stoer(d){
   if(!S.karteErklaert){S.karteErklaert=true;
     await say('kraechz','Jeder Satz, auf den du reinfällst, bleibt hier als Karte liegen. Ordentlich sind sie ja, die Aufschiebchen.');
     await say('hero','Da steht nur „Wenn“. Und dann?');
-    await say('kraechz','Das Dann musst du dir schon selbst besorgen.');}
+    await say('kraechz','Ein Dann musst du dir schon selbst schreiben.');}
+  if(d.id==='auf2'&&!S.suchKantine)await say('hero','Gegen „später“ bräuchte ich jemanden, der trotzdem anfängt. Jeden Tag, egal wie viel es ist.');
 }
 async function enterGang(){
   S.room='gang';S.hero.hidden=false;S.hero.x=26;S.hero.y=120;S.hero.flip=false;S.kraechz='gang';S.kx=64;S.ky=20;S.kflip=false;
@@ -1780,12 +1787,37 @@ async function combine(a,b){
     await say('hero','Wenn ich denke, dass ich es nicht schaffe, dann frage ich Krächz nach einem Tipp.');
     return say('kraechz','Endlich fragt mal wieder jemand.');
   }
+  if(is('radiergummi','wennLust')){await reach();take('wennLust');give('leereKarte');tone('sawtooth',400,0.3,0.02,300);
+    return say('hero','Weg mit der Lust. Jetzt ist die Karte leer.');}
   if(p.has('wennLust'))return say('kraechz','Wenn du Lust hast? Darauf warten hier alle seit vierzig Jahren.');
+  if(is('kreide','leereKarte'))return dannSchreiben();
+  if(p.has('leereKarte'))return say('hero','Die Karte ist leer. Da muss erst mal was drauf.');
+  if(is('wennNicht','dannGitter')){
+    await reach();take('wennNicht');take('dannGitter');give('planGitter');tone('triangle',660,0.15,0.05);tone('triangle',990,0.3,0.05,null,0.15);
+    return say('hero','Wenn ich denke, dass ich es nicht schaffe, dann denke ich an das Gitter, das ich mit einer Münze aufgeschraubt habe.');
+  }
+  if(p.has('dannGitter')&&[...p].some(x=>x.startsWith('wenn')))return say('hero','Das Gitter hilft mir da nicht weiter. Das passt nicht.');
   if(is('wennSpaeter','dannKraechz'))return say('kraechz','Einer flüstert „später“, und du fragst mich? Dann sage ich „jetzt“, und ihr flüstert zu zweit. Da brauchst du was Besseres.');
   if(is('wennHunger','dannKraechz'))return say('kraechz','Wenn dein Magen knurrt, fragst du mich? Ich hätte Regenwürmer.');
   if(a.startsWith('wenn')&&b.startsWith('wenn'))return say('hero','Wenn, wenn. Und dann? Da fehlt was.');
-  if(p.has('planKraechz'))return say('hero','Der Plan ist fertig. Den lasse ich so.');
+  if(p.has('planKraechz')||p.has('planGitter'))return say('hero','Der Plan ist fertig. Den lasse ich so.');
   return say('hero','Das passt nicht zusammen.');
+}
+// Ein eigenes Dann: Wer schon mal etwas geschafft hat, traut sich mehr zu (Bandura, 1997)
+const DANN_WAHL=[
+  ['… dann glaube ich ganz fest an mich.','Und wenn das Aufschiebchen fester glaubt? Da fehlt was, das ich wirklich tun kann.'],
+  ['… dann gebe ich auf. Aber nur ganz kurz.','Kurz aufgeben ist auch aufgeben.'],
+  ['… dann strenge ich mich eben mehr an.','Mehr als was? Das ist kein Plan, das ist ein Seufzer.'],
+  ['… dann denke ich an das Gitter, das ich mit einer Münze aufgeschraubt habe.',null]
+];
+async function dannSchreiben(){
+  if(!has('wennNicht'))return say('hero','Was soll ich denn draufschreiben? Mir fehlt noch ein Wenn.');
+  await say('hero','„Wenn ich denke, dass ich es nicht schaffe …“ Und dann? Mal überlegen.');
+  const a=DANN_WAHL[await choose(DANN_WAHL.map(x=>x[0]))];
+  await reach();tone('square',1200,0.06,0.02);tone('square',1100,0.06,0.02,null,0.1);
+  if(a[1]){await say('hero',a[1]);return say('hero','Ich wische es mit dem Ärmel wieder weg.');}
+  take('leereKarte');give('dannGitter');
+  return say('hero','Genau. Das hätte ich mir heute früh auch nicht zugetraut.');
 }
 async function actGang(verb,h,item){
   const id=h.id;
@@ -1810,6 +1842,12 @@ async function actGang(verb,h,item){
     case 'auf2:rede':await say('hero','Hallo? Hast du meinen Dieb gesehen?');return say('auf2','Frag später. Später weiß ich alles.');
     case 'auf3:schau':return say('hero','Es sitzt auf einer Kiste und futtert Kekse. Laut.');
     case 'auf3:rede':await say('hero','Kann ich einen Keks haben?');return say('auf3','Mmpf. Nein. Knusper.');
+    case 'dose:schau':
+      if(!has('wennSpaeter'))return say('hero','Eine Keksdose. „Eigentum der Kantine, Frau Brösel.“ Geklaut, wette ich.');
+      if(!S.suchKantine){S.suchKantine=true;await say('hero','„Eigentum der Kantine, Frau Brösel.“');
+        return say('hero','Frau Brösel! Die kocht jeden Tag vierhundert Portionen. Die fängt immer an. Die muss ich fragen.');}
+      return say('hero','Frau Brösels Keksdose. Ab in die Kantine.');
+    case 'dose:nimm':return say('hero','Da sitzt ein Aufschiebchen fast drauf. Und es knurrt, glaube ich.');
     case 'rohre:schau':return say('hero','Eiskalt. Sonst summen die. Heute nicht mal das.');
     case 'rohre:druecke':case 'rohre:benutze':await reach();return say('hero','Brr. Da friert einem die Hand dran fest.');
     case 'lampe:schau':return say('hero','Eine Glühbirne im Käfig. Sie flackert, als wollte sie gleich Feierabend machen.');
@@ -1822,11 +1860,13 @@ async function actGang(verb,h,item){
 // Tipps im Gang, je nachdem, welche Karten schon da sind
 async function gangTipp(){
   let t;
-  if(!has('wennNicht')&&!has('planKraechz'))t='Geh ruhig mal los. Die Tür da hinten ist das Ziel.';
-  else if(has('wennNicht')&&!has('dannKraechz'))t='Auf der Karte steht nur ein Wenn. Was machst du dann? Frag mich doch mal.';
-  else if(has('wennNicht'))t='Das Wenn und das Dann gehören zusammen. Benutze die eine Karte mit der anderen.';
+  if(!has('wennNicht')&&!has('planKraechz')&&!has('planGitter'))t='Geh ruhig mal los. Die Tür da hinten ist das Ziel.';
+  else if(has('wennNicht')&&(has('dannKraechz')||has('dannGitter')))t='Das Wenn und das Dann gehören zusammen. Benutze die eine Karte mit der anderen.';
+  else if(has('wennNicht')&&has('leereKarte'))t='Eine leere Karte und ein Stück Kreide. Was hast du heute schon geschafft, was du dir nicht zugetraut hättest?';
+  else if(has('wennNicht')&&has('wennLust'))t='„Wenn ich Lust habe“ ist mit Bleistift geschrieben. Die Karte braucht sowieso keiner.';
+  else if(has('wennNicht'))t='Am Fuß der Treppe liegt noch eine Karte. Die braucht keiner mehr.';
   else if(!has('wennSpaeter'))t='Mit dem Plan im Gepäck noch mal los.';
-  else if(!S.suchKantine)t='Für „später“ brauchst du ein Dann. Frag mich danach, ich kenne da jemanden.';
+  else if(!S.suchKantine)t='Wem gehört eigentlich die Keksdose auf der Kiste?';
   else t='Frau Brösel, Kantine. Die Treppe rauf und dann durch die wandernden Flure.';
   await say('kraechz',t);
 }

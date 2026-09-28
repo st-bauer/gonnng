@@ -72,8 +72,10 @@ Canva-Arbeitsdatei: https://canva.link/mp6p64febvogrh4
   Krächz macht das Heft zur Spur zur Unruh (wer das Heft hat, weiß vielleicht, wo die Unruh ist). Die Krümel liegen
   ab dem Licht-aus sichtbar da, fallen der Figur aber erst nach dem Zielgespräch auf.
 - Kapitel 1, zweiter Raum: der Flüstergang (Raum `gang`). Der Dieb zeigt sich und verschwindet im Heizungskeller.
-  Drei flüsternde Aufschiebchen, Wenn-Karten nach jedem Reinfallen, Dann-Karte von Krächz, Kombinieren zum Wenn-dann-Plan
-  (`combine`), Laufen mit Störungen über `goTo`. Danach schickt Krächz die Figur zur Kantine, die Flure werden ein zweites Mal gebraucht.
+  Drei flüsternde Aufschiebchen, Wenn-Karten nach jedem Reinfallen. Das Dann schreibt die Figur selbst (Lust-Karte ausradieren,
+  mit Kreide beschriften, Auswahl `DANN_WAHL`), Kombinieren zum Wenn-dann-Plan (`combine`), Laufen mit Störungen über `goTo`.
+  Die Keksdose („Eigentum der Kantine“) führt zur Kantine, die Flure werden ein zweites Mal gebraucht.
+  Grundsatz: Krächz hilft nur, jedes Rätsel ist auch ohne ihn lösbar.
   Die Vorschau endet beim Erreichen der Kantine. Inventar mit Blättern (Pfeile links neben den Feldern).
 - Zwischensequenzen (`runCut`, überspringbar, ohne Verbleiste): Rutschpartie durch den Schacht,
   Abstieg über die Kellertreppe am Ende der Hallen-Vorschau.

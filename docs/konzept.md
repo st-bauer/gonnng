@@ -297,7 +297,18 @@ Tippstufen von Krächz: „Hau mal auf den Gong und schau, was mit den Schildern
 
 **Die Karten im Flüstergang.** Drei Aufschiebchen stören. Jede Störung schickt die Figur an den Anfang zurück.
 
-**Ablauf im Flüstergang.** Der Gang liegt unten an der Kellertreppe und endet an der Eisentür zum Heizungskeller. Beim ersten Betreten sieht die Figur den Dieb: Ein Aufschiebchen mit ihrem Heft gähnt („Heft abgeben. Gleich. Oder später.“) und verschwindet durch die Tür. Krächz: „Ein Aufschiebchen. Die sind überall, wo etwas liegen bleibt.“ Drei weitere Aufschiebchen sitzen im Gang: eins in einer Mauernische („Pssst. Das schaffst du eh nicht.“), eins in einer Hängematte zwischen den Rohren („Mach doch später. Später ist viel gemütlicher.“), eins futtert auf einer Kiste laut Schokokekse (der Magen knurrt). Wer ohne passenden Plan vorbeiwill, fällt auf den Satz herein, trottet zurück zur Treppe und findet die Wenn-Karte dazu. Krächz gibt auf Nachfrage die Dann-Karte „… dann frage ich Krächz nach einem Tipp.“ Mit dem ersten Plan kommt die Figur an der Nische vorbei und scheitert an der Hängematte. Für „später“ schickt Krächz sie zu Frau Brösel („Die kocht jeden Tag vierhundert Portionen und fängt trotzdem an.“). Die Figur muss also zurück durch die wandernden Flure, diesmal zur Kantine. So wird das Flur-Rätsel ein zweites Mal gebraucht. Die Karte „Wenn ich Lust habe“ liegt abgegriffen am Fuß der Treppe.
+**Ablauf im Flüstergang.** Der Gang liegt unten an der Kellertreppe und endet an der Eisentür zum Heizungskeller. Beim ersten Betreten sieht die Figur den Dieb: Ein Aufschiebchen mit ihrem Heft gähnt („Heft abgeben. Gleich. Oder später.“) und verschwindet durch die Tür. Krächz: „Ein Aufschiebchen. Die sind überall, wo etwas liegen bleibt.“ Drei weitere Aufschiebchen sitzen im Gang: eins in einer Mauernische („Pssst. Das schaffst du eh nicht.“), eins in einer Hängematte zwischen den Rohren („Mach doch später. Später ist viel gemütlicher.“), eins futtert auf einer Kiste laut Schokokekse (der Magen knurrt). Wer ohne passenden Plan vorbeiwill, fällt auf den Satz herein, trottet zurück zur Treppe und findet die Wenn-Karte dazu.
+
+Das erste Dann schreibt die Figur selbst. Am Fuß der Treppe liegt die abgegriffene Karte „Wenn ich Lust habe“, mit Bleistift geschrieben. Sie passt zu nichts („Darauf warten hier alle seit vierzig Jahren.“). Radiergummi plus Lust-Karte ergibt eine leere Karte. Kreide plus leere Karte öffnet eine Auswahl, was hinter „dann“ stehen soll:
+
+| Auswahl | Reaktion |
+| --- | --- |
+| … dann glaube ich ganz fest an mich. | „Und wenn das Aufschiebchen fester glaubt? Da fehlt was, das ich wirklich tun kann.“ |
+| … dann gebe ich auf. Aber nur ganz kurz. | „Kurz aufgeben ist auch aufgeben.“ |
+| … dann strenge ich mich eben mehr an. | „Mehr als was? Das ist kein Plan, das ist ein Seufzer.“ |
+| … dann denke ich an das Gitter, das ich mit einer Münze aufgeschraubt habe. | richtig: „Genau. Das hätte ich mir heute früh auch nicht zugetraut.“ |
+
+Falsche Sätze wischt die Figur mit dem Ärmel wieder weg. Wenn-Karte plus Dann-Karte ergibt den Wenn-dann-Plan, damit kommt die Figur an der Nische vorbei. Wer lieber fragt, bekommt von Krächz als zweiten Weg die Dann-Karte „… dann frage ich Krächz nach einem Tipp.“ An der Hängematte scheitert die Figur und denkt laut: „Gegen „später“ bräuchte ich jemanden, der trotzdem anfängt.“ Auf der Kiste steht eine Keksdose mit der Aufschrift „Eigentum der Kantine, Frau Brösel“. Wer sie anschaut, kommt selbst auf Frau Brösel, die jeden Tag vierhundert Portionen kocht. Krächz verrät das nur auf Nachfrage. Die Figur muss also zurück durch die wandernden Flure, diesmal zur Kantine. So wird das Flur-Rätsel ein zweites Mal gebraucht. Krächz ist in allen Rätseln nur Hilfe, nie Pflicht.
 
 | Wenn-Karte | Passende Dann-Karte |
 | --- | --- |
@@ -327,6 +338,7 @@ Falsche Paare scheitern komisch. „Wenn mein Magen knurrt, dann frage ich Kräc
 
 - **Nahe Teilziele.** Bei Bandura und Schunk (1981) übten 40 Kinder zwischen 7 und 10 Jahren mit großen Rechenschwierigkeiten das Subtrahieren. Kinder, die sich nahe Teilziele setzten (sechs Seiten pro Sitzung), entwickelten mehr Können, mehr Selbstwirksamkeit und mehr Interesse als Kinder mit fernen Zielen oder ohne Ziele. Das Festessen bildet genau das ab: Eine überwältigende Aufgabe wird in kurze, prüfbare Schritte zerlegt. Die Pudding-Regel ergänzt eine Planungsgrundlage: Was am längsten dauert, kommt zuerst.
 - **Wenn-dann-Pläne.** Die Meta-Analyse von Gollwitzer und Sheeran (2006) über 94 Studien zeigt einen mittleren bis großen Effekt (d = 0,65) auf das Erreichen von Zielen. Sie wirken, weil eine konkrete Situation fest mit einer Handlung verknüpft wird und die Handlung dann fast automatisch startet. Im Spiel läuft die Figur deshalb nach dem Kombinieren ohne weiteres Zutun durch. „Wenn ich Lust habe“ ist bewusst unkombinierbar, weil es keine konkrete Situation beschreibt.
+- **Selbstwirksamkeit durch eigene Erfolge.** Nach Bandura (1997) sind eigene Erfolgserlebnisse die stärkste Quelle der Selbstwirksamkeit, also der Überzeugung, etwas zu schaffen. Das selbst geschriebene Dann gegen „Das schaffst du eh nicht“ ruft deshalb ein echtes Erfolgserlebnis aus dem Prolog auf: das Gitter, das die Figur mit einer Münze aufgeschraubt hat. Die falschen Auswahlen sind vage Vorsätze ohne Handlung, sie erfüllen die Bedingung eines Wenn-dann-Plans nicht.
 - **Konkrete Ziele.** Der Kompass wiederholt die Zielregel aus dem Prolog als Werkzeug (Locke & Latham, 2002).
 
 ## Kapitel 2: Der Sumpf der Ablenkung (Überwachen)
@@ -582,6 +594,7 @@ Das Spiel behauptet nichts, was die Forschung nicht trägt, und nimmt verbreitet
 
 **Lernpsychologie und SRL**
 
+- Bandura, A. (1997). *Self-efficacy: The exercise of control.* New York: W. H. Freeman.
 - Bandura, A. & Schunk, D. H. (1981). Cultivating competence, self-efficacy, and intrinsic interest through proximal self-motivation. *Journal of Personality and Social Psychology, 41*(3), 586–598. [doi](https://doi.org/10.1037/0022-3514.41.3.586)
 - Cepeda, N. J., Pashler, H., Vul, E., Wixted, J. T. & Rohrer, D. (2006). Distributed practice in verbal recall tasks: A review and quantitative synthesis. *Psychological Bulletin, 132*(3), 354–380. [doi](https://doi.org/10.1037/0033-2909.132.3.354)
 - Dignath, C. & Büttner, G. (2008). Components of fostering self-regulated learning among students. *Metacognition and Learning, 3*(3), 231–264. [doi](https://doi.org/10.1007/s11409-008-9029-x)
