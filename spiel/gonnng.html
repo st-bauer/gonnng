@@ -1631,7 +1631,24 @@ function drawGongDisc(x,y,sw){
     return pick(KR.gold,0.35+glanz*0.6-(a+b)*0.12+(ring?-0.15:0),px,py);});
   line(ctx,x+dx,y-13,x,y-17,'#383840');
 }
-function plaque(x,y,label){label=label||' ... ';const w=textW(label)+6;x=clamp(x,Math.ceil(w/2)+1,W-Math.ceil(w/2)-1);R(ctx,x-Math.ceil(w/2),y,w,10,'#2a160c');R(ctx,x-Math.ceil(w/2)+1,y+1,w-2,8,'#e8d8a0');text(label,x-Math.floor(textW(label)/2),y+2,'#3a2410',false);}
+// Tuerschild aus Emaille: dunkelblau mit weissem Rand und weisser Schrift, Schrauben links und rechts,
+// Licht von oben, Schlagschatten auf der Wand und eine abgeplatzte Stelle, die bei jedem Schild woanders sitzt
+let SCHILD=null;
+function plaque(x,y,label){
+  label=label||' ... ';SCHILD=SCHILD||mkRamp(['#060c26','#0e1c4c','#1a327e','#2c50a8','#5a82d0'],10);
+  const w=textW(label)+16,h=12,x0=clamp(x,Math.ceil(w/2)+1,W-Math.ceil(w/2)-2)-Math.ceil(w/2);
+  let hs=0;for(const ch of label)hs=(hs*31+ch.charCodeAt(0))>>>0;
+  const ecke=(i,j)=>(i===0||i===w-1)&&(j===0||j===h-1);
+  for(let j=1;j<=h;j++)for(let i=1;i<=w;i++)if(!ecke(i-1,j-1)&&bay(x0+i,y+j)<0.55)P(ctx,x0+i,y+j,'#05040a');
+  for(let j=0;j<h;j++)for(let i=0;i<w;i++){if(ecke(i,j))continue;const px=x0+i,py=y+j;
+    if(i===0||j===0||i===w-1||j===h-1){P(ctx,px,py,'#0c0a14');continue;}
+    if(i===1||j===1)P(ctx,px,py,'#f4f6fa');
+    else if(i===w-2||j===h-2)P(ctx,px,py,'#9aa4bc');
+    else P(ctx,px,py,pick(SCHILD,0.7-(j-2)/(h*1.6)-i/(w*5)+(j===2?0.18:0),px,py));}
+  const cx=x0+2+hs%(w-4),cy=y+(hs>>4)%2*(h-3)+1;P(ctx,cx,cy,'#1a1a22');P(ctx,cx+1,cy,'#3a3a44');
+  [x0+4,x0+w-5].forEach(sx=>{P(ctx,sx,y+5,'#d8dce4');P(ctx,sx,y+6,'#6a7080');});
+  text(label,x0+Math.floor((w-textW(label))/2),y+3,'#ffffff',false);
+}
 function drawHalle(now){
   if(!HALLE)HALLE=drawHalleBg();
   if(S.card){R(ctx,0,0,W,SH,'#000000');const t=S.card.title;text(t,Math.round((W-textW(t))/2),34,'#ffe060',false);
