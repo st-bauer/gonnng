@@ -401,7 +401,8 @@ const KR={
   oel:mkRamp(['#141018','#2a2230','#3e3448','#5a4c60'],8),
   haut:mkRamp(['#6a3424','#b86e50','#e0a07a','#f8c8a0'],8),
   stein:mkRamp(['#04060a','#0e1420','#1e2638','#34405a','#5a6884','#8a98b4'],12),    // kalter Kellerstein
-  steinW:mkRamp(['#0c0806','#261a12','#4a3222','#7a5638','#b08458','#e0b886'],12)    // Kellerstein im Lampenlicht
+  steinW:mkRamp(['#0c0806','#261a12','#4a3222','#7a5638','#b08458','#e0b886'],12),    // Kellerstein im Lampenlicht
+  jute:mkRamp(['#2a1c0c','#5a4020','#8a6a3a','#b8985e','#dcc488'],10)
 };
 // Farbe aus einer Rampe waehlen, mit Bayer-Rasterung nur zwischen zwei benachbarten Stufen
 function pick(r,t,x,y){const n=r.length-1,v=clamp(t,0,0.9999)*n,k=Math.floor(v);return (v-k)>bay(x,y)?r[Math.min(n,k+1)]:r[k];}
@@ -2145,34 +2146,77 @@ function drawKantineBg(){
 function drawKammerBg(){
   const [c,g]=mk(W,SH);
   const hash=(a,b)=>((a*73856093)^(b*19349663))>>>0;
-  // enge Kammer, Licht faellt nur durch die offene Tuer links herein und verliert sich nach rechts
-  const licht=(x,y)=>Math.max(0,1-Math.hypot(x-14,(y-70)*0.8)/260);
+  // Licht: helle Kueche hinter der offenen Tuer links, dazu eine warme Gluehbirne unter der Decke
+  const tuer=(x,y)=>Math.max(0,1-Math.hypot(x-14,(y-70)*0.8)/210);
+  const birne=(x,y)=>Math.max(0,1-Math.hypot(x-196,(y-14)*1.1)/150);
+  const L=(x,y)=>0.06+tuer(x,y)*0.6+birne(x,y)*0.55;
+  const warm=(x,y)=>clamp(birne(x,y)*1.6-tuer(x,y)*0.8,0,1)>bay(x+2,y+1);
   // Bretterwand
   for(let y=0;y<106;y++)for(let x=0;x<W;x++){const b=Math.floor(x/12),lx=x%12;
-    let t=0.05+licht(x,y)*0.75+Math.sin(x*0.9+Math.sin(y*0.12+b)*2)*0.03+((hash(b,3)%5)-2)*0.02;if(lx===0)t-=0.15;else if(lx===1)t+=0.05;
-    P(g,x,y,pick(KR.holz,t*0.85,x,y));}
-  // Regalbretter mit Vorderkante
-  [34,58,82].forEach(y=>{for(let x=50;x<300;x++){const l=licht(x,y);P(g,x,y,pick(KR.holz,0.35+l*0.6,x,y));P(g,x,y+1,pick(KR.holz,0.2+l*0.4,x,y));P(g,x,y+2,pick(KR.holz,0.1+l*0.3,x,y));P(g,x,y+3,'#0e0604');}});
-  // Dosen, Glaeser und Schachteln, auf der Lichtseite heller, mit Glanzkante
-  const RP=[KR.terra,KR.meer,KR.buchR,KR.blatt,KR.buchY];
-  for(let i=0;i<22;i++){const x=56+i*11,y=[34,58,82][i%3],h=8+(i*7)%6,rp=RP[i%5],glas=i%4===1;
-    for(let yy=y-h;yy<y;yy++)for(let xx=x;xx<x+8;xx++){const l=licht(xx,yy);let t=0.15+l*0.7-(xx-x)/30+(xx===x+1?0.25:0);
-      if(yy<y-h+2)t+=0.15;P(g,xx,yy,glas&&xx>x&&xx<x+7&&yy>y-h+2?pick(KR.dunst,t,xx,yy):pick(rp,t,xx,yy));}
-    if(glas)for(let yy=y-h+3;yy<y-1;yy++)P(g,x+2,yy,'#e8eef8');
-    if(!glas&&h>10)for(let xx=x;xx<x+8;xx++)P(g,xx,y-h+4,pick(KR.papier,0.4+licht(xx,y)*0.5,xx,y));}
-  // Einmachglaeser mit Gurken
-  [[70,98],[84,98],[98,98]].forEach(([x,y])=>{for(let yy=y-12;yy<y;yy++)for(let xx=x;xx<x+10;xx++)P(g,xx,yy,pick(KR.blatt,0.2+licht(xx,yy)*0.6-(xx-x)/40,xx,yy));
-    for(let xx=x;xx<x+10;xx++){P(g,xx,y-13,pick(KR.stahl,0.7,xx,y));P(g,xx,y-12,pick(KR.stahl,0.4,xx,y));}
-    for(let yy=y-10;yy<y-2;yy++)P(g,x+2,yy,'#e8f4e0');});
-  // offene Tuer links: helle Kueche dahinter
-  for(let y=30;y<106;y++)for(let x=0;x<28;x++){const rand=x>=25||y<32;P(g,x,y,rand?pick(KR.holz,0.35,x,y):pick(KR.kachel,0.85-(y-32)/300,x,y));}
-  // Dielenboden mit Lichtkeil von der Tuer
+    let t=L(x,y)*0.8+Math.sin(x*0.9+Math.sin(y*0.12+b)*2)*0.03+((hash(b,3)%5)-2)*0.02-Math.max(0,8-y)/30;if(lx===0)t-=0.15;else if(lx===1)t+=0.05;
+    P(g,x,y,pick(KR.holz,t,x,y));}
+  // rechte Seitenwand in der Flucht, im Schatten
+  polyFill(g,[[304,0],[320,0],[320,120],[304,106]],(x,y)=>pick(KR.holz,0.08+birne(x,y)*0.2,x,y));
+  // Regalbretter mit Vorderkante und Traegern
+  const brett=y=>{for(let x=50;x<302;x++){const l=L(x,y);P(g,x,y,pick(KR.holz,0.3+l*0.7,x,y));P(g,x,y+1,pick(KR.holz,0.15+l*0.45,x,y));P(g,x,y+2,pick(KR.holz,0.08+l*0.3,x,y));P(g,x,y+3,'#0e0604');}
+    [60,180,292].forEach(x=>{for(let k=4;k<8;k++)P(g,x+k-4,y+k,pick(KR.holz,0.2,x,y));});};
+  // Hilfsfunktion: Kasten mit Licht von links, Glanzkante und Schatten rechts
+  const kasten=(x,y,w,h,rp,basis)=>{for(let yy=y;yy<y+h;yy++)for(let xx=x;xx<x+w;xx++){let t=(basis||0.25)+L(xx,yy)*0.6-(xx-x)/(w*3)+(xx===x?0.2:0)-(xx===x+w-1?0.15:0)+(yy===y?0.12:0);P(g,xx,yy,warm(xx,yy)&&rp===KR.papier?pick(KR.papier,t+0.05,xx,yy):pick(rp,t,xx,yy));}};
+  const etikett=(x,y,w,col)=>{for(let xx=x+1;xx<x+w-1;xx++){P(g,xx,y,col);P(g,xx,y+1,col);}};
+  // oberes Brett: Mehl- und Reistueten, Nudelpackungen mit Sichtfenster, Tomatendosen, Haferflocken
+  [[54,12,20,KR.papier],[68,12,18,KR.papier]].forEach(([x,w,h,rp])=>{kasten(x,34-h,w,h,rp,0.35);for(let xx=x;xx<x+w;xx++)P(g,xx,34-h,pick(KR.papier,0.2,xx,0));etikett(x,34-h+7,w,'#3a64c4');});
+  P(g,58,20,'#3a64c4');
+  for(let i=0;i<3;i++){const x=84+i*11;kasten(x,20,9,14,KR.buchY,0.3);for(let yy=24;yy<30;yy++)for(let xx=x+2;xx<x+7;xx++)P(g,xx,yy,(xx+yy)%2?'#f0d890':'#d8b040');}
+  for(let i=0;i<4;i++){const x=120+i*8;kasten(x,24,7,10,KR.stahl,0.35);etikett(x,27,7,'#c83030');etikett(x,29,7,'#c83030');}
+  kasten(156,18,14,16,KR.papier,0.3);etikett(156,23,14,'#b88a24');kasten(174,22,12,12,KR.papier,0.2);etikett(174,26,12,'#2e8a40');
+  for(let i=0;i<5;i++){const x=196+i*9;kasten(x,24,7,10,KR.stahl,0.35);etikett(x,27,7,['#c83030','#2e8a40','#c83030','#d8b040','#c83030'][i]);}
+  kasten(246,16,22,18,KR.papier,0.3);etikett(246,22,22,'#a02234');kasten(272,20,18,14,KR.papier,0.25);etikett(272,25,18,'#3a64c4');
+  brett(34);
+  // mittleres Brett: Marmelade mit karierten Stoffdeckeln, Honig, Ölflaschen, Gewuerzdosen
+  for(let i=0;i<5;i++){const x=56+i*11,rp=[KR.buchR,KR.buchR,KR.oel,KR.buchR,KR.oel][i];
+    for(let yy=48;yy<58;yy++)for(let xx=x;xx<x+9;xx++)P(g,xx,yy,pick(rp,0.3+L(xx,yy)*0.5-(xx-x)/30,xx,yy));
+    for(let yy=45;yy<48;yy++)for(let xx=x-1;xx<x+10;xx++)P(g,xx,yy,(xx+yy)%2?'#e8e0c8':'#c83030');
+    for(let yy=49;yy<56;yy++)P(g,x+1,yy,'#ffd0d8');}
+  for(let i=0;i<3;i++){const x=116+i*10;for(let yy=48;yy<58;yy++)for(let xx=x;xx<x+8;xx++)P(g,xx,yy,pick(KR.gold,0.35+L(xx,yy)*0.5-(xx-x)/25,xx,yy));
+    for(let xx=x;xx<x+8;xx++)P(g,xx,47,pick(KR.gold,0.2,xx,47));for(let yy=49;yy<56;yy++)P(g,x+1,yy,'#fff4b0');}
+  for(let i=0;i<4;i++){const x=150+i*9;for(let yy=40;yy<58;yy++){const hals=yy<46;for(let xx=x+(hals?2:0);xx<x+(hals?5:7);xx++)P(g,xx,yy,pick(KR.gold,0.45+L(xx,yy)*0.45-(xx-x)/20,xx,yy));}
+    for(let xx=x+2;xx<x+5;xx++)P(g,xx,39,'#2e8a40');for(let yy=47;yy<56;yy++)P(g,x+1,yy,'#fff8d0');}
+  for(let i=0;i<8;i++){const x=190+i*7;kasten(x,51,5,7,[KR.buchR,KR.buchG,KR.buchY,KR.stahl][i%4],0.3);for(let xx=x;xx<x+5;xx++)P(g,xx,50,pick(KR.stahl,0.6,xx,50));}
+  kasten(250,44,18,14,KR.papier,0.3);etikett(250,49,18,'#8a44aa');kasten(272,46,16,12,KR.buchB,0.3);etikett(272,50,16,'#ffffff');
+  brett(58);
+  // unteres Brett: Eierkartons, Brotlaibe, ein Kaeselaib
+  for(let i=0;i<2;i++){const x=56+i*24;kasten(x,76,22,6,KR.papier,0.2);for(let k=0;k<5;k++)ellFill(g,x+2+k*4,75,1.8,1.6,(px,py,dx,dy)=>pick(KR.papier,0.8+L(px,py)*0.2-dx*0.2-dy*0.2,px,py));}
+  [[112,26],[142,24]].forEach(([x,w])=>ellFill(g,x+w/2,76,w/2,6,(px,py,dx,dy)=>{if(py>81)return null;const t=0.35+L(px,py)*0.4-dx*0.2-dy*0.3+((px*3+py)%7===0?-0.15:0);return pick(KR.dielen,t+0.1,px,py);}));
+  ellFill(g,188,76,14,6,(px,py,dx,dy)=>py>81?null:pick(KR.buchY,0.45+L(px,py)*0.4-dx*0.2-dy*0.3,px,py));polyFill(g,[[188,76],[202,76],[200,81],[188,81]],(px,py)=>pick(KR.buchY,0.75,px,py));
+  for(let i=0;i<6;i++){const x=214+i*12;kasten(x,72,10,10,[KR.buchR,KR.stahl,KR.buchG][i%3],0.3);etikett(x,76,10,'#fbf6ea');}
+  brett(82);
+  // niedrige Bank mit Einmachglaesern (Gurken, Bohnen, Kirschen)
+  for(let x=64;x<116;x++){P(g,x,99,pick(KR.holz,0.35+L(x,99)*0.5,x,99));P(g,x,100,pick(KR.holz,0.15,x,100));}
+  [[70,99,KR.blatt],[84,99,KR.buchG],[98,99,KR.buchR]].forEach(([x,y,rp])=>{for(let yy=y-12;yy<y;yy++)for(let xx=x;xx<x+10;xx++)P(g,xx,yy,pick(rp,0.25+L(xx,yy)*0.55-(xx-x)/40+((xx*7+yy*3)%11===0?0.15:0),xx,yy));
+    for(let xx=x;xx<x+10;xx++){P(g,xx,y-13,pick(KR.stahl,0.75,xx,y));P(g,xx,y-12,pick(KR.stahl,0.4,xx,y));}for(let yy=y-10;yy<y-2;yy++)P(g,x+2,yy,'#e8f4e0');});
+  // offene Tuer links: helle Kueche dahinter, Tuerblatt nach innen aufgeklappt
+  for(let y=30;y<106;y++)for(let x=0;x<28;x++){const rand=x>=25||y<32;P(g,x,y,rand?pick(KR.holz,0.35,x,y):pick(KR.kachel,0.88-(y-32)/300,x,y));}
+  polyFill(g,[[28,30],[40,34],[40,110],[28,106]],(x,y)=>pick(KR.holz,0.55+Math.sin(x*1.3)*0.04-(y-30)/300,x,y));
+  // Dielenboden mit Lichtkeil von der Tuer und Schein der Birne
   for(let y=106;y<SH;y++)for(let x=0;x<W;x++){const d=y-60,u=(x-160)*46/d,pl=Math.floor(u/14),fu=u/14-pl;
-    let t=0.05+licht(x,y)*0.45+((hash(pl,2)%5)-2)*0.02;if(fu<0.08)t-=0.1;
-    if(inPoly(x+0.5,y+0.5,[[28,106],[28,130],[110,144],[70,106]]))t+=0.3;t-=Math.max(0,3-(y-106))*0.07;
+    let t=0.05+tuer(x,y)*0.35+birne(x,(y-106)*3+30)*0.35+((hash(pl,2)%5)-2)*0.02;if(fu<0.08)t-=0.1;
+    if(inPoly(x+0.5,y+0.5,[[40,106],[40,130],[110,144],[80,106]]))t+=0.3;t-=Math.max(0,3-(y-106))*0.07;
     P(g,x,y,pick(KR.dielen,t,x,y));}
-  // Mehlstaub in der Luft der Kammer, fein und fest
-  for(let i=0;i<14;i++){const x=(i*53)%120+30,y=(i*37)%70+30;if(licht(x,y)>0.4)P(g,x,y,'#f6ead0');}
+  // Kartoffelsack aus Jute, oben offen, ein paar Kartoffeln rausgekullert
+  ellFill(g,136,98,13,12,(px,py,dx,dy)=>py<88?null:pick(KR.jute,0.3+L(px,py)*0.5-dx*0.25-dy*0.1+((px+py*2)%5===0?-0.08:0),px,py));
+  for(let k=0;k<5;k++)ellFill(g,128+k*4,88-(k%2),2.2,1.8,(px,py,dx,dy)=>pick(KR.dielen,0.55+L(px,py)*0.3-dx*0.2-dy*0.2,px,py));
+  [[150,108],[155,110]].forEach(([x,y])=>ellFill(g,x,y,2.2,1.8,(px,py,dx,dy)=>pick(KR.dielen,0.5-dx*0.2-dy*0.2,px,py)));
+  // Apfelkiste
+  for(let y=96;y<110;y++)for(let x=158;x<180;x++){const latte=(y-96)%5===4;P(g,x,y,pick(KR.holz,latte?0.15:0.45+L(x,y)*0.3-(x-158)/60,x,y));}
+  for(let k=0;k<5;k++)ellFill(g,161+k*4,95-(k%2),2.2,2.2,(px,py,dx,dy)=>pick(KR.buchR,0.5+L(px,py)*0.3-dx*0.3-dy*0.3,px,py));
+  // Mehlsaecke gestapelt in der rechten Ecke
+  [[282,94,20,14],[286,82,16,12]].forEach(([x,y,w,h])=>ellFill(g,x+w/2,y+h/2,w/2,h/2,(px,py,dx,dy)=>pick(KR.papier,0.25+L(px,py)*0.55-dx*0.25-dy*0.2,px,py)));
+  etikett(284,99,14,'#3a64c4');
+  // von der Decke: Zwiebelzopf, Knoblauch, Kraeuterbund, dazu die Gluehbirne
+  line(g,70,0,70,6,'#3a2410');for(let k=0;k<5;k++)ellFill(g,70+(k%2?2:-2),9+k*4,2.6,2.4,(px,py,dx,dy)=>pick(KR.buchY,0.35+L(px,py)*0.4-dx*0.3-dy*0.3,px,py));
+  line(g,96,0,96,5,'#3a2410');for(let k=0;k<3;k++)ellFill(g,96+(k%2?1.5:-1.5),8+k*3,2,1.8,(px,py,dx,dy)=>pick(KR.papier,0.55+L(px,py)*0.3-dx*0.2,px,py));
+  line(g,240,0,240,6,'#3a2410');for(let k=0;k<6;k++)line(g,240,7,237+k,15+(k%3),'#3e8a3a');
+  line(g,196,0,196,10,'#10141c');ellFill(g,196,13,3,3,(px,py,dx,dy)=>dx*dx+dy*dy<0.4?'#fffbe8':pick(KR.gold,0.85,px,py));R(g,194,10,5,1,'#343e52');
   return c;
 }
 // Zutaten und Werkzeug einzeln gezeichnet, fuer Wand, Herd und Kammer
@@ -2251,6 +2295,10 @@ const HS_KAMMER=[
   {id:'pulver',name:'Puddingpulver',vis:()=>!has('pulver')&&!(S.bereit||{}).pulver,rect:()=>[184,102,34,12],walk:[176,120],flip:false},
   {id:'zucker',name:'Zuckersack',vis:()=>!has('zucker')&&!(S.bereit||{}).zucker,rect:()=>[194,96,16,16],walk:[180,120],flip:false},
   {id:'glaeser',name:'Einmachgläser',rect:()=>[68,84,42,16],walk:[90,118],flip:false},
+  {id:'kartoffeln',name:'Kartoffelsack',rect:()=>[122,84,30,26],walk:[132,118],flip:false},
+  {id:'aepfel',name:'Apfelkiste',rect:()=>[156,90,26,20],walk:[160,118],flip:false},
+  {id:'zwiebeln',name:'Zwiebelzopf',rect:()=>[64,4,14,28],walk:[70,116],flip:false},
+  {id:'mehl',name:'Mehlsäcke',rect:()=>[280,80,24,28],walk:[270,118],flip:false},
   {id:'regal',name:'Regale',rect:()=>[50,14,250,70],walk:[140,116],flip:false},
   {id:'tuerV',name:'Tür zur Küche',exit:true,rect:()=>[0,30,28,76],walk:[34,120],flip:true},
   {id:'bodenV',name:'Boden',floor:true,rect:()=>[30,108,270,36],walk:[0,0],flip:false}
@@ -2440,8 +2488,16 @@ async function actKammer(verb,h,item){
     case 'zucker:schau':return say('hero',schlaeft?'Ein Zuckersack. Mit einem Aufschiebchen obendrauf.':'Ein Zuckersack. Endlich frei.');
     case 'zucker:nimm':if(schlaeft)return say('hero','Da liegt ein Aufschiebchen drauf. Und es ist schwerer, als es aussieht.');
       await reach();give('zucker');return say('hero','Zucker. Hab ich.');
-    case 'glaeser:schau':return say('hero','Eingemachte Gurken. Wer weiß, wofür man so ein Glas mal braucht.');
-    case 'regal:schau':return say('hero','Mehl, Nudeln, Dosen, Gläser. Alles da. Nur keine Kekse.');
+    case 'glaeser:schau':return say('hero','Eingemachte Gurken, Bohnen und Kirschen. Wer weiß, wofür man so ein Glas mal braucht.');
+    case 'regal:schau':return say('hero','Mehl, Reis, Nudeln, Tomaten, Marmelade, Honig, Öl, Eier, Brot, Käse. Alles da. Nur keine Kekse.');
+    case 'regal:nimm':return say('hero','Ich brauche Zucker und Puddingpulver. Der Rest bleibt, wo er ist.');
+    case 'kartoffeln:schau':return say('hero','Kartoffeln für die Suppe. Zweihundert Portionen. Da wird Frau Brösel eine Weile schälen.');
+    case 'kartoffeln:nimm':return say('hero','Kartoffeln brauche ich nicht. Heute bin ich für den Pudding zuständig.');
+    case 'aepfel:schau':return say('hero','Eine Kiste rote Äpfel. Riecht nach Herbst.');
+    case 'aepfel:nimm':return say('hero','Die sind für morgen. Frau Brösel zählt bestimmt nach.');
+    case 'zwiebeln:schau':return say('hero','Ein Zwiebelzopf. Da muss ich schon vom Hinschauen weinen.');
+    case 'mehl:schau':return say('hero','Mehlsäcke. Wenn ich mich dagegen lehne, sehe ich aus wie ein Gespenst.');
+    case 'mehl:nimm':return say('hero','Mehl steht nicht auf der Pudding-Karte.');
     case 'bodenV:schau':return say('hero','Holzdielen. Es riecht nach Mehl und Nickerchen.');
   }
   if(verb==='schau')return say('hero',FALLBACK.schau(h));
