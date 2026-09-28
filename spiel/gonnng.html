@@ -42,6 +42,16 @@ button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
       <p>Die Große Stundenuhr steht still. Nur du bist noch wach.</p>
       <button class="primary" id="neu">Neues Spiel</button>
       <button id="weiter" hidden>Weiterspielen</button>
+      <button id="szenenBtn">Szene wählen</button>
+    </div>
+    <div class="overlay" id="szenen" hidden>
+      <h1 style="font-size:clamp(26px,5vw,44px)">Szene wählen</h1>
+      <p class="small">Zum Ausprobieren. Du startest mit allem, was man bis dahin gefunden hätte.</p>
+      <button data-szene="intro">Intro</button>
+      <button data-szene="prolog">Prolog: Das stille Klassenzimmer</button>
+      <button data-szene="halle">Kapitel 1: Die Eingangshalle</button>
+      <button data-szene="gang">Kapitel 1: Der Flüstergang</button>
+      <button id="szenenZurueck">Zurück</button>
     </div>
     <div class="overlay setup" id="setup" hidden>
       <h1 style="font-size:clamp(26px,5vw,44px)">Wer bist du?</h1>
@@ -1935,7 +1945,23 @@ return API;
    Ablauf: Titel, Figur waehlen, Intro, Prolog, Ende
    ===================================================================== */
 const $=id=>document.getElementById(id);
-function show(id){['title','setup','end'].forEach(k=>$(k).hidden=k!==id);}
+function show(id){['title','setup','end','szenen'].forEach(k=>$(k).hidden=k!==id);}
+// Einstiegspunkte zum Testen: der Spielstand, den man an dieser Stelle normalerweise hätte
+const NACH_PROLOG={eingangDone:true,kallFrozen:true,heft:false,fenster:true,kraechz:'innen',kx:52,ky:82,ziel:true,kraechzKennt:true,
+  kruemelGesehen:true,gitter:true,federmappe:true,muenze:true,kreide:1,fertig:true,inv:['lineal','radiergummi','muenze','kreide']};
+const SZENEN={
+  prolog:null,
+  halle:Object.assign({},NACH_PROLOG,{room:'halle',halleIntro:false}),
+  gang:Object.assign({},NACH_PROLOG,{room:'gang',gangIntro:false,halleIntro:true,spur:true,zettelGelesen:true,flureGeschafft:true,takt:3,
+    inv:['lineal','radiergummi','muenze','kreide','notiz']})
+};
+function szeneStarten(id){
+  const s=SAVE.read();PLAYER.name=(s&&s.name)||PLAYER.name||'Robin';PLAYER.girl=s?!!s.girl:PLAYER.girl;
+  SAVE.clear();
+  if(id==='intro'){startIntro();return;}
+  const st=SZENEN[id]?JSON.parse(JSON.stringify(SZENEN[id])):null;
+  SAVE.write({stage:'prolog',prolog:st});startProlog(st);
+}
 function setMode(m){mode=m;$('skip').hidden=m!=='intro';$('hint').textContent=m==='intro'?'Tippen oder Leertaste: weiter zum nächsten Satz oder zur nächsten Szene':'Während jemand spricht: tippen oder Leertaste für den nächsten Satz';}
 function titleScreen(){setMode('title');show('title');Intro.still(10);const s=SAVE.read();$('weiter').hidden=!(s&&s.stage);}
 function drawPick(){[['girl',true],['boy',false]].forEach(([id,g])=>{const c=$(id).querySelector('canvas'),g2=c.getContext('2d');g2.clearRect(0,0,32,48);g2.drawImage(makeHero({girl:g?1:0}),0,0);$(id).setAttribute('aria-pressed',String(PLAYER.girl===g));});}
@@ -1951,6 +1977,9 @@ $('name').addEventListener('keydown',e=>{if(e.key==='Enter')$('los').click();});
 $('weiter').onclick=()=>{const s=SAVE.read();if(!s)return;PLAYER.name=s.name||'Robin';PLAYER.girl=!!s.girl;
   if(s.stage==='intro')startIntro();else if(s.stage==='ende'){setMode('end');show('end');}else startProlog(s.prolog||null);};
 $('zumTitel').onclick=titleScreen;
+$('szenenBtn').onclick=()=>show('szenen');
+$('szenenZurueck').onclick=()=>show('title');
+document.querySelectorAll('[data-szene]').forEach(b=>b.onclick=()=>szeneStarten(b.dataset.szene));
 $('skip').onclick=()=>{if(mode==='intro')Intro.skip();};
 $('screen').addEventListener('click',e=>{if(mode==='intro'&&!e.target.closest('button'))Intro.advance();});
 document.addEventListener('keydown',e=>{if(mode!=='intro')return;if(e.key===' '||e.key==='Enter'||e.key==='ArrowRight'){e.preventDefault();Intro.advance();}});

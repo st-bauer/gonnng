@@ -80,6 +80,8 @@ Canva-Arbeitsdatei: https://canva.link/mp6p64febvogrh4
   Die Vorschau endet beim Erreichen der Kantine. Inventar mit Blättern (Pfeile links neben den Feldern).
 - Zwischensequenzen (`runCut`, überspringbar, ohne Verbleiste): Rutschpartie durch den Schacht,
   Abstieg über die Kellertreppe am Ende der Hallen-Vorschau.
+- Szenenwahl auf dem Titel („Szene wählen“): Intro, Prolog, Eingangshalle, Flüstergang, jeweils mit passendem Spielstand (`SZENEN`).
+  Neue Räume dort mit ergänzen.
 - Zum Testen: `window.__frame(sekunde)` im Intro, `window.__act(verb, id, item)` und `window.__pick(i)` im Prolog.
 - Entschieden: Die Unruh bleibt. Die Große Stundenuhr ist eine Sonderanfertigung (Turmuhren haben sonst meist ein Pendel),
   Krächz erklärt das auf Nachfrage. Die Namen Frau Kallweit, Jonas und Lina bleiben.
