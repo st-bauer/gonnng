@@ -79,9 +79,11 @@ Canva-Arbeitsdatei: https://canva.link/mp6p64febvogrh4
   Der Keks-Plan braucht einen Keks: Im Gespräch mit dem Aufschiebchen auf der Kiste erfährt man, dass Frau Brösel in der Kantine die Kekse backt.
   Grundsatz: Krächz hilft nur, jedes Rätsel ist auch ohne ihn lösbar. Vorschläge vor dem Einbau auf Sinn in der Spielwelt prüfen.
   Inventar mit Blättern (Pfeile links neben den Feldern).
-- Kapitel 1, dritter Raum: die Kantine (Raum `kantine`). Frau Brösel (`makeBroesel`) ist erstarrt vor vierhundert Portionen.
-  Im Gespräch (`redeBroesel`, Listen `ZUERST` und `SCHRITT`) findet die Figur heraus, dass der Pudding zuerst muss, und schlägt einen
-  ersten Schritt vor, der sicher klappt. Frau Brösel wird wach (`S.broesel` 1 und 2) und schenkt Kekse (`kekse`).
+- Kapitel 1, dritter Raum: die Kantine (Raum `kantine`) mit Speisekammer (Raum `kammer`). Frau Brösel (`makeBroesel`) ist erstarrt
+  vor dem Mittagessen für zweihundert Schülerinnen und Schüler. Rätsel 1: Rezeptkarten sortieren (`sortieren`, `KARTEN`, `RICHTIG`:
+  Pudding, Suppe, Kekse, Salat). Rätsel 2: Topf, Milch, Zucker, Puddingpulver auf den Herd legen (`aufHerd`, `S.bereit`), Zucker und
+  Pulver liegen unter einem schlafenden Aufschiebchen, das den Topflappen als Kissen nimmt. Frau Brösel wird wach (`S.broesel` 1 und 2)
+  und schenkt Kekse (`kekse`).
   Mit den Keksen kommt die Figur durch den Flüstergang bis zur Tür des Heizungskellers. Dort endet die Vorschau.
 - Zwischensequenzen (`runCut`, überspringbar, ohne Verbleiste): Rutschpartie durch den Schacht,
   Abstieg über die Kellertreppe am Ende der Hallen-Vorschau.

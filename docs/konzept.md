@@ -260,7 +260,7 @@ Die Hauptfigur muss durch die sich verschiebende Schule in den Heizungskeller, w
 | --- | --- | --- | --- |
 | 1 | Die wandernden Flure | Allgemein, Logik | Siehe Regel unten. Die Figur schaut durch die Türspalten, leitet die Regel aus Gong, Schildern und Aushang selbst ab und läuft in den Flügel, in dem die Kellertreppe nach dem nächsten Gong stehen wird |
 | 2 | Der Musikraum | Allgemein, Rhythmus | Einmal muss die Figur absichtlich im Musikraum landen. Das Blockflötenorchester lässt sie erst gehen, wenn sie den Takt des Metronoms nachklatscht. Zum Dank gibt es eine Blockflötenschnur |
-| 3 | Frau Brösels Festessen | SRL: nahe Teilziele | Frau Brösel ist erstarrt, weil vierhundert Portionen sie erschlagen. Kekse hat sie keine mehr, die Aufschiebchen haben alles geklaut. Im Gespräch findet die Figur mit ihr heraus, was zuerst muss (der Pudding braucht drei Stunden zum Festwerden, das steht auf den Rezeptkarten) und welcher erste Schritt sicher klappt („Erst mal nur der erste Topf: Milch rein, Herd an.“). Frau Brösel fängt an, wird wach, backt Kekse und schenkt der Figur die ersten. Einmachglas, Plastiktüten, Gummiringe und Küchenrolle für Kapitel 2 kommen später dazu |
+| 3 | Frau Brösels Mittagessen | SRL: Planen, Arbeitsumgebung vorbereiten, nahe Teilziele | Mittagessen für zweihundert Schülerinnen und Schüler. Frau Brösel ist erstarrt, weil sie nicht weiß, womit sie anfangen soll. Rätsel 1: Vier Rezeptkarten sortieren (was am längsten braucht, kommt zuerst). Rätsel 2: Alles für den ersten Topf auf den Herd legen, Zucker und Puddingpulver aus der Speisekammer, wo ein Aufschiebchen darauf schläft. Frau Brösel fängt an, wird wach und schenkt Kekse |
 | 4 | Der Flüstergang | SRL: Wenn-dann-Pläne | Drei Aufschiebchen flüstern, wer reinfällt, trottet zurück zur Treppe. Auf der Tafel von Hausmeister Grummelbart stehen seine eigenen Wenn-dann-Pläne. Mit Kreide schreibt die Figur dort für jede erlebte Stolperstelle einen Plan, nur konkrete Handlungen helfen. Danach läuft sie an der Störung von allein vorbei. Der Keks-Plan braucht einen Keks aus der Kantine |
 | 5 | Brikett und die Keks-Angel | Kombination | Brikett ist scheu. „Gib Keks an Brikett“ scheitert: Er versteckt sich hinter dem Schlüsselhaken. Lineal plus Blockflötenschnur ergibt eine Angel, Angel plus Keks die Keks-Angel. Brikett schnappt nach dem Keks, niest vor Freude Funken in den Kessel, die Heizung springt an, Grummelbart taut auf |
 | 6 | Der Kompass | SRL: konkrete Ziele | Grummelbart gibt Schlüssel und Kompass. Bei vagen Zielen dreht die Nadel wild. Erst ein Ziel mit Was, Bis wann und Woran erkenne ich den Erfolg richtet sie aus |
@@ -323,39 +323,46 @@ Jede Stolperstelle hat genau ein passendes Dann, weil jede einen anderen Grund h
 
 Krächz gibt auf Wunsch Tipps (zum Beispiel „Hausmeister Grummelbart muss hier jeden Tag durch. Schau dir mal seine Tafel an.“), ist aber für keine Lösung nötig.
 
-**Ablauf in der Kantine.** Die Figur kommt über die wandernden Flure in die Kantine, sobald sie weiß, dass Frau Brösel die Kekse backt. Frau Brösel steht erstarrt vor der Theke, den Kochlöffel erhoben: „Vierhundert Portionen. Vierhundert! Ich fang gleich an. Gleich nach dem Seufzen.“ Auf die Frage nach Keksen erzählt sie, dass kleine Wichte im Schlafanzug alle geklaut haben und sie erst nach dem Festessen neue backen kann. Die Rezeptkarten am Korkbrett nennen die Zeiten: Kartoffelsuppe 20 Minuten schälen und 25 Minuten kochen, Kekse 10 Minuten Teig und 12 Minuten backen, Vanillepudding 5 Minuten kochen und dann 3 Stunden kalt stellen, bis er fest ist. Das Essen ist heute Mittag.
+**Ablauf in der Kantine.** Die Figur kommt über die wandernden Flure in die Kantine, sobald sie weiß, dass Frau Brösel die Kekse backt. Frau Brösel steht erstarrt vor der Theke, den Kochlöffel erhoben: „Zweihundert Mittagessen. Zweihundert! Ich fang gleich an. Gleich nach dem Seufzen.“ Das Gespräch ist ironisch und erklärt nichts:
 
-Im Gespräch („Was machen Sie denn zuerst?“) wählt die Figur, was zuerst kommt:
-
-| Vorschlag | Frau Brösel |
+| Frage | Frau Brösel |
 | --- | --- |
-| Die Kekse. | „Kekse zuerst? Die sind in zwölf Minuten fertig und bis zum Mittag steinhart.“ |
-| Die Suppe. | „Und wenn die Suppe fertig ist, fange ich mit dem Pudding an? Der wird bis Mittag nie im Leben fest.“ |
-| Alles gleichzeitig. | „Gleichzeitig? Ich habe zwei Hände und einen Herd.“ |
-| Den Pudding. | richtig: „Stimmt. Der muss drei Stunden kalt stehen, bis er fest ist.“ |
+| Haben Sie Kekse für mich? | „Alle weg. Da waren kleine Wichte im Schlafanzug. Mit Krümeln im Gesicht.“ „Neue backe ich, wenn das Mittagessen läuft. Also nie.“ |
+| Womit fangen Sie denn an? | „Mit dem Seufzen. Da bin ich schon ziemlich weit.“ „Danach? Suppe, Pudding, Kekse, Salat? Die Rezepte hängen da drüben. Ich schaue sie seit einer Stunde an, und sie schauen zurück.“ |
+| Warum stehen Sie hier so herum? | „Ich stehe nicht herum. Ich sammle Kraft. Seit heute früh.“ |
 
-Dann: „Aber vierhundert Portionen Pudding. Das schaffe ich nie. Wo soll ich denn da anfangen?“
+*Rätsel 1: Rezeptkarten sortieren.* „Benutze Rezeptkarten“ legt vier Karten nebeneinander. Man tippt sie in der Reihenfolge an, in der gekocht wird. Das Essen gibt es um halb eins.
 
-| Vorschlag | Frau Brösel |
+| Karte | Text |
 | --- | --- |
-| Machen Sie einfach alle vierhundert auf einmal. | „Mein größter Topf fasst fünfzig Portionen. Das weiß ich, weil ich jeden Tag davorstehe und seufze.“ |
-| Fangen Sie an, wenn Sie Lust haben. | „Lust. Die kommt bei mir immer so gegen Feierabend.“ |
-| Denken Sie einfach nicht dran. Dann geht es von allein. | „Das mache ich seit einer Stunde. Es geht nicht von allein.“ |
-| Erst mal nur der erste Topf: Milch rein, Herd an. | richtig: „Oh. Das schaffe ich ja.“ |
+| Kekse | 10 Min. Teig, 12 Min. backen |
+| Salat | 10 Min. waschen und schneiden. Welkt, wenn er lange steht. |
+| Pudding | Milch, Zucker, Puddingpulver. 5 Min. kochen, dann 3 Std. kalt stellen, bis er fest ist. |
+| Suppe | Kartoffeln 20 Min. schälen und schneiden, 25 Min. kochen |
 
-Frau Brösel fängt an und wird dabei wach. Eine halbe Stunde später gibt sie der Figur die ersten Kekse. Damit greift der Keks-Plan im Flüstergang, und die Figur kommt bis zur Tür des Heizungskellers. Fachlich stimmt die Reihenfolge: Pudding aus Puddingpulver wird beim Abkühlen fest und braucht dafür mehrere Stunden im Kühlschrank, Kekse sind in etwa zehn bis fünfzehn Minuten gebacken.
+Richtig ist Pudding, Suppe, Kekse, Salat: Was insgesamt am längsten braucht, kommt zuerst, der Salat ganz zum Schluss. Die Falle sind die fünf Minuten Kochzeit des Puddings. Frau Brösel kommentiert die erste Stelle, die nicht passt: Pudding nicht vorn („Pudding hinten? Fünf Minuten kochen, stimmt. Und dann? Lies mal weiter, Schätzchen.“), Salat nicht hinten („Salat so früh? Um halb eins ist der so welk wie ich.“), Kekse vor der Suppe („Dann sind die Kekse fertig, und die Kartoffeln sind noch nicht mal geschält.“).
+
+*Rätsel 2: Alles bereitlegen.* Nach der richtigen Reihenfolge bleibt Frau Brösel trotzdem stecken: „Wo ist der große Topf? Wo ist die Milch? Wo sind Zucker und Puddingpulver? Wenn ich das erst alles suchen muss, fange ich morgen an.“ Auf die Frage, ob sie das nicht selbst holen kann: „Holen ist ja schon fast anfangen. Und anfangen tu ich gleich.“ Die Figur sammelt alles und legt es auf den Herd („Benutze … mit Herd“):
+
+- Der große Topf hängt an der Hakenleiste über dem Herd.
+- Die Milch steht im Kühlschrank.
+- Zucker und Puddingpulver liegen in der Speisekammer (Tür „Vorräte“). Dort schläft ein Aufschiebchen auf dem Zuckersack, den Kopf auf den Puddingpäckchen. Es klammert sich fest und sagt im Gespräch: „Das ist mein Kissen. Hart, aber meins. Ein weicheres hätte ich gern. Such ich mir später.“ Neben dem Herd hängt ein dicker Topflappen. „Gib Topflappen an Aufschiebchen“: „Oh. Weich. Das ist ja noch gemütlicher.“ Es rollt sich auf den Topflappen, Zucker und Puddingpulver sind frei.
+
+Liegt alles bereit: „Topf, Milch, Zucker, Pulver. Alles da. Jetzt muss ich ja nur noch … anfangen.“ Frau Brösel fängt an und wird dabei wach. Eine Stunde später gibt sie der Figur die ersten Kekse. Damit greift der Keks-Plan im Flüstergang, und die Figur kommt bis zur Tür des Heizungskellers. Nur für den ersten Topf bereitzulegen ist zugleich der erste kleine Schritt, das nahe Teilziel steckt also mit drin.
+
+Fachlich stimmt das so: Pudding aus Puddingpulver wird mit Milch und Zucker gekocht und beim Abkühlen über mehrere Stunden fest. Kekse sind in gut zehn Minuten gebacken, Salat welkt, wenn er lange angemacht steht.
 
 **Dialogprobe**
 
-> **Frau Brösel:** Vierhundert Portionen. Vierhundert! Ich fang gleich an. Gleich nach dem Seufzen.
+> **Frau Brösel:** Zweihundert Mittagessen. Zweihundert! Ich fang gleich an. Gleich nach dem Seufzen.
 >
-> **Hauptfigur:** Was ist denn der allererste Schritt?
+> **Hauptfigur:** Womit fangen Sie denn an?
 >
-> **Frau Brösel:** Der allererste? … Der Pudding. Der muss zuerst auf den Herd, sonst wird er nie fest.
+> **Frau Brösel:** Mit dem Seufzen. Da bin ich schon ziemlich weit.
 >
-> **Hauptfigur:** Und dafür brauchst du?
+> **Hauptfigur:** Können Sie Topf und Milch nicht selbst holen?
 >
-> **Frau Brösel:** Milch. Einen Topf. … Oh. Das schaffe ich ja.
+> **Frau Brösel:** Holen ist ja schon fast anfangen. Und anfangen tu ich gleich.
 >
 > **Grummelbart:** Den Kompass hat der alte Direktor hiergelassen. Zeigt nur, wenn man weiß, wohin.
 >
@@ -363,6 +370,8 @@ Frau Brösel fängt an und wird dabei wach. Eine halbe Stunde später gibt sie d
 
 **SRL-Check**
 
+- **Arbeitsumgebung vorbereiten.** Zimmerman und Martinez-Pons (1986) fanden in Interviews mit Schülerinnen und Schülern, dass erfolgreiche Lernende unter anderem ihre Arbeitsumgebung so auswählen und einrichten, dass das Lernen leichter fällt. In der Küche heißt das „Mise en place“: Alles liegt bereit, bevor es losgeht. Frau Brösel kommt erst in Gang, als Topf, Milch, Zucker und Puddingpulver auf dem Herd liegen.
+- **Planen.** Die Rezeptkarten verlangen eine Reihenfolge nach Dauer. Planen gehört zur ersten Phase im Zyklusmodell der Selbstregulation (Zimmerman, 2002).
 - **Nahe Teilziele.** Bei Bandura und Schunk (1981) übten 40 Kinder zwischen 7 und 10 Jahren mit großen Rechenschwierigkeiten das Subtrahieren. Kinder, die sich nahe Teilziele setzten (sechs Seiten pro Sitzung), entwickelten mehr Können, mehr Selbstwirksamkeit und mehr Interesse als Kinder mit fernen Zielen oder ohne Ziele. Das Festessen bildet genau das ab: Eine überwältigende Aufgabe wird in kurze, prüfbare Schritte zerlegt. Die Pudding-Regel ergänzt eine Planungsgrundlage: Was am längsten dauert, kommt zuerst.
 - **Wenn-dann-Pläne.** Die Meta-Analyse von Gollwitzer und Sheeran (2006) über 94 Studien zeigt einen mittleren bis großen Effekt (d = 0,65) auf das Erreichen von Zielen. Sie wirken, weil eine konkrete Situation fest mit einer Handlung verknüpft wird und die Handlung dann fast automatisch startet. Im Spiel läuft die Figur deshalb mit fertigem Plan ohne weiteres Zutun durch. Die vagen Sätze („dann reiße ich mich zusammen“) scheitern, weil sie keine Handlung nennen.
 - **Wenn-dann-Pläne bei Kindern gegen Ablenkung.** Wieber, von Suchodoletz, Heikamp, Trommsdorff und Gollwitzer (2011) zeigten bei Schulkindern: Gegen mäßig und stark reizvolle Ablenkungen half nur der Wenn-dann-Plan „Wenn eine Ablenkung kommt, dann ignoriere ich sie“, der bloße Vorsatz „Ich ignoriere Ablenkungen“ reichte nicht. Das Dann „dann schaue ich nur auf die Tür und gehe weiter“ ist dieser Plan in greifbarer Form.

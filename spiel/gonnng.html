@@ -965,6 +965,11 @@ const ITEMS={
   radiergummi:{name:'Radiergummi',look:'Riecht nach Erdbeere. Warum riechen Radiergummis nach Erdbeere?'},
   muenze:{name:'Münze',look:'Ein Euro aus der Klassenkasse. Flach und rund.'},
   kreide:{name:'Kreide',look:'Ein Stück weiße Kreide. Damit kann man Zeichen machen.'},
+  topf:{name:'Großer Topf',look:'Ein Topf, groß wie eine Badewanne. Passt genau auf den Herd.'},
+  milch:{name:'Milch',look:'Eine Kanne Milch. Eiskalt.'},
+  zucker:{name:'Zucker',look:'Ein kleiner Sack Zucker. Etwas plattgelegen.'},
+  pulver:{name:'Puddingpulver',look:'Vanillepuddingpulver. Leicht angesabbert.'},
+  topflappen:{name:'Topflappen',look:'Dick, gesteppt, weich. Ein Kissen für sehr kleine Köpfe.'},
   kekse:{name:'Kekse',look:'Frau Brösels Kekse. Noch warm. Riechen nach Schokolade und Anfang.'},
   notiz:{name:'Zettel',look:'„Heft im Heizungskeller abgeben. Gleich. Oder später.“ Voller Kekskrümel. Die Schrift ist sehr klein.'}
 };
@@ -974,12 +979,17 @@ function icon(g,id,x,y){
   if(id==='radiergummi'){r(9,5,8,7,'#f08aa8');r(17,5,7,7,'#5a8ae0');r(9,11,15,1,'#803050');r(10,6,3,1,'#ffc8d8');}
   if(id==='muenze'){ellFill(g,x+16,y+8,6,6,(px,py,dx,dy)=>dx*dx+dy*dy>0.55?'#b08820':dx+dy<-0.4?'#fff0a0':'#d8b040');}
   if(id==='kreide'){r(7,7,18,3,'#f4f4f0');r(7,9,18,1,'#c8c8c0');r(24,7,1,3,'#ffffff');}
+  if(id==='topf'){r(7,5,18,11,'#5a6880');r(7,5,18,2,'#c8c8d4');r(5,7,2,2,'#343e52');r(25,7,2,2,'#343e52');r(8,7,2,8,'#8a9ab4');}
+  if(id==='milch'){r(12,4,9,13,'#e0e0ea');r(12,8,9,4,'#3a64c4');r(13,2,7,2,'#c8c8d4');}
+  if(id==='zucker'){r(10,3,13,14,'#f4f0e0');r(10,3,13,2,'#c8c8d4');r(12,8,9,3,'#6a94d4');}
+  if(id==='pulver'){r(11,4,10,12,'#d8b040');r(11,4,10,2,'#fff0a0');r(13,9,6,3,'#a02234');}
+  if(id==='topflappen'){r(10,4,12,12,'#a02234');for(let i=0;i<12;i+=3)r(10+i,4,1,12,'#d04a5a');r(15,2,1,2,'#383840');}
   if(id==='kekse'){[[10,6],[18,9],[13,11]].forEach(([a,b])=>{ellFill(g,x+a,y+b,4,3,(px,py,dx,dy)=>dx*dx+dy*dy>0.6?'#5c341c':'#b07c48');r(a-1,b-1,1,1,'#2a160c');r(a+1,b,1,1,'#2a160c');});}
   if(id==='notiz'){r(10,3,12,11,'#e8e0c8');r(10,3,12,1,'#ffffff');for(let i=5;i<13;i+=2)r(12,i,8,1,'#6e6e7c');r(19,11,1,1,'#b07c48');r(13,12,1,1,'#b07c48');}
 }
-const K={hero:'#ffffff',kraechz:'#9ab8ff',kallweit:'#ff9ac8',jonas:'#8af08a',lina:'#ffd070',auf:'#d0a8ff',auf1:'#d0a8ff',auf2:'#d0a8ff',auf3:'#d0a8ff',broesel:'#ffb070'};
+const K={hero:'#ffffff',kraechz:'#9ab8ff',kallweit:'#ff9ac8',jonas:'#8af08a',lina:'#ffd070',auf:'#d0a8ff',auf1:'#d0a8ff',auf2:'#d0a8ff',auf3:'#d0a8ff',broesel:'#ffb070',aufK:'#d0a8ff'};
 const heroHead=()=>[S.hero.x,S.hero.y-46];
-const HEADS={kallweit:()=>[102,42],jonas:()=>[132,94],lina:()=>[42,96],kraechz:()=>[S.kx,S.ky-20],auf:()=>S.auf?[S.auf.x,S.auf.y-28]:[250,80],auf1:()=>[119,74],auf2:()=>[187,52],auf3:()=>[252,62],broesel:()=>S.broesel>=1?[196,52]:[176,52]};
+const HEADS={kallweit:()=>[102,42],jonas:()=>[132,94],lina:()=>[42,96],kraechz:()=>[S.kx,S.ky-20],auf:()=>S.auf?[S.auf.x,S.auf.y-28]:[250,80],auf1:()=>[119,74],auf2:()=>[187,52],auf3:()=>[252,62],broesel:()=>S.broesel>=1?[196,52]:[132,52],aufK:()=>S.lappenGegeben?[262,80]:[198,78]};
 
 const HS=[
   {id:'kraechz',name:'Krächz',rect:()=>S.kraechz==='aussen'?[34,62,22,18]:[S.kx-11,S.ky-19,22,19],walk:[80,106],flip:true},
@@ -1042,7 +1052,7 @@ const FALLBACK={
   schliesse:()=>'Da gibt es nichts zu schließen.',druecke:()=>'Da tut sich nichts.',ziehe:()=>'Da tut sich nichts.',
   rede:()=>'Mit Gegenständen rede ich nur im Notfall.',gib:()=>'Das will hier niemand haben.',benutze:()=>'Das bringt nichts.'
 };
-function stage(){if(S.room==='gang')return'gang';if(S.room==='kantine')return'kueche';if(S.room==='halle')return S.suchKantine&&!has('kekse')?'kantine':has('kekse')?'flure':S.flureGeschafft?'fertig':(S.spur?'flure':'spur');if(!S.fenster)return'fenster';if(!S.ziel)return'ziel';if(!S.kruemelGesehen)return'kruemel';if(!S.gitter)return'gitter';if(S.inv.indexOf('kreide')<0)return'kreide';return'fertig';}
+function stage(){if(S.room==='gang')return'gang';if(S.room==='kantine'||S.room==='kammer')return'kueche';if(S.room==='halle')return S.suchKantine&&!has('kekse')?'kantine':has('kekse')?'flure':S.flureGeschafft?'fertig':(S.spur?'flure':'spur');if(!S.fenster)return'fenster';if(!S.ziel)return'ziel';if(!S.kruemelGesehen)return'kruemel';if(!S.gitter)return'gitter';if(S.inv.indexOf('kreide')<0)return'kreide';return'fertig';}
 const TIPPS={flure:['Hau mal auf den Gong und schau, was mit den Schildern passiert.','Wenn du losläufst, gongt es. Geh also dahin, wo die Kellertreppe nach dem nächsten Gong steht.','Die Räume rücken im Uhrzeigersinn eine Tür weiter und hüpfen am Musikraum vorbei. Von Osten geht es also direkt nach Westen.'],kruemel:['Wohin ist der Dieb wohl verschwunden?','Wer klaut, hat es eilig. Und wer es eilig hat, krümelt. Schau mal nach unten.','Die Krümel führen zum Gitter.'],
   kantine:['Diesmal suchst du die Kantine. Hau auf den Gong und schau, wohin sie wandert.','Beim Losgehen gongt es. Geh also dahin, wo die Kantine nach dem nächsten Gong steht.','Such das Schild „Kantine“. Die Tür im Uhrzeigersinn daneben ist deine, der Süden zählt nicht mit.'],
   gitter:['Schrauben brauchen einen Dreher.','Schlitzschrauben mag alles, was flach und rund ist.','In Pulten liegt oft Kleingeld.']};
@@ -1141,6 +1151,7 @@ async function act(verb,h,item){
   if(S.room==='halle')return actHalle(verb,h,item);
   if(S.room==='gang')return actGang(verb,h,item);
   if(S.room==='kantine')return actKantine(verb,h,item);
+  if(S.room==='kammer')return actKammer(verb,h,item);
   const id=h.id;
   if(item){
     if(verb==='gib'){if(id==='kraechz')return say('kraechz','Behalte das mal schön selbst.');if(['jonas','lina','kallweit'].includes(id))return say(id,'Gleich.');return say('hero',FALLBACK.gib());}
@@ -1262,6 +1273,7 @@ function drawScene(now){
   if(S.room==='halle')return drawHalle(now);
   if(S.room==='gang')return drawGang(now);
   if(S.room==='kantine')return drawKantine(now);
+  if(S.room==='kammer')return drawKammer(now);
   ctx.drawImage(ROOM,0,0);
   // Sekundenzeiger zittert auf der Stelle
   const a=-2.2+Math.sin(now/40)*0.08;line(ctx,226,24,226+Math.cos(a)*7,24+Math.sin(a)*7,'#c83030');
@@ -1367,6 +1379,7 @@ cv.addEventListener('pointerleave',()=>{S.mouse=null;S.hover=null;});
 cv.addEventListener('click',e=>{if(MODE()!=='prolog')return;
   const [x,y]=toPx(e);
   if(skipLine){skipLine();return;}
+  if(S.sort){S.sort.click(x,y);return;}
   if(S.dialog){if(y>=SH){const i=Math.floor((y-146)/optDY());if(i>=0&&i<S.dialog.options.length)S.dialog.resolve(i);}return;}
   if(S.busy||S.over)return;
   if(y>=SH){
@@ -1401,7 +1414,7 @@ const START=['kantine','bio','keller'];           // Takt 0: Nord, Ost, West
 const RAUM_NAME={kantine:'Kantine',bio:'Biologieraum',keller:'Kellertreppe',musik:'Musikraum'};
 function raumAn(tuer,takt){if(tuer==='sued')return'musik';const i=RING.indexOf(tuer);return START[((i-takt)%3+3)%3];}
 const BAND_HALLE={x0:22,x1:298,y0:98,y1:136};
-const curBand=()=>S.room==='halle'?BAND_HALLE:S.room==='gang'?BAND_GANG:S.room==='kantine'?BAND_KANTINE:BAND;
+const curBand=()=>S.room==='halle'?BAND_HALLE:S.room==='gang'?BAND_GANG:S.room==='kantine'?BAND_KANTINE:S.room==='kammer'?BAND_KAMMER:BAND;
 
 let HALLE=null;
 function drawHalleBg(){
@@ -1522,7 +1535,7 @@ const HS_HALLE=[
   {id:'sued',name:()=>'Weg nach Süden',exit:true,rect:()=>[120,124,80,20],walk:[160,136],flip:false},
   {id:'bodenH',name:'Boden',floor:true,rect:()=>[20,98,280,40],walk:[0,0],flip:false}
 ];
-const curHS=()=>S.room==='halle'?HS_HALLE:S.room==='gang'?HS_GANG:S.room==='kantine'?HS_KANTINE:HS;
+const curHS=()=>S.room==='halle'?HS_HALLE:S.room==='gang'?HS_GANG:S.room==='kantine'?HS_KANTINE:S.room==='kammer'?HS_KAMMER:HS;
 async function travel(tuer){
   S.hero.hidden=true;tone('triangle',300,0.3,0.04,200);
   await sleep(500);gongSchlag();await sleep(700);
@@ -1539,7 +1552,7 @@ async function travel(tuer){
     return enterKantine();
   }
   const T={musik:['Der Musikraum','Das Blockflötenorchester hält dich fest, bis du den Takt nachklatschst. Dieses Rätsel kommt noch. Für heute lässt man dich laufen.'],
-    kantine:['Die Kantine','Frau Brösel seufzt über vierhundert Portionen. Hier geht es später weiter.'],
+    kantine:['Die Kantine','Frau Brösel seufzt über zweihundert Mittagessen. Ohne Grund willst du hier nicht rein.'],
     bio:['Der Biologieraum','Die Topfpflanzen streiten sich, wer mehr Licht bekommt. Keine Kellertreppe weit und breit.']}[ziel];
   await showCard(T[0],unterwegs+T[1]);
   S.hero.hidden=false;S.fehlwege=(S.fehlwege||0)+1;
@@ -1645,6 +1658,7 @@ const VORBEI={
   'hunger:keks':[['hero','Ich esse meinen eigenen Keks.'],['auf3','Mmpf! Der ist ja … noch warm! Unfair.']]
 };
 const has=id=>S.inv.indexOf(id)>=0;
+function take(id){const i=S.inv.indexOf(id);if(i>=0)S.inv.splice(i,1);S.invOff=Math.min(S.invOff||0,Math.max(0,Math.ceil(S.inv.length/3)-2));}
 let GANG=null;
 function drawGangBg(){
   const [c,g]=mk(W,SH);
@@ -1902,15 +1916,20 @@ async function gangTipp(){
 }
 
 /* =====================================================================
-   Kapitel 1: Die Kantine mit Frau Brösel
-   Frau Brösel ist erstarrt wie alle, die nicht anfangen können: vierhundert Portionen erschlagen sie.
+   Kapitel 1: Die Kantine mit Frau Brösel und die Speisekammer
+   Frau Brösel ist erstarrt wie alle, die nicht anfangen können: Mittagessen für zweihundert Kinder.
    Kekse hat sie keine mehr, die Aufschiebchen haben alles geklaut. Neue backt sie erst, wenn sie anfängt.
-   Die Figur hilft in zwei Schritten: Was dauert am längsten und muss zuerst (der Pudding muss drei Stunden kalt stehen)?
-   Und was ist ein erster Schritt, der sicher klappt (nahe Teilziele, Bandura & Schunk, 1981)?
+   Zwei Schritte bringen sie in Gang:
+   1. Rezeptkarten sortieren: Was insgesamt am längsten dauert, kommt zuerst (der Pudding muss drei Stunden kalt stehen).
+   2. Alles bereitlegen, was sie für den ersten Topf braucht: Topf, Milch, Zucker, Puddingpulver.
+      Die Arbeitsumgebung so einrichten, dass der Anfang leicht fällt (Zimmerman & Martinez-Pons, 1986).
+   Zucker und Puddingpulver liegen in der Speisekammer unter einem schlafenden Aufschiebchen.
    ===================================================================== */
 const FLIESE=['#8a9ab4','#9aa0c0','#b0b6d2','#c8cce0','#e0e0ea'];
 const BAND_KANTINE={x0:40,x1:300,y0:110,y1:134};
-let KANTINE=null;
+const BAND_KAMMER={x0:34,x1:290,y0:112,y1:134};
+const ZUTATEN=['topf','milch','zucker','pulver'];
+let KANTINE=null,KAMMER=null;
 function drawKantineBg(){
   const [c,g]=mk(W,SH);
   // Kachelwand, Tageslicht kommt von links durch das Fenster
@@ -1921,77 +1940,132 @@ function drawKantineBg(){
   R(g,4,38,28,66,'#2a160c');dith(g,6,40,24,64,RAMP.wood,(x,y)=>0.7-(x-6)/60-(y-40)/200);P(g,26,72,'#d8b040');
   // Fenster mit Morgenhimmel
   R(g,42,14,44,40,'#e0e0ea');dith(g,44,16,40,36,COL.sky,(x,y)=>0.4+(y-16)/50);R(g,63,16,2,36,'#e0e0ea');R(g,44,33,40,2,'#e0e0ea');
-  // Rezeptbrett aus Kork mit drei Karten
-  R(g,96,24,40,30,'#5c341c');dith(g,98,26,36,26,['#8a5a2c','#a0703c','#b8864c'],(x,y)=>0.6-(x-98)/100);
-  [[100,28],[112,31],[124,28]].forEach(([x,y])=>{R(g,x,y,10,13,'#f4f0e0');R(g,x,y,10,2,'#c83030');for(let k=y+4;k<y+12;k+=2)R(g,x+1,k,8,1,'#9a9aa8');});
-  R(g,100,44,30,1,'#3a2410');
-  // Regal mit leeren Keksdosen
-  R(g,146,34,44,2,'#5c341c');R(g,146,36,44,1,'#2a160c');
-  [[150,'#a02234'],[164,'#3a64c4'],[178,'#d8b040']].forEach(([x,col])=>{R(g,x,26,9,8,col);R(g,x,26,9,1,'#ffffff');R(g,x+8,27,1,7,'#383840');});
+  // Rezeptbrett aus Kork mit vier Karten, schief angepinnt
+  R(g,96,22,44,32,'#5c341c');dith(g,98,24,40,28,['#8a5a2c','#a0703c','#b8864c'],(x,y)=>0.6-(x-98)/100);
+  [[100,27],[109,30],[119,26],[128,31]].forEach(([x,y])=>{R(g,x,y,8,12,'#f4f0e0');R(g,x,y,8,2,'#c83030');for(let k=y+4;k<y+11;k+=2)R(g,x+1,k,6,1,'#9a9aa8');});
   // Theke aus Edelstahl
-  dith(g,80,70,112,34,EISEN,(x,y)=>0.7-(y-70)/60-(x-80)/400);R(g,80,68,114,3,'#e0e0ea');R(g,80,71,114,1,'#5a6880');
-  for(let x=92;x<190;x+=24)R(g,x,74,1,28,'#5a6880');
-  // Herd mit Backofen
+  dith(g,80,70,72,34,EISEN,(x,y)=>0.7-(y-70)/60-(x-80)/300);R(g,80,68,74,3,'#e0e0ea');R(g,80,71,74,1,'#5a6880');
+  for(let x=92;x<150;x+=24)R(g,x,74,1,28,'#5a6880');
+  // Tuer zur Speisekammer
+  R(g,160,38,28,66,'#2a160c');dith(g,162,40,24,64,RAMP.wood,(x,y)=>0.6-(x-162)/60-(y-40)/200);P(g,164,72,'#d8b040');
+  // Herd mit Backofen und Hakenleiste darueber
   R(g,204,66,48,38,'#343e52');dith(g,206,68,44,34,EISEN,(x,y)=>0.6-(y-68)/60);R(g,204,64,48,3,'#1e2638');
   R(g,212,78,32,20,'#141a28');R(g,214,80,28,16,'#343e52');R(g,214,80,28,1,'#8a9ab4');R(g,218,76,20,2,'#c8c8d4');
+  R(g,206,28,46,2,'#5a6880');R(g,206,30,46,1,'#1e2638');
   // Kuehlschrank
   R(g,262,24,40,80,'#8a9ab4');dith(g,264,26,36,76,FLIESE,(x,y)=>0.8-(x-264)/80);R(g,264,52,36,1,'#6e7498');R(g,294,34,2,12,'#6e7498');R(g,294,58,2,16,'#6e7498');
   // Boden mit Terrakottafliesen
   dith(g,0,104,W,SH-104,RAMP.skirt,(x,y)=>0.75-(y-104)/80-x/900+Math.max(0,40-Math.hypot(x-80,(y-112)*2))/120);
   for(let y=110;y<SH;y+=8)R(g,0,y,W,1,'#2e1408');for(let x=0;x<W;x+=16)R(g,x,104,1,SH-104,'#2e1408');
   R(g,0,104,W,1,'#2e1408');
-  // Lichtfleck vom Fenster auf dem Boden
   polyFill(g,[[46,104],[84,104],[120,134],[70,134]],(x,y)=>bay(x,y)<0.3?'#b0683a':null);
   return c;
 }
-// Toepfe auf dem Herd, mit Dampf, sobald Frau Broesel kocht
-function drawToepfe(now){
-  R(ctx,208,52,18,12,'#5a6880');R(ctx,208,52,18,2,'#c8c8d4');R(ctx,230,54,16,10,'#5a6880');R(ctx,230,54,16,2,'#c8c8d4');
-  if(S.broesel>=1){for(let i=0;i<5;i++){const t=(now/900+i*0.2)%1;P(ctx,212+i*3+Math.round(Math.sin(now/300+i)*1),Math.round(50-t*18),'#ffffff');}
-    R(ctx,216,62,6,2,'#e86050');}
+function drawKammerBg(){
+  const [c,g]=mk(W,SH);
+  // enge Kammer, Licht faellt nur durch die offene Tuer links herein
+  const licht=(x,y)=>0.1+Math.max(0,120-Math.hypot(x-20,(y-80)*0.8))/220;
+  dith(g,0,0,W,106,RAMP.wood,(x,y)=>licht(x,y)*0.8);
+  // Regale mit Glaesern, Dosen und Saecken
+  [34,58,82].forEach(y=>{R(g,50,y,250,3,'#845028');R(g,50,y+3,250,1,'#2a160c');});
+  for(let i=0;i<22;i++){const x=56+i*11,y=[34,58,82][i%3],h=8+(i*7)%6,col=[['#b0683a','#d8b040'],['#6a94d4','#c8cce0'],['#a02234','#e86050'],['#5a6a2e','#7a8c44']][i%4];
+    R(g,x,y-h,8,h,col[0]);R(g,x,y-h,8,2,col[1]);R(g,x+1,y-h+3,1,h-4,'#fff6d8');}
+  // Einmachglaeser mit Gurken
+  [[70,98],[84,98],[98,98]].forEach(([x,y])=>{R(g,x,y-12,10,12,'#7a8c44');R(g,x,y-13,10,2,'#c8c8d4');R(g,x+2,y-10,1,8,'#c8cce0');});
+  // offene Tuer links
+  R(g,0,30,28,76,'#2a160c');dith(g,2,32,24,74,FLIESE,(x,y)=>0.8);
+  // Boden
+  dith(g,0,106,W,SH-106,RAMP.wood,(x,y)=>0.35-(y-106)/100+Math.max(0,60-Math.hypot(x-30,(y-110)*2))/150);R(g,0,106,W,1,'#2a160c');
+  for(let y=112;y<SH;y+=8)R(g,0,y,W,1,'#2a160c');
+  // Lichtkeil auf dem Boden
+  polyFill(g,[[28,106],[28,130],[110,144],[70,106]],(x,y)=>bay(x,y)<0.25?'#b07c48':null);
+  for(let y=0;y<SH;y++)for(let x=0;x<W;x++){const d=W-x;if(d<60&&bay(x,y)*60>d)P(g,x,y,'#1a0c06');}
+  return c;
 }
+// Zutaten und Werkzeug einzeln gezeichnet, fuer Wand, Herd und Kammer
+function drawTopf(x,y){R(ctx,x,y,18,12,'#5a6880');R(ctx,x,y,18,2,'#c8c8d4');R(ctx,x-2,y+2,2,2,'#343e52');R(ctx,x+18,y+2,2,2,'#343e52');R(ctx,x+1,y+2,2,9,'#8a9ab4');}
+function drawMilch(x,y){R(ctx,x,y,7,12,'#e0e0ea');R(ctx,x,y+4,7,4,'#3a64c4');R(ctx,x+1,y-2,5,2,'#c8c8d4');}
+function drawZucker(x,y){R(ctx,x,y,12,14,'#f4f0e0');R(ctx,x,y,12,2,'#c8c8d4');R(ctx,x+2,y+5,8,3,'#6a94d4');}
+function drawPulver(x,y){R(ctx,x,y,8,10,'#d8b040');R(ctx,x,y,8,2,'#fff0a0');R(ctx,x+2,y+4,4,3,'#a02234');}
+function drawLappen(x,y){R(ctx,x,y,9,9,'#a02234');for(let i=0;i<9;i+=3)R(ctx,x+i,y,1,9,'#d04a5a');R(ctx,x+4,y-3,1,3,'#383840');}
 function drawKantine(now){
   if(!KANTINE)KANTINE=drawKantineBg();
   if(S.card){R(ctx,0,0,W,SH,'#000000');const t=S.card.title;text(t,Math.round((W-textW(t))/2),34,'#ffe060',false);
     wrap(S.card.text,260).forEach((l,i)=>text(l,Math.round((W-textW(l))/2),56+i*LINEH,'#e8e0ff',false));return;}
   ctx.drawImage(KANTINE,0,0);
-  plaque(18,28,'Halle');
-  drawToepfe(now);
-  if(S.broesel>=2){R(ctx,84,66,20,2,'#b07c48');for(let i=0;i<4;i++)ellFill(ctx,87+i*5,65,2,1.5,()=>'#845028');}
+  plaque(18,28,'Halle');plaque(174,28,'Vorräte');
+  // Keksdosen auf der Theke, leer
+  [[84,'#a02234'],[96,'#3a64c4'],[108,'#d8b040']].forEach(([x,col])=>{R(ctx,x,60,9,8,col);R(ctx,x,60,9,1,'#ffffff');R(ctx,x+8,61,1,7,'#383840');});
+  const b=S.bereit||{};
+  if(!has('topf')&&!b.topf)drawTopf(216,31);
+  if(!has('topflappen')&&!S.lappenGegeben)drawLappen(242,31);
+  // was schon auf dem Herd bereitliegt
+  if(b.topf)drawTopf(210,52);if(b.milch)drawMilch(232,52);if(b.zucker)drawZucker(240,50);if(b.pulver)drawPulver(254-8,56);
+  if(S.broesel>=1){for(let i=0;i<5;i++){const t=(now/900+i*0.2)%1;P(ctx,213+i*3+Math.round(Math.sin(now/300+i)),Math.round(50-t*18),'#ffffff');}R(ctx,216,62,6,2,'#e86050');}
+  if(S.broesel>=2){R(ctx,120,66,24,2,'#b07c48');for(let i=0;i<4;i++)ellFill(ctx,123+i*6,65,2,1.5,()=>'#845028');}
   const L=[];
   const bt=S.speech&&S.talker==='broesel'&&Math.floor(now/130)%2;
+  const wach=S.broesel>=1,bx=wach?196:132;
   // erstarrt steht sie mit erhobenem Loeffel vor der Theke, wach ruehrt sie am Herd
-  const wach=S.broesel>=1,bx=wach?196:176;
   L.push({y:112,d:()=>{shadow(bx,112,9);
     const img=bt?SPR.broeselTalk:wach?(Math.floor(now/400)%2?SPR.broeselRuehr:SPR.broeselRuehr2):SPR.broesel;
     spr(img,bx,112,18,56,!wach);}});
   L.push({y:S.ky,d:()=>spr(S.speech&&S.talker==='kraechz'&&Math.floor(now/140)%2?SPR.ravenTalk:SPR.raven,S.kx,S.ky,11,19,S.kflip)});
+  heroLayer(L,now);
+  L.sort((p,q)=>p.y-q.y).forEach(o=>o.d());
+  drawSort();drawPanel();drawSpeech();
+}
+function drawKammer(now){
+  if(!KAMMER)KAMMER=drawKammerBg();
+  ctx.drawImage(KAMMER,0,0);
+  if(!has('zucker')&&!(S.bereit||{}).zucker)drawZucker(196,98);
+  if(!has('pulver')&&!(S.bereit||{}).pulver){drawPulver(186,104);drawPulver(208,104);}
+  const L=[];
+  L.push({y:110,d:()=>{
+    if(S.lappenGegeben){drawLappen(250,104);rotSprite(SPR.impSleep,262,104,11,24,-Math.PI/2,false);}
+    else rotSprite(S.speech&&S.talker==='aufK'&&Math.floor(now/140)%2?SPR.imp:SPR.impSleep,198,100,11,24,-Math.PI/2,false);
+    if(Math.floor(now/900)%2)text('z',S.lappenGegeben?252:188,S.lappenGegeben?84:80,'#c4b6d4',true);}});
+  heroLayer(L,now);
+  L.sort((p,q)=>p.y-q.y).forEach(o=>o.d());
+  drawPanel();drawSpeech();
+}
+function heroLayer(L,now){
   const h=S.hero;
   if(!h.hidden)L.push({y:h.y,d:()=>{let img;
     if(h.walking)img=SPR.heroWalk[Math.floor(h.t*9)%6];else if(h.reach)img=SPR.heroReach;
     else if(S.talker==='hero'&&Math.floor(now/120)%2)img=SPR.heroTalk;else img=(now%4200<140)?SPR.heroBlink:SPR.heroStand;
     shadow(h.x,h.y,6);spr(img,h.x,h.y,16,46,h.flip);}});
-  L.sort((p,q)=>p.y-q.y).forEach(o=>o.d());
-  drawPanel();drawSpeech();
 }
 const HS_KANTINE=[
-  {id:'kraechz',name:'Krächz',rect:()=>[S.kx-11,S.ky-19,22,19],walk:[70,118],flip:true},
-  {id:'broesel',name:'Frau Brösel',rect:()=>S.broesel>=1?[178,56,36,58]:[158,56,36,58],get walk(){return S.broesel>=1?[160,118]:[140,118];},flip:false},
-  {id:'rezepte',name:'Rezeptkarten',rect:()=>[96,24,40,30],walk:[116,112],flip:false},
-  {id:'dosen',name:'Keksdosen',rect:()=>[146,24,44,12],walk:[168,112],flip:false},
-  {id:'herd',name:'Herd',rect:()=>[204,48,48,56],walk:[200,116],flip:false},
+  {id:'kraechz',name:'Krächz',rect:()=>[S.kx-11,S.ky-19,22,19],walk:[80,114],flip:false},
+  {id:'broesel',name:'Frau Brösel',rect:()=>S.broesel>=1?[178,56,36,58]:[114,56,36,58],get walk(){return S.broesel>=1?[166,118]:[100,118];},flip:false},
+  {id:'rezepte',name:'Rezeptkarten',rect:()=>[96,22,44,32],walk:[118,114],flip:false},
+  {id:'dosen',name:'Keksdosen',rect:()=>[82,58,36,10],walk:[96,114],flip:false},
+  {id:'topf',name:'Großer Topf',vis:()=>!has('topf')&&!(S.bereit||{}).topf,rect:()=>[214,28,22,16],walk:[226,114],flip:false},
+  {id:'topflappen',name:'Topflappen',vis:()=>!has('topflappen')&&!S.lappenGegeben,rect:()=>[240,26,13,15],walk:[240,114],flip:false},
+  {id:'herd',name:'Herd',rect:()=>[204,46,48,58],walk:[222,116],flip:false},
   {id:'kuehl',name:'Kühlschrank',rect:()=>[262,24,40,80],walk:[266,116],flip:false},
-  {id:'theke',name:'Theke',rect:()=>[80,68,114,36],walk:[136,112],flip:false},
+  {id:'kammertuer',name:'Tür zur Speisekammer',exit:true,rect:()=>[160,22,28,82],walk:[174,112],flip:false},
+  {id:'theke',name:'Theke',rect:()=>[80,68,74,36],walk:[116,112],flip:false},
   {id:'fensterK',name:'Fenster',rect:()=>[42,14,44,40],walk:[64,112],flip:true},
   {id:'tuerK',name:'Tür zur Halle',exit:true,rect:()=>[4,24,28,80],walk:[40,120],flip:true},
   {id:'bodenK',name:'Boden',floor:true,rect:()=>[36,106,266,38],walk:[0,0],flip:false}
 ];
+const HS_KAMMER=[
+  {id:'aufK',name:'Schlafendes Aufschiebchen',rect:()=>S.lappenGegeben?[244,92,30,16]:[184,88,30,16],get walk(){return S.lappenGegeben?[232,120]:[170,120];},flip:false},
+  {id:'pulver',name:'Puddingpulver',vis:()=>!has('pulver')&&!(S.bereit||{}).pulver,rect:()=>[184,102,34,12],walk:[176,120],flip:false},
+  {id:'zucker',name:'Zuckersack',vis:()=>!has('zucker')&&!(S.bereit||{}).zucker,rect:()=>[194,96,16,16],walk:[180,120],flip:false},
+  {id:'glaeser',name:'Einmachgläser',rect:()=>[68,84,42,16],walk:[90,118],flip:false},
+  {id:'regal',name:'Regale',rect:()=>[50,14,250,70],walk:[140,116],flip:false},
+  {id:'tuerV',name:'Tür zur Küche',exit:true,rect:()=>[0,30,28,76],walk:[34,120],flip:true},
+  {id:'bodenV',name:'Boden',floor:true,rect:()=>[30,108,270,36],walk:[0,0],flip:false}
+];
 async function enterKantine(){
-  S.room='kantine';S.hero.hidden=false;S.hero.x=40;S.hero.y=120;S.hero.flip=false;S.kraechz='kantine';S.kx=150;S.ky=24;S.kflip=false;
+  S.room='kantine';S.hero.hidden=false;S.hero.x=40;S.hero.y=120;S.hero.flip=false;S.kraechz='kantine';S.kx=76;S.ky=55;S.kflip=false;
   if(S.kantineIntro){await walkTo(70,120);return say('hero',S.broesel>=1?'Hier riecht es nach Pudding.':'Die Kantine. Frau Brösel seufzt immer noch.');}
-  await walkTo(80,120);
+  await walkTo(76,120);
   await say('hero','Die Kantine. Und da steht Frau Brösel.');
-  await say('broesel','Vierhundert Portionen. Vierhundert! Ich fang gleich an. Gleich nach dem Seufzen.');
+  await say('broesel','Zweihundert Mittagessen. Zweihundert! Ich fang gleich an. Gleich nach dem Seufzen.');
   S.kantineIntro=true;save();
 }
 async function leaveKantine(){
@@ -2001,90 +2075,188 @@ async function leaveKantine(){
   if(has('kekse'))return say('hero','Kekse in der Tasche. Jetzt zurück zur Kellertreppe.');
   return say('hero','Wieder in der Halle.');
 }
-// Gespraech mit Frau Broesel: erst finden, was zuerst muss, dann einen ersten Schritt, der sicher klappt
-const ZUERST=[
-  ['Die Kekse.','Kekse zuerst? Die sind in zwölf Minuten fertig und bis zum Mittag steinhart.'],
-  ['Die Suppe.','Und wenn die Suppe fertig ist, fange ich mit dem Pudding an? Der wird bis Mittag nie im Leben fest.'],
-  ['Alles gleichzeitig.','Gleichzeitig? Ich habe zwei Hände und einen Herd.'],
-  ['Den Pudding.',null]
+async function inKammer(){
+  S.hero.hidden=true;tone('sawtooth',160,0.3,0.03,110);await sleep(400);
+  S.room='kammer';S.hero.x=30;S.hero.y=120;S.hero.flip=false;S.hero.hidden=false;
+  await walkTo(60,120);
+  if(!S.kammerIntro){S.kammerIntro=true;await say('hero','Die Speisekammer. Und auf dem Zuckersack schnarcht was.');}
+}
+async function ausKammer(){
+  S.hero.hidden=true;tone('sawtooth',160,0.3,0.03,110);await sleep(400);
+  S.room='kantine';S.hero.x=174;S.hero.y=112;S.hero.flip=false;S.hero.hidden=false;
+  await walkTo(160,120);
+}
+/* ---------- Rezeptkarten sortieren ---------- */
+const KARTEN=[
+  {id:'kekse',titel:'Kekse',z:['10 Min. Teig,','12 Min. backen']},
+  {id:'salat',titel:'Salat',z:['10 Min. waschen','und schneiden.','Welkt, wenn er','lange steht.']},
+  {id:'pudding',titel:'Pudding',z:['Milch, Zucker,','Puddingpulver.','5 Min. kochen,','dann 3 Std.','kalt stellen,','bis er fest ist.']},
+  {id:'suppe',titel:'Suppe',z:['Kartoffeln','20 Min. schälen','und schneiden,','25 Min. kochen']}
 ];
-const SCHRITT=[
-  ['Machen Sie einfach alle vierhundert auf einmal.','Mein größter Topf fasst fünfzig Portionen. Das weiß ich, weil ich jeden Tag davorstehe und seufze.'],
-  ['Fangen Sie an, wenn Sie Lust haben.','Lust. Die kommt bei mir immer so gegen Feierabend.'],
-  ['Denken Sie einfach nicht dran. Dann geht es von allein.','Das mache ich seit einer Stunde. Es geht nicht von allein.'],
-  ['Erst mal nur der erste Topf: Milch rein, Herd an.',null]
-];
-async function waehle(liste){
-  for(;;){const a=liste[await choose(liste.map(x=>x[0]))];await say('hero',a[0]);
-    if(!a[1])return;await say('broesel',a[1]);}
+const RICHTIG=['pudding','suppe','kekse','salat'];
+const KX=i=>2+i*79,KW=77;
+function drawSort(){
+  if(!S.sort)return;
+  R(ctx,0,0,W,SH,'#1a0c06');
+  text('Mittagessen um halb eins. In welcher Reihenfolge wird gekocht?',6,4,'#ffe060',false);
+  KARTEN.forEach((k,i)=>{const x=KX(i),y=18,n=S.sort.order.indexOf(k.id);
+    R(ctx,x,y,KW,104,'#5c341c');R(ctx,x+1,y+1,KW-2,102,n>=0?'#e8e0c8':'#f4f0e0');R(ctx,x+1,y+1,KW-2,3,'#c83030');
+    text(k.titel,x+4,y+7,'#a02234',false);k.z.forEach((l,j)=>text(l,x+3,y+20+j*10,'#3a2410',false));
+    if(n>=0){ellFill(ctx,x+KW-10,y+12,7,7,()=>'#a02234');text(String(n+1),x+KW-12,y+8,'#ffffff',false);}});
+  text('Tippe die Karten der Reihe nach an.',6,126,'#c4b6d4',false);
+  text('Zurück',276,134,'#a8f8a8',false);
+}
+function sortieren(){
+  return new Promise(res=>{
+    S.sort={order:[],click(x,y){
+      if(y>=130&&x>=260){S.sort=null;res(null);return;}
+      const i=KARTEN.findIndex((k,j)=>x>=KX(j)&&x<KX(j)+KW&&y>=18&&y<122);if(i<0)return;
+      const id=KARTEN[i].id,o=S.sort.order;
+      if(o.indexOf(id)>=0){o.splice(o.indexOf(id));return;}
+      o.push(id);tone('square',600+o.length*120,0.05,0.03);
+      if(o.length===4){const r=o.slice();setTimeout(()=>{S.sort=null;res(r);},400);}
+    }};
+  });
+}
+async function rezepteSortieren(){
+  if(S.sortiert)return say('hero','Pudding, Suppe, Kekse, Salat. Das steht.');
+  const o=await sortieren();if(!o)return;
+  if(o.join()===RICHTIG.join()){
+    S.sortiert=true;tone('triangle',660,0.15,0.05);tone('triangle',990,0.3,0.05,null,0.15);
+    await say('hero','Pudding, Suppe, Kekse, Salat. Was am längsten braucht, kommt zuerst.');
+    await say('broesel','Pudding zuerst. Natürlich! Der muss ja drei Stunden kalt stehen.');
+    await say('broesel','Also. Wo ist der große Topf? Wo ist die Milch? Wo sind Zucker und Puddingpulver?');
+    await say('broesel','Wenn ich das erst alles suchen muss, fange ich morgen an.');
+    return say('hero','Dann suche ich das eben zusammen. Und lege es auf den Herd.');
+  }
+  // Frau Broesel kommentiert die erste Stelle, die nicht passt
+  if(o[0]!=='pudding')return say('broesel','Pudding hinten? Fünf Minuten kochen, stimmt. Und dann? Lies mal weiter, Schätzchen.');
+  if(o[3]!=='salat')return say('broesel','Salat so früh? Um halb eins ist der so welk wie ich.');
+  return say('broesel','Kekse vor der Suppe? Dann sind die Kekse fertig, und die Kartoffeln sind noch nicht mal geschält.');
+}
+/* ---------- Bereitlegen und Anfangen ---------- */
+async function aufHerd(item){
+  if(ZUTATEN.indexOf(item)<0)return say('hero','Das brauche ich zum Kochen nicht.');
+  if(S.broesel>=1)return say('hero','Frau Brösel kocht schon.');
+  if(!S.sortiert)return say('hero','Erst mal herausfinden, was zuerst gekocht wird.');
+  await reach();take(item);S.bereit=S.bereit||{};S.bereit[item]=true;tone('square',300,0.06,0.04);
+  const fehlt=ZUTATEN.filter(z=>!S.bereit[z]);
+  if(fehlt.length)return say('hero',['Liegt bereit.','Das auch.','Fast alles da.'][3-fehlt.length]);
+  return broeselWacht();
 }
 async function broeselWacht(){
-  await say('broesel','Der erste Topf. Milch rein. Herd an. …');
+  await say('broesel','Topf, Milch, Zucker, Pulver. Alles da.');
+  await say('broesel','Jetzt muss ich ja nur noch … anfangen.');
   tone('triangle',520,0.2,0.05);tone('triangle',780,0.3,0.05,null,0.2);
-  S.broesel=1;await sleep(600);
-  await say('broesel','Oh. Das schaffe ich ja.');
-  await say('broesel','Und danach der nächste Topf. Und während der Pudding kalt wird, kommen die Kekse in den Ofen.');
-  await showCard('Eine halbe Stunde später','Es blubbert, es dampft, es duftet nach Vanille. Frau Brösel summt.');
+  S.broesel=1;await sleep(700);
+  await say('broesel','Oh. Das geht ja wie von selbst.');
+  await say('broesel','Und während der Pudding kalt wird, kommt die Suppe dran. Und dann die Kekse.');
+  await showCard('Eine Stunde später','Es blubbert, es dampft, es duftet nach Vanille und Schokolade. Frau Brösel summt.');
   S.broesel=2;
   await say('broesel','So, Schätzchen. Die ersten Kekse, frisch aus dem Ofen. Für dich.');
   await reach();give('kekse');tone('triangle',990,0.3,0.05);
   await say('hero','Genau die haben mir gefehlt.');
-  await say('broesel','Und jetzt Topf Nummer drei. Das läuft ja wie von selbst.');
+  await say('broesel','Und gleich kommt der Salat. Ganz zum Schluss, damit er frisch bleibt.');
 }
 async function redeBroesel(){
-  if(S.broesel>=2)return say('broesel',['Topf Nummer vier! Wer hätte das gedacht.','Noch ein Keks? Die nächsten sind für das Festessen, Schätzchen.'][(S.broeselRede=(S.broeselRede||0)+1)%2]);
+  if(S.broesel>=2)return say('broesel',['Noch zwei Stunden, dann ist der Pudding fest. Wer hätte das gedacht.','Noch ein Keks? Die nächsten sind für das Mittagessen, Schätzchen.'][(S.broeselRede=(S.broeselRede||0)+1)%2]);
   for(;;){
-    const o=['Haben Sie Kekse für mich?','Was machen Sie denn zuerst?','Warum stehen Sie hier so herum?','Bis gleich.'];
-    const a=await choose(o);await say('hero',o[a]);
-    if(a===0){await say('broesel','Kekse? Alle weg. Da waren so kleine Wichte im Schlafanzug. Mit Krümeln im Gesicht.');
-      await say('broesel','Neue müsste ich backen. Aber erst das Festessen. Vierhundert Portionen …');S.broeselKekse=true;continue;}
-    if(a===1){await say('broesel','Zuerst? Alles! Suppe, Kekse, Pudding. Vierhundert Mal. Was soll ich denn da zuerst machen?');
-      await waehle(ZUERST);
-      await say('broesel','Der Pudding. … Stimmt. Der muss drei Stunden kalt stehen, bis er fest ist. Der muss zuerst auf den Herd.');
-      await say('broesel','Aber vierhundert Portionen Pudding. Das schaffe ich nie. Wo soll ich denn da anfangen?');
-      await waehle(SCHRITT);
-      return broeselWacht();}
-    if(a===2){await say('broesel','Ich stehe nicht herum. Ich sammle Kraft. Seit heute früh.');continue;}
+    const o=S.sortiert?['Was brauchen Sie denn alles?','Können Sie das nicht selbst holen?','Bis gleich.']
+      :['Haben Sie Kekse für mich?','Womit fangen Sie denn an?','Warum stehen Sie hier so herum?','Bis gleich.'];
+    const a=await choose(o),q=o[a];await say('hero',q);
+    if(q==='Haben Sie Kekse für mich?'){await say('broesel','Alle weg. Da waren kleine Wichte im Schlafanzug. Mit Krümeln im Gesicht.');
+      await say('broesel','Neue backe ich, wenn das Mittagessen läuft. Also nie.');S.broeselKekse=true;continue;}
+    if(q==='Womit fangen Sie denn an?'){await say('broesel','Mit dem Seufzen. Da bin ich schon ziemlich weit.');
+      await say('broesel','Danach? Suppe, Pudding, Kekse, Salat? Die Rezepte hängen da drüben. Ich schaue sie seit einer Stunde an, und sie schauen zurück.');continue;}
+    if(q==='Warum stehen Sie hier so herum?'){await say('broesel','Ich stehe nicht herum. Ich sammle Kraft. Seit heute früh.');continue;}
+    if(q==='Was brauchen Sie denn alles?'){const b=S.bereit||{},f=[['topf','den großen Topf'],['milch','Milch'],['zucker','Zucker'],['pulver','Puddingpulver']].filter(z=>!b[z[0]]).map(z=>z[1]);
+      await say('broesel','Auf dem Herd fehlen noch: '+f.join(', ').replace(/, ([^,]*)$/,' und $1')+'.');
+      await say('broesel','Der Topf hängt irgendwo, die Milch ist kalt, und der Rest liegt in der Speisekammer. Glaube ich. Da war ich länger nicht.');continue;}
+    if(q==='Können Sie das nicht selbst holen?'){await say('broesel','Holen ist ja schon fast anfangen. Und anfangen tu ich gleich.');continue;}
     return say('broesel','Gleich. Ach, dieses Wort.');
   }
 }
 async function actKantine(verb,h,item){
   const id=h.id;
   if(item){
-    if(id==='broesel'&&verb==='gib')return say('broesel','Lieb gemeint, Schätzchen. Aber was ich brauche, ist ein Anfang.');
+    if(id==='herd'&&verb==='benutze')return aufHerd(item);
+    if(id==='broesel'&&verb==='gib')return say('broesel',ZUTATEN.indexOf(item)>=0?'Leg’s auf den Herd, Schätzchen. Da brauche ich es.':'Lieb gemeint. Aber was ich brauche, ist ein Anfang.');
     if(id==='kraechz'&&verb==='gib')return say('kraechz','Behalte das mal schön selbst.');
     return say('hero',FALLBACK.benutze());
   }
   switch(id+':'+verb){
     case 'tuerK:gehe':case 'tuerK:benutze':case 'tuerK:oeffne':return leaveKantine();
     case 'tuerK:schau':return say('hero','Da geht es zurück in die Halle.');
+    case 'kammertuer:gehe':case 'kammertuer:benutze':case 'kammertuer:oeffne':return inKammer();
+    case 'kammertuer:schau':return say('hero','„Vorräte“. Die Speisekammer.');
     case 'broesel:rede':return redeBroesel();
     case 'broesel:schau':return say('hero',S.broesel>=1?'Frau Brösel rührt und summt. Sie sieht zehn Jahre jünger aus.':'Frau Brösel. Sie hält den Kochlöffel hoch, als wollte sie gleich losrühren. Seit heute früh.');
-    case 'rezepte:schau':case 'rezepte:nimm':
-      await showPanel([['Festessen für die ganze Schule, heute Mittag','#a02234'],['400 Portionen',  '#a02234'],[''],
-        ['Kartoffelsuppe: 20 Minuten schälen,'],['  25 Minuten kochen'],['Kekse: 10 Minuten Teig,'],['  12 Minuten backen'],
-        ['Vanillepudding: 5 Minuten kochen,'],['  dann 3 Stunden kalt stellen, bis er fest ist']]);
-      return say('hero','Drei Stunden, bis der Pudding fest ist. Und das Essen ist heute Mittag.');
+    case 'rezepte:schau':case 'rezepte:nimm':case 'rezepte:benutze':return rezepteSortieren();
     case 'dosen:schau':return say('hero','Drei Keksdosen. Alle leer. Nur noch Krümel. Die kenne ich doch.');
     case 'dosen:nimm':return say('hero','Leere Dosen helfen mir nicht. Ich brauche was drin.');
-    case 'herd:schau':return say('hero',S.broesel>=1?'Da blubbert der Pudding. Topf Nummer zwei.':'Der Herd ist kalt. Obendrauf stehen Töpfe, groß wie Badewannen.');
-    case 'herd:benutze':case 'herd:druecke':return say('hero',S.broesel>=1?'Frau Brösel hat alles im Griff.':'Ich soll hier vierhundert Portionen kochen? Ich habe zuletzt Wasser anbrennen lassen.');
-    case 'kuehl:schau':return say('hero',S.broesel>=1?'Da steht der erste Pudding und wird langsam fest.':'Ein riesiger Kühlschrank. Laut Aufkleber voller Milch.');
-    case 'kuehl:oeffne':await reach();return say('hero',S.broesel>=1?'Pudding! Der wackelt noch. Tür zu, der soll fest werden.':'Milch, Milch, Milch. Genug für vierhundert Portionen. Aber wer kocht die?');
+    case 'topf:schau':return say('hero','Ein Topf, groß wie eine Badewanne. Er hängt über dem Herd.');
+    case 'topf:nimm':await reach();give('topf');return say('hero','Uff. Ich komme gerade so ran.');
+    case 'topflappen:schau':return say('hero','Ein dicker, gesteppter Topflappen. Schön weich.');
+    case 'topflappen:nimm':await reach();give('topflappen');return say('hero','Ein Topflappen. Weich wie ein kleines Kissen.');
+    case 'herd:schau':return say('hero',S.broesel>=1?'Da blubbert es. Pudding, dann Suppe.':'Der Herd ist kalt. Hier soll alles hin, was Frau Brösel für den Pudding braucht.');
+    case 'herd:benutze':case 'herd:druecke':return say('hero',S.broesel>=1?'Frau Brösel hat alles im Griff.':'Ich soll hier für zweihundert Leute kochen? Ich habe zuletzt Wasser anbrennen lassen.');
+    case 'kuehl:schau':return say('hero',S.broesel>=1?'Da steht der erste Pudding und wird langsam fest.':'Ein riesiger Kühlschrank.');
+    case 'kuehl:oeffne':await reach();
+      if(S.broesel>=1)return say('hero','Pudding! Der wackelt noch. Tür zu, der soll fest werden.');
+      if(has('milch')||(S.bereit||{}).milch)return say('hero','Nur noch Butter und Salatköpfe.');
+      give('milch');return say('hero','Milch. Genug für zweihundert Portionen. Eine Kanne nehme ich mit.');
     case 'theke:schau':return say('hero',S.broesel>=2?'Auf der Theke kühlen Kekse ab.':'Die Essensausgabe. Blitzblank und leer.');
-    case 'theke:nimm':if(S.broesel>=2)return say('broesel','Finger weg, Schätzchen. Die sind für das Festessen.');break;
+    case 'theke:nimm':if(S.broesel>=2)return say('broesel','Finger weg, Schätzchen. Die sind für das Mittagessen.');break;
     case 'fensterK:schau':return say('hero','Draußen ist es Morgen. Und bleibt es wohl auch, bis die Uhr wieder läuft.');
     case 'kraechz:rede':return redeKraechz();
-    case 'kraechz:schau':return say('hero','Krächz sitzt auf dem Keksregal und guckt in die leeren Dosen. Enttäuscht.');
+    case 'kraechz:schau':return say('hero','Krächz sitzt auf dem Fensterbrett und schaut sehnsüchtig zu den Keksdosen.');
     case 'bodenK:schau':return say('hero','Terrakotta. Hier wird wohl viel verschüttet.');
   }
   if(verb==='schau')return say('hero',FALLBACK.schau(h));
   return say('hero',FALLBACK[verb]?FALLBACK[verb](h):FALLBACK.benutze());
 }
+async function actKammer(verb,h,item){
+  const id=h.id;
+  if(item){
+    if(id==='aufK'&&verb==='gib'){
+      if(item==='topflappen'){await reach();take('topflappen');S.lappenGegeben=true;tone('triangle',440,0.3,0.04,330);
+        await say('aufK','Oh. Weich. Das ist ja noch gemütlicher.');
+        return say('hero','Es hat sich auf den Topflappen gerollt. Der Zucker ist frei.');}
+      if(item==='kekse')return say('aufK','Kekse im Bett? Krümelt. Später.');
+      return say('aufK','Zu hart. Mmpf. Später.');
+    }
+    return say('hero',FALLBACK.benutze());
+  }
+  const schlaeft=!S.lappenGegeben;
+  switch(id+':'+verb){
+    case 'tuerV:gehe':case 'tuerV:benutze':case 'tuerV:oeffne':return ausKammer();
+    case 'tuerV:schau':return say('hero','Da geht es zurück in die Küche.');
+    case 'aufK:schau':return say('hero',schlaeft?'Ein Aufschiebchen. Es schläft auf dem Zuckersack, den Kopf auf dem Puddingpulver.':'Es schnarcht auf dem Topflappen. Sehr zufrieden.');
+    case 'aufK:rede':
+      if(!schlaeft)return say('aufK','Chrrr. Später. Chrrr.');
+      await say('hero','Könntest du mal kurz aufstehen?');
+      await say('aufK','Das ist mein Kissen. Hart, aber meins.');
+      return say('aufK','Ein weicheres hätte ich gern. Such ich mir später.');
+    case 'aufK:ziehe':case 'aufK:druecke':return say('hero','Es klammert sich fest und schnarcht lauter.');
+    case 'pulver:schau':return say('hero',schlaeft?'Puddingpulver. Leider als Kopfkissen im Einsatz.':'Puddingpulver. Jetzt frei.');
+    case 'pulver:nimm':if(schlaeft)return say('hero','Es klammert sich an die Päckchen und schnarcht lauter.');
+      await reach();give('pulver');return say('hero','Puddingpulver. Hab ich.');
+    case 'zucker:schau':return say('hero',schlaeft?'Ein Zuckersack. Mit einem Aufschiebchen obendrauf.':'Ein Zuckersack. Endlich frei.');
+    case 'zucker:nimm':if(schlaeft)return say('hero','Da liegt ein Aufschiebchen drauf. Und es ist schwerer, als es aussieht.');
+      await reach();give('zucker');return say('hero','Zucker. Hab ich.');
+    case 'glaeser:schau':return say('hero','Eingemachte Gurken. Wer weiß, wofür man so ein Glas mal braucht.');
+    case 'regal:schau':return say('hero','Mehl, Nudeln, Dosen, Gläser. Alles da. Nur keine Kekse.');
+    case 'bodenV:schau':return say('hero','Holzdielen. Es riecht nach Mehl und Nickerchen.');
+  }
+  if(verb==='schau')return say('hero',FALLBACK.schau(h));
+  return say('hero',FALLBACK[verb]?FALLBACK[verb](h):FALLBACK.benutze());
+}
 async function kantineTipp(){
-  let t;
+  const b=S.bereit||{};let t;
   if(!S.broeselKekse)t='Frau Brösel weiß bestimmt, wo es Kekse gibt. Frag sie doch mal.';
-  else if(S.broesel<1)t='Sie kommt nicht in die Gänge, weil alles auf einmal zu viel ist. Schau dir mal die Rezeptkarten an. Was braucht am längsten?';
+  else if(!S.sortiert)t='Die Rezeptkarten hängen durcheinander. Was braucht insgesamt am längsten, bis es fertig ist?';
+  else if(S.broesel<1&&!b.zucker&&!has('zucker')&&!S.lappenGegeben)t='In der Speisekammer schläft jemand auf dem Zucker. Was ist weicher als ein Zuckersack?';
+  else if(S.broesel<1)t='Alles, was Frau Brösel für den Pudding braucht, gehört auf den Herd.';
   else t='Kekse hast du. Zurück in den Flüstergang.';
   await say('kraechz',t);
 }
@@ -2157,7 +2329,7 @@ function cutKeller(t,now){
 }
 
 // Speichern: nur die Teile des Zustands, die das Spiel ausmachen
-const KEEP=['spur','room','takt','zettelGelesen','flureGeschafft','halleIntro','fehlwege','heft','kraechz','kx','ky','kflip','fenster','ziel','kruemelGesehen','gitter','federmappe','muenze','kreide','tipp','kraechzKennt','jonas','inv','gefragt','tschuess','eingangDone','kallFrozen','fertig','gangIntro','passed','erlebt','plaene','tafelGelesen','suchKantine','kantineErklaert','invOff','kantineIntro','broesel','broeselKekse','broeselRede'];
+const KEEP=['spur','room','takt','zettelGelesen','flureGeschafft','halleIntro','fehlwege','heft','kraechz','kx','ky','kflip','fenster','ziel','kruemelGesehen','gitter','federmappe','muenze','kreide','tipp','kraechzKennt','jonas','inv','gefragt','tschuess','eingangDone','kallFrozen','fertig','gangIntro','passed','erlebt','plaene','tafelGelesen','suchKantine','kantineErklaert','invOff','kantineIntro','broesel','broeselKekse','broeselRede','sortiert','bereit','lappenGegeben','kammerIntro'];
 function save(){const d={};KEEP.forEach(k=>{if(S[k]!==undefined)d[k]=S[k];});d.hero={x:S.hero.x,y:S.hero.y,flip:S.hero.flip};SAVE.write({prolog:d});}
 let looping=false;
 const API={onDone:null,
