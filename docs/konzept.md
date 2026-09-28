@@ -295,7 +295,7 @@ Beim Betreten der Halle gilt Takt 2: Das Schild über der Osttür zeigt die Kell
 
 Tippstufen von Krächz: „Hau mal auf den Gong und schau, was mit den Schildern passiert.“ Dann: „Wenn du losläufst, gongt es. Geh also dahin, wo die Kellertreppe nach dem nächsten Gong steht.“ Dann: „Die Räume rücken im Uhrzeigersinn eine Tür weiter und hüpfen am Musikraum vorbei. Von Osten geht es also direkt nach Westen.“
 
-**Ablauf im Flüstergang.** Der Gang liegt unten an der Kellertreppe und endet an der Eisentür zum Heizungskeller. Beim ersten Betreten sieht die Figur den Dieb: Ein Aufschiebchen mit ihrem Heft gähnt („Heft abgeben. Gleich. Oder später.“) und verschwindet durch die Tür. Krächz: „Ein Aufschiebchen. Die sind überall, wo etwas liegen bleibt.“
+**Ablauf im Flüstergang.** Der Gang liegt unten an der Kellertreppe und endet an der Eisentür zum Heizungskeller. Beim ersten Betreten sieht die Figur den Dieb: Ein Aufschiebchen mit ihrem Heft gähnt („Heft abgeben. Gleich. Oder später.“) und verschwindet durch die Tür. Krächz: „Ein Aufschiebchen. Die sind überall, wo etwas liegen bleibt.“ Die Figur: „Da hinten ist der Heizungskeller. Aber erst muss ich durch diesen Gang.“ Über der Treppe hängt ein Schild von Grummelbart: „Flüstergang. Zum Heizungskeller. Bitte nicht stehen bleiben. Der Hausmeister.“
 
 *Die Stolperstellen.* Drei weitere Aufschiebchen sitzen im Gang. Wer ohne Plan vorbeiwill, fällt auf sie herein und trottet zurück zur Treppe („Moment mal. Warum stehe ich wieder an der Treppe?“). Welche Stolperstellen es gibt, erfährt die Figur also durch eigene Erfahrung.
 

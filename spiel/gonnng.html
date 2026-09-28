@@ -1718,10 +1718,12 @@ function drawGang(now){
   // kaltes Dunkel an den Raendern
   for(let y=0;y<SH;y++)for(let x=0;x<W;x++){const d=Math.min(x,W-x);if(d<14&&bay(x,y)*14>d)P(ctx,x,y,'#05070c');}
   plaque(270,30,'Heizungskeller');
+  plaque(36,12,'Flüstergang');
   drawPanel();drawSpeech();
 }
 const HS_GANG=[
   {id:'kraechz',name:'Krächz',rect:()=>[S.kx-11,S.ky-19,22,19],walk:[60,118],flip:true},
+  {id:'schild',name:'Schild',rect:()=>[6,11,60,11],walk:[40,118],flip:true},
   {id:'tafel',name:'Tafel',rect:()=>[54,40,44,34],walk:[76,116],flip:false},
   {id:'auf1',name:'Aufschiebchen in der Nische',rect:()=>[106,74,26,32],walk:[98,116],flip:false},
   {id:'auf2',name:'Aufschiebchen in der Hängematte',rect:()=>[168,52,38,22],walk:[168,116],flip:false},
@@ -1763,7 +1765,7 @@ async function stoer(d,plan){
   if(neu&&Object.keys(S.erlebt).length===1)await say('hero','Die flüstern einem genau das, worauf man reinfällt.');
 }
 async function enterGang(){
-  S.room='gang';S.hero.hidden=false;S.hero.x=26;S.hero.y=120;S.hero.flip=false;S.kraechz='gang';S.kx=64;S.ky=20;S.kflip=false;
+  S.room='gang';S.hero.hidden=false;S.hero.x=26;S.hero.y=120;S.hero.flip=false;S.kraechz='gang';S.kx=92;S.ky=20;S.kflip=false;
   if(S.gangIntro){await walkTo(46,122);return say('hero','Wieder im Flüstergang. Pssst.');}
   S.auf={x:262,y:118,heft:true,flip:true,walk:false};
   await sleep(500);
@@ -1777,6 +1779,7 @@ async function enterGang(){
   await say('hero','Ein Wicht im Schlafanzug! Mit meinem Heft!');
   await say('kraechz','Ein Aufschiebchen. Die sind überall, wo etwas liegen bleibt.');
   await say('kraechz','Und da hängen noch drei von der Sorte herum. Die flüstern. Hör bloß nicht hin.');
+  await say('hero','Da hinten ist der Heizungskeller. Aber erst muss ich durch diesen Gang.');
   S.gangIntro=true;save();
 }
 async function leaveGang(){
@@ -1851,6 +1854,8 @@ async function actGang(verb,h,item){
     case 'treppe:schau':return say('hero','Da oben ist die Halle. Da ist es wenigstens warm.');
     case 'tuer:gehe':case 'tuer:oeffne':case 'tuer:benutze':return say('hero','Hier ist der Dieb durch. Aber da komme ich nie hin, solange hier alle flüstern.');
     case 'tuer:schau':return say('hero','Eine Eisentür. „Heizungskeller“. Da ist der Dieb mit meinem Heft verschwunden.');
+    case 'schild:schau':return say('hero','„Flüstergang. Zum Heizungskeller. Bitte nicht stehen bleiben. Der Hausmeister.“');
+    case 'schild:nimm':return say('hero','Das bleibt hängen. Sonst bleibt hier noch jemand stehen.');
     case 'tafel:schau':case 'tafel:nimm':return tafelLesen();
     case 'tafel:benutze':return say('hero','Mit dem Finger? Da brauche ich Kreide.');
     case 'kraechz:rede':return redeKraechz();
