@@ -36,7 +36,8 @@ Regeln für neue Grafik:
   gemischt über den Anteil der Lampe). Schatten werden in die Flächen gerechnet, nicht als Punkte aufgelegt. Perspektive mit Fluchtpunkt,
   Möbel als Körper mit Ober- und Seitenfläche, Materialien mit Struktur (Fugen, Maserung, Glanz). Keine Lichtstrahlen aus hellen Einzelpunkten.
   Maßstab dafür ist die Kantine (`drawKantineBg`).
-- Figuren nutzen weiter die kurzen Rampen (`RAMP`, je dunkel, Schatten, Grundton, Licht).
+- Figuren: Teile werden mit den kurzen Rampen (`RAMP`, je dunkel, Schatten, Grundton, Licht) angelegt. `Pup.part` macht daraus
+  automatisch eine lange Rampe und schattiert weich nach der Form des Teils, Licht von links oben.
 - Licht kommt in jeder Szene aus einer klaren Richtung, Figuren sind auf der Lichtseite heller.
 - Figuren entstehen aus Einzelteilen (`Pup.part` mit Kopf, Rumpf, Armen, Beinen) und bekommen eine dunkle Umrisslinie.
   So gibt es Laufen, Sprechen, Blinzeln und Greifen ohne neue Bilder.

@@ -166,6 +166,7 @@ const OUT='#0c0a14';
    Jedes Teil wird als Maske gezeichnet und dann mit Licht von links oben schattiert.
    Zum Schluss bekommt die ganze Figur eine dunkle Umrisslinie wie bei LucasArts. */
 class Pup{
+  static lang={};
   constructor(w,h){this.w=w;this.h=h;this.c=new Array(w*h).fill(null);}
   part(ramp,fn,sep){
     const w=this.w,h=this.h,m=new Uint8Array(w*h);
@@ -179,13 +180,20 @@ class Pup{
     };
     fn(api);
     const inm=(x,y)=>x>=0&&y>=0&&x<w&&y<h&&m[y*w+x];
+    // Weiche Schattierung: aus der geglaetteten Form wird eine Flaechenneigung geschaetzt,
+    // Licht kommt von links oben. Die Farbe stammt aus einer langen Rampe zwischen den vier Grundfarben.
+    const lang=Pup.lang[ramp.join()]||(Pup.lang[ramp.join()]=mkRamp(ramp,10));
+    const s=new Float32Array(w*h);
+    for(let y=0;y<h;y++)for(let x=0;x<w;x++){if(!m[y*w+x])continue;let n=0,k=0;
+      for(let j=-2;j<=2;j++)for(let i=-2;i<=2;i++){k++;if(inm(x+i,y+j))n++;}s[y*w+x]=n/k;}
+    const sv=(x,y)=>x>=0&&y>=0&&x<w&&y<h?s[y*w+x]:0;
     for(let y=0;y<h;y++)for(let x=0;x<w;x++){
       if(!m[y*w+x])continue;
-      const L=!inm(x-1,y)||!inm(x,y-1),D=!inm(x+1,y)||!inm(x,y+1),D2=!inm(x+2,y)||!inm(x,y+2);
-      let col=ramp[2];
-      if(D)col=ramp[1];else if(L)col=ramp[3];else if(D2&&(x+y)%2)col=ramp[1];
-      if(sep){for(const [dx,dy] of [[1,0],[0,1],[-1,0],[0,-1]]){const nx=x+dx,ny=y+dy;if(!inm(nx,ny)&&nx>=0&&ny>=0&&nx<w&&ny<h&&this.c[ny*w+nx]){if(dx>0||dy>0)col=ramp[0];}}}
-      this.c[y*w+x]=col;
+      const gx=sv(x+1,y)-sv(x-1,y),gy=sv(x,y+1)-sv(x,y-1),licht=gx*0.6+gy*0.8;
+      let t=0.62+licht*1.5-(1-sv(x,y))*0.12;
+      if(!inm(x+1,y)||!inm(x,y+1))t-=0.16;else if(!inm(x-1,y)||!inm(x,y-1))t+=0.14;
+      if(sep){for(const [dx,dy] of [[1,0],[0,1]]){const nx=x+dx,ny=y+dy;if(!inm(nx,ny)&&nx>=0&&ny>=0&&nx<w&&ny<h&&this.c[ny*w+nx])t-=0.35;}}
+      this.c[y*w+x]=pick(lang,t,x,y);
     }
     return this;
   }
@@ -1477,7 +1485,7 @@ document.addEventListener('keydown',e=>{if(MODE()!=='prolog')return;if((e.key===
 
 /* ---------- Schleife ---------- */
 let last=performance.now();
-function loop(now){if(MODE()!=='prolog'){looping=false;return;}const dt=Math.min(0.05,(now-last)/1000);last=now;stepHero(dt);if(S.globus>0)S.globus-=dt;if(S.room==='halle'&&!S.speech&&!S.dialog&&!S.narr&&!S.card&&!S.panel)hallTick(dt);drawScene(now);drawUI();requestAnimationFrame(loop);}
+function loop(now){if(MODE()!=='prolog'){looping=false;return;}const dt=clamp((now-last)/1000,0,0.05);last=now;stepHero(dt);if(S.globus>0)S.globus-=dt;if(S.room==='halle'&&!S.speech&&!S.dialog&&!S.narr&&!S.card&&!S.panel)hallTick(dt);drawScene(now);drawUI();requestAnimationFrame(loop);}
 
 
 /* =====================================================================
