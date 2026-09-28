@@ -157,7 +157,7 @@ Der Prolog führt die Bedienung ein und endet damit, dass die Hauptfigur einem A
 
 | Gegenstand | Herkunft | Einsatz im Prolog | Späterer Einsatz |
 | --- | --- | --- | --- |
-| Lineal | Federmappe | Hebel am Fenster | geht in der Keks-Angel für Brikett auf (K1) |
+| Lineal | Federmappe | Hebel am Fenster | passt in den Spalt hinter dem Kessel, mit Kordel zur Keks-Angel für Brikett (K1) |
 | Radiergummi | Federmappe | nur Gags | „später“ wegradieren (K4) |
 | Münze | Pultschublade | Schraubendreher am Gitter | Fährgeld für Stakel (K2) |
 | Kreide | Tafelablage | Pflicht vor dem Schacht | Markierungen im Moor (K2), „jetzt“ schreiben (K4) |
@@ -259,17 +259,17 @@ Die Hauptfigur muss durch die sich verschiebende Schule in den Heizungskeller, w
 | # | Rätsel | Art | Lösung |
 | --- | --- | --- | --- |
 | 1 | Die wandernden Flure | Allgemein, Logik | Siehe Regel unten. Die Figur schaut durch die Türspalten, leitet die Regel aus Gong, Schildern und Aushang selbst ab und läuft in den Flügel, in dem die Kellertreppe nach dem nächsten Gong stehen wird |
-| 2 | Der Musikraum | Allgemein, Rhythmus | Einmal muss die Figur absichtlich im Musikraum landen. Das Blockflötenorchester lässt sie erst gehen, wenn sie den Takt des Metronoms nachklatscht. Zum Dank gibt es eine Blockflötenschnur |
+| 2 | Der Musikraum | Allgemein, Rhythmus | Einmal muss die Figur absichtlich im Musikraum landen, um eine Kordel zu holen. Das Orchester ist erstarrt, die Musiklehrerin oder der Musiklehrer steht mit erhobenem Taktstock da. Die Figur stößt das Metronom an und hört das Tempo, dann zählt sie mit vier Klatschern im Takt ein. Das Orchester setzt ein und wird dabei wach. Zum Dank gibt ein Kind die Kordel von seinem Flötenbeutel |
 | 3 | Frau Brösels Mittagessen | SRL: Planen, Arbeitsumgebung vorbereiten, nahe Teilziele | Mittagessen für zweihundert Schülerinnen und Schüler. Frau Brösel ist erstarrt, weil sie nicht weiß, womit sie anfangen soll. Rätsel 1: Vier Rezeptkarten sortieren (was am längsten braucht, kommt zuerst). Rätsel 2: Alles für den ersten Topf auf den Herd legen, Zucker und Puddingpulver aus der Speisekammer, wo ein Aufschiebchen darauf schläft. Frau Brösel fängt an, wird wach und schenkt Kekse |
 | 4 | Der Flüstergang | SRL: Wenn-dann-Pläne | Drei Aufschiebchen flüstern, wer reinfällt, trottet zurück zur Treppe. Auf der Tafel von Hausmeister Grummelbart stehen seine eigenen Wenn-dann-Pläne. Mit Kreide schreibt die Figur dort für jede erlebte Stolperstelle einen Plan, nur konkrete Handlungen helfen. Danach läuft sie an der Störung von allein vorbei. Der Keks-Plan braucht einen Keks aus der Kantine |
-| 5 | Brikett und die Keks-Angel | Kombination | Brikett ist scheu. „Gib Keks an Brikett“ scheitert: Er versteckt sich hinter dem Schlüsselhaken. Lineal plus Blockflötenschnur ergibt eine Angel, Angel plus Keks die Keks-Angel. Brikett schnappt nach dem Keks, niest vor Freude Funken in den Kessel, die Heizung springt an, Grummelbart taut auf |
+| 5 | Brikett und die Keks-Angel | Kombination | Brikett sitzt im schmalen Spalt zwischen Kessel und Wand. „Gib Keks an Brikett“ scheitert: Er weicht zurück, die Figur ist zu nah. Die Hand passt nicht in den Spalt, das flache Lineal schon. Ein Keks auf dem Lineal rutscht herunter, er muss festgebunden werden. Lineal plus Kordel ergibt eine Angel, Angel plus Keks die Keks-Angel. Brikett beißt an und lässt sich herausziehen, niest vor Freude Funken in den Kessel, die Heizung springt an, Grummelbart taut auf |
 | 6 | Der Kompass | SRL: konkrete Ziele | Grummelbart gibt Schlüssel und Kompass. Bei vagen Zielen dreht die Nadel wild. Erst ein Ziel mit Was, Bis wann und Woran erkenne ich den Erfolg richtet sie aus |
 
 **Inventar in Kapitel 1**
 
 | Gegenstand | Herkunft | Kombination | Einsatz |
 | --- | --- | --- | --- |
-| Blockflötenschnur | Musikraum | mit Lineal zur Angel | Keks-Angel (K1) |
+| Kordel | Flötenbeutel im Musikraum | mit Lineal zur Angel | Keks-Angel (K1) |
 | Kekse | Frau Brösel | mit Angel zur Keks-Angel; Krümel für die Verkleidung | Brikett (K1), Keks-Plan im Flüstergang (K1), Verkleidung (K4) |
 | Einmachglas | Frau Brösel | mit Deckel und Monokel zur Irrlicht-Falle | Irrlichter (K2), Laterne (K4) |
 | Plastiktüten | Kantine | mit Gummiringen zu Moorgamaschen | Schlamm im Moor (K2) |
@@ -278,6 +278,10 @@ Die Hauptfigur muss durch die sich verschiebende Schule in den Heizungskeller, w
 | Kreide (aus dem Prolog) |  | mit Grummelbarts Tafel | eigene Wenn-dann-Pläne im Flüstergang (K1) |
 | Kellerschlüssel | Grummelbart |  | Kellertor zum Land Später |
 | Kompass der Pläne | Grummelbart |  | Wegweiser bis zum Finale, Zahnrad der Stundenuhr (K4) |
+
+**Ablauf im Heizungskeller.** Hinter der Eisentür aus dem Flüstergang ist es eiskalt. Hausmeister Grummelbart sitzt erstarrt im Ledersessel, Raureif im Bart, den Schlüssel zum Tor in der gefrorenen Faust. Das Schlüsselbrett an der Wand ist leer. Rechts steht das Holztor zum Land Später mit einer Katzenklappe, durch die der Dieb mit dem Heft verschwunden ist. Im Gespräch erfährt man von Grummelbart, dass der Kessel aus ist, weil Brikett sich seit dem lauten Gong versteckt, dass Brikett nur Kekse frisst und scheu ist und dass keine Hand in den Spalt passt. Auf dem Zettel am Kessel steht: „Anheizen macht Brikett. Er mag Kekse. Bitte nicht erschrecken. Der Hausmeister.“ Im Spalt zwischen Kessel und Ziegelpfeiler leuchten zwei Augen, die zurückweichen, sobald die Figur zu nah kommt.
+
+Was nicht klappt, gibt Hinweise: Den Keks direkt geben verscheucht Brikett. Ein Keks auf dem Boden bleibt liegen, Brikett traut sich nicht heraus. Reinwerfen bringt nichts, er soll ja herauskommen. Das Lineal passt in den Spalt („Lang und flach eben“). Keks und Lineal zusammen: „Der rutscht sofort runter. Ich müsste ihn festbinden. Mit einer Schnur oder einer Kordel.“ Damit ist klar, dass etwas zum Festbinden fehlt. Die Kordel gibt es im Musikraum, der immer im Süden bleibt. So wird das Flur-Rätsel ein drittes Mal gebraucht. Krächz hilft nur auf Nachfrage: erst Grummelbart fragen, dann die Frage, wie man einen Keks in den Spalt hält, zuletzt der Hinweis auf die Flötenbeutel.
 
 **Zwischensequenzen.** Zwischen den Stationen gibt es kurze, überspringbare Szenen ohne Verbleiste: die Rutschpartie durch den Lüftungsschacht (Krächz: „Flügel sind in Schächten übrigens völlig nutzlos!“) und der Abstieg über die kalte Kellertreppe („Die Heizung ist aus. Seit dem Gong steht hier alles still.“).
 

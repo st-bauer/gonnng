@@ -93,18 +93,25 @@ Canva-Arbeitsdatei: https://canva.link/mp6p64febvogrh4
   Pudding, Suppe, Kekse, Salat). Rätsel 2: Topf, Milch, Zucker, Puddingpulver auf den Herd legen (`aufHerd`, `S.bereit`), Zucker und
   Pulver liegen unter einem schlafenden Aufschiebchen, das den Topflappen als Kissen nimmt. Frau Brösel wird wach (`S.broesel` 1 und 2)
   und schenkt Kekse (`kekse`).
-  Mit den Keksen kommt die Figur durch den Flüstergang bis zur Tür des Heizungskellers. Dort endet die Vorschau.
+  Mit den Keksen kommt die Figur durch den Flüstergang in den Heizungskeller.
 - Zwischensequenzen (`runCut`, überspringbar, ohne Verbleiste): Rutschpartie durch den Schacht,
   Abstieg über die Kellertreppe am Ende der Hallen-Vorschau.
-- Szenenwahl nur zum Testen (versteckt, erscheint nach fünfmal schnellem Tippen auf den Titel „Gonnng!“): Intro, Prolog, Eingangshalle, Flüstergang, Kantine, jeweils mit passendem Spielstand (`SZENEN`).
+- Szenenwahl nur zum Testen (versteckt, erscheint nach fünfmal schnellem Tippen auf den Titel „Gonnng!“): Intro, Prolog, Eingangshalle, Flüstergang, Kantine, Heizungskeller, jeweils mit passendem Spielstand (`SZENEN`).
   Neue Räume dort mit ergänzen.
 - Zum Testen: `window.__frame(sekunde)` im Intro, `window.__act(verb, id, item)` und `window.__pick(i)` im Prolog.
 - Entschieden: Die Unruh bleibt. Die Große Stundenuhr ist eine Sonderanfertigung (Turmuhren haben sonst meist ein Pendel),
   Krächz erklärt das auf Nachfrage. Die Namen Frau Kallweit, Jonas und Lina bleiben.
 
+- Kapitel 1, vierter Raum: der Heizungskeller (Raum `heiz`, `drawHeizBg`, `makeGrummel`, `actHeiz`). Grummelbart erstarrt im Sessel mit dem
+  Schlüssel in der Faust, Brikett im Spalt hinter dem Kessel (nur glühende Augen), Tor zum Land Später mit Katzenklappe.
+  Die Figur merkt, dass sie den Keks am Lineal festbinden muss (`S.brauchSchnur`). Die Kordel kommt aus dem Musikraum.
+  Entschieden: Kordel aus einem Flötenbeutel (Blockflöten haben keine Schnur). Das Metronom läuft nach einem Anstoß weiter, einen Aufziehschlüssel gibt es nicht,
+  das Orchester braucht nur jemanden, der einzählt.
+
 ## Nächste Schritte
 
-1. Kantine abnehmen. Danach Heizungskeller (Brikett, Grummelbart, Keks-Angel mit Blockflötenschnur aus dem Musikraum) und Musikraum.
+1. Musikraum: Metronom anstoßen, im Takt einzählen, Kordel als Dank.
+2. Keks-Angel, Brikett heizt an, Grummelbart taut auf. Danach das Kompass-Rätsel.
 
 ## Online-Dokument
 
