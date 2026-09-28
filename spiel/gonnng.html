@@ -1930,70 +1930,118 @@ const BAND_KANTINE={x0:40,x1:300,y0:110,y1:134};
 const BAND_KAMMER={x0:34,x1:290,y0:112,y1:134};
 const ZUTATEN=['topf','milch','zucker','pulver'];
 let KANTINE=null,KAMMER=null;
+// Lange Farbrampen fuer die Kantine: aus wenigen Stuetzfarben mit vielen Zwischenstufen, so werden Licht und Schatten weich
+function mkRamp(keys,n){const h=c=>[1,3,5].map(i=>parseInt(c.substr(i,2),16)),out=[];
+  for(let i=0;i<n;i++){const t=i/(n-1)*(keys.length-1),k=Math.min(keys.length-2,Math.floor(t)),f=t-k,a=h(keys[k]),b=h(keys[k+1]);
+    out.push('#'+a.map((v,j)=>Math.round(v+(b[j]-v)*f).toString(16).padStart(2,'0')).join(''));}return out;}
+const KR={
+  kachel:mkRamp(['#2a3040','#5a6480','#98a2bc','#d4dae8','#f4f6fa'],12),     // kuehle Wandkacheln
+  kachelW:mkRamp(['#3a3028','#7a6a58','#c0ac90','#ecdcc0','#fff4e0'],12),    // Kacheln im warmen Lampenlicht
+  terra:mkRamp(['#1e0c06','#4a1e0e','#8a3c1c','#c0622e','#e8925a'],12),      // Terrakottaboden
+  stahl:mkRamp(['#10141c','#2e3848','#5c6a80','#9aa8bc','#e4eaf2'],12),
+  holz:mkRamp(['#1a0c06','#3e2010','#6e3c1c','#a0622e','#d09458'],10),
+  email:mkRamp(['#3a4252','#7a8498','#b8c0d0','#e4e8f0','#ffffff'],10),
+  kork:mkRamp(['#3a200c','#6e4420','#a0703c','#c89a5c'],8),
+  himmel:mkRamp(['#6a90d0','#9ab8e8','#cce0f8','#f0f6ff'],8),
+  decke:mkRamp(['#141820','#262c38','#3a4252','#505a6c'],8)
+};
+// Farbe aus einer Rampe waehlen, mit Bayer-Rasterung nur zwischen zwei benachbarten Stufen
+function pick(r,t,x,y){const n=r.length-1,v=clamp(t,0,0.9999)*n,k=Math.floor(v);return (v-k)>bay(x,y)?r[Math.min(n,k+1)]:r[k];}
 function drawKantineBg(){
   const [c,g]=mk(W,SH);
-  const VX=160,VY=44,WB=96;                        // Fluchtpunkt und Wandfuss
-  const zum=(x,y,k)=>[x+(VX-x)*k,y+(VY-y)*k];      // Punkt Richtung Fluchtpunkt schieben (in die Tiefe)
-  // Licht vom Fenster links: Staerke an einer Stelle der Rueckwand
-  const fl=(x,y)=>Math.max(0,70-Math.hypot(x-64,(y-34)*1.3))/110;
-  // Decke, nach hinten dunkler
-  dith(g,0,0,W,10,['#343e52','#4a4e6e','#5a6082'],(x,y)=>0.6-y/30-Math.abs(x-160)/500);
-  // Rueckwand aus Kacheln: hell am Fenster, rechts und oben dunkler, dunkle Kante am Boden
-  dith(g,0,10,W,WB-10,FLIESE,(x,y)=>0.55-x/520+fl(x,y)-Math.max(0,y-84)/40-Math.max(0,16-y)/30);
-  for(let y=14;y<WB;y+=8)for(let x=0;x<W;x++)if(bay(x,y)<0.75)P(g,x,y,'#8a9ab4');
-  for(let x=4;x<W;x+=8)for(let y=10;y<WB;y++)if(bay(x,y)<0.5)P(g,x,y,'#9aa0c0');
-  R(g,0,10,W,1,'#343e52');
-  // Boden aus Terrakottafliesen in Flucht, Licht vom Fenster als Fleck
-  const flBoden=(x,y)=>inPoly(x,y,[[66,98],[118,97],[196,130],[118,144]])?0.22:0;
-  for(let y=WB;y<SH;y++)for(let x=0;x<W;x++){
-    const d=y-VY,u=(x-VX)*62/d,row=Math.floor(900/d),col=Math.floor(u/18);
-    const fu=u/18-col,fv=900/d-row,fuge=fu<0.06||fv<0.09;
-    let t=0.6-(y-WB)/140-Math.max(0,x-90)/420+flBoden(x+0.5,y+0.5)+((row+col)%2?0.06:0);
-    if(fuge)t-=0.35;
-    const cols=RAMP.skirt,n=cols.length-1,v=clamp(t,0,0.999)*n,k=Math.floor(v);
-    P(g,x,y,(v-k)>bay(x,y)?cols[Math.min(n,k+1)]:cols[k]);
+  const VX=160,VY=44,WB=96;
+  const zum=(x,y,k)=>[x+(VX-x)*k,y+(VY-y)*k];
+  // zwei Lichtquellen: kuehles Fensterlicht links, warme Lampe ueber dem Herd
+  const fenster=(x,y)=>Math.max(0,1-Math.hypot(x-64,(y-40)*1.2)/150);
+  const lampe=(x,y)=>Math.max(0,1-Math.hypot(x-228,(y-24)*1.1)/85);
+  const hash=(a,b)=>((a*73856093)^(b*19349663))>>>0;
+  // Decke mit Rohr
+  for(let y=0;y<10;y++)for(let x=0;x<W;x++)P(g,x,y,pick(KR.decke,0.25+y/40+lampe(x,y)*0.5+fenster(x,y)*0.2,x,y));
+  for(let x=0;x<W;x++){P(g,x,4,pick(KR.stahl,0.55+fenster(x,4)*0.3,x,4));P(g,x,5,pick(KR.stahl,0.35,x,5));P(g,x,6,pick(KR.stahl,0.15,x,6));}
+  // Kachelwand: Fugen, Kanten, abgenutzte Kacheln, Licht aus zwei Richtungen, Zierstreifen
+  for(let y=10;y<WB;y++)for(let x=0;x<W;x++){
+    const tx=Math.floor(x/8),ty=Math.floor((y-10)/8),lx=x%8,ly=(y-10)%8,fuge=lx===0||ly===0;
+    const f=fenster(x,y),l=lampe(x,y),ao=Math.max(0,y-86)/14+Math.max(0,14-y)/10+Math.max(0,x-290)/60;
+    let t=0.22+f*0.62+l*0.45-ao*0.3+((hash(tx,ty)%7)-3)*0.012;
+    if(fuge)t-=0.16;else if(lx===1||ly===1)t+=0.06;else if(lx===7||ly===7)t-=0.05;
+    const anteil=clamp(l*1.5-f*1.1,0,1),warm=anteil>bay(x+3,y+1),streifen=ty===6;
+    P(g,x,y,streifen&&!fuge?pick(mkRampCache('streifen'),t,x,y):pick(warm?KR.kachelW:KR.kachel,t,x,y));
   }
-  // dunkle Kante, wo Wand und Boden sich treffen
-  for(let x=0;x<W;x++){P(g,x,WB,'#2e1408');if(bay(x,WB+1)<0.5)P(g,x,WB+1,'#2e1408');}
-  // Tuer zur Halle mit Laibung, Schatten rechts im Rahmen
-  R(g,3,37,30,WB-37,'#2a160c');dith(g,6,40,24,WB-40,RAMP.wood,(x,y)=>0.72-(x-6)/50-(y-40)/220);R(g,28,40,2,WB-40,'#2a160c');P(g,25,70,'#fff0a0');P(g,25,71,'#d8b040');
-  // Fenster mit tiefer Laibung und Fensterbrett
-  R(g,40,12,48,44,'#6e7498');dith(g,44,16,40,36,COL.sky,(x,y)=>0.35+(y-16)/50);
-  R(g,63,16,2,36,'#e0e0ea');R(g,44,33,40,2,'#e0e0ea');R(g,42,14,2,42,'#e0e0ea');R(g,84,14,2,42,'#9aa0c0');
-  polyFill(g,[[38,54],[90,54],[93,59],[35,59]],(x,y)=>y<56?'#ffffff':'#c8cce0');R(g,35,59,58,1,'#6e7498');
-  // Rezeptbrett aus Kork mit Schlagschatten nach rechts unten
-  R(g,99,25,44,32,'#4a5670');
-  R(g,96,22,44,32,'#5c341c');dith(g,98,24,40,28,['#8a5a2c','#a0703c','#b8864c'],(x,y)=>0.7-(x-98)/80);
-  [[100,27],[109,30],[119,26],[128,31]].forEach(([x,y])=>{R(g,x+1,y+1,8,12,'#5c341c');R(g,x,y,8,12,'#f4f0e0');R(g,x,y,8,2,'#c83030');for(let k=y+4;k<y+11;k+=2)R(g,x+1,k,6,1,'#9a9aa8');});
-  // Tuer zur Speisekammer
-  R(g,158,37,32,WB-37,'#2a160c');dith(g,162,40,24,WB-40,RAMP.wood,(x,y)=>0.5-(x-162)/60-(y-40)/220);R(g,184,40,2,WB-40,'#2a160c');P(g,165,70,'#d8b040');
-  // Hakenleiste ueber dem Herd
-  R(g,206,28,46,2,'#8a9ab4');R(g,206,30,46,1,'#1e2638');R(g,208,31,44,1,'#6e7498');
-  // Schlagschatten der Moebel auf dem Boden, das Licht kommt von links
-  const schatten=pts=>polyFill(g,pts,(x,y)=>bay(x,y)<0.55?'#2e1408':null);
-  schatten([[154,106],[196,106],[212,120],[168,120]]);
-  schatten([[252,106],[262,106],[300,124],[278,124]]);
-  schatten([[302,106],[320,106],[320,128],[318,128]]);
-  // Kuehlschrank: linke Seite im Licht, Vorderseite etwas dunkler
+  // Boden: Fliesen in Flucht, Fensterlicht und Lampenlicht, Spiegelung des Fensters, Schlagschatten gleich mitgerechnet
+  const schattenPolys=[[[154,106],[196,106],[214,124],[170,124]],[[252,106],[262,106],[300,126],[280,126]],[[80,106],[154,106],[160,110],[86,110]],[[204,106],[252,106],[254,109],[206,109]]];
+  for(let y=WB;y<SH;y++)for(let x=0;x<W;x++){
+    const d=y-VY,u=(x-VX)*62/d,row=Math.floor(900/d),col=Math.floor(u/18),fu=u/18-col,fv=900/d-row;
+    const fuge=fu<0.05||fv<0.08;
+    let t=0.28+fenster(x,y-40)*0.55+lampe(x,y-60)*0.35-(y-WB)/260+((hash(row,col)%5)-2)*0.015;
+    if(inPoly(x+0.5,y+0.5,[[66,98],[118,97],[196,130],[118,144]]))t+=0.2;
+    if(x>=44&&x<=84&&y>WB&&y<WB+22&&(x%10<7))t+=0.12*(1-(y-WB)/22);      // Spiegelung des Fensters im Boden
+    if(schattenPolys.some(p=>inPoly(x+0.5,y+0.5,p)))t-=0.22;
+    t-=Math.max(0,3-(y-WB))*0.08;                                        // Kontaktschatten an der Wand
+    if(fuge)t-=0.14;else if(fv<0.16)t+=0.04;
+    P(g,x,y,pick(KR.terra,t,x,y));
+  }
+  // Holztuer mit Maserung, Fuellungen und Messinggriff
+  const tuer=(x0,x1,dunkler)=>{
+    for(let y=37;y<WB;y++)for(let x=x0;x<x1;x++){const rand=x<x0+3||x>=x1-3||y<40;
+      let t=0.45-(x-x0)/(x1-x0)*0.25-dunkler+fenster(x,y)*0.25+lampe(x,y)*0.15+Math.sin((x*0.9+Math.sin(y*0.15)*2))*0.05;
+      const fuell=(y>44&&y<64||y>68&&y<WB-4)&&x>x0+6&&x<x1-6;if(fuell)t-=0.08;
+      if(fuell&&(y===45||y===69))t-=0.12;if(fuell&&(x===x0+7))t+=0.1;
+      P(g,x,y,rand?pick(KR.holz,0.15-dunkler,x,y):pick(KR.holz,t,x,y));}
+  };
+  tuer(3,33,0);tuer(158,190,0.08);
+  [[26,70],[164,70]].forEach(([x,y])=>{R(g,x,y,3,2,'#b08820');P(g,x,y,'#fff0a0');});
+  // Fenster: Laibung, Himmel mit Dach gegenueber, Spiegelung im Glas, Fensterbrett mit Geranie
+  for(let y=12;y<56;y++)for(let x=40;x<88;x++)P(g,x,y,pick(KR.email,0.35+(88-x)/120,x,y));
+  for(let y=16;y<52;y++)for(let x=44;x<84;x++){let t=0.3+(y-16)/45;if(y>40&&x>50&&x<78&&y>44-Math.floor((x-50)/6))t=-1;
+    if(Math.abs((x-44)-(y-16)*0.8-8)<2)t+=0.25;
+    P(g,x,y,t<0?pick(KR.decke,0.5,x,y):pick(KR.himmel,t,x,y));}
+  for(let y=14;y<54;y++){P(g,63,y,'#ffffff');P(g,64,y,'#d4dae8');}for(let x=42;x<86;x++){P(g,x,33,'#ffffff');P(g,x,34,'#d4dae8');}
+  polyFill(g,[[37,54],[91,54],[94,60],[34,60]],(x,y)=>pick(KR.email,y<57?0.95:0.6,x,y));
+  R(g,52,47,8,7,'#8a3c1c');R(g,52,47,8,1,'#c0622e');ellFill(g,56,43,6,4,(x,y)=>bay(x,y)<0.5?'#3e4a20':'#5a6a2e');[[53,41],[58,40],[60,44]].forEach(([x,y])=>{P(g,x,y,'#e86050');P(g,x+1,y,'#c83030');});
+  // Korkbrett mit Karten und Pinnnadeln, Schlagschatten
+  for(let y=24;y<56;y++)for(let x=98;x<142;x++)if(!(x<142&&y<54&&x>=96))P(g,x,y,pick(KR.kachel,0.2,x,y));
+  for(let y=22;y<54;y++)for(let x=96;x<140;x++){const rand=x<98||x>137||y<24||y>51;
+    P(g,x,y,rand?pick(KR.holz,0.35,x,y):pick(KR.kork,0.45+fenster(x,y)*0.3+((hash(x,y)%9)-4)*0.04,x,y));}
+  [[100,27],[109,30],[119,26],[128,31]].forEach(([x,y],i)=>{R(g,x+1,y+1,8,12,'#3a200c');R(g,x,y,8,12,'#fbf6ea');R(g,x,y,8,2,'#c83030');
+    for(let k=y+4;k<y+11;k+=2)R(g,x+1,k,5+(i+k)%2,1,'#9aa2b0');P(g,x+4,y,['#3a64c4','#d8b040','#2e8a40','#a02234'][i]);});
+  // Kuechenuhr ueber der Speisekammer, stehengeblieben
+  ellFill(g,174,20,7,7,(x,y,dx,dy)=>{const r=dx*dx+dy*dy;return r>0.75?'#343e52':pick(KR.email,0.8-dy*0.2,x,y);});
+  line(g,174,20,174,15,'#1e2638');line(g,174,20,177,21,'#1e2638');P(g,174,20,'#c83030');
+  // Hakenleiste mit Kellen
+  for(let x=206;x<252;x++){P(g,x,28,pick(KR.stahl,0.85,x,28));P(g,x,29,pick(KR.stahl,0.5,x,29));P(g,x,30,pick(KR.stahl,0.2,x,30));}
+  [[210,'#9aa8bc'],[249,'#9aa8bc']].forEach(([x])=>{line(g,x,31,x,42,'#5c6a80');ellFill(g,x,44,2.5,2,(px,py,dx)=>dx<0?'#e4eaf2':'#5c6a80');});
+  // Kuehlschrank: Email mit Glanzstreifen, Chromgriffe, Zettel
   const [kx,ky]=zum(262,22,0.1),[kx2,ky2]=zum(262,106,0.1);
-  polyFill(g,[[262,22],[kx,ky],[kx2,ky2],[262,106]],(x,y)=>bay(x,y)<0.7?'#e0e0ea':'#c8cce0');
-  dith(g,262,22,40,84,FLIESE,(x,y)=>0.55-(x-262)/70-(y-22)/400);
-  R(g,262,50,40,1,'#6e7498');R(g,293,30,2,14,'#4a4e6e');R(g,293,56,2,20,'#4a4e6e');R(g,262,22,40,1,'#ffffff');R(g,301,22,1,84,'#6e7498');
-  // Herd als Koerper: Oberseite in der Flucht, linke Seite im Licht
+  polyFill(g,[[262,22],[kx,ky],[kx2,ky2],[262,106]],(x,y)=>pick(KR.email,0.55+fenster(x,y)*0.4-(y-22)/400,x,y));
+  for(let y=22;y<106;y++)for(let x=262;x<302;x++){const rand=x===262||x===301||y===22;
+    let t=0.55-(x-262)/90-(y-22)/500+lampe(x,y)*0.2;if(x>=268&&x<=271)t+=0.25;if(y===50||y===51)t-=0.35;
+    P(g,x,y,pick(KR.email,rand?t+0.2:t,x,y));}
+  for(let y=30;y<46;y++){P(g,293,y,'#e4eaf2');P(g,294,y,'#5c6a80');}for(let y=56;y<78;y++){P(g,293,y,'#e4eaf2');P(g,294,y,'#5c6a80');}
+  R(g,274,58,10,11,'#fff6d8');R(g,278,57,2,2,'#c83030');for(let k=61;k<68;k+=2)R(g,275,k,8,1,'#7a8498');
+  // Herd als Koerper mit Kochfeldern, Knoepfen und Backofenfenster, warm angestrahlt
   const [h1x,h1y]=zum(204,66,0.14),[h2x,h2y]=zum(252,66,0.14),[h3x,h3y]=zum(204,106,0.14);
-  polyFill(g,[[204,66],[h1x,h1y],[h3x,h3y],[204,106]],(x,y)=>bay(x,y)<0.6?'#8a9ab4':'#5a6880');
-  polyFill(g,[[204,66],[252,66],[h2x,h2y],[h1x,h1y]],(x,y)=>bay(x,y)<0.5?'#343e52':'#1e2638');
-  dith(g,204,66,48,40,EISEN,(x,y)=>0.5-(x-204)/120-(y-66)/80);R(g,204,66,48,1,'#c8c8d4');
-  [[216,63],[238,63]].forEach(([x,y])=>ellFill(g,x,y,6,1.6,(px,py,dx,dy)=>dx*dx+dy*dy>0.5?'#5a6880':'#141a28'));
-  R(g,212,78,32,20,'#141a28');dith(g,214,80,28,16,['#1e2638','#343e52'],(x,y)=>0.6-(y-80)/20);R(g,214,80,28,1,'#8a9ab4');R(g,218,75,20,2,'#e0e0ea');
-  // Theke als Koerper mit Oberseite, das Fensterlicht glaenzt auf der Kante
+  polyFill(g,[[204,66],[h1x,h1y],[h3x,h3y],[204,106]],(x,y)=>pick(KR.stahl,0.55+fenster(x,y)*0.3-(y-66)/200,x,y));
+  polyFill(g,[[204,66],[252,66],[h2x,h2y],[h1x,h1y]],(x,y)=>pick(KR.stahl,0.18+lampe(x,y)*0.25,x,y));
+  [[216,63],[238,63]].forEach(([x,y])=>ellFill(g,x,y,6,1.6,(px,py,dx,dy)=>{const r=dx*dx+dy*dy;return r>0.6?pick(KR.stahl,0.45,px,py):r>0.25?'#10141c':pick(KR.stahl,0.3,px,py);}));
+  for(let y=66;y<106;y++)for(let x=204;x<252;x++){let t=0.42-(x-204)/140-(y-66)/160+lampe(x,y)*0.3;if(x%3===0)t-=0.03;P(g,x,y,pick(KR.stahl,t,x,y));}
+  for(let x=204;x<252;x++)P(g,x,66,'#e4eaf2');
+  [210,218,226,234,242].forEach(x=>{ellFill(g,x+1,71,2,2,()=>'#10141c');P(g,x,70,'#e4eaf2');});
+  for(let y=78;y<98;y++)for(let x=212;x<244;x++){const rand=x===212||x===243||y===78||y===97;
+    let t=rand?0.55:0.12+(x-212)/200;if(!rand&&Math.abs((x-212)-(y-78)*1.2-6)<2)t+=0.2;P(g,x,y,pick(KR.stahl,t,x,y));}
+  for(let x=216;x<240;x++){P(g,x,75,'#e4eaf2');P(g,x,76,'#5c6a80');}
+  // Theke: gebuerstete Front, Oberseite spiegelt das Fenster
   const [t1x,t1y]=zum(80,70,0.18),[t2x,t2y]=zum(154,70,0.18);
-  polyFill(g,[[80,70],[154,70],[t2x,t2y],[t1x,t1y]],(x,y)=>bay(x,y)<0.25+Math.max(0,140-x)/160?'#ffffff':'#c8cce0');
-  dith(g,80,70,74,36,EISEN,(x,y)=>0.72-(y-70)/50-(x-80)/200);
-  R(g,80,70,74,1,'#ffffff');R(g,80,71,74,1,'#5a6880');for(let x=98;x<150;x+=24){R(g,x,74,1,30,'#343e52');R(g,x+1,74,1,30,'#8a9ab4');}
-  R(g,80,104,74,2,'#1e2638');
+  polyFill(g,[[80,70],[154,70],[t2x,t2y],[t1x,t1y]],(x,y)=>pick(KR.stahl,0.62+fenster(x,y)*0.4-(x-80)/400+(Math.abs(x-104)<8?0.15:0),x,y));
+  for(let y=70;y<106;y++)for(let x=80;x<154;x++){let t=0.5-(y-70)/80-(x-80)/260+fenster(x,y)*0.25+((hash(0,y)%3)-1)*0.03;
+    if((x-98)%24===0)t-=0.25;if((x-99)%24===0)t+=0.12;if(y>=102)t=0.08;P(g,x,y,pick(KR.stahl,t,x,y));}
+  for(let x=80;x<154;x++)P(g,x,70,'#ffffff');
+  // Hängelampe ueber dem Herd mit warmem Schein
+  line(g,228,0,228,17,'#10141c');
+  polyFill(g,[[220,24],[236,24],[232,17],[224,17]],(x,y)=>pick(KR.email,0.3+(x-220)/30,x,y));R(g,220,24,16,1,'#10141c');
+  R(g,226,25,4,2,'#fff4c0');P(g,227,27,'#fff0a0');
   return c;
 }
+const _rc={};function mkRampCache(n){return _rc[n]||(_rc[n]=mkRamp(['#0e3a36','#1e6a60','#34a894','#7cd8c4','#c8f4e8'],10));}
 function drawKammerBg(){
   const [c,g]=mk(W,SH);
   // enge Kammer, Licht faellt nur durch die offene Tuer links herein
