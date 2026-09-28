@@ -78,10 +78,14 @@ Canva-Arbeitsdatei: https://canva.link/mp6p64febvogrh4
   Auswahl aus `WENN` und `DANN`, gespeichert in `S.plaene`). Nur konkrete Handlungen passen, dann läuft die Figur von allein vorbei.
   Der Keks-Plan braucht einen Keks: Im Gespräch mit dem Aufschiebchen auf der Kiste erfährt man, dass Frau Brösel in der Kantine die Kekse backt.
   Grundsatz: Krächz hilft nur, jedes Rätsel ist auch ohne ihn lösbar. Vorschläge vor dem Einbau auf Sinn in der Spielwelt prüfen.
-  Die Vorschau endet beim Erreichen der Kantine. Inventar mit Blättern (Pfeile links neben den Feldern).
+  Inventar mit Blättern (Pfeile links neben den Feldern).
+- Kapitel 1, dritter Raum: die Kantine (Raum `kantine`). Frau Brösel (`makeBroesel`) ist erstarrt vor vierhundert Portionen.
+  Im Gespräch (`redeBroesel`, Listen `ZUERST` und `SCHRITT`) findet die Figur heraus, dass der Pudding zuerst muss, und schlägt einen
+  ersten Schritt vor, der sicher klappt. Frau Brösel wird wach (`S.broesel` 1 und 2) und schenkt Kekse (`kekse`).
+  Mit den Keksen kommt die Figur durch den Flüstergang bis zur Tür des Heizungskellers. Dort endet die Vorschau.
 - Zwischensequenzen (`runCut`, überspringbar, ohne Verbleiste): Rutschpartie durch den Schacht,
   Abstieg über die Kellertreppe am Ende der Hallen-Vorschau.
-- Szenenwahl nur zum Testen (versteckt, erscheint nach fünfmal schnellem Tippen auf den Titel „Gonnng!“): Intro, Prolog, Eingangshalle, Flüstergang, jeweils mit passendem Spielstand (`SZENEN`).
+- Szenenwahl nur zum Testen (versteckt, erscheint nach fünfmal schnellem Tippen auf den Titel „Gonnng!“): Intro, Prolog, Eingangshalle, Flüstergang, Kantine, jeweils mit passendem Spielstand (`SZENEN`).
   Neue Räume dort mit ergänzen.
 - Zum Testen: `window.__frame(sekunde)` im Intro, `window.__act(verb, id, item)` und `window.__pick(i)` im Prolog.
 - Entschieden: Die Unruh bleibt. Die Große Stundenuhr ist eine Sonderanfertigung (Turmuhren haben sonst meist ein Pendel),
@@ -89,7 +93,7 @@ Canva-Arbeitsdatei: https://canva.link/mp6p64febvogrh4
 
 ## Nächste Schritte
 
-1. Flüstergang abnehmen. Danach Kantine mit Frau Brösel (Festessen, Dann-Karte „nächster kleiner Schritt“, Kekse), Musikraum, Rest des Flüstergangs, Heizungskeller.
+1. Kantine abnehmen. Danach Heizungskeller (Brikett, Grummelbart, Keks-Angel mit Blockflötenschnur aus dem Musikraum) und Musikraum.
 
 ## Online-Dokument
 

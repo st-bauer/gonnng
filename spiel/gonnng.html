@@ -52,6 +52,7 @@ button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
       <p class="small" style="margin-top:6px">Kapitel 1: Die wandernden Flure</p>
       <button data-szene="halle">Die Eingangshalle</button>
       <button data-szene="gang">Der Flüstergang</button>
+      <button data-szene="kantine">Die Kantine</button>
       <button id="szenenZurueck">Zurück</button>
     </div>
     <div class="overlay setup" id="setup" hidden>
@@ -66,7 +67,7 @@ button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
     </div>
     <div class="overlay" id="end" hidden>
       <h1>Weiter geht’s …</h1>
-      <p>Die Kantine ist gefunden. Hier endet die Vorschau von Kapitel 1. Als Nächstes kommen Frau Brösels Festessen, der Musikraum und der Heizungskeller.</p>
+      <p>Der Weg in den Heizungskeller ist frei. Hier endet die Vorschau von Kapitel 1. Als Nächstes kommen der Heizungskeller mit Brikett und Grummelbart und der Musikraum.</p>
       <button class="primary" id="zumTitel">Zum Titel</button>
     </div>
   </div>
@@ -964,6 +965,7 @@ const ITEMS={
   radiergummi:{name:'Radiergummi',look:'Riecht nach Erdbeere. Warum riechen Radiergummis nach Erdbeere?'},
   muenze:{name:'Münze',look:'Ein Euro aus der Klassenkasse. Flach und rund.'},
   kreide:{name:'Kreide',look:'Ein Stück weiße Kreide. Damit kann man Zeichen machen.'},
+  kekse:{name:'Kekse',look:'Frau Brösels Kekse. Noch warm. Riechen nach Schokolade und Anfang.'},
   notiz:{name:'Zettel',look:'„Heft im Heizungskeller abgeben. Gleich. Oder später.“ Voller Kekskrümel. Die Schrift ist sehr klein.'}
 };
 function icon(g,id,x,y){
@@ -972,11 +974,12 @@ function icon(g,id,x,y){
   if(id==='radiergummi'){r(9,5,8,7,'#f08aa8');r(17,5,7,7,'#5a8ae0');r(9,11,15,1,'#803050');r(10,6,3,1,'#ffc8d8');}
   if(id==='muenze'){ellFill(g,x+16,y+8,6,6,(px,py,dx,dy)=>dx*dx+dy*dy>0.55?'#b08820':dx+dy<-0.4?'#fff0a0':'#d8b040');}
   if(id==='kreide'){r(7,7,18,3,'#f4f4f0');r(7,9,18,1,'#c8c8c0');r(24,7,1,3,'#ffffff');}
+  if(id==='kekse'){[[10,6],[18,9],[13,11]].forEach(([a,b])=>{ellFill(g,x+a,y+b,4,3,(px,py,dx,dy)=>dx*dx+dy*dy>0.6?'#5c341c':'#b07c48');r(a-1,b-1,1,1,'#2a160c');r(a+1,b,1,1,'#2a160c');});}
   if(id==='notiz'){r(10,3,12,11,'#e8e0c8');r(10,3,12,1,'#ffffff');for(let i=5;i<13;i+=2)r(12,i,8,1,'#6e6e7c');r(19,11,1,1,'#b07c48');r(13,12,1,1,'#b07c48');}
 }
-const K={hero:'#ffffff',kraechz:'#9ab8ff',kallweit:'#ff9ac8',jonas:'#8af08a',lina:'#ffd070',auf:'#d0a8ff',auf1:'#d0a8ff',auf2:'#d0a8ff',auf3:'#d0a8ff'};
+const K={hero:'#ffffff',kraechz:'#9ab8ff',kallweit:'#ff9ac8',jonas:'#8af08a',lina:'#ffd070',auf:'#d0a8ff',auf1:'#d0a8ff',auf2:'#d0a8ff',auf3:'#d0a8ff',broesel:'#ffb070'};
 const heroHead=()=>[S.hero.x,S.hero.y-46];
-const HEADS={kallweit:()=>[102,42],jonas:()=>[132,94],lina:()=>[42,96],kraechz:()=>[S.kx,S.ky-20],auf:()=>S.auf?[S.auf.x,S.auf.y-28]:[250,80],auf1:()=>[119,74],auf2:()=>[187,52],auf3:()=>[252,62]};
+const HEADS={kallweit:()=>[102,42],jonas:()=>[132,94],lina:()=>[42,96],kraechz:()=>[S.kx,S.ky-20],auf:()=>S.auf?[S.auf.x,S.auf.y-28]:[250,80],auf1:()=>[119,74],auf2:()=>[187,52],auf3:()=>[252,62],broesel:()=>S.broesel>=1?[196,52]:[176,52]};
 
 const HS=[
   {id:'kraechz',name:'Krächz',rect:()=>S.kraechz==='aussen'?[34,62,22,18]:[S.kx-11,S.ky-19,22,19],walk:[80,106],flip:true},
@@ -1039,7 +1042,7 @@ const FALLBACK={
   schliesse:()=>'Da gibt es nichts zu schließen.',druecke:()=>'Da tut sich nichts.',ziehe:()=>'Da tut sich nichts.',
   rede:()=>'Mit Gegenständen rede ich nur im Notfall.',gib:()=>'Das will hier niemand haben.',benutze:()=>'Das bringt nichts.'
 };
-function stage(){if(S.room==='gang')return'gang';if(S.room==='halle')return S.suchKantine?'kantine':S.flureGeschafft?'fertig':(S.spur?'flure':'spur');if(!S.fenster)return'fenster';if(!S.ziel)return'ziel';if(!S.kruemelGesehen)return'kruemel';if(!S.gitter)return'gitter';if(S.inv.indexOf('kreide')<0)return'kreide';return'fertig';}
+function stage(){if(S.room==='gang')return'gang';if(S.room==='kantine')return'kueche';if(S.room==='halle')return S.suchKantine&&!has('kekse')?'kantine':has('kekse')?'flure':S.flureGeschafft?'fertig':(S.spur?'flure':'spur');if(!S.fenster)return'fenster';if(!S.ziel)return'ziel';if(!S.kruemelGesehen)return'kruemel';if(!S.gitter)return'gitter';if(S.inv.indexOf('kreide')<0)return'kreide';return'fertig';}
 const TIPPS={flure:['Hau mal auf den Gong und schau, was mit den Schildern passiert.','Wenn du losläufst, gongt es. Geh also dahin, wo die Kellertreppe nach dem nächsten Gong steht.','Die Räume rücken im Uhrzeigersinn eine Tür weiter und hüpfen am Musikraum vorbei. Von Osten geht es also direkt nach Westen.'],kruemel:['Wohin ist der Dieb wohl verschwunden?','Wer klaut, hat es eilig. Und wer es eilig hat, krümelt. Schau mal nach unten.','Die Krümel führen zum Gitter.'],
   kantine:['Diesmal suchst du die Kantine. Hau auf den Gong und schau, wohin sie wandert.','Beim Losgehen gongt es. Geh also dahin, wo die Kantine nach dem nächsten Gong steht.','Such das Schild „Kantine“. Die Tür im Uhrzeigersinn daneben ist deine, der Süden zählt nicht mit.'],
   gitter:['Schrauben brauchen einen Dreher.','Schlitzschrauben mag alles, was flach und rund ist.','In Pulten liegt oft Kleingeld.']};
@@ -1048,6 +1051,7 @@ async function tipp(){const st=stage();
   if(st==='kreide'){await say('kraechz','Wer ins Dunkle geht, braucht Zeichen.');return;}
   if(st==='fertig'){await say('kraechz','Worauf wartest du? Auf den Gong?');return;}
   if(st==='gang')return gangTipp();
+  if(st==='kueche')return kantineTipp();
   const i=Math.min(S.tipp[st]||0,2);S.tipp[st]=i+1;await say('kraechz',TIPPS[st][i]);}
 function choose(options){return new Promise(r=>{S.dialog={options,resolve:i=>{S.dialog=null;r(i);}};});}
 // Zielgespraech: jede Stufe hat mehrere Antworten, nur eine fuehrt weiter.
@@ -1136,6 +1140,7 @@ function give(id){if(S.inv.indexOf(id)<0)S.inv.push(id);S.invOff=Math.max(0,Math
 async function act(verb,h,item){
   if(S.room==='halle')return actHalle(verb,h,item);
   if(S.room==='gang')return actGang(verb,h,item);
+  if(S.room==='kantine')return actKantine(verb,h,item);
   const id=h.id;
   if(item){
     if(verb==='gib'){if(id==='kraechz')return say('kraechz','Behalte das mal schön selbst.');if(['jonas','lina','kallweit'].includes(id))return say(id,'Gleich.');return say('hero',FALLBACK.gib());}
@@ -1241,6 +1246,7 @@ function build(){
   SPR.jonas=[makeJonas({shake:0}),makeJonas({shake:1})];SPR.lina=makeLina();
   SPR.raven=makeRaven({});SPR.ravenKnock=makeRaven({knock:1});SPR.ravenTalk=makeRaven({talk:1});
   SPR.imp=makeImp({});SPR.impYawn=makeImp({yawn:1,heft:1});SPR.impHeft=makeImp({heft:1});SPR.impSleep=makeImp({yawn:1});SPR.impKeks=makeImp({keks:1});
+  SPR.broesel=makeBroesel({});SPR.broeselTalk=makeBroesel({talk:1});SPR.broeselRuehr=makeBroesel({stir:1});SPR.broeselRuehr2=makeBroesel({stir:2});
   SPR.impWalk=[0,1,2,3].map(i=>makeImp({walk:1,phase:i/4}));SPR.impWalkHeft=[0,1,2,3].map(i=>makeImp({walk:1,phase:i/4,heft:1}));
 }
 // Figur mit Fusspunkt zeichnen, ax = Ankerpunkt im Bild
@@ -1255,6 +1261,7 @@ function drawScene(now){
   if(S.cut)return drawCut(now);
   if(S.room==='halle')return drawHalle(now);
   if(S.room==='gang')return drawGang(now);
+  if(S.room==='kantine')return drawKantine(now);
   ctx.drawImage(ROOM,0,0);
   // Sekundenzeiger zittert auf der Stelle
   const a=-2.2+Math.sin(now/40)*0.08;line(ctx,226,24,226+Math.cos(a)*7,24+Math.sin(a)*7,'#c83030');
@@ -1394,7 +1401,7 @@ const START=['kantine','bio','keller'];           // Takt 0: Nord, Ost, West
 const RAUM_NAME={kantine:'Kantine',bio:'Biologieraum',keller:'Kellertreppe',musik:'Musikraum'};
 function raumAn(tuer,takt){if(tuer==='sued')return'musik';const i=RING.indexOf(tuer);return START[((i-takt)%3+3)%3];}
 const BAND_HALLE={x0:22,x1:298,y0:98,y1:136};
-const curBand=()=>S.room==='halle'?BAND_HALLE:S.room==='gang'?BAND_GANG:BAND;
+const curBand=()=>S.room==='halle'?BAND_HALLE:S.room==='gang'?BAND_GANG:S.room==='kantine'?BAND_KANTINE:BAND;
 
 let HALLE=null;
 function drawHalleBg(){
@@ -1515,7 +1522,7 @@ const HS_HALLE=[
   {id:'sued',name:()=>'Weg nach Süden',exit:true,rect:()=>[120,124,80,20],walk:[160,136],flip:false},
   {id:'bodenH',name:'Boden',floor:true,rect:()=>[20,98,280,40],walk:[0,0],flip:false}
 ];
-const curHS=()=>S.room==='halle'?HS_HALLE:S.room==='gang'?HS_GANG:HS;
+const curHS=()=>S.room==='halle'?HS_HALLE:S.room==='gang'?HS_GANG:S.room==='kantine'?HS_KANTINE:HS;
 async function travel(tuer){
   S.hero.hidden=true;tone('triangle',300,0.3,0.04,200);
   await sleep(500);gongSchlag();await sleep(700);
@@ -1528,15 +1535,15 @@ async function travel(tuer){
     return enterGang();
   }
   if(ziel==='kantine'&&S.suchKantine){
-    await showCard('Die Kantine',unterwegs+'Frau Brösel steht erstarrt vor vierhundert Portionen. Hier geht es als Nächstes weiter.');
-    S.over=true;save();if(API.onDone)API.onDone('kapitel1');return;
+    await showCard('Die Kantine',unterwegs+'Es riecht nach kalter Küche.');
+    return enterKantine();
   }
   const T={musik:['Der Musikraum','Das Blockflötenorchester hält dich fest, bis du den Takt nachklatschst. Dieses Rätsel kommt noch. Für heute lässt man dich laufen.'],
     kantine:['Die Kantine','Frau Brösel seufzt über vierhundert Portionen. Hier geht es später weiter.'],
     bio:['Der Biologieraum','Die Topfpflanzen streiten sich, wer mehr Licht bekommt. Keine Kellertreppe weit und breit.']}[ziel];
   await showCard(T[0],unterwegs+T[1]);
   S.hero.hidden=false;S.fehlwege=(S.fehlwege||0)+1;
-  const gesucht=S.suchKantine?'Kantine':'Kellertreppe';
+  const gesucht=S.suchKantine&&!has('kekse')?'Kantine':'Kellertreppe';
   await say('hero',['Wieder in der Halle. Das war wohl der falsche Flügel.','Zurück in der Halle. Die '+gesucht+' war da nicht.','Wieder hier. Ich sollte erst denken und dann laufen.'][(S.fehlwege-1)%3]);
 }
 async function peek(tuer){
@@ -1635,7 +1642,7 @@ const DANN=[
 const VORBEI={
   'nicht:schritt':[['hero','Einen Schritt schaffe ich immer.'],['auf1','… Und noch einen?'],['hero','Genau.']],
   'spaeter:tuer':[['hero','Ich schaue nur auf die Tür.'],['auf2','Die Hängematte ist aber viel schöner als die Tür!']],
-  'hunger:keks':[['hero','Ich esse meinen eigenen Keks.'],['auf3','Mmpf! Das ist ja … auch ein Brösel-Keks.']]
+  'hunger:keks':[['hero','Ich esse meinen eigenen Keks.'],['auf3','Mmpf! Der ist ja … noch warm! Unfair.']]
 };
 const has=id=>S.inv.indexOf(id)>=0;
 let GANG=null;
@@ -1739,7 +1746,7 @@ async function goTo(x,y){
   for(const d of STOER){
     if(x<=d.x-14||S.hero.x>=d.x)continue;
     const yy=clamp(y,BAND_GANG.y0,BAND_GANG.y1),p=planFuer(d);
-    if(p&&(d.w!=='hunger'||has('keks'))){
+    if(p&&(d.w!=='hunger'||has('kekse'))){
       if(!S.passed[d.id]){await walkTo(d.x-14,yy);S.passed[d.id]=true;await say(d.id,d.satz);for(const [w,t] of VORBEI[d.w+':'+p])await say(w,t);}
       continue;
     }
@@ -1781,7 +1788,7 @@ async function leaveGang(){
   S.hero.hidden=true;tone('triangle',300,0.3,0.04,500);await sleep(500);
   S.room='halle';S.kraechz='halle';S.kx=92;S.ky=44;S.kflip=true;S.hero.x=26;S.hero.y=118;S.hero.flip=false;S.hero.hidden=false;
   await walkTo(62,120);
-  if(!S.suchKantine)return say('hero','Wieder in der Halle. Die Kellertreppe finde ich ja jetzt.');
+  if(!S.suchKantine||has('kekse'))return say('hero','Wieder in der Halle. Die Kellertreppe finde ich ja jetzt.');
   await say('hero','Wieder in der Halle. Jetzt muss ich zur Kantine.');
   if(!S.kantineErklaert){S.kantineErklaert=true;await say('kraechz','Die Regel kennst du ja. Diesmal suchst du eben die Kantine.');}
 }
@@ -1825,7 +1832,7 @@ async function planSchreiben(){
   }
   S.plaene[w]=d.id;
   await say('hero',WENN[w].replace(' …',',')+' '+d.text.replace('… ',''));
-  if(d.id==='keks'&&!has('keks'))return say('hero','Guter Plan. Jetzt bräuchte ich nur noch einen Keks.');
+  if(d.id==='keks'&&!has('kekse'))return say('hero','Guter Plan. Jetzt bräuchte ich nur noch einen Keks.');
   return say('hero','So. Das steht jetzt da. Und in meinem Kopf auch.');
 }
 // Gespraech mit dem Aufschiebchen auf der Kiste: Hier erfaehrt man, woher die Kekse kommen
@@ -1852,7 +1859,11 @@ async function actGang(verb,h,item){
   switch(id+':'+verb){
     case 'treppe:gehe':case 'treppe:benutze':return leaveGang();
     case 'treppe:schau':return say('hero','Da oben ist die Halle. Da ist es wenigstens warm.');
-    case 'tuer:gehe':case 'tuer:oeffne':case 'tuer:benutze':return say('hero','Hier ist der Dieb durch. Aber da komme ich nie hin, solange hier alle flüstern.');
+    case 'tuer:gehe':case 'tuer:oeffne':case 'tuer:benutze':
+      await reach();S.tuerAuf=true;tone('sawtooth',120,0.4,0.05,70);await sleep(500);
+      await say('hero','Geschafft. Heizungskeller, ich komme.');
+      await showCard('Der Heizungskeller','Hinter der Eisentür ist es dunkel und eiskalt. Hier geht es als Nächstes weiter.');
+      S.over=true;save();if(API.onDone)API.onDone('kapitel1');return;
     case 'tuer:schau':return say('hero','Eine Eisentür. „Heizungskeller“. Da ist der Dieb mit meinem Heft verschwunden.');
     case 'schild:schau':return say('hero','„Flüstergang. Zum Heizungskeller. Bitte nicht stehen bleiben. Der Hausmeister.“');
     case 'schild:nimm':return say('hero','Das bleibt hängen. Sonst bleibt hier noch jemand stehen.');
@@ -1888,6 +1899,218 @@ async function gangTipp(){
   else if(!S.suchKantine)t='Frag doch mal das Aufschiebchen auf der Kiste, woher es die Kekse hat.';
   else t='Frau Brösel, Kantine. Die Treppe rauf und dann durch die wandernden Flure.';
   await say('kraechz',t);
+}
+
+/* =====================================================================
+   Kapitel 1: Die Kantine mit Frau Brösel
+   Frau Brösel ist erstarrt wie alle, die nicht anfangen können: vierhundert Portionen erschlagen sie.
+   Kekse hat sie keine mehr, die Aufschiebchen haben alles geklaut. Neue backt sie erst, wenn sie anfängt.
+   Die Figur hilft in zwei Schritten: Was dauert am längsten und muss zuerst (der Pudding muss drei Stunden kalt stehen)?
+   Und was ist ein erster Schritt, der sicher klappt (nahe Teilziele, Bandura & Schunk, 1981)?
+   ===================================================================== */
+const FLIESE=['#8a9ab4','#9aa0c0','#b0b6d2','#c8cce0','#e0e0ea'];
+const BAND_KANTINE={x0:40,x1:300,y0:110,y1:134};
+let KANTINE=null;
+function drawKantineBg(){
+  const [c,g]=mk(W,SH);
+  // Kachelwand, Tageslicht kommt von links durch das Fenster
+  dith(g,0,0,W,104,FLIESE,(x,y)=>0.72-x/520-y/500+Math.max(0,50-Math.hypot(x-64,y-36))/160);
+  for(let y=6;y<104;y+=8)R(g,0,y,W,1,'#9aa0c0');for(let x=4;x<W;x+=8)R(g,x,0,1,104,'#b0b6d2');
+  R(g,0,0,W,5,'#6e7498');R(g,0,5,W,1,'#9aa0c0');
+  // Tuer zur Halle ganz links
+  R(g,4,38,28,66,'#2a160c');dith(g,6,40,24,64,RAMP.wood,(x,y)=>0.7-(x-6)/60-(y-40)/200);P(g,26,72,'#d8b040');
+  // Fenster mit Morgenhimmel
+  R(g,42,14,44,40,'#e0e0ea');dith(g,44,16,40,36,COL.sky,(x,y)=>0.4+(y-16)/50);R(g,63,16,2,36,'#e0e0ea');R(g,44,33,40,2,'#e0e0ea');
+  // Rezeptbrett aus Kork mit drei Karten
+  R(g,96,24,40,30,'#5c341c');dith(g,98,26,36,26,['#8a5a2c','#a0703c','#b8864c'],(x,y)=>0.6-(x-98)/100);
+  [[100,28],[112,31],[124,28]].forEach(([x,y])=>{R(g,x,y,10,13,'#f4f0e0');R(g,x,y,10,2,'#c83030');for(let k=y+4;k<y+12;k+=2)R(g,x+1,k,8,1,'#9a9aa8');});
+  R(g,100,44,30,1,'#3a2410');
+  // Regal mit leeren Keksdosen
+  R(g,146,34,44,2,'#5c341c');R(g,146,36,44,1,'#2a160c');
+  [[150,'#a02234'],[164,'#3a64c4'],[178,'#d8b040']].forEach(([x,col])=>{R(g,x,26,9,8,col);R(g,x,26,9,1,'#ffffff');R(g,x+8,27,1,7,'#383840');});
+  // Theke aus Edelstahl
+  dith(g,80,70,112,34,EISEN,(x,y)=>0.7-(y-70)/60-(x-80)/400);R(g,80,68,114,3,'#e0e0ea');R(g,80,71,114,1,'#5a6880');
+  for(let x=92;x<190;x+=24)R(g,x,74,1,28,'#5a6880');
+  // Herd mit Backofen
+  R(g,204,66,48,38,'#343e52');dith(g,206,68,44,34,EISEN,(x,y)=>0.6-(y-68)/60);R(g,204,64,48,3,'#1e2638');
+  R(g,212,78,32,20,'#141a28');R(g,214,80,28,16,'#343e52');R(g,214,80,28,1,'#8a9ab4');R(g,218,76,20,2,'#c8c8d4');
+  // Kuehlschrank
+  R(g,262,24,40,80,'#8a9ab4');dith(g,264,26,36,76,FLIESE,(x,y)=>0.8-(x-264)/80);R(g,264,52,36,1,'#6e7498');R(g,294,34,2,12,'#6e7498');R(g,294,58,2,16,'#6e7498');
+  // Boden mit Terrakottafliesen
+  dith(g,0,104,W,SH-104,RAMP.skirt,(x,y)=>0.75-(y-104)/80-x/900+Math.max(0,40-Math.hypot(x-80,(y-112)*2))/120);
+  for(let y=110;y<SH;y+=8)R(g,0,y,W,1,'#2e1408');for(let x=0;x<W;x+=16)R(g,x,104,1,SH-104,'#2e1408');
+  R(g,0,104,W,1,'#2e1408');
+  // Lichtfleck vom Fenster auf dem Boden
+  polyFill(g,[[46,104],[84,104],[120,134],[70,134]],(x,y)=>bay(x,y)<0.3?'#b0683a':null);
+  return c;
+}
+// Toepfe auf dem Herd, mit Dampf, sobald Frau Broesel kocht
+function drawToepfe(now){
+  R(ctx,208,52,18,12,'#5a6880');R(ctx,208,52,18,2,'#c8c8d4');R(ctx,230,54,16,10,'#5a6880');R(ctx,230,54,16,2,'#c8c8d4');
+  if(S.broesel>=1){for(let i=0;i<5;i++){const t=(now/900+i*0.2)%1;P(ctx,212+i*3+Math.round(Math.sin(now/300+i)*1),Math.round(50-t*18),'#ffffff');}
+    R(ctx,216,62,6,2,'#e86050');}
+}
+function drawKantine(now){
+  if(!KANTINE)KANTINE=drawKantineBg();
+  if(S.card){R(ctx,0,0,W,SH,'#000000');const t=S.card.title;text(t,Math.round((W-textW(t))/2),34,'#ffe060',false);
+    wrap(S.card.text,260).forEach((l,i)=>text(l,Math.round((W-textW(l))/2),56+i*LINEH,'#e8e0ff',false));return;}
+  ctx.drawImage(KANTINE,0,0);
+  plaque(18,28,'Halle');
+  drawToepfe(now);
+  if(S.broesel>=2){R(ctx,84,66,20,2,'#b07c48');for(let i=0;i<4;i++)ellFill(ctx,87+i*5,65,2,1.5,()=>'#845028');}
+  const L=[];
+  const bt=S.speech&&S.talker==='broesel'&&Math.floor(now/130)%2;
+  // erstarrt steht sie mit erhobenem Loeffel vor der Theke, wach ruehrt sie am Herd
+  const wach=S.broesel>=1,bx=wach?196:176;
+  L.push({y:112,d:()=>{shadow(bx,112,9);
+    const img=bt?SPR.broeselTalk:wach?(Math.floor(now/400)%2?SPR.broeselRuehr:SPR.broeselRuehr2):SPR.broesel;
+    spr(img,bx,112,18,56,!wach);}});
+  L.push({y:S.ky,d:()=>spr(S.speech&&S.talker==='kraechz'&&Math.floor(now/140)%2?SPR.ravenTalk:SPR.raven,S.kx,S.ky,11,19,S.kflip)});
+  const h=S.hero;
+  if(!h.hidden)L.push({y:h.y,d:()=>{let img;
+    if(h.walking)img=SPR.heroWalk[Math.floor(h.t*9)%6];else if(h.reach)img=SPR.heroReach;
+    else if(S.talker==='hero'&&Math.floor(now/120)%2)img=SPR.heroTalk;else img=(now%4200<140)?SPR.heroBlink:SPR.heroStand;
+    shadow(h.x,h.y,6);spr(img,h.x,h.y,16,46,h.flip);}});
+  L.sort((p,q)=>p.y-q.y).forEach(o=>o.d());
+  drawPanel();drawSpeech();
+}
+const HS_KANTINE=[
+  {id:'kraechz',name:'Krächz',rect:()=>[S.kx-11,S.ky-19,22,19],walk:[70,118],flip:true},
+  {id:'broesel',name:'Frau Brösel',rect:()=>S.broesel>=1?[178,56,36,58]:[158,56,36,58],get walk(){return S.broesel>=1?[160,118]:[140,118];},flip:false},
+  {id:'rezepte',name:'Rezeptkarten',rect:()=>[96,24,40,30],walk:[116,112],flip:false},
+  {id:'dosen',name:'Keksdosen',rect:()=>[146,24,44,12],walk:[168,112],flip:false},
+  {id:'herd',name:'Herd',rect:()=>[204,48,48,56],walk:[200,116],flip:false},
+  {id:'kuehl',name:'Kühlschrank',rect:()=>[262,24,40,80],walk:[266,116],flip:false},
+  {id:'theke',name:'Theke',rect:()=>[80,68,114,36],walk:[136,112],flip:false},
+  {id:'fensterK',name:'Fenster',rect:()=>[42,14,44,40],walk:[64,112],flip:true},
+  {id:'tuerK',name:'Tür zur Halle',exit:true,rect:()=>[4,24,28,80],walk:[40,120],flip:true},
+  {id:'bodenK',name:'Boden',floor:true,rect:()=>[36,106,266,38],walk:[0,0],flip:false}
+];
+async function enterKantine(){
+  S.room='kantine';S.hero.hidden=false;S.hero.x=40;S.hero.y=120;S.hero.flip=false;S.kraechz='kantine';S.kx=150;S.ky=24;S.kflip=false;
+  if(S.kantineIntro){await walkTo(70,120);return say('hero',S.broesel>=1?'Hier riecht es nach Pudding.':'Die Kantine. Frau Brösel seufzt immer noch.');}
+  await walkTo(80,120);
+  await say('hero','Die Kantine. Und da steht Frau Brösel.');
+  await say('broesel','Vierhundert Portionen. Vierhundert! Ich fang gleich an. Gleich nach dem Seufzen.');
+  S.kantineIntro=true;save();
+}
+async function leaveKantine(){
+  S.hero.hidden=true;tone('triangle',300,0.3,0.04,500);await sleep(500);
+  S.room='halle';S.kraechz='halle';S.kx=92;S.ky=44;S.kflip=true;S.hero.x=160;S.hero.y=100;S.hero.flip=false;S.hero.hidden=false;
+  await walkTo(160,112);
+  if(has('kekse'))return say('hero','Kekse in der Tasche. Jetzt zurück zur Kellertreppe.');
+  return say('hero','Wieder in der Halle.');
+}
+// Gespraech mit Frau Broesel: erst finden, was zuerst muss, dann einen ersten Schritt, der sicher klappt
+const ZUERST=[
+  ['Die Kekse.','Kekse zuerst? Die sind in zwölf Minuten fertig und bis zum Mittag steinhart.'],
+  ['Die Suppe.','Und wenn die Suppe fertig ist, fange ich mit dem Pudding an? Der wird bis Mittag nie im Leben fest.'],
+  ['Alles gleichzeitig.','Gleichzeitig? Ich habe zwei Hände und einen Herd.'],
+  ['Den Pudding.',null]
+];
+const SCHRITT=[
+  ['Machen Sie einfach alle vierhundert auf einmal.','Mein größter Topf fasst fünfzig Portionen. Das weiß ich, weil ich jeden Tag davorstehe und seufze.'],
+  ['Fangen Sie an, wenn Sie Lust haben.','Lust. Die kommt bei mir immer so gegen Feierabend.'],
+  ['Denken Sie einfach nicht dran. Dann geht es von allein.','Das mache ich seit einer Stunde. Es geht nicht von allein.'],
+  ['Erst mal nur der erste Topf: Milch rein, Herd an.',null]
+];
+async function waehle(liste){
+  for(;;){const a=liste[await choose(liste.map(x=>x[0]))];await say('hero',a[0]);
+    if(!a[1])return;await say('broesel',a[1]);}
+}
+async function broeselWacht(){
+  await say('broesel','Der erste Topf. Milch rein. Herd an. …');
+  tone('triangle',520,0.2,0.05);tone('triangle',780,0.3,0.05,null,0.2);
+  S.broesel=1;await sleep(600);
+  await say('broesel','Oh. Das schaffe ich ja.');
+  await say('broesel','Und danach der nächste Topf. Und während der Pudding kalt wird, kommen die Kekse in den Ofen.');
+  await showCard('Eine halbe Stunde später','Es blubbert, es dampft, es duftet nach Vanille. Frau Brösel summt.');
+  S.broesel=2;
+  await say('broesel','So, Schätzchen. Die ersten Kekse, frisch aus dem Ofen. Für dich.');
+  await reach();give('kekse');tone('triangle',990,0.3,0.05);
+  await say('hero','Genau die haben mir gefehlt.');
+  await say('broesel','Und jetzt Topf Nummer drei. Das läuft ja wie von selbst.');
+}
+async function redeBroesel(){
+  if(S.broesel>=2)return say('broesel',['Topf Nummer vier! Wer hätte das gedacht.','Noch ein Keks? Die nächsten sind für das Festessen, Schätzchen.'][(S.broeselRede=(S.broeselRede||0)+1)%2]);
+  for(;;){
+    const o=['Haben Sie Kekse für mich?','Was machen Sie denn zuerst?','Warum stehen Sie hier so herum?','Bis gleich.'];
+    const a=await choose(o);await say('hero',o[a]);
+    if(a===0){await say('broesel','Kekse? Alle weg. Da waren so kleine Wichte im Schlafanzug. Mit Krümeln im Gesicht.');
+      await say('broesel','Neue müsste ich backen. Aber erst das Festessen. Vierhundert Portionen …');S.broeselKekse=true;continue;}
+    if(a===1){await say('broesel','Zuerst? Alles! Suppe, Kekse, Pudding. Vierhundert Mal. Was soll ich denn da zuerst machen?');
+      await waehle(ZUERST);
+      await say('broesel','Der Pudding. … Stimmt. Der muss drei Stunden kalt stehen, bis er fest ist. Der muss zuerst auf den Herd.');
+      await say('broesel','Aber vierhundert Portionen Pudding. Das schaffe ich nie. Wo soll ich denn da anfangen?');
+      await waehle(SCHRITT);
+      return broeselWacht();}
+    if(a===2){await say('broesel','Ich stehe nicht herum. Ich sammle Kraft. Seit heute früh.');continue;}
+    return say('broesel','Gleich. Ach, dieses Wort.');
+  }
+}
+async function actKantine(verb,h,item){
+  const id=h.id;
+  if(item){
+    if(id==='broesel'&&verb==='gib')return say('broesel','Lieb gemeint, Schätzchen. Aber was ich brauche, ist ein Anfang.');
+    if(id==='kraechz'&&verb==='gib')return say('kraechz','Behalte das mal schön selbst.');
+    return say('hero',FALLBACK.benutze());
+  }
+  switch(id+':'+verb){
+    case 'tuerK:gehe':case 'tuerK:benutze':case 'tuerK:oeffne':return leaveKantine();
+    case 'tuerK:schau':return say('hero','Da geht es zurück in die Halle.');
+    case 'broesel:rede':return redeBroesel();
+    case 'broesel:schau':return say('hero',S.broesel>=1?'Frau Brösel rührt und summt. Sie sieht zehn Jahre jünger aus.':'Frau Brösel. Sie hält den Kochlöffel hoch, als wollte sie gleich losrühren. Seit heute früh.');
+    case 'rezepte:schau':case 'rezepte:nimm':
+      await showPanel([['Festessen für die ganze Schule, heute Mittag','#a02234'],['400 Portionen',  '#a02234'],[''],
+        ['Kartoffelsuppe: 20 Minuten schälen,'],['  25 Minuten kochen'],['Kekse: 10 Minuten Teig,'],['  12 Minuten backen'],
+        ['Vanillepudding: 5 Minuten kochen,'],['  dann 3 Stunden kalt stellen, bis er fest ist']]);
+      return say('hero','Drei Stunden, bis der Pudding fest ist. Und das Essen ist heute Mittag.');
+    case 'dosen:schau':return say('hero','Drei Keksdosen. Alle leer. Nur noch Krümel. Die kenne ich doch.');
+    case 'dosen:nimm':return say('hero','Leere Dosen helfen mir nicht. Ich brauche was drin.');
+    case 'herd:schau':return say('hero',S.broesel>=1?'Da blubbert der Pudding. Topf Nummer zwei.':'Der Herd ist kalt. Obendrauf stehen Töpfe, groß wie Badewannen.');
+    case 'herd:benutze':case 'herd:druecke':return say('hero',S.broesel>=1?'Frau Brösel hat alles im Griff.':'Ich soll hier vierhundert Portionen kochen? Ich habe zuletzt Wasser anbrennen lassen.');
+    case 'kuehl:schau':return say('hero',S.broesel>=1?'Da steht der erste Pudding und wird langsam fest.':'Ein riesiger Kühlschrank. Laut Aufkleber voller Milch.');
+    case 'kuehl:oeffne':await reach();return say('hero',S.broesel>=1?'Pudding! Der wackelt noch. Tür zu, der soll fest werden.':'Milch, Milch, Milch. Genug für vierhundert Portionen. Aber wer kocht die?');
+    case 'theke:schau':return say('hero',S.broesel>=2?'Auf der Theke kühlen Kekse ab.':'Die Essensausgabe. Blitzblank und leer.');
+    case 'theke:nimm':if(S.broesel>=2)return say('broesel','Finger weg, Schätzchen. Die sind für das Festessen.');break;
+    case 'fensterK:schau':return say('hero','Draußen ist es Morgen. Und bleibt es wohl auch, bis die Uhr wieder läuft.');
+    case 'kraechz:rede':return redeKraechz();
+    case 'kraechz:schau':return say('hero','Krächz sitzt auf dem Keksregal und guckt in die leeren Dosen. Enttäuscht.');
+    case 'bodenK:schau':return say('hero','Terrakotta. Hier wird wohl viel verschüttet.');
+  }
+  if(verb==='schau')return say('hero',FALLBACK.schau(h));
+  return say('hero',FALLBACK[verb]?FALLBACK[verb](h):FALLBACK.benutze());
+}
+async function kantineTipp(){
+  let t;
+  if(!S.broeselKekse)t='Frau Brösel weiß bestimmt, wo es Kekse gibt. Frag sie doch mal.';
+  else if(S.broesel<1)t='Sie kommt nicht in die Gänge, weil alles auf einmal zu viel ist. Schau dir mal die Rezeptkarten an. Was braucht am längsten?';
+  else t='Kekse hast du. Zurück in den Flüstergang.';
+  await say('kraechz',t);
+}
+// Frau Broesel: 36 x 58, Fusspunkt (18,56), schaut nach rechts. Kochmuetze, weisser Kittel, karierte Schuerze, Kochloeffel.
+function makeBroesel(o){
+  const p=new Pup(36,58),st=o.stir||0;
+  p.part(RAMP.skin,m=>{m.rect(13,48,3,5);m.rect(20,48,3,5);});
+  p.part(RAMP.bshoe,m=>{m.ell(14,54,3,1.6);m.ell(21.5,54,3,1.6);},true);
+  p.part(RAMP.white,m=>m.poly([[9,22],[27,22],[30,49],[6,49]]));
+  p.part(RAMP.paj,m=>m.poly([[12,30],[25,30],[27,49],[10,49]]),true);
+  for(let y=31;y<49;y+=2)for(let x=10;x<28;x+=2)if(p.c[y*36+x]&&(x+y)%4===1)p.px(x,y,'#a8c8f0');
+  p.part(RAMP.white,m=>m.limb(11,24,8,36,2.6,2.2));
+  p.part(RAMP.skin,m=>m.ell(8,37,2,2),true);
+  // rechter Arm mit Kochloeffel, beim Ruehren vorn unten
+  const hx=st?30:29,hy=st===1?34:st===2?36:16;
+  p.part(RAMP.white,m=>m.limb(25,24,hx-1,hy+2,2.6,2.2),true);
+  p.part(RAMP.skin,m=>m.ell(hx,hy,2,2),true);
+  p.part(RAMP.wood,m=>{if(st)m.limb(hx+1,hy,hx+4,hy+8,0.8,1.2);else m.limb(hx,hy-1,hx+1,hy-10,0.8,1.4);},true);
+  // Kopf mit roten Wangen
+  p.part(RAMP.skin,m=>{m.rect(16,17,4,5);m.ell(18,13,7,7);m.ell(24.5,14,1.3,1.6);});
+  p.part(RAMP.skirt,m=>{m.ell(12,12,2.5,4);m.ell(14,8,4,2);});
+  p.part(RAMP.white,m=>{m.rect(11,5,15,3);m.ell(18,2,8,4);},true);
+  p.px(21,12,'#ffffff').px(22,12,'#101018').px(21,11,'#6a3424').px(22,11,'#6a3424');
+  p.px(19,15,'#e86050').px(20,15,'#e86050').px(23,15,'#e86050');
+  if(o.talk)p.px(21,17,'#3a0a0e').px(22,17,'#3a0a0e').px(21,18,'#7a2a2e');else p.px(20,17,'#6a3424').px(21,17,'#6a3424').px(22,17,'#6a3424');
+  return p.canvas();
 }
 
 /* ---------- Zwischensequenzen zwischen den Stationen ---------- */
@@ -1934,11 +2157,11 @@ function cutKeller(t,now){
 }
 
 // Speichern: nur die Teile des Zustands, die das Spiel ausmachen
-const KEEP=['spur','room','takt','zettelGelesen','flureGeschafft','halleIntro','fehlwege','heft','kraechz','kx','ky','kflip','fenster','ziel','kruemelGesehen','gitter','federmappe','muenze','kreide','tipp','kraechzKennt','jonas','inv','gefragt','tschuess','eingangDone','kallFrozen','fertig','gangIntro','passed','erlebt','plaene','tafelGelesen','suchKantine','kantineErklaert','invOff'];
+const KEEP=['spur','room','takt','zettelGelesen','flureGeschafft','halleIntro','fehlwege','heft','kraechz','kx','ky','kflip','fenster','ziel','kruemelGesehen','gitter','federmappe','muenze','kreide','tipp','kraechzKennt','jonas','inv','gefragt','tschuess','eingangDone','kallFrozen','fertig','gangIntro','passed','erlebt','plaene','tafelGelesen','suchKantine','kantineErklaert','invOff','kantineIntro','broesel','broeselKekse','broeselRede'];
 function save(){const d={};KEEP.forEach(k=>{if(S[k]!==undefined)d[k]=S[k];});d.hero={x:S.hero.x,y:S.hero.y,flip:S.hero.flip};SAVE.write({prolog:d});}
 let looping=false;
 const API={onDone:null,
-  start(saved){reset(saved);build();last=performance.now();if(!looping){looping=true;requestAnimationFrame(loop);}if(!S.eingangDone)eingang();else if(S.room==='halle'&&!S.halleIntro)run(()=>enterHalle());else if(S.room==='gang'&&!S.gangIntro)run(()=>enterGang());},
+  start(saved){reset(saved);build();last=performance.now();if(!looping){looping=true;requestAnimationFrame(loop);}if(!S.eingangDone)eingang();else if(S.room==='halle'&&!S.halleIntro)run(()=>enterHalle());else if(S.room==='gang'&&!S.gangIntro)run(()=>enterGang());else if(S.room==='kantine'&&!S.kantineIntro)run(()=>enterKantine());},
   mute(m){if(M)M.gain.value=m?0:0.5;}};
 window.__S=()=>S;window.__skip=()=>{if(skipLine)skipLine();};
 window.__act=(verb,id,item)=>{const h=curHS().find(x=>x.id===id);return run(async()=>{if(!await goTo(h.walk[0],h.walk[1]))return;face(h.flip);await act(verb,h,item);});};
@@ -1959,7 +2182,10 @@ const SZENEN={
   prolog:null,
   halle:Object.assign({},NACH_PROLOG,{room:'halle',halleIntro:false}),
   gang:Object.assign({},NACH_PROLOG,{room:'gang',gangIntro:false,halleIntro:true,spur:true,zettelGelesen:true,flureGeschafft:true,takt:3,
-    inv:['lineal','radiergummi','muenze','kreide','notiz']})
+    inv:['lineal','radiergummi','muenze','kreide','notiz']}),
+  kantine:Object.assign({},NACH_PROLOG,{room:'kantine',kantineIntro:false,halleIntro:true,spur:true,zettelGelesen:true,flureGeschafft:true,takt:4,
+    gangIntro:true,erlebt:{nicht:true,spaeter:true,hunger:true},plaene:{nicht:'schritt',spaeter:'tuer',hunger:'keks'},tafelGelesen:true,
+    passed:{auf1:true,auf2:true},suchKantine:true,inv:['lineal','radiergummi','muenze','kreide','notiz']})
 };
 function szeneStarten(id){
   const s=SAVE.read();PLAYER.name=(s&&s.name)||PLAYER.name||'Robin';PLAYER.girl=s?!!s.girl:PLAYER.girl;

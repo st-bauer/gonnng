@@ -260,7 +260,7 @@ Die Hauptfigur muss durch die sich verschiebende Schule in den Heizungskeller, w
 | --- | --- | --- | --- |
 | 1 | Die wandernden Flure | Allgemein, Logik | Siehe Regel unten. Die Figur schaut durch die Türspalten, leitet die Regel aus Gong, Schildern und Aushang selbst ab und läuft in den Flügel, in dem die Kellertreppe nach dem nächsten Gong stehen wird |
 | 2 | Der Musikraum | Allgemein, Rhythmus | Einmal muss die Figur absichtlich im Musikraum landen. Das Blockflötenorchester lässt sie erst gehen, wenn sie den Takt des Metronoms nachklatscht. Zum Dank gibt es eine Blockflötenschnur |
-| 3 | Frau Brösels Festessen | SRL: nahe Teilziele | Zwölf Rezeptkarten in eine sinnvolle Reihenfolge legen und in drei Viertelstunden-Ziele aufteilen. Der Pudding muss zuerst gekocht werden, weil er am längsten zum Festwerden braucht. Frau Brösel erwacht und schenkt Kekse und ein Einmachglas. In der Kantine liegen außerdem Plastiktüten, Gummiringe und eine leere Küchenrolle |
+| 3 | Frau Brösels Festessen | SRL: nahe Teilziele | Frau Brösel ist erstarrt, weil vierhundert Portionen sie erschlagen. Kekse hat sie keine mehr, die Aufschiebchen haben alles geklaut. Im Gespräch findet die Figur mit ihr heraus, was zuerst muss (der Pudding braucht drei Stunden zum Festwerden, das steht auf den Rezeptkarten) und welcher erste Schritt sicher klappt („Erst mal nur der erste Topf: Milch rein, Herd an.“). Frau Brösel fängt an, wird wach, backt Kekse und schenkt der Figur die ersten. Einmachglas, Plastiktüten, Gummiringe und Küchenrolle für Kapitel 2 kommen später dazu |
 | 4 | Der Flüstergang | SRL: Wenn-dann-Pläne | Drei Aufschiebchen flüstern, wer reinfällt, trottet zurück zur Treppe. Auf der Tafel von Hausmeister Grummelbart stehen seine eigenen Wenn-dann-Pläne. Mit Kreide schreibt die Figur dort für jede erlebte Stolperstelle einen Plan, nur konkrete Handlungen helfen. Danach läuft sie an der Störung von allein vorbei. Der Keks-Plan braucht einen Keks aus der Kantine |
 | 5 | Brikett und die Keks-Angel | Kombination | Brikett ist scheu. „Gib Keks an Brikett“ scheitert: Er versteckt sich hinter dem Schlüsselhaken. Lineal plus Blockflötenschnur ergibt eine Angel, Angel plus Keks die Keks-Angel. Brikett schnappt nach dem Keks, niest vor Freude Funken in den Kessel, die Heizung springt an, Grummelbart taut auf |
 | 6 | Der Kompass | SRL: konkrete Ziele | Grummelbart gibt Schlüssel und Kompass. Bei vagen Zielen dreht die Nadel wild. Erst ein Ziel mit Was, Bis wann und Woran erkenne ich den Erfolg richtet sie aus |
@@ -322,6 +322,28 @@ Jede Stolperstelle hat genau ein passendes Dann, weil jede einen anderen Grund h
 *Der Keks fehlt.* Den Keks-Plan kann die Figur aufschreiben, aber sie hat keinen Keks („Dann esse ich meinen eigenen Keks und … Moment. Ich habe gar keinen Keks.“). Wer das Aufschiebchen auf der Kiste fragt, woher es die Kekse hat, erfährt: „Aus der Kantine. Die backt Frau Brösel. Die merkt gerade nichts, die ist erstarrt.“ Auf der Dose steht außerdem „Eigentum der Kantine, Frau Brösel“. Die Figur muss also zurück durch die wandernden Flure, diesmal zur Kantine, und Frau Brösel mit dem Festessen-Rätsel wecken. So wird das Flur-Rätsel ein zweites Mal gebraucht. Grummelbart hatte für seinen Kaffee-Plan auch die Thermoskanne dabei.
 
 Krächz gibt auf Wunsch Tipps (zum Beispiel „Hausmeister Grummelbart muss hier jeden Tag durch. Schau dir mal seine Tafel an.“), ist aber für keine Lösung nötig.
+
+**Ablauf in der Kantine.** Die Figur kommt über die wandernden Flure in die Kantine, sobald sie weiß, dass Frau Brösel die Kekse backt. Frau Brösel steht erstarrt vor der Theke, den Kochlöffel erhoben: „Vierhundert Portionen. Vierhundert! Ich fang gleich an. Gleich nach dem Seufzen.“ Auf die Frage nach Keksen erzählt sie, dass kleine Wichte im Schlafanzug alle geklaut haben und sie erst nach dem Festessen neue backen kann. Die Rezeptkarten am Korkbrett nennen die Zeiten: Kartoffelsuppe 20 Minuten schälen und 25 Minuten kochen, Kekse 10 Minuten Teig und 12 Minuten backen, Vanillepudding 5 Minuten kochen und dann 3 Stunden kalt stellen, bis er fest ist. Das Essen ist heute Mittag.
+
+Im Gespräch („Was machen Sie denn zuerst?“) wählt die Figur, was zuerst kommt:
+
+| Vorschlag | Frau Brösel |
+| --- | --- |
+| Die Kekse. | „Kekse zuerst? Die sind in zwölf Minuten fertig und bis zum Mittag steinhart.“ |
+| Die Suppe. | „Und wenn die Suppe fertig ist, fange ich mit dem Pudding an? Der wird bis Mittag nie im Leben fest.“ |
+| Alles gleichzeitig. | „Gleichzeitig? Ich habe zwei Hände und einen Herd.“ |
+| Den Pudding. | richtig: „Stimmt. Der muss drei Stunden kalt stehen, bis er fest ist.“ |
+
+Dann: „Aber vierhundert Portionen Pudding. Das schaffe ich nie. Wo soll ich denn da anfangen?“
+
+| Vorschlag | Frau Brösel |
+| --- | --- |
+| Machen Sie einfach alle vierhundert auf einmal. | „Mein größter Topf fasst fünfzig Portionen. Das weiß ich, weil ich jeden Tag davorstehe und seufze.“ |
+| Fangen Sie an, wenn Sie Lust haben. | „Lust. Die kommt bei mir immer so gegen Feierabend.“ |
+| Denken Sie einfach nicht dran. Dann geht es von allein. | „Das mache ich seit einer Stunde. Es geht nicht von allein.“ |
+| Erst mal nur der erste Topf: Milch rein, Herd an. | richtig: „Oh. Das schaffe ich ja.“ |
+
+Frau Brösel fängt an und wird dabei wach. Eine halbe Stunde später gibt sie der Figur die ersten Kekse. Damit greift der Keks-Plan im Flüstergang, und die Figur kommt bis zur Tür des Heizungskellers. Fachlich stimmt die Reihenfolge: Pudding aus Puddingpulver wird beim Abkühlen fest und braucht dafür mehrere Stunden im Kühlschrank, Kekse sind in etwa zehn bis fünfzehn Minuten gebacken.
 
 **Dialogprobe**
 
