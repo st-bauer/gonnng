@@ -323,7 +323,7 @@ Jede Stolperstelle hat genau ein passendes Dann, weil jede einen anderen Grund h
 
 Krächz gibt auf Wunsch Tipps (zum Beispiel „Hausmeister Grummelbart muss hier jeden Tag durch. Schau dir mal seine Tafel an.“), ist aber für keine Lösung nötig.
 
-**Ablauf in der Kantine.** Die Figur kommt über die wandernden Flure in die Kantine, sobald sie weiß, dass Frau Brösel die Kekse backt. Frau Brösel steht erstarrt vor der Theke, den Kochlöffel erhoben: „Zweihundert Mittagessen. Zweihundert! Ich fang gleich an. Gleich nach dem Seufzen.“ Das Gespräch ist ironisch und erklärt nichts:
+**Ablauf in der Kantine.** Die Figur kommt über die wandernden Flure in die Kantine, sobald sie weiß, dass Frau Brösel die Kekse backt. Frau Brösel steht erstarrt vor der Theke, den Kochlöffel erhoben: „Zweihundert Mittagessen. Zweihundert! Ich fang gleich an. Gleich nach dem Seufzen.“ Und gleich danach: „Ich weiß nur nicht, womit. Suppe, Pudding, Kekse, Salat. Alle rufen gleichzeitig: Ich zuerst!“ Das Gespräch ist ironisch und erklärt nichts:
 
 | Frage | Frau Brösel |
 | --- | --- |
