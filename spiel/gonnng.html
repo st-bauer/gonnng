@@ -2923,50 +2923,78 @@ function drawMusikBg(){
   const [c,g]=mk(W,SH);
   const hash=(a,b)=>((a*73856093)^(b*19349663))>>>0;
   const WB=100,VX=160,VY=40;
+  const zum=(x,y,k)=>[x+(VX-x)*k,y+(VY-y)*k];
   const MIX=mkMix(KR.putz,KR.putzW,8);
   // Licht: Morgensonne durch das Fenster links, sonst kuehles Raumlicht
-  const sonne=(x,y)=>Math.max(0,1-Math.hypot(x-66,(y-28)*1.1)/190);
-  const L=(x,y)=>0.14+sonne(x,y)*0.62;
+  const sonne=(x,y)=>Math.max(0,1-Math.hypot(x-68,(y-30)*1.1)/200);
+  const L=(x,y)=>0.12+sonne(x,y)*0.62;
   const w=(x,y)=>clamp(sonne(x,y)*1.5-0.15,0,1);
-  for(let y=0;y<WB;y++)for(let x=0;x<W;x++){let t=L(x,y)-Math.max(0,8-y)/30-Math.max(0,y-90)/40-Math.max(0,x-280)/150;
-    if(y>=78)t-=0.08;if(y===78)t+=0.12;if(y===79)t-=0.1;                    // Sockel aus Holz unten an der Wand
-    P(g,x,y,y>=78?pick(KR.holz,t+0.1,x,y):pickMix(MIX,w(x,y),t+((hash(x>>2,y>>2)%5)-2)*0.008,x,y));}
-  // Parkett in der Flucht mit Sonnenfleck unter dem Fenster
+  // Decke mit Stuckleiste
+  for(let y=0;y<12;y++)for(let x=0;x<W;x++){let t=0.3+y/40+sonne(x,y)*0.3;if(y===10)t+=0.25;if(y===11)t-=0.15;P(g,x,y,pickMix(MIX,w(x,y)*0.6,t,x,y));}
+  // Rueckwand: Putz oben, Holzvertaefelung unten mit Leiste, Ecken und Decke abgedunkelt
+  for(let y=12;y<WB;y++)for(let x=0;x<W;x++){
+    let t=L(x,y)-Math.max(0,18-y)/40-Math.max(0,x-286)/60+((hash(x>>2,y>>2)%5)-2)*0.008;
+    if(y>=76){const bx=(x+3)%24;t=0.28+L(x,y)*0.4-(y-76)/90;if(bx===0)t-=0.14;else if(bx===1)t+=0.06;if(y===76)t+=0.2;if(y===77)t-=0.12;P(g,x,y,pick(KR.holz,t,x,y));continue;}
+    P(g,x,y,pickMix(MIX,w(x,y),t,x,y));}
+  // Seitenwand rechts in der Flucht, im Schatten
+  polyFill(g,[[306,0],[320,0],[320,120],[306,104]],(x,y)=>y>=82+(x-306)*1.2?pick(KR.holz,0.12,x,y):pickMix(MIX,0,0.2-(x-306)/60,x,y));
+  // Parkett in der Flucht: Sonnenfleck unter dem Fenster, Schlagschatten von Klavier, Stuehlen, Kindern und Lehrerin
+  const schatten=[[[38,104],[102,104],[110,110],[44,110]],[[272,104],[306,104],[314,110],[278,110]],[[250,106],[272,106],[288,114],[262,114]],[[234,104],[250,104],[262,110],[242,110]]];
+  KINDER.forEach(k=>schatten.push([[k.x-10,105],[k.x+10,105],[k.x+24,114],[k.x+2,114]]));
   for(let y=WB;y<SH;y++)for(let x=0;x<W;x++){const d=y-VY,u=(x-VX)*50/d,pl=Math.floor(u/10),fu=u/10-pl,v=820/d+(hash(pl,5)%10)/3,st=Math.floor(v/4),fv=v/4-st;
-    let t=0.22+Math.max(0,1-Math.hypot(x-110,(y-120)*2)/110)*0.35+((hash(pl,st)%5)-2)*0.02-(y-WB)/320;
-    if(inPoly(x+0.5,y+0.5,[[46,100],[92,100],[168,140],[96,144]]))t+=0.22;
+    let t=0.2+Math.max(0,1-Math.hypot(x-110,(y-120)*2)/120)*0.3+((hash(pl,st)%5)-2)*0.02-(y-WB)/320;
+    const imSonne=inPoly(x+0.5,y+0.5,[[44,104],[94,104],[176,144],[100,144]]);
+    if(imSonne)t+=0.24;
+    if(schatten.some(p=>inPoly(x+0.5,y+0.5,p)))t-=imSonne?0.26:0.14;
     if(fu<0.07||fv<0.05)t-=0.1;t-=Math.max(0,3-(y-WB))*0.07;
     P(g,x,y,pick(KR.dielen,t,x,y));}
-  // Tuer zur Halle links
-  for(let y=30;y<WB;y++)for(let x=4;x<34;x++){const rand=x<7||x>30||y<33;let t=0.35+sonne(x,y)*0.3-(x-4)/120+Math.sin(x*0.9+Math.sin(y*0.15)*2)*0.04;
-    const fuell=(y>38&&y<60||y>64&&y<WB-4)&&x>10&&x<28;if(fuell)t-=0.08;P(g,x,y,pick(KR.holz,rand?0.12:t,x,y));}
-  R(g,26,66,3,2,'#b08820');P(g,26,66,'#fff0a0');
-  // Fenster mit Himmel und Fensterkreuz, darunter ein Klavier
-  for(let y=8;y<52;y++)for(let x=42;x<94;x++){const rand=x<45||x>90||y<11||y>48;
-    P(g,x,y,rand?pick(KR.email,0.7-(y-8)/200,x,y):pick(KR.himmel,0.35+(y-11)/50+(Math.abs((x-45)-(y-11)*0.9-10)<2?0.2:0),x,y));}
-  for(let y=11;y<49;y++){P(g,67,y,'#ffffff');P(g,68,y,'#c8cedc');}for(let x=45;x<91;x++){P(g,x,29,'#ffffff');P(g,x,30,'#c8cedc');}
-  polyFill(g,[[40,52],[96,52],[98,55],[38,55]],(x,y)=>pick(KR.email,y<54?0.95:0.6,x,y));
-  // Klavier: Korpus, Deckel, Tastatur mit schwarzen Tasten, Pedale
-  for(let y=58;y<WB;y++)for(let x=38;x<100;x++){let t=0.14+sonne(x,y)*0.3-(x-38)/300+Math.sin(x*0.7+Math.sin(y*0.2)*2)*0.03;if(y<61)t+=0.18;if(y>=78&&y<=80)t+=0.08;
+  // Tuer zur Halle mit Zarge
+  for(let y=28;y<WB+2;y++)for(let x=3;x<36;x++){const zarge=x<6||x>32||y<31;let t=0.35+sonne(x,y)*0.3-(x-4)/120+Math.sin(x*0.9+Math.sin(y*0.15)*2)*0.04;
+    const fuell=(y>38&&y<60||y>64&&y<WB-3)&&x>11&&x<28;if(fuell)t-=0.08;if(fuell&&(y===39||y===65))t-=0.1;if(fuell&&x===12)t+=0.08;
+    P(g,x,y,zarge?pick(KR.holz,0.5+sonne(x,y)*0.2-(x>32?0.25:0)+(y===28?0.1:0),x,y):pick(KR.holz,t,x,y));}
+  kastenG(g,26,66,4,2,KR.gold,0.6);
+  // Fenster mit Laibung, Himmel, Fensterkreuz und tiefem Fensterbrett
+  polyFill(g,[[91,9],[97,6],[97,55],[91,51]],(x,y)=>pickMix(MIX,1,0.9-(x-91)/30,x,y));
+  for(let y=9;y<52;y++)for(let x=42;x<92;x++){const rand=x<45||x>88||y<12||y>48;
+    P(g,x,y,rand?pick(KR.email,0.75-(y-8)/200,x,y):pick(KR.himmel,0.35+(y-12)/50+(Math.abs((x-45)-(y-12)*0.9-10)<2?0.2:0),x,y));}
+  for(let y=12;y<49;y++){P(g,66,y,'#ffffff');P(g,67,y,'#c8cedc');}for(let x=45;x<89;x++){P(g,x,29,'#ffffff');P(g,x,30,'#c8cedc');}
+  polyFill(g,[[38,51],[98,51],[101,55],[35,55]],(x,y)=>pick(KR.email,0.98-(y-51)/10,x,y));
+  for(let x=35;x<101;x++)P(g,x,55,pick(KR.email,0.4,x,55));
+  // Klavier als Koerper: Deckel oben, Seite zur Mitte, Front mit Maserung, Tastatur, Pedale
+  const KL=36,KR_=100,KT=60,KB=104,kk=0.1;
+  const [a1x,a1y]=zum(KL,KT,kk),[a2x,a2y]=zum(KR_,KT,kk),[a3x,a3y]=zum(KR_,KB,kk);
+  polyFill(g,[[KL,KT],[KR_,KT],[a2x,a2y],[a1x,a1y]],(x,y)=>pick(KR.holz,0.62+sonne(x,y)*0.2,x,y));
+  polyFill(g,[[KR_,KT],[a2x,a2y],[a3x,a3y],[KR_,KB]],(x,y)=>pick(KR.holz,0.1+sonne(x,y)*0.1,x,y));
+  for(let y=KT;y<KB;y++)for(let x=KL;x<KR_;x++){let t=0.2+sonne(x,y)*0.32-(x-KL)/260+Math.sin(x*0.7+Math.sin(y*0.2)*2)*0.03;
+    if(y===KT)t+=0.2;if(y>=84&&y<=86)t+=0.06;if(x===KL)t+=0.1;if(x===KR_-1)t-=0.1;if(y>=KB-2)t-=0.08;
+    if(y>62&&y<70&&x>44&&x<92){t-=0.06;if(y===63)t-=0.08;}
     P(g,x,y,pick(KR.holz,t,x,y));}
-  for(let x=40;x<98;x++){for(let y=72;y<77;y++)P(g,x,y,(x-40)%4===3?'#8a8a98':pick(KR.email,0.95-(y-72)/12,x,y));
-    const k=(x-40)%28;if([2,3,6,7,14,15,18,19,22,23].includes(k))for(let y=72;y<75;y++)P(g,x,y,'#141018');}
-  for(let x=40;x<98;x++){P(g,x,77,pick(KR.holz,0.1,x,77));P(g,x,71,pick(KR.holz,0.5,x,71));}
-  [62,68,74].forEach(x=>kastenG(g,x,96,3,2,KR.gold,0.6));
-  // Tafel mit Notenlinien und Noten
-  for(let y=12;y<48;y++)for(let x=118;x<222;x++){const rand=x<120||x>219||y<14||y>45;
-    P(g,x,y,rand?pick(KR.holz,0.35+sonne(x,y)*0.3,x,y):pick(KR.tafel,0.35+sonne(x,y)*0.4-(y-14)/150,x,y));}
-  for(let r=0;r<2;r++)for(let l=0;l<5;l++)for(let x=124;x<216;x++)if(bay(x,l)<0.8)P(g,x,20+r*14+l*2,'#a8b8b0');
-  const noten=[[0,4],[1,4],[2,1],[3,1],[4,0],[5,0],[6,1],[8,2],[9,2],[10,3],[11,3],[12,4]];
-  noten.forEach(([i,h])=>{const x=130+i*6,y=21+h*2;P(g,x,y,'#f4f6f0');P(g,x+1,y,'#f4f6f0');P(g,x,y+1,'#f4f6f0');P(g,x+1,y+1,'#f4f6f0');for(let k=1;k<6;k++)P(g,x+2,y+1-k,'#f4f6f0');});
-  // Schrank rechts mit Trommel und Triangel
-  for(let y=34;y<WB;y++)for(let x=280;x<318;x++){let t=0.3+L(x,y)*0.3-(x-280)/140;if(y===34||y===66)t+=0.12;if(x===298)t-=0.12;P(g,x,y,pick(KR.holz,t,x,y));}
-  zylG(g,284,24,16,10,KR.buchR,0.45);ellFill(g,292,24,8,2,(x,y,dx,dy)=>pick(KR.papier,0.8-dx*0.2,x,y));
-  line(g,306,20,302,31,'#9aa8bc');line(g,306,20,310,31,'#9aa8bc');line(g,302,31,310,31,'#9aa8bc');
-  // Stuehle fuer das Orchester: Sitzflaeche, Lehne, Metallbeine, Schatten gleich mit
-  KINDER.forEach(k=>{const x=k.x;
-    for(let yy=100;yy<104;yy++)for(let xx=x-12;xx<x+6;xx++)if(bay(xx,yy)<0.5)P(g,xx+3,yy+2,'#2a1408');
-  });
+  polyFill(g,[[KL-2,76],[KR_+2,76],[KR_+4,80],[KL-4,80]],(x,y)=>{const k=(x-KL)%3;return y<79?(k===2?'#9a9aa8':pick(KR.email,0.95-(y-76)/10,x,y)):pick(KR.holz,0.15,x,y);});
+  for(let x=KL;x<KR_;x++){const k=(x-KL)%21;if([2,5,11,14,17].includes(k))for(let y=76;y<78;y++)P(g,x,y,'#141018');}
+  for(let x=KL-4;x<KR_+4;x++){P(g,x,80,pick(KR.holz,0.35,x,80));P(g,x,81,pick(KR.holz,0.1,x,81));}
+  [64,70,76].forEach(x=>kastenG(g,x,100,3,2,KR.gold,0.6));
+  // Tafel mit Rahmen, Kreideleiste, Notenlinien und der ersten Zeile des Lieds
+  for(let y=14;y<50;y++)for(let x=116;x<224;x++){const rand=x<119||x>220||y<17||y>46;
+    let t=rand?0.4+sonne(x,y)*0.3-(x>220||y>46?0.2:0):0.35+sonne(x,y)*0.4-(y-17)/150+(Math.abs((x-120)*0.4-(y-17))<3?0.05:0);
+    P(g,x,y,rand?pick(KR.holz,t,x,y):pick(KR.tafel,t,x,y));}
+  polyFill(g,[[116,50],[224,50],[228,53],[112,53]],(x,y)=>pick(KR.holz,y<52?0.6:0.3,x,y));kastenG(g,196,49,6,2,KR.papier,0.9);
+  for(let r=0;r<2;r++)for(let l=0;l<5;l++)for(let x=124;x<216;x++)if(bay(x,l)<0.75)P(g,x,22+r*14+l*2,'#a8b8b0');
+  [[0,4],[1,4],[2,1],[3,1],[4,0],[5,0],[6,1],[8,2],[9,2],[10,3],[11,3],[12,4]].forEach(([i,h])=>{const x=130+i*6,y=23+h*2;R(g,x,y,2,2,'#f4f6f0');for(let k=1;k<6;k++)P(g,x+2,y+1-k,'#f4f6f0');});
+  // Grifftabelle als Poster, leicht gewellt
+  for(let y=18;y<44;y++)for(let x=232;x<254;x++){const rand=x===232||x===253||y===18||y===43;P(g,x,y,rand?'#8a8272':pick(KR.papier,0.8+Math.sin(y*0.5)*0.05-(x-232)/200,x,y));}
+  for(let i=0;i<3;i++){for(let k=0;k<6;k++)P(g,236+i*6,22+k*3,k<3+i?'#241a24':'#9aa2b0');}
+  for(let y=19;y<44;y++)if(bay(254,y)<0.6)P(g,254,y,pickMix(MIX,0,0.05,254,y));
+  // Schrank als Koerper mit Seite zur Mitte, Trommel und Triangel obendrauf
+  const S0=272,S1=304,ST=34,SB=104,sk=0.08;
+  const [b1x,b1y]=zum(S0,ST,sk),[b2x,b2y]=zum(S0,SB,sk);
+  polyFill(g,[[S0,ST],[b1x,b1y],[b2x,b2y],[S0,SB]],(x,y)=>pick(KR.holz,0.28+L(x,y)*0.2,x,y));
+  for(let y=ST;y<SB;y++)for(let x=S0;x<S1;x++){let t=0.22+L(x,y)*0.3-(x-S0)/120+Math.sin(x*0.8+Math.sin(y*0.12)*2)*0.03;
+    if(y===ST)t+=0.2;if(x===288)t-=0.14;if(x===289)t+=0.05;if(y>=ST+4&&y<SB-6&&(x===S0+3||x===S1-4||x===286||x===291))t-=0.05;P(g,x,y,pick(KR.holz,t,x,y));}
+  kastenG(g,285,64,2,6,KR.gold,0.6);kastenG(g,292,64,2,6,KR.gold,0.6);
+  zylG(g,276,24,16,10,KR.buchR,0.45);ellFill(g,284,24,8,2,(x,y,dx)=>pick(KR.papier,0.85-dx*0.2,x,y));
+  line(g,298,22,295,33,'#c8d4e4');line(g,298,22,301,33,'#9aa8bc');line(g,295,33,301,33,'#9aa8bc');
+  // zwei Kugellampen an der Decke, aus
+  [132,208].forEach(x=>{line(g,x,0,x,10,'#343e52');ellFill(g,x,14,4,4,(px,py,dx,dy)=>pick(KR.email,0.7-dx*0.3-dy*0.3+sonne(px,py)*0.2,px,py));});
   return c;
 }
 // Kind im Orchester, sitzend auf einem Stuhl: 38 x 46, Fusspunkt (16,45), schaut nach rechts, Floete am Mund
@@ -3021,7 +3049,7 @@ function kinderSprites(){
     talk:makeKind(Object.assign({wach:1,talk:1},t)),ohne:makeKind(Object.assign({wach:1,ohneKordel:i===0},t))}));
 }
 function drawMetronom(now){
-  const x=80,y=58;
+  const x=84,y=60;
   polyFill(ctx,[[x-6,y],[x+6,y],[x+3,y-17],[x-3,y-17]],(px,py)=>pick(KR.holz,0.55-(px-x+6)/24+(py===y-17?0.2:0),px,py));
   polyFill(ctx,[[x-3,y-2],[x+3,y-2],[x+1,y-15],[x-1,y-15]],(px,py)=>pick(KR.holz,0.12,px,py));
   let a=0;
@@ -3056,7 +3084,7 @@ function drawMusik(now){
 }
 const HS_MUSIK=[
   {id:'kraechz',name:'Krächz',rect:()=>[S.kx-11,S.ky-19,22,19],walk:[276,116],flip:false},
-  {id:'metronom',name:'Metronom',rect:()=>[72,36,16,24],walk:[84,114],flip:true},
+  {id:'metronom',name:'Metronom',rect:()=>[76,38,16,24],walk:[84,114],flip:true},
   {id:'beutel',name:'Flötenbeutel',rect:()=>[102,75,10,15],walk:[112,116],flip:true},
   {id:'emil',name:()=>S.orchesterWach?'Emil':'Junge mit Blockflöte',rect:()=>[106,62,26,44],walk:[124,118],flip:false},
   {id:'kind2',name:'Mädchen mit Blockflöte',rect:()=>[138,62,26,44],walk:[156,118],flip:false},
@@ -3064,15 +3092,16 @@ const HS_MUSIK=[
   {id:'kind4',name:'Junge mit Blockflöte',rect:()=>[202,62,26,44],walk:[218,118],flip:false},
   {id:'pult',name:'Notenständer',rect:()=>[234,68,20,38],walk:[236,118],flip:false},
   {id:'fermate',name:'Frau Fermate',rect:()=>[250,48,26,58],walk:[240,120],flip:false},
-  {id:'klavier',name:'Klavier',rect:()=>[38,58,62,42],walk:[70,114],flip:true},
-  {id:'tafelM',name:'Tafel',rect:()=>[118,12,104,36],walk:[170,114],flip:false},
+  {id:'klavier',name:'Klavier',rect:()=>[34,58,70,46],walk:[70,114],flip:true},
+  {id:'poster',name:'Grifftabelle',rect:()=>[232,18,22,26],walk:[240,118],flip:false},
+  {id:'tafelM',name:'Tafel',rect:()=>[116,14,108,38],walk:[170,114],flip:false},
   {id:'fensterM',name:'Fenster',rect:()=>[42,8,52,44],walk:[70,114],flip:true},
-  {id:'schrank',name:'Schrank mit Instrumenten',rect:()=>[280,18,38,82],walk:[284,118],flip:false},
+  {id:'schrank',name:'Schrank mit Instrumenten',rect:()=>[270,18,36,86],walk:[284,118],flip:false},
   {id:'tuerM',name:'Tür zur Halle',exit:true,rect:()=>[4,28,30,74],walk:[30,120],flip:true},
   {id:'bodenM',name:'Boden',floor:true,rect:()=>[36,100,262,44],walk:[0,0],flip:false}
 ];
 async function enterMusik(){
-  S.room='musik';S.kraechz='musik';S.kx=298;S.ky=18;S.kflip=true;S.hero.x=30;S.hero.y=120;S.hero.flip=false;S.hero.hidden=false;
+  S.room='musik';S.kraechz='musik';S.kx=290;S.ky=22;S.kflip=true;S.hero.x=30;S.hero.y=120;S.hero.flip=false;S.hero.hidden=false;
   await walkTo(70,122);
   if(S.musikIntro)return say('hero',S.orchesterWach?'Hier wird geübt. Laut.':'Immer noch alle erstarrt. Und das Metronom '+(S.metronom?'tickt vor sich hin.':'steht.'));
   await say('hero','Der Musikraum. Alle sitzen da, die Flöten am Mund, und keiner spielt.');
@@ -3171,6 +3200,7 @@ async function actMusik(verb,h,item){
     case 'klavier:benutze':case 'klavier:druecke':tone('triangle',262,0.4,0.05);tone('triangle',311,0.4,0.05,null,0.02);return say('hero','Pling. Schief. Ich bleibe beim Klatschen.');
     case 'tafelM:schau':return say('hero','Notenlinien und die erste Zeile von „Morgen kommt der Weihnachtsmann“. Im September.');
     case 'fensterM:schau':return say('hero','Draußen scheint die Sonne. Sie weiß noch nichts vom Gong.');
+    case 'poster:schau':return say('hero','Eine Grifftabelle für Blockflöte. Schwarze Punkte heißt: Loch zu. Sieht aus wie Würfeln für Fortgeschrittene.');
     case 'schrank:schau':return say('hero','Trommel, Triangel und ein Kasten Rasseln. Für den Ernstfall.');
     case 'schrank:oeffne':return say('hero','Lieber nicht. Wenn da die Rasseln rausfallen, wacht die ganze Schule auf. Auf die falsche Art.');
     case 'kraechz:rede':return redeKraechz();
