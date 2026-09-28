@@ -410,7 +410,15 @@ const KR={
   haut:mkRamp(['#6a3424','#b86e50','#e0a07a','#f8c8a0'],8),
   stein:mkRamp(['#04060a','#0e1420','#1e2638','#34405a','#5a6884','#8a98b4'],12),    // kalter Kellerstein
   steinW:mkRamp(['#0c0806','#261a12','#4a3222','#7a5638','#b08458','#e0b886'],12),    // Kellerstein im Lampenlicht
-  jute:mkRamp(['#2a1c0c','#5a4020','#8a6a3a','#b8985e','#dcc488'],10)
+  jute:mkRamp(['#2a1c0c','#5a4020','#8a6a3a','#b8985e','#dcc488'],10),
+  nacht:mkRamp(['#02030a','#060920','#0c1236','#161e4e','#242e6a','#3a4486','#5a64a8'],14),
+  mond:mkRamp(['#6a6448','#a8a078','#d8cea0','#f4ecc4','#fffcec'],10),
+  huegel:mkRamp(['#080c20','#101838','#1a2450','#28346a'],8),
+  grasN:mkRamp(['#040c08','#0a1a10','#12301c','#1e4a2c','#2e6a40','#4a8a5a'],12),
+  grasW:mkRamp(['#1a1a08','#3a3a14','#5a5a22','#8a7a34'],8),
+  wegN:mkRamp(['#140e0a','#2a2018','#443628','#62523e','#8a7a62'],10),
+  ziegelN:mkRamp(['#12060a','#2a0e14','#461a20','#62282c','#843a3a'],10),
+  ziegelW:mkRamp(['#3a1408','#6a2a14','#a04a22','#d0783a','#f0a860'],10)
 };
 // Farbe aus einer Rampe waehlen, mit Bayer-Rasterung nur zwischen zwei benachbarten Stufen
 function pick(r,t,x,y){const n=r.length-1,v=clamp(t,0,0.9999)*n,k=Math.floor(v);return (v-k)>bay(x,y)?r[Math.min(n,k+1)]:r[k];}
@@ -691,53 +699,62 @@ const SCHOOL={x0:184,x1:290,base:100,top:62,lean:0.12};
 const leanX=(x,y)=>x+(SCHOOL.base-y)*SCHOOL.lean;
 function drawNight(){
   const [c,g]=mk(W,SH);
-  dith(g,0,0,W,110,['#06071a','#0a0c28','#10143a','#181e50','#222868','#2e2e78'],(x,y)=>y/115+Math.max(0,40-Math.hypot(x-62,y-30))/180);
-  // Mond mit Hof
-  for(let r=34;r>16;r-=5)ellFill(g,62,30,r,r,(x,y)=>bay(x,y)<(34-r)/60?'#2e3480':null);
-  ellFill(g,62,30,15,15,(x,y,dx,dy)=>{const d=dx*dx+dy*dy;const cr=Math.hypot(dx+0.3,dy-0.2)<0.18||Math.hypot(dx-0.35,dy+0.3)<0.12||Math.hypot(dx-0.1,dy-0.45)<0.1;
-    return d>0.85?'#d8c888':cr?'#e8dca0':(dx+dy<-0.5?'#fffbe0':'#f8f0c0');});
-  // Wolkenschleier
-  [[120,22,70],[200,14,90],[20,60,60],[250,40,70]].forEach(([cx,cy,w])=>{for(let x=cx-w/2;x<cx+w/2;x++){const h=2+Math.round(2*Math.sin((x-cx)/9));for(let y=cy;y<cy+h;y++)if(bay(x|0,y)<0.45)P(g,x|0,y,'#3a3a8a');P(g,x|0,cy-1,bay(x|0,cy)<0.3?'#5a5aa8':'#3a3a8a');}});
-  // ferne Huegel
-  polyFill(g,[[0,106],[50,94],[110,99],[160,90],[230,96],[290,86],[320,92],[320,112],[0,112]],(x,y)=>bay(x,y)<0.3?'#1a2250':'#121a40');
-  // Schiefenberg
+  const hash=(a,b)=>((a*73856093)^(b*19349663))>>>0;
+  const MX=62,MY=30;
+  const mond=(x,y)=>Math.max(0,1-Math.hypot(x-MX,y-MY)/150);
+  // Himmel: tiefblau, zum Horizont heller, weicher Hof um den Mond
+  for(let y=0;y<112;y++)for(let x=0;x<W;x++){const d=Math.hypot(x-MX,y-MY);P(g,x,y,pick(KR.nacht,0.08+y/170+Math.max(0,1-d/60)*0.45+Math.max(0,1-d/130)*0.15,x,y));}
+  // Mond mit Kratern, Licht von rechts oben auf der Kugel
+  ellFill(g,MX,MY,15,15,(x,y,dx,dy)=>{const d=dx*dx+dy*dy;let t=0.85-dx*0.1+dy*0.12-d*0.25;
+    const kr=Math.hypot(dx+0.3,dy-0.2)<0.18||Math.hypot(dx-0.35,dy+0.3)<0.12||Math.hypot(dx-0.1,dy-0.45)<0.1||Math.hypot(dx+0.45,dy+0.35)<0.09;if(kr)t-=0.2;
+    return pick(KR.mond,t,x,y);});
+  // Wolkenschleier, am Mond hell gesaeumt
+  [[120,22,70],[200,14,90],[20,60,60],[250,40,70]].forEach(([cx,cy,w])=>{for(let x=cx-w/2;x<cx+w/2;x++){const h=2+Math.round(2.5*Math.sin((x-cx)/9)+1);
+    for(let y=cy-1;y<cy+h;y++){const xi=x|0;P(g,xi,y,pick(KR.nacht,0.35+mond(xi,y)*0.5-(y-cy)/12+(y===cy-1?0.12:0),xi,y));}}});
+  // ferne Huegel im Dunst
+  polyFill(g,[[0,106],[50,94],[110,99],[160,90],[230,96],[290,86],[320,92],[320,112],[0,112]],(x,y)=>pick(KR.huegel,0.3+mond(x,y)*0.35-(y-86)/80,x,y));
+  // Schiefenberg: Gras im Mondlicht, oben heller, Grashalme
   polyFill(g,[[0,144],[0,124],[40,116],[90,110],[140,104],[178,100],[300,97],[320,100],[320,144]],(x,y)=>{
-    const t=clamp((y-98)/50+(x-60)/900,0,0.999),cols=['#1e4a30','#16381f','#0e2816','#081a0e'];const n=t*3,k=Math.floor(n);return (n-k)>bay(x,y)?cols[Math.min(3,k+1)]:cols[k];});
-  for(let i=0;i<60;i++){const x=(i*53)%320,y=104+((i*29)%40);if(y>106)line(g,x,y,x+1,y-2,'#2a5a38');}
-  // Weg
+    let t=0.28+mond(x,y)*0.45-(y-98)/140+((hash(x>>1,y>>1)%5)-2)*0.02;return pick(KR.grasN,t,x,y);});
+  for(let i=0;i<90;i++){const x=(i*53)%320,y=104+((i*29)%40);if(y>106){line(g,x,y,x+1,y-2,pick(KR.grasN,0.7+mond(x,y)*0.3,x,y));}}
+  // Weg, im Mondlicht, mit Kanten
   for(let i=0;i<NIGHT_PATH.length-1;i++){const [x0,y0]=NIGHT_PATH[i],[x1,y1]=NIGHT_PATH[i+1];const n=Math.ceil(Math.hypot(x1-x0,y1-y0));
-    for(let s=0;s<=n;s++){const x=x0+(x1-x0)*s/n,y=y0+(y1-y0)*s/n,w=1.5+(y-100)/9;ellFill(g,x,y,w*1.6,w*0.7,(px,py)=>bay(px,py)<0.35?'#6a5a48':(py<y?'#4e4034':'#3a2e24'));}}
-  // Stein am Wegesrand
-  ellFill(g,112,124,7,4,(x,y,dx,dy)=>dx+dy<-0.4?'#8a8aa0':dx+dy>0.5?'#383848':'#5a5a70');
-  // Schule, leicht schief
-  const S0=SCHOOL;
+    for(let s=0;s<=n;s++){const x=x0+(x1-x0)*s/n,y=y0+(y1-y0)*s/n,w=1.5+(y-100)/9;ellFill(g,x,y,w*1.6,w*0.7,(px,py,dx,dy)=>pick(KR.wegN,0.45+mond(px,py)*0.35-dy*0.2-Math.abs(dx)*0.1+((hash(px,py)%7)-3)*0.03,px,py));}}
+  // Stein am Wegesrand, vom Mond angestrahlt
+  ellFill(g,112,124,7,4,(x,y,dx,dy)=>pick(KR.stein,0.6-dx*0.3-dy*0.4,x,y));
+  // Schule, leicht schief: Ziegel, Mondlicht links, warmer Schein um erleuchtete Fenster
+  const S0=SCHOOL,LIT=new Set([3,9,12,15,19]),glut=[];
+  {let n=0;for(let r=0;r<3;r++)for(let col=0;col<8;col++){n++;if(LIT.has(n))glut.push([S0.x0+9+col*12,S0.top+8+r*11]);}}
+  const warm=(x,y)=>glut.reduce((a,[gx,gy])=>Math.max(a,1-Math.hypot(x-gx,(y-gy)*1.2)/14),0);
   for(let y=S0.top;y<S0.base;y++)for(let x=S0.x0;x<S0.x1;x++){const xx=Math.round(leanX(x,y));
-    const brick=((y%4===0)||((x+(Math.floor(y/4)%2)*3)%6===0));const lit=x<S0.x0+12;
-    P(g,xx,y,brick?'#2a0e12':(lit?'#6a2a2c':bay(x,y)<0.5?'#4a1c20':'#5a2428'));}
-  // Dach und Uhrtuermchen
-  polyFill(g,[[leanX(S0.x0-3,S0.top),S0.top],[leanX(S0.x1+3,S0.top),S0.top],[leanX(S0.x1-6,S0.top-8),S0.top-8],[leanX(S0.x0+6,S0.top-8),S0.top-8]],(x,y)=>(y%2?'#1c2030':'#2a3044'));
+    const ry=Math.floor(y/4),fuge=y%4===0||(x+(ry%2)*3)%6===0;
+    let t=0.3+Math.max(0,S0.x0+14-x)/40+((hash(Math.floor((x+(ry%2)*3)/6),ry)%5)-2)*0.03;if(fuge)t-=0.15;
+    const w=warm(x,y);P(g,xx,y,w>bay(x,y)*0.9+0.05?pick(KR.ziegelW,t+w*0.5,x,y):pick(KR.ziegelN,t,x,y));}
+  // Schieferdach und Uhrtuermchen
+  polyFill(g,[[leanX(S0.x0-3,S0.top),S0.top],[leanX(S0.x1+3,S0.top),S0.top],[leanX(S0.x1-6,S0.top-8),S0.top-8],[leanX(S0.x0+6,S0.top-8),S0.top-8]],(x,y)=>pick(KR.stein,0.3+(y%2?0.08:0)+Math.max(0,210-x)/200,x,y));
   const tx=226,tt=40,tb=S0.top-7;
-  for(let y=tt;y<tb;y++)for(let x=tx;x<tx+18;x++)P(g,Math.round(leanX(x,y)),y,x<tx+3?'#6a2a2c':'#4a1c20');
-  polyFill(g,[[leanX(tx-2,tt),tt],[leanX(tx+20,tt),tt],[leanX(tx+9,tt-10),tt-10]],(x,y)=>x<leanX(tx+9,y)?'#2a3044':'#1c2030');
+  for(let y=tt;y<tb;y++)for(let x=tx;x<tx+18;x++){const ry=Math.floor(y/4),fuge=y%4===0||(x+(ry%2)*3)%6===0;P(g,Math.round(leanX(x,y)),y,pick(KR.ziegelN,(x<tx+4?0.55:0.3)-(fuge?0.15:0),x,y));}
+  polyFill(g,[[leanX(tx-2,tt),tt],[leanX(tx+20,tt),tt],[leanX(tx+9,tt-10),tt-10]],(x,y)=>pick(KR.stein,x<leanX(tx+9,y)?0.5:0.25,x,y));
   const cxc=Math.round(leanX(tx+9,48)),cyc=48;
-  ellFill(g,cxc,cyc,8,8,(x,y,dx,dy)=>bay(x,y)<0.35?'#6a5a30':null);
-  ellFill(g,cxc,cyc,5,5,(x,y,dx,dy)=>dx*dx+dy*dy>0.7?'#b08a40':'#fff0b0');
+  ellFill(g,cxc,cyc,8,8,(x,y,dx,dy)=>{const d=Math.hypot(dx,dy);return d>0.62?pick(KR.gold,0.2+(1-d)*0.8,x,y):null;});
+  ellFill(g,cxc,cyc,5,5,(x,y,dx,dy)=>dx*dx+dy*dy>0.7?pick(KR.gold,0.5,x,y):pick(KR.gold,0.95-dy*0.1,x,y));
   line(g,cxc,cyc,cxc,cyc-3,'#3a2a10');line(g,cxc,cyc,cxc+2,cyc+1,'#3a2a10');
-  // Fenster in drei Reihen, ein paar sind erleuchtet
-  const LIT=new Set([3,9,12,15,19]);let n=0;
-  for(let r=0;r<3;r++)for(let col=0;col<8;col++){const x=S0.x0+6+col*12,y=S0.top+5+r*11;n++;
-    if(col===3&&r===2)continue;
-    for(let yy=y;yy<y+7;yy++)for(let xx=x;xx<x+6;xx++){const lx=Math.round(leanX(xx,yy));
-      P(g,lx,yy,LIT.has(n)?(xx===x+3||yy===y+3?'#8a5a20':'#f8c860'):(xx===x+3||yy===y+3?'#1a1420':'#141c38'));}
-    if(LIT.has(n))for(let yy=y+7;yy<y+9;yy++)for(let xx=x-1;xx<x+7;xx++)if(bay(xx,yy)<0.25)P(g,Math.round(leanX(xx,yy)),yy,'#b0703a');}
-  // Tuer mit Stufen
-  for(let y=S0.base-13;y<S0.base;y++)for(let x=222;x<236;x++){const lx=Math.round(leanX(x,y));const top=y<S0.base-10&&Math.hypot(x+0.5-229,y-(S0.base-10))>7;if(!top)P(g,lx,y,x===229?'#140a08':'#2a160c');}
-  R(g,218,100,20,2,'#5a5a70');R(g,216,102,24,2,'#44445a');
+  // Fenster: erleuchtete mit warmem Licht und Kreuz, dunkle spiegeln den Himmel
+  {let n=0;for(let r=0;r<3;r++)for(let col=0;col<8;col++){const x=S0.x0+6+col*12,y=S0.top+5+r*11;n++;if(col===3&&r===2)continue;
+    for(let yy=y;yy<y+7;yy++)for(let xx=x;xx<x+6;xx++){const lx=Math.round(leanX(xx,yy)),kreuz=xx===x+3||yy===y+3;
+      P(g,lx,yy,LIT.has(n)?(kreuz?pick(KR.gold,0.35,xx,yy):pick(KR.gold,0.95-(yy-y)/20,xx,yy)):(kreuz?'#141018':pick(KR.nacht,0.3+(xx-x)/20-(yy-y)/30,xx,yy)));}
+    if(LIT.has(n))for(let xx=x-1;xx<x+7;xx++)P(g,Math.round(leanX(xx,y+7)),y+7,pick(KR.ziegelW,0.8,xx,y+7));}}
+  // Tuer mit Bogen, Stufen, ein Lichtstreif unter der Tuer
+  for(let y=S0.base-13;y<S0.base;y++)for(let x=222;x<236;x++){const lx=Math.round(leanX(x,y));const top=y<S0.base-10&&Math.hypot(x+0.5-229,y-(S0.base-10))>7;if(!top)P(g,lx,y,x===229?'#140a08':pick(KR.holz,0.2+(x<229?0.08:0),x,y));}
+  for(let x=223;x<235;x++)P(g,Math.round(leanX(x,S0.base-1)),S0.base-1,pick(KR.gold,0.8,x,0));
+  for(let x=218;x<238;x++){P(g,x,100,pick(KR.stein,0.6,x,100));P(g,x,101,pick(KR.stein,0.4,x,101));}for(let x=216;x<240;x++){P(g,x,102,pick(KR.stein,0.45,x,102));P(g,x,103,pick(KR.stein,0.25,x,103));}
+  // warmer Schein vor der Schule auf dem Gras
+  for(let y=98;y<112;y++)for(let x=200;x<290;x++){const w=Math.max(0,1-Math.hypot(x-230,(y-100)*3)/34);if(w>bay(x,y)*0.6+0.3)P(g,x,y,pick(KR.grasW,0.3+w*0.5,x,y));}
   // Zaun
-  for(let x=250;x<300;x+=5){R(g,x,100,1,7,'#2a2030');}R(g,248,102,54,1,'#2a2030');
-  // knorrige Baeume am Rand
+  for(let x=250;x<300;x+=5){for(let y=100;y<107;y++)P(g,x,y,pick(KR.holz,0.2,x,y));}for(let x=248;x<302;x++)P(g,x,102,pick(KR.holz,0.25,x,102));
+  // knorrige Baeume als Silhouette, der Mond saeumt die linken Kanten
   const tree=(x,y,ang,len,w)=>{if(len<3)return;const x2=x+Math.cos(ang)*len,y2=y+Math.sin(ang)*len;
-    for(let i=0;i<=len;i++){const t=i/len,xx=x+(x2-x)*t,yy=y+(y2-y)*t;R(g,Math.round(xx-w/2),Math.round(yy),Math.max(1,Math.round(w)),1,'#05040a');}
+    for(let i=0;i<=len;i++){const t=i/len,xx=x+(x2-x)*t,yy=y+(y2-y)*t,ww=Math.max(1,Math.round(w));R(g,Math.round(xx-w/2),Math.round(yy),ww,1,'#05040a');if(ww>1&&xx<160)P(g,Math.round(xx-w/2),Math.round(yy),'#2a3060');}
     tree(x2,y2,ang-0.45+Math.sin(len)*0.2,len*0.72,w*0.65);tree(x2,y2,ang+0.5,len*0.62,w*0.6);};
   tree(8,146,-1.45,40,7);tree(314,146,-1.7,44,8);
   return c;
@@ -792,7 +809,7 @@ function nightScene(t,fog){
    ===================================================================== */
 const BRASS=['#3a2408','#7a5418','#b8862c','#e8c060'];
 function drawGear(cx,cy,r,teeth,ang,spokes){
-  const r2=r*r,R0=r+2;
+  const R0=r+2;
   for(let y=Math.floor(cy-R0);y<=cy+R0;y++)for(let x=Math.floor(cx-R0);x<=cx+R0;x++){
     const dx=x+0.5-cx,dy=y+0.5-cy,d=Math.hypot(dx,dy);if(d>R0)continue;
     const th=Math.atan2(dy,dx)-ang,tooth=((th*teeth/(Math.PI*2))%1+1)%1<0.5;
@@ -800,40 +817,54 @@ function drawGear(cx,cy,r,teeth,ang,spokes){
     if(d<r*0.72&&d>r*0.22){const s=((th*spokes/(Math.PI*2))%1+1)%1;const off=Math.min(s,1-s)*(Math.PI*2/spokes)*d;if(off>1.3)inside=false;}
     if(d<r*0.14)inside=false;
     if(!inside)continue;
-    const lit=(dx+dy)/Math.max(1,d);
-    P(ctx,x,y,d>r-1&&!tooth?BRASS[0]:lit<-0.5?BRASS[3]:lit>0.5?BRASS[1]:BRASS[2]);
+    // Messing: Glanz zur Laterne links oben, Kanten dunkler, der Kranz etwas abgesetzt
+    const lit=(dx+dy)/Math.max(1,d),kante=d>r-1&&!tooth,kranz=Math.abs(d-r*0.8)<1;
+    let t=0.55-lit*0.3-(kante?0.3:0)+(kranz?0.12:0)+Math.max(0,1-Math.hypot(x-30,y-50)/220)*0.2;
+    P(ctx,x,y,pick(KR.gold,t,x,y));
   }
 }
 function drawBalance(cx,cy,r,ang){
   // Spiralfeder
-  for(let th=0;th<Math.PI*6;th+=0.05){const rr=1.5+th*r*0.045,a=th+ang*0.6;P(ctx,Math.round(cx+Math.cos(a)*rr),Math.round(cy+Math.sin(a)*rr),'#c8c8dc');}
+  for(let th=0;th<Math.PI*6;th+=0.05){const rr=1.5+th*r*0.045,a=th+ang*0.6,x=Math.round(cx+Math.cos(a)*rr),y=Math.round(cy+Math.sin(a)*rr);P(ctx,x,y,pick(KR.stahl,0.8-th/30,x,y));}
   // Speichen
-  for(let k=0;k<3;k++){const a=ang+k*Math.PI*2/3;line(ctx,cx,cy,cx+Math.cos(a)*(r-2),cy+Math.sin(a)*(r-2),'#b8862c');line(ctx,cx+1,cy,cx+1+Math.cos(a)*(r-2),cy+Math.sin(a)*(r-2),'#7a5418');}
-  // Reif
-  for(let y=Math.floor(cy-r-1);y<=cy+r+1;y++)for(let x=Math.floor(cx-r-1);x<=cx+r+1;x++){const dx=x+0.5-cx,dy=y+0.5-cy,d=Math.hypot(dx,dy);if(d>r-2.5&&d<=r){const lit=(dx+dy)/d;P(ctx,x,y,lit<-0.4?'#fff0a0':lit>0.4?'#7a5418':'#d8a840');}}
-  ellFill(ctx,cx,cy,2.5,2.5,()=> '#e8c060');P(ctx,Math.round(cx),Math.round(cy),'#3a2408');
+  for(let k=0;k<3;k++){const a=ang+k*Math.PI*2/3;line(ctx,cx,cy,cx+Math.cos(a)*(r-2),cy+Math.sin(a)*(r-2),'#e8c050');line(ctx,cx+1,cy,cx+1+Math.cos(a)*(r-2),cy+Math.sin(a)*(r-2),'#7a5410');}
+  // Reif mit Glanz
+  for(let y=Math.floor(cy-r-1);y<=cy+r+1;y++)for(let x=Math.floor(cx-r-1);x<=cx+r+1;x++){const dx=x+0.5-cx,dy=y+0.5-cy,d=Math.hypot(dx,dy);if(d>r-2.5&&d<=r){const lit=(dx+dy)/d;P(ctx,x,y,pick(KR.gold,0.6-lit*0.35+(d>r-1?-0.1:0.05),x,y));}}
+  ellFill(ctx,cx,cy,2.5,2.5,(x,y,dx,dy)=>pick(KR.gold,0.8-dx*0.2-dy*0.2,x,y));P(ctx,Math.round(cx),Math.round(cy),'#3a2408');
 }
 function drawTowerRoom(){
   const [c,g]=mk(W,SH);
-  dith(g,0,0,W,118,['#08060c','#120c14','#1c1218','#2a1a1c'],(x,y)=>0.6-Math.abs(x-40)/400-y/400+Math.max(0,50-Math.hypot(x-30,y-50))/120);
-  for(let x=0;x<W;x+=18){R(g,x,0,1,118,'#050308');}
-  // Zifferblatt von innen, Mondlicht scheint durch
-  ellFill(g,262,56,46,46,(x,y,dx,dy)=>{const d=Math.hypot(dx,dy);const a=Math.atan2(dy,dx);const mun=Math.abs(((a/(Math.PI/6))%1+1)%1-0.5)>0.47&&d>0.25;
-    if(d>0.93)return'#2a2a3a';if(mun||Math.abs(d-0.55)<0.02)return'#1a2448';const t=d*0.6+(dx+dy)*0.2;return t<0.3?'#b8d0f0':t<0.55?(bay(x,y)<0.5?'#86a8dc':'#b8d0f0'):'#5a7ec0';});
+  const hash=(a,b)=>((a*73856093)^(b*19349663))>>>0;
+  // zwei Lichtquellen: warme Laterne links, kuehles Mondlicht durch das Zifferblatt rechts
+  const lat=(x,y)=>Math.max(0,1-Math.hypot(x-30,(y-50)*1.1)/140);
+  const mnd=(x,y)=>Math.max(0,1-Math.hypot(x-262,(y-56)*1.1)/120);
+  const farbe=(x,y,t)=>{const w=clamp(lat(x,y)*1.6-mnd(x,y)*1.0,0,1);return w>bay(x+1,y+2)?pick(KR.steinW,t,x,y):pick(KR.stein,t,x,y);};
+  // Mauerwerk aus grossen Quadern
+  for(let y=0;y<118;y++)for(let x=0;x<W;x++){const ry=Math.floor(y/9),o=ry%2?0:11,bx=Math.floor((x+o)/22),ly=y%9,lx=(x+o)%22;
+    let t=0.08+lat(x,y)*0.6+mnd(x,y)*0.45+((hash(bx,ry)%7)-3)*0.02;if(ly===0||lx===0)t-=0.12;else if(ly===1||lx===1)t+=0.05;
+    P(g,x,y,farbe(x,y,t));}
+  // Zifferblatt von innen: milchiges Glas, Mondlicht scheint durch, Ziffern als Schatten
+  ellFill(g,262,56,46,46,(x,y,dx,dy)=>{const d=Math.hypot(dx,dy),a=Math.atan2(dy,dx),mun=Math.abs(((a/(Math.PI/6))%1+1)%1-0.5)>0.47&&d>0.25;
+    if(d>0.93)return pick(KR.stahl,0.35-dx*0.2,x,y);if(mun||Math.abs(d-0.55)<0.02)return pick(KR.himmel,0.05,x,y);
+    return pick(KR.himmel,0.75-d*0.55-(dx+dy)*0.1,x,y);});
   line(g,262,56,244,40,'#0a1028');line(g,263,56,244,41,'#0a1028');line(g,262,56,270,24,'#0a1028');
-  // Balken
-  polyFill(g,[[0,8],[W,0],[W,6],[0,14]],()=> '#2a160c');
-  // Laterne mit warmem Licht
-  for(let r=30;r>6;r-=4)ellFill(g,30,50,r,r,(x,y)=>bay(x,y)<(30-r)/70?'#5a3418':null);
-  R(g,26,40,9,14,'#1a0c06');R(g,27,42,7,10,'#f8c860');R(g,29,44,3,6,'#fff0b0');R(g,28,37,5,3,'#1a0c06');
-  // Eisengestell
-  R(g,108,18,6,100,'#141a28');R(g,109,18,2,100,'#5a6880');R(g,198,18,6,100,'#141a28');R(g,199,18,2,100,'#5a6880');R(g,108,18,96,5,'#343e52');R(g,108,18,96,1,'#8a9ab4');
-  // Boden mit Luke und Mondlichtfleck
-  dith(g,0,118,W,26,RAMP.wood,(x,y)=>0.55-(y-118)/60-Math.abs(x-160)/600);
-  for(let x=-80;x<400;x+=24)line(g,160+(x-160)*0.6,118,x,SH,'#1a0c06');
-  polyFill(g,[[200,118],[300,118],[320,144],[230,144]],(x,y)=>bay(x,y)<0.4?'#6a86b0':null);
-  R(g,20,126,34,10,'#0a0604');R(g,21,127,32,1,'#3a2410');
-  R(g,106,112,100,8,'#241a18');R(g,106,112,100,1,'#5a4a3a');
+  // Deckenbalken schraeg
+  polyFill(g,[[0,8],[W,0],[W,6],[0,14]],(x,y)=>pick(KR.holz,0.2+lat(x,y)*0.5+(y<=8-x/40+1?0.2:0),x,y));
+  // Laterne am Haken mit Glas und Flamme
+  line(g,30,0,30,37,'#140c08');
+  for(let y=37;y<54;y++)for(let x=26;x<35;x++){const rahmen=y<40||y>51||x===26||x===34;P(g,x,y,rahmen?pick(KR.holz,0.25,x,y):pick(KR.gold,0.9-Math.abs(x-30)/12-Math.abs(y-46)/30,x,y));}
+  R(g,29,43,3,5,'#fffbe8');P(g,30,42,'#fff4b0');
+  // Eisengestell des Uhrwerks
+  const traeger=(x0)=>{for(let y=18;y<118;y++){for(let k=0;k<6;k++)P(g,x0+k,y,pick(KR.stahl,[0.35,0.7,0.55,0.35,0.2,0.1][k]+lat(x0,y)*0.2,x0,y));}};
+  traeger(108);traeger(198);
+  for(let x=108;x<204;x++){for(let k=0;k<5;k++)P(g,x,18+k,pick(KR.stahl,[0.8,0.55,0.4,0.25,0.12][k],x,18));}
+  // Dielenboden in Flucht, Mondfleck rechts, Laternenschein links, Luke
+  for(let y=118;y<SH;y++)for(let x=0;x<W;x++){const d=y-60,u=(x-160)*58/d,pl=Math.floor(u/14),fu=u/14-pl;
+    let t=0.1+lat(x,y-40)*0.45+((hash(pl,5)%5)-2)*0.02;if(fu<0.08)t-=0.1;
+    const imMond=inPoly(x+0.5,y+0.5,[[200,118],[300,118],[320,144],[230,144]]);if(imMond)t+=0.25;t-=Math.max(0,3-(y-118))*0.07;
+    P(g,x,y,imMond?pick(KR.stein,t+0.2,x,y):pick(KR.dielen,t,x,y));}
+  for(let y=126;y<136;y++)for(let x=20;x<54;x++){const rand=x===20||x===53||y===126||y===135;P(g,x,y,rand?pick(KR.holz,0.45,x,y):pick(KR.holz,0.05,x,y));}
+  for(let y=112;y<120;y++)for(let x=106;x<206;x++)P(g,x,y,pick(KR.holz,y===112?0.6:0.2+lat(x,y)*0.2,x,y));
   return c;
 }
 let TOWER,GBIG={};
@@ -2552,38 +2583,73 @@ async function runCut(dur,draw,lines){
   skipLine=null;S.cut=null;await sleep(120);
 }
 function drawCut(now){
-  const c=S.cut,t=(now-c.t0)/1000;
+  const c=S.cut,t=Math.max(0,(now-c.t0)/1000);
   R(ctx,0,0,W,SH,'#000000');c.draw(t,now);
   for(const [a,b,who,txt] of c.lines)if(t>=a&&t<b&&c.pos[who]){const [x,y]=c.pos[who],lines=wrap(txt,170),top=Math.max(3,y-4-lines.length*LINEH);
     lines.forEach((l,i)=>{const w=textW(l);text(l,clamp(Math.round(x-w/2),3,W-3-w),top+i*LINEH,K[who],true);});}
   if(t<0.4){ctx.globalAlpha=1-t/0.4;R(ctx,0,0,W,SH,'#000000');ctx.globalAlpha=1;}
 }
 function rotSprite(img,x,y,ax,ay,ang,flip){ctx.save();ctx.translate(Math.round(x),Math.round(y));ctx.rotate(ang);if(flip)ctx.scale(-1,1);ctx.drawImage(img,-ax,-ay);ctx.restore();}
-// Rutschpartie durch den Lueftungsschacht
+// Rutschpartie durch den Lueftungsschacht: Blechrohr, vorne dunkel, am Ende helles Licht aus der Halle
+let SCHACHT_BG=null,KELLER_BG=null;
+const SCH={x0:-30,y0:18,x1:350,y1:128,wid:46};
+function schachtBg(){
+  const [c,g]=mk(W,SH),{x0,y0,x1,y1,wid}=SCH,len=Math.hypot(x1-x0,y1-y0),ux=(x1-x0)/len,uy=(y1-y0)/len;
+  const ende=(x,y)=>Math.max(0,1-Math.hypot(x-322,(y-134)*1.2)/260);
+  for(let y=0;y<SH;y++)for(let x=0;x<W;x++){
+    const rx=x-x0,ry=y-y0,s=rx*ux+ry*uy,d=-rx*uy+ry*ux,i=s/len;
+    if(Math.abs(d)>wid/2){P(g,x,y,pick(KR.stein,0.02+ende(x,y)*0.08,x,y));continue;}
+    const q=d/(wid/2),naht=((i*11)%1)<0.012,L=ende(x,y);
+    // Blech: unten der Boden des Schachts im Licht, oben die Decke dunkler, Kanten mit Glanzlinie
+    let t=0.12+L*0.75+(q>0?0.1-q*0.15:-0.05+q*0.12);
+    if(Math.abs(q)>0.9)t=q<0?0.35+L*0.5:0.05;
+    if(naht)t-=0.18;
+    if(Math.abs(q)>0.72&&Math.abs(q)<0.8&&((i*110)%1)<0.1)t+=0.3;          // Nieten an den Seiten
+    P(g,x,y,pick(KR.stahl,t,x,y));
+  }
+  // Lichtoeffnung am Ende mit warmem Schein
+  ellFill(g,322,134,26,20,(x,y,dx,dy)=>{const r=dx*dx+dy*dy;return r<0.55?pick(KR.mond,0.95-r*0.4,x,y):null;});
+  return c;
+}
 function cutSchacht(t,now){
-  const x0=-30,y0=18,x1=350,y1=128,ang=Math.atan2(y1-y0,x1-x0),wid=46;
-  for(let i=0;i<=1;i+=0.002){const cx=x0+(x1-x0)*i,cy=y0+(y1-y0)*i;
-    for(let d=-wid/2;d<=wid/2;d++){const px=Math.round(cx-Math.sin(ang)*d),py=Math.round(cy+Math.cos(ang)*d);
-      const edge=Math.abs(d)>wid/2-3,lit=0.25+0.5*i;
-      P(ctx,px,py,edge?(d<0?'#8a8a9c':'#343e52'):(bay(px,py)<lit*(1-Math.abs(d)/wid)?'#5a6880':'#1a2030'));}}
-  for(let i=0.05;i<1;i+=0.09){const cx=x0+(x1-x0)*i,cy=y0+(y1-y0)*i;for(let d=-wid/2+3;d<wid/2-3;d+=2)P(ctx,Math.round(cx-Math.sin(ang)*d),Math.round(cy+Math.cos(ang)*d),'#0e121c');}
-  ellFill(ctx,322,134,26,20,(x,y,dx,dy)=>bay(x,y)<0.6-(dx*dx+dy*dy)*0.5?'#fff0c0':null);
+  if(!SCHACHT_BG)SCHACHT_BG=schachtBg();ctx.drawImage(SCHACHT_BG,0,0);
+  const {x0,y0,x1,y1}=SCH,ang=Math.atan2(y1-y0,x1-x0);
   const p=clamp(t/6.6,0,1),d=30+(x1-x0-110)*p,hx=x0+d,hy=y0+(y1-y0)*d/(x1-x0)+8;
   rotSprite(SPR.heroStand,hx,hy,16,46,ang-0.15,false);
   const kx=hx-58+Math.sin(t*3)*6,ky=hy-34+Math.cos(t*5)*3;
   spr(Math.floor(now/120)%2?SPR.ravenKnock:SPR.raven,kx,ky,11,19,true);
   S.cut.pos={hero:[hx-6,hy-50],kraechz:[kx,ky-20]};
 }
-// Abstieg ueber die Kellertreppe in die Kaelte
+// Abstieg ueber die Kellertreppe in die Kaelte: warmes Licht aus der Halle im Ruecken, unten kaltes Blau
+function kellerBg(){
+  const [c,g]=mk(W,SH);
+  const hash=(a,b)=>((a*73856093)^(b*19349663))>>>0;
+  const halle=(x,y)=>Math.max(0,1-Math.hypot(x-10,(y-10)*1.1)/220);
+  const kalt=(x,y)=>Math.max(0,1-Math.hypot(x-300,(y-128)*1.2)/120);
+  const farbe=(x,y,t)=>clamp(halle(x,y)*1.5-kalt(x,y)-0.2,0,1)>bay(x+1,y+2)?pick(KR.steinW,t,x,y):pick(KR.stein,t,x,y);
+  // Gewoelbte Wand aus Bruchstein
+  for(let y=0;y<SH;y++)for(let x=0;x<W;x++){const ry=Math.floor(y/8),o=ry%2?0:9,bx=Math.floor((x+o)/18),ly=y%8,lx=(x+o)%18;
+    let t=0.06+halle(x,y)*0.5+kalt(x,y)*0.35+((hash(bx,ry)%7)-3)*0.02;if(ly===0||lx===0)t-=0.1;else if(ly===1||lx===1)t+=0.04;P(g,x,y,farbe(x,y,t));}
+  // Stufen: Trittflaeche im Licht, Setzstufe dunkler, darunter Schatten
+  for(let k=0;k<11;k++){const sx=20+k*26,sy=30+k*9;
+    for(let y=sy;y<SH;y++)for(let x=sx;x<sx+40;x++){let t;
+      if(y<sy+3)t=0.55+halle(x,y)*0.45-(y-sy)*0.08;else if(y<sy+9)t=0.25+halle(x,y)*0.3;else t=0.08+halle(x,y)*0.2-(y-sy)/400;
+      if(x===sx)t+=0.12;if(x>=sx+38)t-=0.1;
+      P(g,x,y,y<sy+3?pick(KR.stein,t+kalt(x,y)*0.3,x,y):farbe(x,y,t));}}
+  // Handlauf aus Holz schraeg an der Wand
+  for(let x=10;x<300;x++){const y=Math.round(16+(x-10)*0.34);P(g,x,y,pick(KR.holz,0.7+halle(x,y)*0.3,x,y));P(g,x,y+1,pick(KR.holz,0.35,x,y));P(g,x,y+2,'#0e0604');}
+  for(let x=40;x<300;x+=60){const y=Math.round(16+(x-10)*0.34);for(let k=3;k<9;k++)P(g,x,y+k,pick(KR.stahl,0.4,x,y));}
+  // kaltes Licht vom Kellergang unten rechts
+  for(let y=84;y<SH;y++)for(let x=280;x<W;x++){const r=Math.hypot(x+0.5-302,y-100),innen=y>=100?x>=284:r<18,rand=!innen&&(y>=100?x>=280:r<22);
+    if(innen)P(g,x,y,pick(KR.himmel,0.15+(y-84)/200+(x-284)/300,x,y));else if(rand)P(g,x,y,pick(KR.stein,0.45+kalt(x,y)*0.3,x,y));}
+  return c;
+}
 function cutKeller(t,now){
-  dith(ctx,0,0,W,SH,['#06080e','#0c1220','#141c30','#1e2a44'],(x,y)=>0.15+x/700+y/500);
-  for(let k=0;k<11;k++){const sx=20+k*26,sy=30+k*9;dith(ctx,sx,sy+9,40,SH-sy-9,['#1a2030','#242c40'],(x,y)=>0.5-(y-sy)/200);for(let y=sy+12;y<SH;y+=6)R(ctx,sx,y,40,1,'#10141e');R(ctx,sx,sy,40,3,'#6e6e80');R(ctx,sx,sy,40,1,'#9a9aa8');R(ctx,sx,sy+3,40,6,'#343e52');}
-  for(let i=0;i<30;i++){const x=(i*97)%320,y=(i*53)%144;if(bay(x,y)<0.5)P(ctx,x,y,'#c8dcf0');}
-  ellFill(ctx,300,128,30,16,(x,y,dx,dy)=>bay(x,y)<0.4-(dx*dx+dy*dy)*0.4?'#6a86b0':null);
-  R(ctx,262,60,3,40,'#2a160c');R(ctx,258,58,11,4,'#5c341c');
+  if(!KELLER_BG)KELLER_BG=kellerBg();ctx.drawImage(KELLER_BG,0,0);
   const p=clamp((t-0.5)/8.5,0,1),hx=36+p*248,hy=30+p*86-2,step=Math.floor(t*6)%6;
   shadow(hx,hy,6);spr(SPR.heroWalk[step],hx,hy,16,46,false);
   const kx=hx-34,ky=hy-40+Math.sin(t*6)*2;spr(Math.floor(now/140)%2?SPR.ravenKnock:SPR.raven,kx,ky,11,19,true);
+  // Atemwolken in der Kaelte
   if(Math.floor(t*2)%2)for(let i=0;i<3;i++)P(ctx,Math.round(hx+6+i*3),Math.round(hy-40-i*2-(t*8)%4),'#e0ecfa');
   S.cut.pos={hero:[hx,hy-48],kraechz:[kx,ky-20]};
 }

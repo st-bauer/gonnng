@@ -35,7 +35,8 @@ Regeln für neue Grafik:
   (Bayer-Rasterung nur zwischen zwei benachbarten Stufen). Licht aus klaren Quellen, auch zwei (etwa kühles Fenster und warme Lampe,
   gemischt über den Anteil der Lampe). Schatten werden in die Flächen gerechnet, nicht als Punkte aufgelegt. Perspektive mit Fluchtpunkt,
   Möbel als Körper mit Ober- und Seitenfläche, Materialien mit Struktur (Fugen, Maserung, Glanz). Keine Lichtstrahlen aus hellen Einzelpunkten.
-  Maßstab dafür ist die Kantine (`drawKantineBg`).
+  Maßstab dafür ist die Kantine (`drawKantineBg`). Auf diesem Niveau sind alle Spielräume, das Intro (Nacht, Turmraum)
+  und die Zwischensequenzen (Hintergründe werden einmal gebaut und zwischengespeichert: `schachtBg`, `kellerBg`).
 - Figuren: Teile werden mit den kurzen Rampen (`RAMP`, je dunkel, Schatten, Grundton, Licht) angelegt. `Pup.part` macht daraus
   automatisch eine lange Rampe und schattiert weich nach der Form des Teils, Licht von links oben.
 - Licht kommt in jeder Szene aus einer klaren Richtung, Figuren sind auf der Lichtseite heller.
