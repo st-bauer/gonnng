@@ -38,11 +38,11 @@ button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
   <div class="screen" id="screen">
     <canvas id="cv" width="320" height="200" aria-label="Spielszene"></canvas>
     <div class="overlay" id="title">
-      <h1>Gonnng!</h1>
+      <h1 id="titelLogo">Gonnng!</h1>
       <p>Die Große Stundenuhr steht still. Nur du bist noch wach.</p>
       <button class="primary" id="neu">Neues Spiel</button>
       <button id="weiter" hidden>Weiterspielen</button>
-      <button id="szenenBtn">Szene wählen</button>
+      <button id="szenenBtn" hidden>Szene wählen (Test)</button>
     </div>
     <div class="overlay" id="szenen" hidden>
       <h1 style="font-size:clamp(26px,5vw,44px)">Szene wählen</h1>
@@ -1978,6 +1978,10 @@ $('weiter').onclick=()=>{const s=SAVE.read();if(!s)return;PLAYER.name=s.name||'R
   if(s.stage==='intro')startIntro();else if(s.stage==='ende'){setMode('end');show('end');}else startProlog(s.prolog||null);};
 $('zumTitel').onclick=titleScreen;
 $('szenenBtn').onclick=()=>show('szenen');
+// Nur zum Testen: fünfmal schnell auf den Titel tippen, dann erscheint die Szenenwahl
+let logoTaps=[];
+$('titelLogo').addEventListener('click',()=>{const t=performance.now();logoTaps=logoTaps.filter(x=>t-x<2000);logoTaps.push(t);
+  if(logoTaps.length>=5){$('szenenBtn').hidden=false;logoTaps=[];}});
 $('szenenZurueck').onclick=()=>show('title');
 document.querySelectorAll('[data-szene]').forEach(b=>b.onclick=()=>szeneStarten(b.dataset.szene));
 $('skip').onclick=()=>{if(mode==='intro')Intro.skip();};
