@@ -1182,7 +1182,7 @@ function stepHero(dt){
 
 /* ---------- Ton ---------- */
 let AC=null,M=null;
-function initAudio(){try{AC=AC||new (window.AudioContext||window.webkitAudioContext)();M=AC.createGain();M.gain.value=MUTED()?0:0.5;M.connect(AC.destination);}catch(e){AC=null;}}
+function initAudio(){try{if(AC&&M){if(AC.state==='suspended')AC.resume();return;}AC=AC||new (window.AudioContext||window.webkitAudioContext)();M=AC.createGain();M.gain.value=MUTED()?0:0.5;M.connect(AC.destination);}catch(e){AC=null;}}
 function tone(type,f,dur,vol,f2,delay){if(!AC)return;const s=AC.currentTime+(delay||0),o=AC.createOscillator(),g=AC.createGain();o.type=type;o.frequency.setValueAtTime(f,s);if(f2)o.frequency.exponentialRampToValueAtTime(f2,s+dur);g.gain.setValueAtTime(0.0001,s);g.gain.exponentialRampToValueAtTime(vol,s+0.01);g.gain.exponentialRampToValueAtTime(0.0001,s+dur);o.connect(g);g.connect(M);o.start(s);o.stop(s+dur+0.05);}
 function knock(){tone('square',180,0.05,0.12,90);tone('square',170,0.05,0.12,90,0.16);}
 function gongStuck(sec){if(!AC)return;const s=AC.currentTime,bus=AC.createGain();bus.connect(M);bus.gain.setValueAtTime(1,s);bus.gain.setValueAtTime(1,s+sec-1.5);bus.gain.linearRampToValueAtTime(0,s+sec);
@@ -1529,6 +1529,7 @@ cv.addEventListener('pointermove',e=>{if(MODE()!=='prolog')return;S.mouse=toPx(e
   else{const i=invAt(x,y);S.hover=i>=0?ITEMS[S.inv[i]].name:null;}});
 cv.addEventListener('pointerleave',()=>{S.mouse=null;S.hover=null;});
 cv.addEventListener('click',e=>{if(MODE()!=='prolog')return;
+  if(AC&&AC.state==='suspended')AC.resume();
   const [x,y]=toPx(e);
   if(skipLine){skipLine();return;}
   if(S.sort){S.sort.click(x,y);return;}
@@ -3372,7 +3373,7 @@ const KEEP=['spur','room','takt','zettelGelesen','flureGeschafft','halleIntro','
 function save(){const d={};KEEP.forEach(k=>{if(S[k]!==undefined)d[k]=S[k];});d.hero={x:S.hero.x,y:S.hero.y,flip:S.hero.flip};SAVE.write({prolog:d});}
 let looping=false;
 const API={onDone:null,
-  start(saved){reset(saved);build();last=performance.now();if(!looping){looping=true;requestAnimationFrame(loop);}if(!S.eingangDone)eingang();else if(S.room==='halle'&&!S.halleIntro)run(()=>enterHalle());else if(S.room==='gang'&&!S.gangIntro)run(()=>enterGang());else if(S.room==='kantine'&&!S.kantineIntro)run(()=>enterKantine());else if(S.room==='heiz'&&!S.heizIntro)run(()=>enterHeiz());else if(S.room==='musik'&&!S.musikIntro)run(()=>enterMusik());},
+  start(saved){reset(saved);build();initAudio();last=performance.now();if(!looping){looping=true;requestAnimationFrame(loop);}if(!S.eingangDone)eingang();else if(S.room==='halle'&&!S.halleIntro)run(()=>enterHalle());else if(S.room==='gang'&&!S.gangIntro)run(()=>enterGang());else if(S.room==='kantine'&&!S.kantineIntro)run(()=>enterKantine());else if(S.room==='heiz'&&!S.heizIntro)run(()=>enterHeiz());else if(S.room==='musik'&&!S.musikIntro)run(()=>enterMusik());},
   mute(m){if(M)M.gain.value=m?0:0.5;}};
 window.__S=()=>S;window.__skip=()=>{if(skipLine)skipLine();};
 window.__act=(verb,id,item)=>{const h=curHS().find(x=>x.id===id);return run(async()=>{if(!await goTo(h.walk[0],h.walk[1]))return;face(h.flip);await act(verb,h,item);});};
