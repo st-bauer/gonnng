@@ -1133,7 +1133,7 @@ function icon(g,id,x,y){
 
 const K={hero:'#ffffff',kraechz:'#9ab8ff',kallweit:'#ff9ac8',jonas:'#8af08a',lina:'#ffd070',auf:'#d0a8ff',auf1:'#d0a8ff',auf2:'#d0a8ff',auf3:'#d0a8ff',broesel:'#ffb070',aufK:'#d0a8ff',grummel:'#b8dcf0',fermate:'#ffb8e0',emil:'#a0e8ff',kind2:'#c8f0a0',kind3:'#c8f0a0',kind4:'#c8f0a0',mia:'#ffc080'};
 const heroHead=()=>[S.hero.x,S.hero.y-46];
-const HEADS={kallweit:()=>[102,42],jonas:()=>[132,94],lina:()=>[42,96],kraechz:()=>[S.kx,S.ky-20],auf:()=>S.auf?[S.auf.x,S.auf.y-28]:[250,80],auf1:()=>[119,74],auf2:()=>[187,52],auf3:()=>[252,62],broesel:()=>S.broesel>=1?[196,52]:[132,52],aufK:()=>S.lappenGegeben?[262,80]:[198,78],grummel:()=>[94,50],fermate:()=>[S.fx||262,(S.fy||106)-56],emil:()=>[120,62],kind2:()=>[152,62],kind3:()=>[184,62],kind4:()=>[216,62],mia:()=>[160,62]};
+const HEADS={kallweit:()=>[102,42],jonas:()=>[132,94],lina:()=>[42,96],kraechz:()=>[S.kx,S.ky-20],auf:()=>S.auf?[S.auf.x,S.auf.y-28]:[250,80],auf1:()=>[119,74],auf2:()=>[187,52],auf3:()=>[252,62],broesel:()=>S.broesel>=1?[196,52]:[132,52],aufK:()=>S.lappenGegeben?[262,80]:[198,78],grummel:()=>[94,50],fermate:()=>[S.fx||262,(S.fy||106)-56],emil:()=>[120,62],kind2:()=>[152,62],kind3:()=>[184,62],kind4:()=>[216,62],mia:()=>[138,62]};
 
 const HS=[
   {id:'kraechz',name:'Krächz',rect:()=>S.kraechz==='aussen'?[34,62,22,18]:[S.kx-11,S.ky-19,22,19],walk:[80,106],flip:true},
@@ -3374,8 +3374,8 @@ async function musikTipp(){
    Stabschrecken tarnen sich als Zweige (Mimese) und schaukeln beim Bewegen wie ein Zweig im Wind.
    Wer den Zweig findet, der ohne Wind schaukelt, zeigt ihn Mia. Sie zeichnet los, wird wach und leiht die Lupe.
    ===================================================================== */
-const BAND_BIO={x0:40,x1:296,y0:112,y1:134};
-const GUSTAV={x0:225,y0:79,x1:230,y1:53};
+const BAND_BIO={x0:40,x1:296,y0:112,y1:130};
+const GUSTAV={x0:197,y0:79,x1:202,y1:53};
 let BIO=null;
 function drawBioBg(){
   const [c,g]=mk(W,SH);
@@ -3383,73 +3383,132 @@ function drawBioBg(){
   const WB=100,VX=160,VY=40;
   const zum=(x,y,k)=>[x+(VX-x)*k,y+(VY-y)*k];
   const MIX=mkMix(KR.putz,KR.putzW,8);
-  // Licht: kuehles Fenster links, warme Waermelampe ueber dem Terrarium
+  // Licht: kuehles Fenster links, warme Waermelampe ueber dem Terrarium, dazu ein schwacher blauer Schein vom Aquarium
   const fenster=(x,y)=>Math.max(0,1-Math.hypot(x-68,(y-30)*1.1)/190);
-  const lampe=(x,y)=>Math.max(0,1-Math.hypot(x-218,(y-46)*1.1)/95);
-  const L=(x,y)=>0.12+fenster(x,y)*0.5+lampe(x,y)*0.45;
+  const lampe=(x,y)=>Math.max(0,1-Math.hypot(x-190,(y-46)*1.1)/90);
+  const aqua=(x,y)=>Math.max(0,1-Math.hypot(x-251,(y-72)*1.2)/40);
+  const L=(x,y)=>0.12+fenster(x,y)*0.5+lampe(x,y)*0.42+aqua(x,y)*0.12;
   const w=(x,y)=>clamp(lampe(x,y)*1.6-fenster(x,y)*0.6,0,1);
-  // Decke, Wand mit gruenem Sockel
+  // Decke mit Stuckleiste, Wand mit gruenem Sockel, Seitenwand rechts im Schatten
   for(let y=0;y<12;y++)for(let x=0;x<W;x++){let t=0.3+y/40+fenster(x,y)*0.3;if(y===10)t+=0.25;if(y===11)t-=0.15;P(g,x,y,pickMix(MIX,0,t,x,y));}
-  for(let y=12;y<WB;y++)for(let x=0;x<W;x++){let t=L(x,y)-Math.max(0,18-y)/40-Math.max(0,x-290)/60+((hash(x>>2,y>>2)%5)-2)*0.008;
-    if(y>=74){t=0.3+L(x,y)*0.4-(y-74)/100;if(y===74)t+=0.18;if(y===75)t-=0.1;P(g,x,y,pick(KR.buchG,t,x,y));continue;}
+  for(let y=12;y<WB;y++)for(let x=0;x<W;x++){let t=L(x,y)-Math.max(0,18-y)/40-Math.max(0,x-292)/50+((hash(x>>2,y>>2)%5)-2)*0.006;
+    if(y>=74){t=0.28+L(x,y)*0.4-(y-74)/100;if(y===74)t+=0.18;if(y===75)t-=0.1;P(g,x,y,pick(KR.buchG,t*0.85,x,y));continue;}
     P(g,x,y,pickMix(MIX,w(x,y),t,x,y));}
-  polyFill(g,[[306,0],[320,0],[320,120],[306,104]],(x,y)=>pickMix(MIX,0,0.18-(x-306)/60,x,y));
-  // Linoleum in der Flucht, mit Fensterlicht und Lampenschein, Schatten von Tisch und Schrank
-  const schatten=[[[178,104],[258,104],[268,110],[186,110]],[[272,104],[306,104],[314,110],[278,110]]];
+  polyFill(g,[[306,0],[320,0],[320,120],[306,104]],(x,y)=>pickMix(MIX,0,0.16-(x-306)/60,x,y));
+  // Linoleum: ruhige Flaeche mit Lichtfleck vom Fenster, warmem Schein unter der Lampe und Schlagschatten der Moebel
   const LINO=mkMix(mkRamp(['#0a140e','#18281c','#2a4030','#40584a','#5e766a','#8a9e92'],12),mkRamp(['#141008','#2a2414','#443c24','#62583a','#867a56','#b0a47a'],12),6);
-  for(let y=WB;y<SH;y++)for(let x=0;x<W;x++){const d=y-VY,u=(x-VX)*54/d,col=Math.floor(u/16),row=Math.floor(700/d),fu=u/16-col,fv=700/d-row;
-    let t=0.2+Math.max(0,1-Math.hypot(x-100,(y-122)*2)/120)*0.3+Math.max(0,1-Math.hypot(x-218,(y-112)*2)/80)*0.25-(y-WB)/300;
-    if(schatten.some(p=>inPoly(x+0.5,y+0.5,p)))t-=0.16;if(fu<0.05||fv<0.06)t-=0.06;if((col+row)%2)t+=0.03;t-=Math.max(0,3-(y-WB))*0.07;
+  const schatten=[[[150,104],[230,104],[242,111],[158,111]],[[230,104],[274,104],[284,110],[236,110]],[[274,104],[306,104],[314,110],[280,110]],
+    [[40,104],[58,104],[66,108],[44,108]],[[62,104],[80,104],[88,108],[66,108]],[[126,105],[150,105],[158,110],[130,110]]];
+  for(let y=WB;y<SH;y++)for(let x=0;x<W;x++){
+    let t=0.2+Math.max(0,1-Math.hypot(x-96,(y-122)*2)/120)*0.32+Math.max(0,1-Math.hypot(x-190,(y-110)*2)/80)*0.22-(y-WB)/300;
+    if(inPoly(x+0.5,y+0.5,[[46,104],[94,104],[150,144],[92,144]]))t+=0.14;
+    if(schatten.some(p=>inPoly(x+0.5,y+0.5,p)))t-=0.16;t-=Math.max(0,3-(y-WB))*0.07;
+    const d=y-VY,u=(x-VX)*54/d;if(Math.abs(u/40-Math.round(u/40))<0.012)t-=0.04;
     P(g,x,y,pickMix(LINO,clamp(lampe(x,y-40)*1.4,0,1),t*0.8+0.02,x,y));}
   // Tuer zur Halle
   for(let y=28;y<WB+2;y++)for(let x=3;x<36;x++){const zarge=x<6||x>32||y<31;let t=0.35+fenster(x,y)*0.3-(x-4)/120+Math.sin(x*0.9+Math.sin(y*0.15)*2)*0.04;
     const fuell=(y>38&&y<60||y>64&&y<WB-3)&&x>11&&x<28;if(fuell)t-=0.08;P(g,x,y,zarge?pick(KR.holz,0.5-(x>32?0.25:0),x,y):pick(KR.holz,t,x,y));}
   kastenG(g,26,66,4,2,KR.gold,0.6);
-  // Fenster mit Laibung und Fensterbrett
+  // Fenster mit Laibung und Fensterbrett, darauf der Kresseversuch: im Hellen gruen und kurz, im Dunkeln blass und lang
   polyFill(g,[[93,9],[99,6],[99,55],[93,51]],(x,y)=>pickMix(MIX,0,0.85-(x-93)/30,x,y));
   for(let y=9;y<52;y++)for(let x=42;x<94;x++){const rand=x<45||x>90||y<12||y>48;
     P(g,x,y,rand?pick(KR.email,0.75-(y-8)/200,x,y):pick(KR.himmel,0.35+(y-12)/50+(Math.abs((x-45)-(y-12)*0.9-10)<2?0.2:0),x,y));}
   for(let y=12;y<49;y++){P(g,67,y,'#ffffff');P(g,68,y,'#c8cedc');}for(let x=45;x<91;x++){P(g,x,29,'#ffffff');P(g,x,30,'#c8cedc');}
   polyFill(g,[[38,51],[100,51],[103,55],[35,55]],(x,y)=>pick(KR.email,0.98-(y-51)/10,x,y));
-  // Regalbrett rechts vom Fenster mit Topfpflanzen, die sich alle zum Fenster lehnen
+  [[74,0],[86,1]].forEach(([x,dunkel])=>{zylG(g,x-4,46,9,5,KR.terra,0.5);kastenG(g,x-3,47,7,2,KR.papier,0.9);
+    for(let k=0;k<6;k++){const h=dunkel?9+(k%3):4+(k%2),xx=x-3+k;line(g,xx,45,xx+(dunkel?(k%2):0),45-h,dunkel?(k%2?'#e8e0a0':'#d8d090'):(k%2?'#6ab85a':'#3e8a3a'));
+      if(!dunkel){P(g,xx-1,45-h,'#6ab85a');P(g,xx+1,45-h,'#a8e08a');}}});
+  P(g,72,48,'#e8c050');P(g,84,48,'#343e52');
+  // Regalbrett mit Topfpflanzen, die sich alle zum Fenster lehnen; darueber ein Insektenposter
   for(let x=102;x<140;x++){P(g,x,62,pick(KR.holz,0.6,x,62));P(g,x,63,pick(KR.holz,0.3,x,63));P(g,x,64,pickMix(MIX,0,0.05,x,64));}
-  [[108,KR.terra],[120,KR.terra],[132,KR.terra]].forEach(([x,rp],i)=>{zylG(g,x-4,55,8,7,rp,0.5);
+  [108,120,132].forEach((x,i)=>{zylG(g,x-4,55,8,7,KR.terra,0.5);
     for(let k=0;k<5;k++){const l=10+k*2+i,a=-2.2-k*0.12;line(g,x,55,Math.round(x+Math.cos(a)*l),Math.round(55+Math.sin(a)*l),k%2?'#3e8a3a':'#26582a');
       ellFill(g,Math.round(x+Math.cos(a)*l),Math.round(55+Math.sin(a)*l),2,1.4,(px,py,dx,dy)=>pick(KR.blatt,0.55-dx*0.2-dy*0.2,px,py));}});
+  for(let y=14;y<38;y++)for(let x=104;x<128;x++){const rand=x===104||x===127||y===14||y===37;P(g,x,y,rand?'#8a8272':pick(KR.papier,0.82-(x-104)/220,x,y));}
+  ellFill(g,116,19,2,2,()=>'#3a2410');ellFill(g,116,24,3,2.5,()=>'#5c341c');ellFill(g,116,31,3.5,4,()=>'#6e3c1c');
+  [[22],[24],[26]].forEach(([yy],k)=>{line(g,113,yy,108,yy-2+k*2,'#3a2410');line(g,119,yy,124,yy-2+k*2,'#3a2410');});
   // Tafel mit Rahmen und Kreideleiste
   for(let y=14;y<48;y++)for(let x=146;x<222;x++){const rand=x<148||x>219||y<16||y>45;
     P(g,x,y,rand?pick(KR.holz,0.45+fenster(x,y)*0.2,x,y):pick(KR.tafel,0.32+fenster(x,y)*0.3+lampe(x,y)*0.15-(y-16)/150,x,y));}
-  polyFill(g,[[146,48],[222,48],[226,51],[142,51]],(x,y)=>pick(KR.holz,y<50?0.6:0.3,x,y));
-  // Poster mit einem Insekt: sechs Beine, drei Koerperteile
-  for(let y=18;y<46;y++)for(let x=230;x<256;x++){const rand=x===230||x===255||y===18||y===45;P(g,x,y,rand?'#8a8272':pick(KR.papier,0.82-(x-230)/220,x,y));}
-  ellFill(g,243,26,2,2,()=>'#3a2410');ellFill(g,243,31,3,2.5,()=>'#5c341c');ellFill(g,243,38,3.5,4,()=>'#6e3c1c');
-  [[-1,29],[1,31],[-1,33]].forEach(([s,yy],k)=>{line(g,240,yy,235,yy-2+k*2,'#3a2410');line(g,246,yy,251,yy-2+k*2,'#3a2410');});
-  // Schrank mit Praeparaten hinter Glas
-  const S0=272,S1=304,ST=30,SB=104,sk=0.08;const [b1x,b1y]=zum(S0,ST,sk),[b2x,b2y]=zum(S0,SB,sk);
-  polyFill(g,[[S0,ST],[b1x,b1y],[b2x,b2y],[S0,SB]],(x,y)=>pick(KR.holz,0.28+L(x,y)*0.2,x,y));
-  for(let y=ST;y<SB;y++)for(let x=S0;x<S1;x++){const rahmen=x<S0+2||x>S1-3||y<ST+2||y===66||y===67||x===288;let t=rahmen?0.35+L(x,y)*0.3:0.12+L(x,y)*0.25;
-    if(!rahmen&&y<66&&Math.abs((x-S0)-(y-ST)*0.5-6)<1.5)t+=0.25;P(g,x,y,pick(rahmen?KR.holz:KR.stahl,t,x,y));}
-  [[276,44,KR.blatt],[282,46,KR.gold],[292,42,KR.buchR],[298,46,KR.blatt],[278,58,KR.gold],[294,58,KR.jute]].forEach(([x,y,rp])=>{zylG(g,x,y,5,8,rp,0.35);zylG(g,x,y-2,5,2,KR.stahl,0.5);});
-  // Tisch als Koerper: Platte in der Flucht, Vorderkante, Beine; darauf das Terrarium
-  const T0=176,T1=258,TT=84;const [c1x,c1y]=zum(T0,TT,0.14),[c2x,c2y]=zum(T1,TT,0.14);
+  polyFill(g,[[146,48],[222,48],[226,51],[142,51]],(x,y)=>pick(KR.holz,y<50?0.6:0.3,x,y));kastenG(g,204,47,5,2,KR.papier,0.9);
+  // Rollkarte „Der Blutkreislauf“: Stab, Papier, Koerperumriss, rot vom Herzen weg, blau zurueck
+  for(let x=226;x<266;x++){P(g,x,12,pick(KR.holz,0.6,x,12));P(g,x,13,pick(KR.holz,0.3,x,13));}
+  for(let y=14;y<54;y++)for(let x=229;x<263;x++)P(g,x,y,pick(KR.papier,0.8-(x-229)/250+(y%9===0?-0.03:0),x,y));
+  for(let x=228;x<264;x++){P(g,x,54,pick(KR.holz,0.55,x,54));P(g,x,55,pick(KR.holz,0.25,x,55));}
+  ellFill(g,246,19,3,3,(x,y,dx,dy)=>dx*dx+dy*dy>0.55?'#8a8272':null);
+  polyFill(g,[[240,23],[252,23],[254,38],[250,38],[250,51],[247,51],[246,40],[245,51],[242,51],[242,38],[238,38]],(x,y)=>bay(x,y)<0.15?'#c0b8a0':null);
+  ellFill(g,246,28,1.6,1.6,()=>'#c83030');
+  line(g,246,28,246,20,'#c83030');line(g,246,28,240,36,'#c83030');line(g,247,29,248,49,'#c83030');
+  line(g,245,29,244,49,'#3a64c4');line(g,247,27,252,36,'#3a64c4');line(g,247,27,247,21,'#3a64c4');
+  // Tisch als Koerper: Platte in der Flucht, Vorderkante, Beine; darauf das Terrarium mit Tiefe und Glanzkante
+  const T0=150,T1=230,TT=84;const [c1x,c1y]=zum(T0,TT,0.14),[c2x,c2y]=zum(T1,TT,0.14);
   polyFill(g,[[T0,TT],[T1,TT],[c2x,c2y],[c1x,c1y]],(x,y)=>pick(KR.holz,0.5+L(x,y)*0.3,x,y));
-  for(let x=T0;x<T1;x++){for(let y=TT;y<TT+4;y++)P(g,x,y,pick(KR.holz,0.35+L(x,y)*0.3-(y-TT)*0.08,x,y));}
-  [[T0+2],[T1-5]].forEach(([x])=>{for(let y=TT+4;y<104;y++)for(let k=0;k<3;k++)P(g,x+k,y,pick(KR.stahl,0.3+L(x,y)*0.3-k*0.1,x,y));});
-  // Terrarium: Glas mit Rahmen, Erde unten, Zweige und Brombeerblaetter, oben die Waermelampe
-  const A0=190,A1=248,AT=46,AB=84;
-  for(let y=AT;y<AB;y++)for(let x=A0;x<A1;x++){const rahmen=x<A0+2||x>A1-3||y<AT+2||y>AB-3;
-    let t=rahmen?0.55+lampe(x,y)*0.3:0.25+lampe(x,y)*0.5;if(!rahmen&&y>AB-10)t=0.25+lampe(x,y)*0.25+((x*7+y*3)%5===0?0.1:0);
+  for(let x=T0;x<T1;x++)for(let y=TT;y<TT+4;y++)P(g,x,y,pick(KR.holz,0.35+L(x,y)*0.3-(y-TT)*0.08,x,y));
+  [T0+2,T1-5].forEach(x=>{for(let y=TT+4;y<104;y++)for(let k=0;k<3;k++)P(g,x+k,y,pick(KR.stahl,0.3+L(x,y)*0.3-k*0.1,x,y));});
+  const A0=162,A1=220,AT=46,AB=84;
+  for(let y=AT;y<AB;y++)for(let x=A0;x<A1;x++){const rahmen=x<A0+2||x>A1-3||y<AT+2||y>AB-3,hinten=y===AT+4&&x>A0+4&&x<A1-4;
+    let t=rahmen?0.55+lampe(x,y)*0.3:0.22+lampe(x,y)*0.55;if(!rahmen&&y>AB-10)t=0.25+lampe(x,y)*0.25+((x*7+y*3)%5===0?0.1:0);
+    if(hinten)t-=0.1;if(!rahmen&&(x===A0+4||x===A1-5)&&y>AT+4&&y<AB-10)t-=0.08;
     P(g,x,y,rahmen?pick(KR.stahl,t,x,y):y>AB-10?pick(KR.dielen,t,x,y):pickMix(MIX,1,t,x,y));}
   const zweig=(x0,y0,x1,y1)=>{line(g,x0,y0,x1,y1,'#6a5a2a');line(g,x0+1,y0,x1+1,y1,'#8a7a3a');};
-  zweig(196,76,204,50);zweig(208,76,213,54);zweig(236,76,241,52);zweig(214,62,200,58);zweig(240,64,232,60);
-  [[200,56],[211,60],[239,56],[204,64],[234,66],[216,70]].forEach(([x,y])=>ellFill(g,x,y,3,2,(px,py,dx,dy)=>pick(KR.blatt,0.4+lampe(px,py)*0.3-dx*0.2-dy*0.2,px,py)));
-  for(let x=A0+2;x<A1-2;x++)if((x+AT)%3===0)P(g,x,AT+2,'#e8f0ff');
-  for(let y=AT+3;y<AB-10;y++)if(y%4===0)P(g,A0+3,y,'#d8e4f4');
-  kastenG(g,198,86,24,4,KR.papier,0.85);
-  line(g,218,0,218,36,'#343e52');polyFill(g,[[210,43],[226,43],[222,36],[214,36]],(x,y)=>pick(KR.email,0.3+(x-210)/30,x,y));R(g,215,43,6,2,'#fff4c0');
+  zweig(168,76,176,50);zweig(180,76,185,54);zweig(208,76,213,52);zweig(186,62,172,58);zweig(212,64,204,60);
+  [[172,56],[183,60],[211,56],[176,64],[206,66],[188,70]].forEach(([x,y])=>ellFill(g,x,y,3,2,(px,py,dx,dy)=>pick(KR.blatt,0.4+lampe(px,py)*0.3-dx*0.2-dy*0.2,px,py)));
+  for(let y=AT+3;y<AB-10;y++)if(y%3!==0){P(g,A0+3,y,'#e4ecf8');}for(let x=A0+2;x<A1-2;x++)if((x+AT)%3===0)P(g,x,AT+2,'#e8f0ff');
+  kastenG(g,170,86,24,4,KR.papier,0.85);
+  line(g,190,0,190,36,'#343e52');polyFill(g,[[182,43],[198,43],[194,36],[186,36]],(x,y)=>pick(KR.email,0.3+(x-182)/30,x,y));R(g,187,43,6,2,'#fff4c0');
+  // Aquarium auf einem Unterschrank: Wasser, Kies, Pflanzen, Deckel mit Lampe
+  for(let y=84;y<104;y++)for(let x=232;x<272;x++){let t=0.25+L(x,y)*0.3-(x-232)/200;if(x===251||y===84)t+=0.12;P(g,x,y,pick(KR.holz,t,x,y));}
+  kastenG(g,247,93,2,4,KR.gold,0.6);kastenG(g,254,93,2,4,KR.gold,0.6);
+  for(let y=60;y<84;y++)for(let x=233;x<271;x++){const rand=x===233||x===270||y===60||y===83;
+    let t=rand?0.6:0.62-(y-60)/40+(Math.sin(x*0.5+y*0.3)>0.9?0.08:0);if(!rand&&y>=78)t=0.3+((x*5+y*7)%4)*0.08;
+    P(g,x,y,rand?pick(KR.stahl,t,x,y):y>=78?pick(KR.jute,t,x,y):pick(KR.meer,t,x,y));}
+  [[240,78,12],[262,78,16],[256,78,9]].forEach(([x,y,h])=>{for(let k=0;k<h;k++)P(g,x+Math.round(Math.sin(k*0.6)*1.2),y-k,k%2?'#3e8a3a':'#6ab85a');});
+  kastenG(g,232,57,40,3,KR.stahl,0.35);
+  // Praeparateschrank: Glastueren, drei Reihen Glaeser mit Etiketten, obendrauf ein ausgestopftes Eichhoernchen
+  const S0=274,S1=306,ST=30,SB=104,sk=0.08;const [b1x,b1y]=zum(S0,ST,sk),[b2x,b2y]=zum(S0,SB,sk);
+  polyFill(g,[[S0,ST],[b1x,b1y],[b2x,b2y],[S0,SB]],(x,y)=>pick(KR.holz,0.28+L(x,y)*0.2,x,y));
+  for(let y=ST;y<SB;y++)for(let x=S0;x<S1;x++){const rahmen=x<S0+2||x>S1-3||y<ST+2||y===54||y===55||y===78||y===79||x===290;let t=rahmen?0.35+L(x,y)*0.3:0.1+L(x,y)*0.2;
+    if(!rahmen&&y<78&&Math.abs((x-S0)-(y-ST)*0.5-6)<1.2)t+=0.22;P(g,x,y,pick(rahmen?KR.holz:KR.stahl,t,x,y));}
+  [[33,[KR.blatt,KR.gold,KR.buchR,KR.jute]],[57,[KR.gold,KR.jute,KR.blatt,KR.rosa]]].forEach(([y0,rps])=>rps.forEach((rp,i)=>{const x=277+i*7;
+    zylG(g,x,y0+8,5,12,rp,0.35);zylG(g,x,y0+6,5,2,KR.stahl,0.55);kastenG(g,x+1,y0+12,3,3,KR.papier,0.9);}));
+  for(let i=0;i<5;i++){const x=277+i*6;kastenG(g,x,86,5,16,[KR.buchR,KR.buchB,KR.buchG,KR.buchY,KR.buchR][i],0.4);}
+  ellFill(g,288,25,6,4,(x,y,dx,dy)=>pick(KR.terra,0.55-dx*0.25-dy*0.25,x,y));ellFill(g,293,21,3,3,(x,y,dx,dy)=>pick(KR.terra,0.6-dx*0.2-dy*0.3,x,y));
+  P(g,294,17,'#6a2e18');P(g,295,20,'#101018');
+  for(let k=0;k<10;k++){const a=Math.PI*0.4+k*0.23;ellFill(g,Math.round(283-Math.cos(a)*5),Math.round(20-Math.sin(a)*6),2.4,2.4,(x,y,dx,dy)=>pick(KR.terra,0.5-dx*0.2-dy*0.2,x,y));}
+  kastenG(g,282,29,14,1,KR.holz,0.4);
+  // Skelett auf Rollstaender, leicht schief, mit Pudelmuetze; Torso-Modell auf einem Sockel
+  for(let x=40;x<58;x++)P(g,x,103,pick(KR.stahl,0.4,x,103));[[41],[48],[56]].forEach(([x])=>ellFill(g,x,104,1.5,1.2,()=>'#1e2638'));
+  for(let y=58;y<103;y++)P(g,49,y,pick(KR.stahl,0.45+fenster(49,y)*0.2,49,y));
+  const bone=(x,y,t)=>pick(KR.papier,t+fenster(x,y)*0.3,x,y),sk2=y=>Math.round((y-60)*0.06);
+  ellFill(g,47,62,4.2,4.6,(x,y,dx,dy)=>bone(x,y,0.55-dx*0.25-dy*0.2));P(g,45,62,'#241a24');P(g,48,62,'#241a24');P(g,46,65,'#6e6e7c');P(g,47,66,'#6e6e7c');
+  polyFill(g,[[42,60],[52,60],[48,53]],(x,y)=>pick(KR.buchR,0.6-(x-42)/24,x,y));P(g,48,52,'#ffffff');P(g,49,52,'#e0e0e8');
+  for(let y=67;y<88;y++)P(g,48+sk2(y),y,bone(48,y,y%2?0.45:0.6));
+  for(let r=0;r<5;r++){const y=70+r*2;for(let dx=-6+r*0.5;dx<=6-r*0.5;dx++)if(Math.abs(dx)>1)P(g,Math.round(48+dx+sk2(y)),y+Math.round(Math.abs(dx)*0.2),bone(48,y,0.5-dx*0.02));}
+  line(g,42,68,54,68,'#d8d0b8');line(g,42,68,40,85,'#d8d0b8');line(g,54,68,57,84,'#c0b8a0');
+  ellFill(g,40,86,1.5,1.6,(x,y)=>bone(x,y,0.5));ellFill(g,57,85,1.5,1.6,(x,y)=>bone(x,y,0.4));
+  ellFill(g,49,89,5,2.2,(x,y,dx,dy)=>bone(x,y,0.55-dx*0.2));
+  line(g,46,91,45,102,'#d8d0b8');line(g,52,91,53,102,'#c0b8a0');P(g,44,102,'#d8d0b8');P(g,54,102,'#c0b8a0');
+  kastenG(g,62,98,18,6,KR.holz,0.45);for(let y=90;y<98;y++){P(g,70,y,pick(KR.holz,0.5,70,y));P(g,71,y,pick(KR.holz,0.3,71,y));}
+  ellFill(g,71,80,8,11,(x,y,dx,dy)=>dx<0?pick(KR.haut,0.6-dx*0.2-dy*0.2+fenster(x,y)*0.2,x,y):pick(KR.rosa,0.35-dy*0.1,x,y));
+  ellFill(g,74,75,2.5,3,(x,y,dx,dy)=>pick(KR.rosa,0.6-dy*0.2,x,y));ellFill(g,74,80,2,2,(x,y,dx,dy)=>pick(KR.buchR,0.55-dx*0.2-dy*0.2,x,y));
+  ellFill(g,75,85,3,2,(x,y,dx,dy)=>pick(KR.terra,0.45-dy*0.2,x,y));for(let k=0;k<3;k++)line(g,72,88+k,78,88+k,k%2?'#f8b8c8':'#e07a98');
+  ellFill(g,71,64,4.5,5,(x,y,dx,dy)=>dx<0?pick(KR.haut,0.6-dx*0.2-dy*0.2,x,y):pick(KR.rosa,0.55-dy*0.2,x,y));P(g,69,63,'#241a24');P(g,70,66,'#6a3424');
+  kastenG(g,69,69,4,2,KR.haut,0.4);
   // Hocker fuer Mia
-  for(let x=150;x<170;x++){P(g,x,88,pick(KR.holz,0.6,x,88));P(g,x,89,pick(KR.holz,0.3,x,89));}
-  [[152],[166]].forEach(([x])=>{for(let y=90;y<105;y++)P(g,x,y,pick(KR.holz,0.25,x,y));});
+  const [h1x,h1y]=zum(128,88,0.12),[h2x,h2y]=zum(148,88,0.12);polyFill(g,[[128,88],[148,88],[h2x,h2y],[h1x,h1y]],(x,y)=>pick(KR.holz,0.65,x,y));
+  for(let x=128;x<148;x++){P(g,x,88,pick(KR.holz,0.5,x,88));P(g,x,89,pick(KR.holz,0.28,x,89));}
+  [130,145].forEach(x=>{for(let y=90;y<105;y++){P(g,x,y,pick(KR.holz,0.3,x,y));P(g,x+1,y,pick(KR.holz,0.18,x,y));}});
+  return c;
+}
+// Vordergrund: angeschnittene Schuelertische mit Mikroskopen unter Staubhauben und Buechern, sie verdecken die Figur, wenn sie dahinter steht
+let BIO_VORNE=null;
+function drawBioVorne(){
+  const [c,g]=mk(W,SH);
+  const tisch=(pts,front)=>{polyFill(g,pts,(x,y)=>pick(KR.holz,0.62-(y-pts[0][1])/20,x,y));for(let y=front[1];y<SH;y++)for(let x=front[0];x<front[2];x++)P(g,x,y,pick(KR.holz,0.32-(y-front[1])/40,x,y));};
+  tisch([[0,134],[74,134],[80,139],[0,139]],[0,139,80]);tisch([[250,134],[320,134],[320,139],[244,139]],[244,139,320]);
+  [[16],[42]].forEach(([x])=>{polyFill(g,[[x-7,135],[x+7,135],[x+5,121],[x+2,118],[x-3,118],[x-6,122]],(px,py)=>pick(KR.email,0.7-(px-x+7)/24-(py-118)/60,px,py));
+    for(let y=120;y<135;y+=4)line(g,x-5,y,x+5,y,'#9aa2b0');});
+  kastenG(g,262,128,18,4,KR.buchR,0.5);kastenG(g,264,124,16,4,KR.buchB,0.5);kastenG(g,263,120,14,4,KR.buchY,0.5);
   return c;
 }
 // Mia sitzt auf dem Hocker, schaut nach rechts: 34 x 46, Fusspunkt (16,45). Mit Lupe vor dem Auge oder beim Zeichnen.
@@ -3482,36 +3541,49 @@ function drawBio(now){
   line(ctx,g0x,g0y,Math.round(g1x),g1y,'#6a5a2a');line(ctx,g0x+1,g0y,Math.round(g1x)+1,g1y,'#8a7a3a');
   [[0.35,-3],[0.5,3],[0.65,-3]].forEach(([f,dx])=>{const x=Math.round(g0x+(g1x-g0x)*f),y=Math.round(g0y+(g1y-g0y)*f);line(ctx,x,y,x+dx,y+2,'#6a5a2a');});
   line(ctx,Math.round(g1x),g1y,Math.round(g1x)+2,g1y-4,'#6a5a2a');void gx;
+  // Fische im Aquarium und aufsteigende Blasen
+  [[0,'#e86030',0],[1,'#5ad0e8',2.1],[2,'#e8c050',4.3]].forEach(([i,col,ph])=>{const t=now/(2600+i*700)+ph,x=Math.round(252+Math.sin(t)*14),y=66+i*4+Math.round(Math.sin(t*1.7)),r=Math.cos(t)>0?1:-1;
+    P(ctx,x,y,col);P(ctx,x+r,y,col);P(ctx,x-r,y,col);P(ctx,x-2*r,y-1,col);P(ctx,x-2*r,y+1,col);});
+  for(let i=0;i<3;i++){const t=((now/2200)+i*0.33)%1;P(ctx,262,Math.round(77-t*16),'#c8e4ff');}
   const L=[];
-  L.push({y:106,d:()=>{const red=S.speech&&S.talker==='mia'&&Math.floor(now/140)%2;
-    spr(S.miaWach?(red?SPR.miaZeichnetTalk:SPR.miaZeichnet):(red?SPR.miaTalk:SPR.mia),160,106,16,45,false);
-    if(S.miaWach)kastenG(ctx,180,82,10,2,KR.papier,0.95);}});
+  L.push({y:106,d:()=>{const red=S.speech&&S.talker==='mia'&&Math.floor(now/140)%2;shadow(140,106,7);
+    spr(S.miaWach?(red?SPR.miaZeichnetTalk:SPR.miaZeichnet):(red?SPR.miaTalk:SPR.mia),138,106,16,45,false);
+    if(S.miaWach)kastenG(ctx,154,82,10,2,KR.papier,0.95);}});
   L.push({y:S.ky,d:()=>spr(S.speech&&S.talker==='kraechz'&&Math.floor(now/140)%2?SPR.ravenTalk:SPR.raven,S.kx,S.ky,11,19,S.kflip)});
   heroLayer(L,now);
   L.sort((p,q)=>p.y-q.y).forEach(o=>o.d());
+  if(!BIO_VORNE)BIO_VORNE=drawBioVorne();ctx.drawImage(BIO_VORNE,0,0);
   drawPanel();drawSpeech();
 }
 const HS_BIO=[
-  {id:'kraechz',name:'Krächz',rect:()=>[S.kx-11,S.ky-19,22,19],walk:[276,118],flip:false},
-  {id:'zweig1',name:'Zweig',rect:()=>[193,50,12,28],walk:[204,116],flip:false},
-  {id:'zweig2',name:'Zweig',rect:()=>[206,53,9,25],walk:[210,116],flip:false},
-  {id:'gustav',name:()=>S.gustavGefunden?'Gustav':'Zweig',rect:()=>[221,51,12,29],walk:[222,116],flip:false},
-  {id:'zweig3',name:'Zweig',rect:()=>[234,51,10,27],walk:[236,116],flip:false},
-  {id:'schildT',name:'Schild am Terrarium',rect:()=>[196,85,28,6],walk:[210,116],flip:false},
-  {id:'terrarium',name:'Terrarium',rect:()=>[188,44,62,42],walk:[218,116],flip:false},
-  {id:'lampeB',name:'Wärmelampe',rect:()=>[208,34,20,10],walk:[218,116],flip:false},
-  {id:'mia',name:()=>S.miaWach?'Mia':'Mädchen mit Lupe',rect:()=>[146,60,30,46],walk:[140,118],flip:false},
+  {id:'kraechz',name:'Krächz',rect:()=>[S.kx-11,S.ky-19,22,19],walk:[278,118],flip:false},
+  {id:'zweig1',name:'Zweig',rect:()=>[165,50,12,28],walk:[176,116],flip:false},
+  {id:'zweig2',name:'Zweig',rect:()=>[178,53,9,25],walk:[182,116],flip:false},
+  {id:'gustav',name:()=>S.gustavGefunden?'Gustav':'Zweig',rect:()=>[193,51,12,29],walk:[194,116],flip:false},
+  {id:'zweig3',name:'Zweig',rect:()=>[206,51,10,27],walk:[208,116],flip:false},
+  {id:'schildT',name:'Schild am Terrarium',rect:()=>[168,85,28,6],walk:[182,116],flip:false},
+  {id:'terrarium',name:'Terrarium',rect:()=>[160,44,62,42],walk:[190,116],flip:false},
+  {id:'lampeB',name:'Wärmelampe',rect:()=>[180,34,20,10],walk:[190,116],flip:false},
+  {id:'mia',name:()=>S.miaWach?'Mia':'Mädchen mit Lupe',rect:()=>[124,60,30,46],walk:[118,118],flip:false},
+  {id:'eichhoernchen',name:'Ausgestopftes Eichhörnchen',rect:()=>[278,12,20,18],walk:[280,118],flip:false},
+  {id:'schrankB',name:'Präparateschrank',rect:()=>[272,30,36,74],walk:[282,118],flip:false},
+  {id:'aquarium',name:'Aquarium',rect:()=>[232,56,40,48],walk:[252,116],flip:false},
+  {id:'rollkarte',name:'Rollkarte',rect:()=>[226,11,40,46],walk:[246,116],flip:false},
   {id:'tafelB',name:'Tafel',rect:()=>[146,14,76,34],walk:[184,114],flip:false},
-  {id:'posterB',name:'Poster',rect:()=>[230,18,26,28],walk:[244,116],flip:false},
+  {id:'posterB',name:'Poster',rect:()=>[104,14,24,24],walk:[116,116],flip:false},
+  {id:'kresse',name:'Kresseversuch',rect:()=>[68,34,24,17],walk:[80,114],flip:true},
   {id:'pflanzen',name:'Topfpflanzen',rect:()=>[100,38,40,26],walk:[120,114],flip:false},
-  {id:'schrankB',name:'Schrank',rect:()=>[270,26,36,78],walk:[284,118],flip:false},
+  {id:'torso',name:'Torso-Modell',rect:()=>[62,58,18,46],walk:[80,116],flip:true},
+  {id:'skelett',name:'Skelett',rect:()=>[38,51,22,53],walk:[62,118],flip:true},
   {id:'fensterB',name:'Fenster',rect:()=>[42,8,52,44],walk:[70,114],flip:true},
+  {id:'mikroskop',name:'Mikroskope',rect:()=>[6,116,48,20],walk:[60,128],flip:true},
+  {id:'buecher',name:'Bücher',rect:()=>[258,118,26,16],walk:[250,128],flip:false},
   {id:'tuerB',name:'Tür zur Halle',exit:true,rect:()=>[4,28,30,74],walk:[30,120],flip:true},
   {id:'bodenB',name:'Boden',floor:true,rect:()=>[36,100,262,44],walk:[0,0],flip:false}
 ];
 async function enterBio(){
-  S.room='bio';S.kraechz='bio';S.kx=292;S.ky=30;S.kflip=true;S.hero.x=30;S.hero.y=120;S.hero.flip=false;S.hero.hidden=false;
-  await walkTo(84,122);
+  S.room='bio';S.kraechz='bio';S.kx=302;S.ky=30;S.kflip=true;S.hero.x=30;S.hero.y=120;S.hero.flip=false;S.hero.hidden=false;
+  await walkTo(104,124);
   if(S.bioIntro)return say('hero',S.miaWach?'Mia zeichnet immer noch.':'Mia starrt immer noch ins Terrarium.');
   await say('hero','Der Biologieraum. Es riecht nach Blumenerde.');
   await say('hero','Und da sitzt jemand mit einer Lupe vor einem Terrarium.');
@@ -3570,14 +3642,28 @@ async function actBio(verb,h,item){
     case 'mia:schau':return say('hero',S.miaWach?'Mia zeichnet Gustav. Mit Zunge im Mundwinkel.':'Ein Mädchen mit einer Lupe vor dem Auge. Sie starrt ins Terrarium. Seit heute früh.');
     case 'mia:nimm':return say('hero',S.miaWach?'Die Lupe hat sie mir ja geliehen.':'Sie hält die Lupe fest. Erstarrten Leuten nehme ich nichts weg.');
     case 'tafelB:schau':return say('hero','An der Tafel steht: „Findet Gustav und zeichnet ihn!“');
+    case 'skelett:schau':return say('hero','Das Schulskelett. Jemand hat ihm eine Mütze aufgesetzt. Steht ihm.');
+    case 'skelett:rede':return say('hero','Hallo? Nichts. Der ist noch erstarrter als alle anderen.');
+    case 'torso:schau':return say('hero','Ein Torso-Modell. Das Herz ist herausnehmbar. Meins lieber nicht.');
+    case 'mikroskop:schau':return say('hero','Zwei Mikroskope unter Staubhauben. Die haben heute frei.');
+    case 'aquarium:schau':return say('hero','Ein Aquarium. Die Fische schwimmen einfach weiter. Die haben vom Gong nichts mitbekommen.');
+    case 'aquarium:oeffne':return say('hero','Die Fische haben genug zu tun.');
+    case 'rollkarte:schau':return say('hero','Eine Rollkarte: „Der Blutkreislauf“. Rot vom Herzen weg, blau zurück.');
+    case 'rollkarte:ziehe':return say('hero','Wenn ich daran ziehe, rollt sie mir auf den Kopf. Kenne ich.');
+    case 'kresse:schau':return say('hero','Ein Kresseversuch. „Licht“ und „Dunkel“. Die Kresse im Hellen ist grün, die im Dunkeln blass und lang.');
+    case 'kresse:nimm':return say('hero','Das ist ein Versuch. Der muss stehen bleiben.');
+    case 'eichhoernchen:schau':return say('hero','Ein ausgestopftes Eichhörnchen. Krächz traut ihm nicht.');
+    case 'buecher:schau':return say('hero','Biologiebücher. Das oberste ist bei „Wirbellose“ aufgeschlagen. Gustav wäre stolz.');
+    case 'skelett:nimm':case 'torso:nimm':case 'mikroskop:nimm':case 'aquarium:nimm':case 'eichhoernchen:nimm':case 'buecher:nimm':case 'rollkarte:nimm':
+      return say('hero','Das gehört der Schule. Und ich brauche es nicht.');
     case 'posterB:schau':return say('hero','Ein Poster: „Insekten haben sechs Beine.“ Daneben ein Käfer, so groß wie ein Teller.');
     case 'pflanzen:schau':return say('hero','Topfpflanzen. Alle lehnen sich zum Fenster, als wollten sie raus.');
     case 'pflanzen:nimm':return say('hero','Die streiten sich schon genug um das Licht.');
-    case 'schrankB:schau':return say('hero','Gläser mit eingelegten Sachen. Ich will gar nicht wissen, was.');
+    case 'schrankB:schau':return say('hero','Gläser mit eingelegten Sachen und unten Bestimmungsbücher. Ich will gar nicht wissen, was da schwimmt.');
     case 'schrankB:oeffne':return say('hero','Lieber nicht.');
     case 'fensterB:schau':return say('hero','Draußen scheint die Sonne. Genau wie im Musikraum. Die Sonne bewegt sich seit dem Gong nicht mehr.');
     case 'kraechz:rede':return redeKraechz();
-    case 'kraechz:schau':return say('hero','Krächz sitzt auf dem Schrank und beäugt das Terrarium. Mit Appetit, fürchte ich.');
+    case 'kraechz:schau':return say('hero','Krächz sitzt auf dem Schrank neben dem Eichhörnchen und lässt es nicht aus den Augen.');
     case 'bodenB:schau':return say('hero','Grünes Linoleum. Hier ist mal was verschüttet worden. Und nie weggewischt.');
   }
   if(verb==='schau')return say('hero',FALLBACK.schau(h));
