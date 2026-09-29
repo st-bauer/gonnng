@@ -3398,7 +3398,7 @@ function drawBioBg(){
   // Linoleum: ruhige Flaeche mit Lichtfleck vom Fenster, warmem Schein unter der Lampe und Schlagschatten der Moebel
   const LINO=mkMix(mkRamp(['#0a140e','#18281c','#2a4030','#40584a','#5e766a','#8a9e92'],12),mkRamp(['#141008','#2a2414','#443c24','#62583a','#867a56','#b0a47a'],12),6);
   const schatten=[[[150,104],[230,104],[242,111],[158,111]],[[230,104],[274,104],[284,110],[236,110]],[[274,104],[306,104],[314,110],[280,110]],
-    [[40,104],[58,104],[66,108],[44,108]],[[62,104],[80,104],[88,108],[66,108]],[[126,105],[150,105],[158,110],[130,110]]];
+    [[40,104],[58,104],[66,108],[44,108]],[[126,105],[150,105],[158,110],[130,110]]];
   for(let y=WB;y<SH;y++)for(let x=0;x<W;x++){
     let t=0.2+Math.max(0,1-Math.hypot(x-96,(y-122)*2)/120)*0.32+Math.max(0,1-Math.hypot(x-190,(y-110)*2)/80)*0.22-(y-WB)/300;
     if(inPoly(x+0.5,y+0.5,[[46,104],[94,104],[150,144],[92,144]]))t+=0.14;
@@ -3476,7 +3476,7 @@ function drawBioBg(){
   P(g,294,17,'#6a2e18');P(g,295,20,'#101018');
   for(let k=0;k<10;k++){const a=Math.PI*0.4+k*0.23;ellFill(g,Math.round(283-Math.cos(a)*5),Math.round(20-Math.sin(a)*6),2.4,2.4,(x,y,dx,dy)=>pick(KR.terra,0.5-dx*0.2-dy*0.2,x,y));}
   kastenG(g,282,29,14,1,KR.holz,0.4);
-  // Skelett auf Rollstaender, leicht schief, mit Pudelmuetze; Torso-Modell auf einem Sockel
+  // Skelett auf Rollstaender, leicht schief, mit Pudelmuetze
   for(let x=40;x<58;x++)P(g,x,103,pick(KR.stahl,0.4,x,103));[[41],[48],[56]].forEach(([x])=>ellFill(g,x,104,1.5,1.2,()=>'#1e2638'));
   for(let y=58;y<103;y++)P(g,49,y,pick(KR.stahl,0.45+fenster(49,y)*0.2,49,y));
   const bone=(x,y,t)=>pick(KR.papier,t+fenster(x,y)*0.3,x,y),sk2=y=>Math.round((y-60)*0.06);
@@ -3488,12 +3488,6 @@ function drawBioBg(){
   ellFill(g,40,86,1.5,1.6,(x,y)=>bone(x,y,0.5));ellFill(g,57,85,1.5,1.6,(x,y)=>bone(x,y,0.4));
   ellFill(g,49,89,5,2.2,(x,y,dx,dy)=>bone(x,y,0.55-dx*0.2));
   line(g,46,91,45,102,'#d8d0b8');line(g,52,91,53,102,'#c0b8a0');P(g,44,102,'#d8d0b8');P(g,54,102,'#c0b8a0');
-  kastenG(g,62,98,18,6,KR.holz,0.45);for(let y=90;y<98;y++){P(g,70,y,pick(KR.holz,0.5,70,y));P(g,71,y,pick(KR.holz,0.3,71,y));}
-  ellFill(g,71,80,8,11,(x,y,dx,dy)=>dx<0?pick(KR.haut,0.6-dx*0.2-dy*0.2+fenster(x,y)*0.2,x,y):pick(KR.rosa,0.35-dy*0.1,x,y));
-  ellFill(g,74,75,2.5,3,(x,y,dx,dy)=>pick(KR.rosa,0.6-dy*0.2,x,y));ellFill(g,74,80,2,2,(x,y,dx,dy)=>pick(KR.buchR,0.55-dx*0.2-dy*0.2,x,y));
-  ellFill(g,75,85,3,2,(x,y,dx,dy)=>pick(KR.terra,0.45-dy*0.2,x,y));for(let k=0;k<3;k++)line(g,72,88+k,78,88+k,k%2?'#f8b8c8':'#e07a98');
-  ellFill(g,71,64,4.5,5,(x,y,dx,dy)=>dx<0?pick(KR.haut,0.6-dx*0.2-dy*0.2,x,y):pick(KR.rosa,0.55-dy*0.2,x,y));P(g,69,63,'#241a24');P(g,70,66,'#6a3424');
-  kastenG(g,69,69,4,2,KR.haut,0.4);
   // Hocker fuer Mia
   const [h1x,h1y]=zum(128,88,0.12),[h2x,h2y]=zum(148,88,0.12);polyFill(g,[[128,88],[148,88],[h2x,h2y],[h1x,h1y]],(x,y)=>pick(KR.holz,0.65,x,y));
   for(let x=128;x<148;x++){P(g,x,88,pick(KR.holz,0.5,x,88));P(g,x,89,pick(KR.holz,0.28,x,89));}
@@ -3573,7 +3567,6 @@ const HS_BIO=[
   {id:'posterB',name:'Poster',rect:()=>[104,14,24,24],walk:[116,116],flip:false},
   {id:'kresse',name:'Kresseversuch',rect:()=>[68,34,24,17],walk:[80,114],flip:true},
   {id:'pflanzen',name:'Topfpflanzen',rect:()=>[100,38,40,26],walk:[120,114],flip:false},
-  {id:'torso',name:'Torso-Modell',rect:()=>[62,58,18,46],walk:[80,116],flip:true},
   {id:'skelett',name:'Skelett',rect:()=>[38,51,22,53],walk:[62,118],flip:true},
   {id:'fensterB',name:'Fenster',rect:()=>[42,8,52,44],walk:[70,114],flip:true},
   {id:'mikroskop',name:'Mikroskope',rect:()=>[6,116,48,20],walk:[60,128],flip:true},
@@ -3644,7 +3637,6 @@ async function actBio(verb,h,item){
     case 'tafelB:schau':return say('hero','An der Tafel steht: „Findet Gustav und zeichnet ihn!“');
     case 'skelett:schau':return say('hero','Das Schulskelett. Jemand hat ihm eine Mütze aufgesetzt. Steht ihm.');
     case 'skelett:rede':return say('hero','Hallo? Nichts. Der ist noch erstarrter als alle anderen.');
-    case 'torso:schau':return say('hero','Ein Torso-Modell. Das Herz ist herausnehmbar. Meins lieber nicht.');
     case 'mikroskop:schau':return say('hero','Zwei Mikroskope unter Staubhauben. Die haben heute frei.');
     case 'aquarium:schau':return say('hero','Ein Aquarium. Die Fische schwimmen einfach weiter. Die haben vom Gong nichts mitbekommen.');
     case 'aquarium:oeffne':return say('hero','Die Fische haben genug zu tun.');
@@ -3654,7 +3646,7 @@ async function actBio(verb,h,item){
     case 'kresse:nimm':return say('hero','Das ist ein Versuch. Der muss stehen bleiben.');
     case 'eichhoernchen:schau':return say('hero','Ein ausgestopftes Eichhörnchen. Krächz traut ihm nicht.');
     case 'buecher:schau':return say('hero','Biologiebücher. Das oberste ist bei „Wirbellose“ aufgeschlagen. Gustav wäre stolz.');
-    case 'skelett:nimm':case 'torso:nimm':case 'mikroskop:nimm':case 'aquarium:nimm':case 'eichhoernchen:nimm':case 'buecher:nimm':case 'rollkarte:nimm':
+    case 'skelett:nimm':case 'mikroskop:nimm':case 'aquarium:nimm':case 'eichhoernchen:nimm':case 'buecher:nimm':case 'rollkarte:nimm':
       return say('hero','Das gehört der Schule. Und ich brauche es nicht.');
     case 'posterB:schau':return say('hero','Ein Poster: „Insekten haben sechs Beine.“ Daneben ein Käfer, so groß wie ein Teller.');
     case 'pflanzen:schau':return say('hero','Topfpflanzen. Alle lehnen sich zum Fenster, als wollten sie raus.');
