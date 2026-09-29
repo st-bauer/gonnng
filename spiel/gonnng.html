@@ -1105,6 +1105,7 @@ const ITEMS={
   pulver:{name:'Puddingpulver',look:'Vanillepuddingpulver. Leicht angesabbert.'},
   topflappen:{name:'Topflappen',look:'Dick, gesteppt, weich. Ein Kissen für sehr kleine Köpfe.'},
   kekse:{name:'Kekse',look:'Frau Brösels Kekse. Noch warm. Riechen nach Schokolade und Anfang.'},
+  kochloeffel:{name:'Kochlöffel',look:'Ein Kochlöffel aus Holz. Langer Stiel, dicker runder Kopf. Riecht nach Vanille.'},
   kordel:{name:'Kordel',look:'Eine rote Kordel von Emils Flötenbeutel. Lang genug zum Festbinden.'},
   angel:{name:'Angel',look:'Ein Lineal mit einer Kordel dran. Fehlt nur noch der Köder.'},
   keksangel:{name:'Keks-Angel',look:'Ein Keks an der Kordel, die Kordel am Lineal. Brikett, ich komme.'},
@@ -1121,6 +1122,7 @@ function icon(g,id,x,y){
   if(id==='pulver'){kastenG(g,x+11,y+4,10,12,KR.buchY,0.55);beutelG(g,x+16,y+10,2.5,2.5,KR.buchR,0.5);}
   if(id==='topflappen'){kastenG(g,x+10,y+4,12,12,KR.buchR,0.5);for(let k=0;k<12;k+=3)for(let j=0;j<12;j++)if((j+k)%2===0)P(g,x+11+k,y+4+j,pick(KR.buchR,0.2,x,y));P(g,x+15,y+2,'#383840');P(g,x+15,y+3,'#383840');}
   if(id==='kekse'){keksG(g,x+10,y+7,4);keksG(g,x+19,y+9,4);keksG(g,x+14,y+12,4);}
+  if(id==='kochloeffel'){for(let i=0;i<16;i++){P(g,x+6+i,y+14-Math.floor(i*0.5),pick(KR.dielen,0.75,i,0));P(g,x+6+i,y+15-Math.floor(i*0.5),pick(KR.dielen,0.45,i,0));}beutelG(g,x+25,y+5,4,3,KR.dielen,0.62);}
   if(id==='kordel'){ellFill(g,x+16,y+9,7,5,(px,py,dx,dy)=>{const r=dx*dx+dy*dy;return r>0.45&&r<1?pick(KR.buchR,0.6-dy*0.3,px,py):r<0.2?pick(KR.buchR,0.4,px,py):null;});line(g,x+22,y+11,x+27,y+15,'#b02a3c');}
   if(id==='angel'||id==='keksangel'){for(let i=0;i<22;i++){P(g,x+4+i,y+14-Math.floor(i/2),pick(KR.dielen,0.8,i,0));P(g,x+4+i,y+15-Math.floor(i/2),pick(KR.dielen,0.5,i,0));}
     line(g,x+26,y+3,x+27,y+12,'#e0606a');if(id==='keksangel')keksG(g,x+27,y+14,3);}
@@ -1192,7 +1194,7 @@ const FALLBACK={
   schliesse:()=>'Da gibt es nichts zu schließen.',druecke:()=>'Da tut sich nichts.',ziehe:()=>'Da tut sich nichts.',
   rede:()=>'Mit Gegenständen rede ich nur im Notfall.',gib:()=>'Das will hier niemand haben.',benutze:()=>'Das bringt nichts.'
 };
-function stage(){if(S.room==='heiz')return'heiz';if(S.room==='musik')return'musikraum';if(S.room==='gang')return'gang';if(S.room==='halle'&&S.brauchSchnur&&!has('kordel'))return'musik';if(S.room==='kantine'||S.room==='kammer')return'kueche';if(S.room==='halle')return S.suchKantine&&!has('kekse')?'kantine':has('kekse')?'flure':S.flureGeschafft?'fertig':(S.spur?'flure':'spur');if(!S.fenster)return'fenster';if(!S.ziel)return'ziel';if(!S.kruemelGesehen)return'kruemel';if(!S.gitter)return'gitter';if(S.inv.indexOf('kreide')<0)return'kreide';return'fertig';}
+function stage(){if(S.room==='heiz')return'heiz';if(S.room==='musik')return'musikraum';if(S.room==='halle'&&S.brauchSchlaegel&&!has('kochloeffel')&&!S.orchesterWach)return'loeffel';if(S.room==='gang')return'gang';if(S.room==='halle'&&S.brauchSchnur&&!has('kordel'))return'musik';if(S.room==='kantine'||S.room==='kammer')return'kueche';if(S.room==='halle')return S.suchKantine&&!has('kekse')?'kantine':has('kekse')?'flure':S.flureGeschafft?'fertig':(S.spur?'flure':'spur');if(!S.fenster)return'fenster';if(!S.ziel)return'ziel';if(!S.kruemelGesehen)return'kruemel';if(!S.gitter)return'gitter';if(S.inv.indexOf('kreide')<0)return'kreide';return'fertig';}
 const TIPPS={flure:['Hau mal auf den Gong und schau, was mit den Schildern passiert.','Wenn du losläufst, gongt es. Geh also dahin, wo die Kellertreppe nach dem nächsten Gong steht.','Die Räume rücken im Uhrzeigersinn eine Tür weiter und hüpfen am Musikraum vorbei. Von Osten geht es also direkt nach Westen.'],kruemel:['Wohin ist der Dieb wohl verschwunden?','Wer klaut, hat es eilig. Und wer es eilig hat, krümelt. Schau mal nach unten.','Die Krümel führen zum Gitter.'],
   kantine:['Diesmal suchst du die Kantine. Hau auf den Gong und schau, wohin sie wandert.','Beim Losgehen gongt es. Geh also dahin, wo die Kantine nach dem nächsten Gong steht.','Such das Schild „Kantine“. Die Tür im Uhrzeigersinn daneben ist deine, der Süden zählt nicht mit.'],
   gitter:['Schrauben brauchen einen Dreher.','Schlitzschrauben mag alles, was flach und rund ist.','In Pulten liegt oft Kleingeld.']};
@@ -1204,6 +1206,7 @@ async function tipp(){const st=stage();
   if(st==='kueche')return kantineTipp();
   if(st==='heiz')return heizTipp();
   if(st==='musikraum')return musikTipp();
+  if(st==='loeffel'){await say('kraechz','Ein Schlägel mit Stiel und dickem Ende. In der Kantine hängt so was bestimmt. Frag Frau Brösel.');return;}
   if(st==='musik'){await say('kraechz','Eine Kordel suchst du. Der Musikraum bleibt immer im Süden, da kannst du gar nicht falsch laufen.');return;}
   const i=Math.min(S.tipp[st]||0,2);S.tipp[st]=i+1;await say('kraechz',TIPPS[st][i]);}
 function choose(options){return new Promise(r=>{S.dialog={options,resolve:i=>{S.dialog=null;r(i);}};});}
@@ -1527,7 +1530,6 @@ cv.addEventListener('pointermove',e=>{if(MODE()!=='prolog')return;S.mouse=toPx(e
 cv.addEventListener('pointerleave',()=>{S.mouse=null;S.hover=null;});
 cv.addEventListener('click',e=>{if(MODE()!=='prolog')return;
   const [x,y]=toPx(e);
-  if(S.klatsch)return;
   if(skipLine){skipLine();return;}
   if(S.sort){S.sort.click(x,y);return;}
   if(S.dialog){if(y>=SH){const i=Math.floor((y-146)/optDY());if(i>=0&&i<S.dialog.options.length)S.dialog.resolve(i);}return;}
@@ -1547,8 +1549,7 @@ cv.addEventListener('click',e=>{if(MODE()!=='prolog')return;
   if(verb==='gehe'&&!h.exit){run(async()=>{if(await goTo(wx,wy))face(h.flip);});return;}
   run(async()=>{if(!await goTo(wx,wy))return;face(h.flip);await act(verb,h,item);});
 });
-cv.addEventListener('pointerdown',()=>{if(MODE()==='prolog'&&S.klatsch)klatsch();});
-document.addEventListener('keydown',e=>{if(MODE()!=='prolog')return;if(S.klatsch&&(e.key===' '||e.key==='Enter')){e.preventDefault();if(!e.repeat)klatsch();return;}if((e.key===' '||e.key==='Enter')&&skipLine){e.preventDefault();skipLine();}});
+document.addEventListener('keydown',e=>{if(MODE()!=='prolog')return;if((e.key===' '||e.key==='Enter')&&skipLine){e.preventDefault();skipLine();}});
 
 /* ---------- Schleife ---------- */
 let last=performance.now();
@@ -2361,6 +2362,7 @@ function drawKantine(now){
   const b=S.bereit||{};
   if(!has('topf')&&!b.topf)drawTopf(216,31);
   if(!has('topflappen')&&!S.lappenGegeben)drawLappen(242,31);
+  if(!S.loeffelBekommen){line(ctx,238,31,238,42,'#845028');line(ctx,239,31,239,42,'#b07c48');beutelG(ctx,238.5,45,2.2,3,KR.dielen,0.6);}
   // was schon auf dem Herd bereitliegt
   if(b.topf)drawTopf(210,52);if(b.milch)drawMilch(232,52);if(b.zucker)drawZucker(240,50);if(b.pulver)drawPulver(254-8,56);
   if(S.broesel>=1){for(let i=0;i<5;i++){const t=(now/900+i*0.2)%1;P(ctx,213+i*3+Math.round(Math.sin(now/300+i)),Math.round(50-t*18),'#ffffff');}R(ctx,216,62,6,2,'#e86050');}
@@ -2405,6 +2407,7 @@ const HS_KANTINE=[
   {id:'dosen',name:'Keksdosen',rect:()=>[82,58,36,10],walk:[96,114],flip:false},
   {id:'topf',name:'Großer Topf',vis:()=>!has('topf')&&!(S.bereit||{}).topf,rect:()=>[214,28,22,16],walk:[226,114],flip:false},
   {id:'topflappen',name:'Topflappen',vis:()=>!has('topflappen')&&!S.lappenGegeben,rect:()=>[240,26,13,15],walk:[240,114],flip:false},
+  {id:'loeffel',name:'Kochlöffel',vis:()=>!S.loeffelBekommen,rect:()=>[234,28,6,22],walk:[236,114],flip:false},
   {id:'herd',name:'Herd',rect:()=>[204,46,48,58],walk:[222,116],flip:false},
   {id:'kuehl',name:'Kühlschrank',rect:()=>[262,24,40,80],walk:[266,116],flip:false},
   {id:'kammertuer',name:'Tür zur Speisekammer',exit:true,rect:()=>[160,22,28,82],walk:[174,112],flip:false},
@@ -2438,6 +2441,7 @@ async function leaveKantine(){
   S.hero.hidden=true;tone('triangle',300,0.3,0.04,500);await sleep(500);
   S.room='halle';S.kraechz='halle';S.kx=92;S.ky=44;S.kflip=true;S.hero.x=160;S.hero.y=100;S.hero.flip=false;S.hero.hidden=false;
   await walkTo(160,112);
+  if(has('kochloeffel')&&!S.orchesterWach)return say('hero','Kochlöffel dabei. Jetzt zum Musikraum, der bleibt ja immer im Süden.');
   if(has('kekse'))return say('hero','Kekse in der Tasche. Jetzt zurück zur Kellertreppe.');
   return say('hero','Wieder in der Halle.');
 }
@@ -2524,7 +2528,15 @@ async function broeselWacht(){
   await say('hero','Genau die haben mir gefehlt.');
   await say('broesel','Und gleich kommt der Salat. Ganz zum Schluss, damit er frisch bleibt.');
 }
+async function loeffelLeihen(){
+  if(S.broesel<1)return say('hero','Den braucht Frau Brösel gleich. Einfach nehmen mag ich den nicht.');
+  if(!S.brauchSchlaegel)return say('hero','Wozu? Kochen tut ja jetzt Frau Brösel.');
+  await say('hero','Frau Brösel, darf ich mir den Kochlöffel leihen? Ich brauche einen Trommelschlägel.');
+  await say('broesel','Nimm ruhig, Schätzchen. Ich hab zwanzig davon.');
+  await reach();S.loeffelBekommen=true;give('kochloeffel');tone('triangle',880,0.2,0.05);
+}
 async function redeBroesel(){
+  if(S.broesel>=2&&S.brauchSchlaegel&&!S.loeffelBekommen)return loeffelLeihen();
   if(S.broesel>=2)return say('broesel',['Noch zwei Stunden, dann ist der Pudding fest. Wer hätte das gedacht.','Noch ein Keks? Die nächsten sind für das Mittagessen, Schätzchen.'][(S.broeselRede=(S.broeselRede||0)+1)%2]);
   for(;;){
     const o=S.sortiert?['Was brauchen Sie denn alles?','Können Sie das nicht selbst holen?','Bis gleich.']
@@ -2563,6 +2575,8 @@ async function actKantine(verb,h,item){
     case 'dosen:nimm':return say('hero','Leere Dosen helfen mir nicht. Ich brauche was drin.');
     case 'topf:schau':return say('hero','Ein Topf, groß wie eine Badewanne. Er hängt über dem Herd.');
     case 'topf:nimm':await reach();give('topf');return say('hero','Uff. Ich komme gerade so ran.');
+    case 'loeffel:schau':return say('hero','Ein Kochlöffel an der Hakenleiste. Langer Stiel, dicker Kopf.');
+    case 'loeffel:nimm':return loeffelLeihen();
     case 'topflappen:schau':return say('hero','Ein dicker, gesteppter Topflappen. Schön weich.');
     case 'topflappen:nimm':await reach();give('topflappen');return say('hero','Ein Topflappen. Weich wie ein kleines Kissen.');
     case 'herd:schau':return say('hero',S.broesel>=1?'Da blubbert es. Pudding, dann Suppe.':'Der Herd ist kalt. Hier soll alles hin, was Frau Brösel für den Pudding braucht.');
@@ -2991,8 +3005,7 @@ function drawMusikBg(){
   for(let y=ST;y<SB;y++)for(let x=S0;x<S1;x++){let t=0.22+L(x,y)*0.3-(x-S0)/120+Math.sin(x*0.8+Math.sin(y*0.12)*2)*0.03;
     if(y===ST)t+=0.2;if(x===288)t-=0.14;if(x===289)t+=0.05;if(y>=ST+4&&y<SB-6&&(x===S0+3||x===S1-4||x===286||x===291))t-=0.05;P(g,x,y,pick(KR.holz,t,x,y));}
   kastenG(g,285,64,2,6,KR.gold,0.6);kastenG(g,292,64,2,6,KR.gold,0.6);
-  zylG(g,276,24,16,10,KR.buchR,0.45);ellFill(g,284,24,8,2,(x,y,dx)=>pick(KR.papier,0.85-dx*0.2,x,y));
-  line(g,298,22,295,33,'#c8d4e4');line(g,298,22,301,33,'#9aa8bc');line(g,295,33,301,33,'#9aa8bc');
+  line(g,280,22,277,33,'#c8d4e4');line(g,280,22,283,33,'#9aa8bc');line(g,277,33,283,33,'#9aa8bc');
   // zwei Kugellampen an der Decke, aus
   [132,208].forEach(x=>{line(g,x,0,x,10,'#343e52');ellFill(g,x,14,4,4,(px,py,dx,dy)=>pick(KR.email,0.7-dx*0.3-dy*0.3+sonne(px,py)*0.2,px,py));});
   return c;
@@ -3075,12 +3088,19 @@ function drawMusik(now){
   L.push({y:106,d:()=>{line(ctx,244,78,244,104,'#343e52');line(ctx,240,104,248,104,'#343e52');polyFill(ctx,[[237,72],[251,72],[252,79],[236,79]],(x,y)=>pick(KR.stahl,0.5-(y-72)/20,x,y));
     kastenG(ctx,239,70,10,7,KR.papier,0.8);}});
   L.push({y:S.ky,d:()=>spr(S.speech&&S.talker==='kraechz'&&Math.floor(now/140)%2?SPR.ravenTalk:SPR.raven,S.kx,S.ky,11,19,S.kflip)});
+  L.push({y:107,d:()=>drawTrommel(290,107,now)});
   heroLayer(L,now);
   L.sort((p,q)=>p.y-q.y).forEach(o=>o.d());
-  if(S.klatsch){const k=S.klatsch;R(ctx,60,2,200,20,'#0c0a14');R(ctx,61,3,198,18,'#241a34');
-    text('Zähl ein: viermal im Takt tippen!',66,5,'#ffe060',false);
-    for(let i=0;i<4;i++){const cx=112+i*26,cy=16;ellFill(ctx,cx,cy,3,3,(px,py,dx,dy)=>i<k.t.length?'#ffe060':dx*dx+dy*dy>0.5?'#8a8aa0':null);}}
   drawPanel();drawSpeech();
+}
+// grosse Standtrommel: Kessel mit Spannreifen, oben das Fell, das beim Schlag kurz nachgibt
+function drawTrommel(x,y,now){
+  const zu=S.trommelSchlag&&now-S.trommelSchlag<120?1:0;
+  for(let yy=y-5;yy<y;yy++){P(ctx,x-7,yy,'#343e52');P(ctx,x+7,yy,'#343e52');}
+  zylG(ctx,x-10,y-19,20,14,KR.buchR,0.45);
+  for(let i=0;i<20;i++){P(ctx,x-10+i,y-19,pick(KR.stahl,0.8-i/40,x+i,y));P(ctx,x-10+i,y-6,pick(KR.stahl,0.55-i/40,x+i,y));}
+  for(let k=0;k<4;k++)line(ctx,x-7+k*5,y-18,x-7+k*5+2,y-7,'#e8c050');
+  ellFill(ctx,x,y-19+zu,10,2.6,(px,py,dx,dy)=>pick(KR.papier,0.85-dx*0.2-dy*0.2-zu*0.2,px,py));
 }
 const HS_MUSIK=[
   {id:'kraechz',name:'Krächz',rect:()=>[S.kx-11,S.ky-19,22,19],walk:[276,116],flip:false},
@@ -3090,6 +3110,7 @@ const HS_MUSIK=[
   {id:'kind2',name:'Mädchen mit Blockflöte',rect:()=>[138,62,26,44],walk:[156,118],flip:false},
   {id:'kind3',name:'Mädchen mit Blockflöte',rect:()=>[170,62,26,44],walk:[188,118],flip:false},
   {id:'kind4',name:'Junge mit Blockflöte',rect:()=>[202,62,26,44],walk:[218,118],flip:false},
+  {id:'trommel',name:'Große Trommel',rect:()=>[278,84,24,24],walk:[296,120],flip:true},
   {id:'pult',name:'Notenständer',rect:()=>[234,68,20,38],walk:[236,118],flip:false},
   {id:'fermate',name:'Frau Fermate',rect:()=>[250,48,26,58],walk:[240,120],flip:false},
   {id:'klavier',name:'Klavier',rect:()=>[34,58,70,46],walk:[70,114],flip:true},
@@ -3101,7 +3122,7 @@ const HS_MUSIK=[
   {id:'bodenM',name:'Boden',floor:true,rect:()=>[36,100,262,44],walk:[0,0],flip:false}
 ];
 async function enterMusik(){
-  S.room='musik';S.kraechz='musik';S.kx=290;S.ky=22;S.kflip=true;S.hero.x=30;S.hero.y=120;S.hero.flip=false;S.hero.hidden=false;
+  S.room='musik';S.kraechz='musik';S.kx=296;S.ky=34;S.kflip=true;S.hero.x=30;S.hero.y=120;S.hero.flip=false;S.hero.hidden=false;
   await walkTo(70,122);
   if(S.musikIntro)return say('hero',S.orchesterWach?'Hier wird geübt. Laut.':'Immer noch alle erstarrt. Und das Metronom '+(S.metronom?'tickt vor sich hin.':'steht.'));
   await say('hero','Der Musikraum. Alle sitzen da, die Flöten am Mund, und keiner spielt.');
@@ -3121,27 +3142,25 @@ async function metronomAn(){
   await say('hero','Ich stoße das Pendel an.');await sleep(TAKT_MS*3);
   await say('fermate','Ah. Achtzig. Das ist unser Tempo.');
   await say('fermate','Jetzt müsste nur noch jemand einzählen. Ich mache das gleich. Gleich.');
+  if(has('kochloeffel'))await say('hero','Die Trommel und mein Kochlöffel. Das könnte gehen.');
 }
-// Einzaehlen: vier Klatscher, gemessen werden die Abstaende
-function klatschen(){
-  return new Promise(res=>{S.klatsch={t:[],res};
-    S.klatsch.timer=setTimeout(()=>{if(S.klatsch){S.klatsch=null;res(null);}},9000);});
-}
-function klatsch(){const k=S.klatsch;if(!k)return;const t=performance.now();k.t.push(t);
-  tone('square',900,0.04,0.06,300);tone('sawtooth',2400,0.03,0.03,1200);
-  S.hero.reach=1;setTimeout(()=>{S.hero.reach=0;},120);
-  if(k.t.length===4){clearTimeout(k.timer);S.klatsch=null;setTimeout(()=>k.res(k.t),250);}}
+// Einzaehlen: vier Schlaege auf die grosse Trommel, mit dem Kochloeffel als Schlaegel, im Tempo des Metronoms
+async function trommeln(n,ms){for(let i=0;i<n;i++){S.hero.reach=1;tone('triangle',120,0.3,0.14,50);tone('square',70,0.08,0.05,40);S.trommelSchlag=performance.now();
+  await sleep(140);S.hero.reach=0;await sleep(ms-140);}}
 async function einzaehlen(){
-  if(!S.metronom)return say('fermate','Einzählen? In welchem Tempo denn? Das Metronom steht, seit es so laut gegongt hat.');
   if(S.orchesterWach)return say('fermate','Danke, wir sind schon mittendrin.');
-  await say('hero','Ich zähle ein. Hört auf das Metronom.');
-  const t=await klatschen();
-  if(!t)return say('hero','Hm. Ich sollte einfach losklatschen. Viermal, im Takt vom Metronom.');
-  const d=[t[1]-t[0],t[2]-t[1],t[3]-t[2]],m=(d[0]+d[1]+d[2])/3,schief=d.some(x=>Math.abs(x-m)>m*0.25);
-  if(m<TAKT_MS*0.8)return say('fermate','Zu schnell. Bei dem Tempo fällt uns die Flöte aus dem Mund.');
-  if(m>TAKT_MS*1.2)return say('fermate','Zu langsam. Da schlafen wir ja wieder ein.');
-  if(schief)return say('fermate','Ungleichmäßig. Wie ein Stuhl mit drei Beinen. Noch mal.');
+  if(!S.metronom){await say('hero','Eins, zwei, drei, vier!');await trommeln(4,420+Math.random()*200);
+    return say('fermate','Welches Tempo soll das denn sein? Das Metronom steht doch still.');}
+  await say('hero','Ich zähle ein. Im Tempo vom Metronom.');
+  const rest=TAKT_MS-((performance.now()-(S.metT0||performance.now()))%TAKT_MS);await sleep(rest);
+  await trommeln(4,TAKT_MS);
   return orchesterSpielt();
+}
+async function einzaehlenFrage(){
+  await say('fermate','Mit Klatschen? Das hört bei den ganzen Flöten keiner.');
+  await say('fermate','Bei uns wird mit der großen Trommel eingezählt. Vier Schläge im Tempo. Nur die Schlägel sind weg.');
+  await say('fermate','Die haben diese kleinen Wichte im Schlafanzug mitgenommen. Zum Nüsseknacken, haben sie gesagt. Später.');
+  S.brauchSchlaegel=true;
 }
 async function orchesterSpielt(){
   S.orchester='spielt';S.orchesterWach=true;
@@ -3161,13 +3180,13 @@ async function redeFermate(){
   if(S.orchesterWach)return say('fermate',['Noch mal von vorn, Kinder! Und diesmal ohne Quietschen.','Morgen kommt der Weihnachtsmann. Im September. Wir üben eben früh.'][(S.fermateRede=(S.fermateRede||0)+1)%2]);
   for(;;){
     const o=['Warum spielt hier keiner?','Was spielen Sie denn?'];
-    if(S.metronom)o.push('Soll ich für Sie einzählen?');
+    o.push('Soll ich für Sie einzählen?');
     o.push('Kann ich eine Kordel von einem Flötenbeutel haben?','Bis gleich.');
     const a=await choose(o),q=o[a];await say('hero',q);
     if(a===0){await say('fermate','Wir fangen gleich an. Ich warte nur auf das Tempo.');
       await say('fermate','Das Metronom steht still, seit es so laut gegongt hat. Und ohne Tempo zähle ich nicht ein.');continue;}
     if(a===1){await say('fermate','„Morgen kommt der Weihnachtsmann.“ Im September. Wir üben eben früh.');continue;}
-    if(q==='Soll ich für Sie einzählen?')return einzaehlen();
+    if(q==='Soll ich für Sie einzählen?'){await einzaehlenFrage();continue;}
     if(q==='Kann ich eine Kordel von einem Flötenbeutel haben?'){await say('fermate','Die Beutel gehören den Kindern. Frag sie. Wenn sie wieder wach sind.');continue;}
     return say('fermate','Gleich. Nach dem Einzählen.');
   }
@@ -3176,6 +3195,11 @@ async function actMusik(verb,h,item){
   const id=h.id,kind=KINDER.some(k=>k.id===id);
   if(item){
     if(id==='fermate'&&verb==='gib')return say('fermate','Danke, aber ich brauche nur ein Tempo.');
+    if(id==='trommel'){
+      if(item==='kochloeffel')return einzaehlen();
+      if(item==='lineal'){await reach();tone('square',300,0.05,0.04,200);S.brauchSchlaegel=true;return say('hero','Das Lineal federt nur. Klingt wie ein Lineal. Da muss was Dickes vorne dran sein.');}
+      if(item==='angel'||item==='keksangel')return say('hero','Damit? Dann ist die Angel hin.');
+      return say('hero','Das klingt nach nichts. Ich brauche was mit Stiel und einem dicken Ende.');}
     if(kind&&verb==='gib')return say(S.orchesterWach?id:'hero',S.orchesterWach?'Später. Wir üben.':'Mit der Flöte im Mund nimmt hier keiner was.');
     if(id==='kraechz'&&verb==='gib')return say('kraechz','Behalte das mal schön selbst.');
     return say('hero',FALLBACK.benutze());
@@ -3190,7 +3214,11 @@ async function actMusik(verb,h,item){
     case 'fermate:schau':return say('hero',S.orchesterWach?'Frau Fermate dirigiert. Sie strahlt.':'Die Musiklehrerin. Auf ihrem Schild steht „Frau Fermate“. Sie hält den Taktstock hoch und wartet. Seit heute früh.');
     case 'fermate:nimm':return say('hero','Den Taktstock? Den lässt sie nicht los. Sie hält ihn wie ein Versprechen.');
     case 'pult:schau':return say('hero','Ein Notenständer. „Morgen kommt der Weihnachtsmann“. Oben steht: Tempo 80.');
-    case 'pult:benutze':return einzaehlen();
+    case 'pult:benutze':return say('hero','Hier wird mit der Trommel eingezählt. Sagt Frau Fermate.');
+    case 'trommel:schau':return say('hero','Eine große Trommel. Die Schlägel fehlen.');
+    case 'trommel:benutze':case 'trommel:druecke':await reach();tone('triangle',90,0.15,0.05,60);S.brauchSchlaegel=true;
+      return say('hero','Mit der flachen Hand klingt das wie ein nasser Waschlappen. Da gehört ein Schlägel dran.');
+    case 'trommel:nimm':return say('hero','Die ist größer als ich. Die bleibt hier.');
     case 'beutel:schau':return say('hero','Flötenbeutel an den Stuhllehnen. Jeder hat eine Kordel zum Zuziehen.');
     case 'beutel:nimm':case 'beutel:ziehe':
       if(has('kordel'))return say('hero','Eine Kordel reicht mir.');
@@ -3218,8 +3246,11 @@ async function actMusik(verb,h,item){
 }
 async function musikTipp(){
   let t;
-  if(!S.metronom)t='Frau Fermate wartet auf das Tempo. Und auf dem Klavier steht ein Ding, das Tempo macht.';
-  else if(!S.orchesterWach)t='Das Metronom tickt. Jetzt braucht es nur noch jemanden, der einzählt. Viermal klatschen, genau im Takt.';
+  if(!S.metronom&&!has('kochloeffel'))t='Frau Fermate wartet auf das Tempo. Und auf dem Klavier steht ein Ding, das Tempo macht.';
+  else if(!S.metronom)t='Den Kochlöffel hast du. Aber welches Tempo? Auf dem Klavier steht ein Ding, das Tempo macht.';
+  else if(!S.brauchSchlaegel)t='Das Metronom tickt. Jetzt braucht es nur noch jemanden, der einzählt. Frag Frau Fermate, wie das hier gemacht wird.';
+  else if(!has('kochloeffel'))t='Ein Schlägel ist ein Stiel mit einem dicken Ende. So was hängt doch bei Frau Brösel in der Küche.';
+  else if(!S.orchesterWach)t='Kochlöffel und Trommel. Mehr braucht ein Einzähler nicht.';
   else t='Die Kordel hast du. Zurück in den Heizungskeller.';
   await say('kraechz',t);
 }
@@ -3337,7 +3368,7 @@ function cutKeller(t,now){
 }
 
 // Speichern: nur die Teile des Zustands, die das Spiel ausmachen
-const KEEP=['spur','room','takt','zettelGelesen','flureGeschafft','halleIntro','fehlwege','heft','kraechz','kx','ky','kflip','fenster','ziel','kruemelGesehen','gitter','federmappe','muenze','kreide','tipp','kraechzKennt','jonas','inv','gefragt','tschuess','eingangDone','kallFrozen','fertig','gangIntro','passed','erlebt','plaene','tafelGelesen','suchKantine','kantineErklaert','invOff','kantineIntro','broesel','broeselKekse','broeselRede','sortiert','bereit','lappenGegeben','kammerIntro','heizIntro','brikettBekannt','brikettErklaert','brikettGesehen','brikettScheu','linealPasst','brauchSchnur','grummelTor','musikIntro','metronom','orchesterWach','fermateRede'];
+const KEEP=['spur','room','takt','zettelGelesen','flureGeschafft','halleIntro','fehlwege','heft','kraechz','kx','ky','kflip','fenster','ziel','kruemelGesehen','gitter','federmappe','muenze','kreide','tipp','kraechzKennt','jonas','inv','gefragt','tschuess','eingangDone','kallFrozen','fertig','gangIntro','passed','erlebt','plaene','tafelGelesen','suchKantine','kantineErklaert','invOff','kantineIntro','broesel','broeselKekse','broeselRede','sortiert','bereit','lappenGegeben','kammerIntro','heizIntro','brikettBekannt','brikettErklaert','brikettGesehen','brikettScheu','linealPasst','brauchSchnur','grummelTor','musikIntro','metronom','orchesterWach','fermateRede','brauchSchlaegel','loeffelBekommen'];
 function save(){const d={};KEEP.forEach(k=>{if(S[k]!==undefined)d[k]=S[k];});d.hero={x:S.hero.x,y:S.hero.y,flip:S.hero.flip};SAVE.write({prolog:d});}
 let looping=false;
 const API={onDone:null,

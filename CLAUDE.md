@@ -111,8 +111,9 @@ Canva-Arbeitsdatei: https://canva.link/mp6p64febvogrh4
   das Orchester braucht nur jemanden, der einzählt.
 
 - Kapitel 1, fünfter Raum: der Musikraum (Raum `musik`, `drawMusikBg`, `makeKind`, `makeFermate`, `actMusik`). Frau Fermate und vier Kinder erstarrt,
-  Metronom auf dem Klavier (`S.metronom`, 80 Schläge in der Minute, `TAKT_MS`), Einzählen mit vier Klatschern (`klatschen`, `einzaehlen`,
-  per Tippen oder Leertaste). Emil schenkt die Kordel. Kombinationen: Lineal plus Kordel ergibt `angel`, Angel plus Kekse ergibt `keksangel`.
+  Metronom auf dem Klavier (`S.metronom`, 80 Schläge in der Minute, `TAKT_MS`). Eingezählt wird mit dem Kochlöffel auf der großen Trommel
+  (`einzaehlen`, `trommeln`), den Kochlöffel leiht Frau Brösel aus (`loeffelLeihen`, `S.brauchSchlaegel`). Kein Klatschen mit Zeitmessung,
+  das war auf dem iPad nicht bedienbar. Emil schenkt die Kordel. Kombinationen: Lineal plus Kordel ergibt `angel`, Angel plus Kekse ergibt `keksangel`.
   Den Musikraum betritt man erst, wenn die Figur eine Schnur braucht (`S.brauchSchnur`).
 
 ## Nächste Schritte
