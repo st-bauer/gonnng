@@ -2765,7 +2765,7 @@ function drawHeizBg(){
   kastenG(g,178,50,11,9,KR.papier,0.8);for(let k=52;k<58;k+=2)for(let x=180;x<187;x++)P(g,x,k,'#7a8498');
   // Kohlenhaufen mit Schaufel
   ellFill(g,154,101,15,8,(x,y,dx,dy)=>y>101?null:pick(KR.stein,0.08+L(x,y)*0.35-dx*0.1-dy*0.25+((hash(x>>1,y>>1)%4)===0?0.15:0),x,y));
-  line(g,160,82,158,98,'#5c341c');line(g,161,82,159,98,'#845028');kastenG(g,154,96,8,4,KR.stahl,0.35);
+
   // Holztor zum Land Später mit Eisenbaendern, unten eine Katzenklappe
   for(let y=24;y<WB;y++)for(let x=270;x<314;x++){const rand=x<272||x>311||y<26;
     let t=0.15+L(x,y)*0.5-(x-270)/160+Math.sin(x*0.8+Math.sin(y*0.1)*2)*0.04;if((x-272)%9===0)t-=0.1;
@@ -2782,6 +2782,15 @@ function drawHeizBg(){
   zylG(g,50,76,6,12,KR.buchR,0.35);zylG(g,50,73,6,3,KR.stahl,0.55);
   line(g,90,4,90,11,'#10141c');R(g,88,11,5,2,'#343e52');ellFill(g,90,15,2.6,2.8,(x,y,dx,dy)=>dx*dx+dy*dy<0.45?'#fffbe8':pick(KR.gold,0.85,x,y));
   return c;
+}
+// Kohlenschaufel: Stiel von (x0,y0) bis zum Blatt bei (x1,y1), auf Wunsch mit glimmender Holzwolle darauf
+function drawSchaufel(x0,y0,x1,y1,ladung,now){
+  x0=Math.round(x0);y0=Math.round(y0);x1=Math.round(x1);y1=Math.round(y1);
+  line(ctx,x0,y0,x1,y1,'#5c341c');line(ctx,x0+1,y0,x1+1,y1,'#845028');
+  const dx=Math.sign(x1-x0)||1;polyFill(ctx,[[x1-2*dx,y1-1],[x1+5*dx,y1-2],[x1+6*dx,y1+2],[x1-2*dx,y1+2]],(px,py)=>pick(KR.stahl,0.55-(py-y1)*0.1,px,py));
+  if(!ladung)return;
+  for(let k=0;k<9;k++){const px=x1+dx*(k%5),py=y1-1-Math.floor(k/5);P(ctx,px,py,(Math.floor(now/120)+k)%3?'#e86030':'#ffb040');}
+  for(let i=0;i<6;i++){const t=((now/800)+i*0.17)%1,px=Math.round(x1+2*dx+Math.sin(now/300+i)*2*t),py=Math.round(y1-3-t*20);if(bay(px,py)<0.7-t*0.6)P(ctx,px,py,'#8a9098');}
 }
 // Hausmeister Grummelbart, sitzend: 36 x 48, Sitzpunkt (12,34), schaut nach rechts. Schiebermuetze, grauer Bart, Kittel, Latzhose.
 function makeGrummel(o){
@@ -2809,14 +2818,25 @@ function drawHeiz(now){
   ctx.drawImage(HEIZ,0,0);
   plaque(292,14,'Land Später','holz');plaque(20,20,'Gang','holz');
   // Feuer im Kessel: Feuertuer glueht und flackert, warmer Schein davor, Manometernadel steigt
-  if(S.feuer){for(let y=67;y<85;y++)for(let x=191;x<215;x++){const f=0.55+Math.sin(now/90+x*0.7+y*0.3)*0.2+Math.sin(now/53+y)*0.1;P(ctx,x,y,pick(KR.ziegelW,f-(y-67)/60,x,y));}
-    for(let y=101;y<124;y++)for(let x=172;x<236;x++){const d=Math.hypot(x-203,(y-100)*2.2)/42;if(d<1&&bay(x,y)<(1-d)*0.5+Math.sin(now/120)*0.04)P(ctx,x,y,d<0.45?'#7a4a2a':'#4a3024');}
+  if(S.feuer){
+    // Flammenzungen: unten fast weiss und gelb, nach oben orange und rot, jede Spalte flackert fuer sich
+    R(ctx,191,67,24,18,'#140604');
+    for(let x=191;x<215;x++){const h=7+Math.sin(now/90+x*0.9)*3+Math.sin(now/47+x*1.7)*2+Math.sin(x*0.45)*3;
+      for(let y=84;y>84-h&&y>=67;y--){const f=(84-y)/h;P(ctx,x,y,f<0.25?'#fff4c0':f<0.5?'#ffc040':f<0.8?'#e86020':'#8a2010');}}
+    for(let i=0;i<5;i++){const t=((now/700)+i*0.21)%1;P(ctx,Math.round(194+i*4+Math.sin(now/200+i)*2),Math.round(80-t*13),'#ffb040');}
+    for(let x=193;x<213;x++)P(ctx,x,84,x%3?'#ff7010':'#ffc040');
     line(ctx,224,54,227,50,'#1e2638');}
   // Holzwolle im Sonnenfleck, Brennpunkt der Lupe, Glut und Rauch
   if(S.wolleImFleck&&!S.feuer){for(let k=0;k<22;k++){const a=k*2.4,cx=158+(k*5)%12,cy=118+(k%3);line(ctx,cx,cy,Math.round(cx+Math.cos(a)*3),Math.round(cy+Math.sin(a)*1.5),S.glut?(k%2?'#e86030':'#3a2410'):(k%3?'#d8b060':'#9a7430'));}
     if(S.brennpunkt&&!S.glut){const r=Math.max(0,3-(now-S.brennpunkt)/400);ellFill(ctx,164,118,r+0.6,(r+0.6)*0.6,()=>'#fffbe0');}
     if(S.glut)for(let i=0;i<8;i++){const t=((now/900)+i*0.13)%1;const px=Math.round(164+Math.sin(now/300+i)*3*t),py=Math.round(116-t*26);if(bay(px,py)<0.7-t*0.6)P(ctx,px,py,'#8a9098');}}
+  if(S.kesselAuf&&!S.feuer){R(ctx,191,67,24,18,'#0c0806');for(let i=0;i<14;i++)P(ctx,193+(i*7)%20,78+(i*3)%6,i%3?'#2a2a30':'#6e3c1c');
+    polyFill(ctx,[[190,66],[184,69],[184,84],[190,86]],(px,py)=>pick(KR.stahl,0.3,px,py));}
+  if(S.schaufel!=='hand')drawSchaufel(160,82,158,97,false,now);
   const L=[];
+  if(S.schaufel==='hand'){const h=S.hero,d=h.flip?-1:1;L.push({y:h.y+0.5,d:()=>{
+    const [ex,ey]=S.schaufelTief?[h.x+16*d,h.y-2]:S.schaufelHoch?[h.x+15*d,h.y-36]:[h.x+14*d,h.y-14];
+    drawSchaufel(h.x-3*d,h.y-27,ex,ey,S.aufSchaufel,now);}});}
   L.push({y:100,d:()=>spr(S.speech&&S.talker==='grummel'&&Math.floor(now/140)%2?(S.feuer?SPR.grummelWarmTalk:SPR.grummelTalk):(S.feuer?SPR.grummelWarm:SPR.grummel),84,88,12,34,false)});
   L.push({y:S.ky,d:()=>spr(S.speech&&S.talker==='kraechz'&&Math.floor(now/140)%2?SPR.ravenTalk:SPR.raven,S.kx,S.ky,11,19,S.kflip)});
   heroLayer(L,now);
@@ -2882,12 +2902,16 @@ async function brennglas(){
   await sleep(1200);S.glut=true;tone('sawtooth',200,0.4,0.02,120);
   await say('hero','Es qualmt! Es glimmt!');
   await say('hero','Schnell, mit der Schaufel in den Kessel.');
-  await walkTo(150,116);await reach();S.schaufel=true;
-  await walkTo(204,116);face(false);await reach();
-  S.kesselAuf=true;S.wolleImFleck=false;S.glut=false;S.schaufel=false;S.feuer=true;save();
+  await walkTo(146,112);face(false);await reach();S.schaufel='hand';tone('square',300,0.06,0.03,200);await sleep(200);
+  await walkTo(144,120);face(false);S.schaufelTief=true;await sleep(350);tone('sawtooth',400,0.25,0.02,200);
+  S.wolleImFleck=false;S.aufSchaufel=true;await sleep(350);S.schaufelTief=false;await sleep(200);
+  await walkTo(184,116);face(false);
+  S.kesselAuf=true;tone('sawtooth',90,0.3,0.04,60);await sleep(400);
+  S.schaufelHoch=true;await sleep(450);S.aufSchaufel=false;S.glut=false;S.feuer=true;save();
   for(let i=0;i<6;i++)tone('sawtooth',80+i*30,0.3,0.03,60,i*0.15);
-  await sleep(900);
+  await sleep(500);S.schaufelHoch=false;await sleep(300);
   await say('hero','Es brennt! Erst die Holzwolle, jetzt das Holz.');
+  await walkTo(146,112);face(false);await reach();S.schaufel=null;
   await sleep(900);tone('triangle',180,0.5,0.04,260);tone('triangle',220,0.5,0.04,300,0.4);
   await say('kraechz','Hörst du? Die Rohre gluckern.');
   return grummelTaut();
