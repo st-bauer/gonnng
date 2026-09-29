@@ -78,7 +78,7 @@ Canva-Arbeitsdatei: https://canva.link/mp6p64febvogrh4
   die Räume, Kompassrose im Boden, der Gong lässt sich zum Ausprobieren anschlagen.
   Die Regel muss man selbst herausfinden, Krächz erklärt sie nur über die Tippstufen auf Nachfrage.
   Beim Losgehen gongt es immer, man muss also dorthin, wo die Kellertreppe nach dem nächsten Gong steht.
-  Start in Takt 2 (Kellertreppe im Osten, Lösung Westen). Kantine, Bio und Musikraum sind noch Texttafeln.
+  Start in Takt 2 (Kellertreppe im Osten, Lösung Westen).
   Der Grund für den Keller ist eine Spur: der verlorene Zettel des Diebs unter dem Gitter („Heft im Heizungskeller abgeben“).
 - Im Prolog bleibt der Dieb des Hefts unbekannt (Licht aus, Trippeln). Erst im Flüstergang zeigt sich das Aufschiebchen.
   Krächz macht das Heft zur Spur zur Unruh (wer das Heft hat, weiß vielleicht, wo die Unruh ist). Die Krümel liegen
@@ -98,27 +98,31 @@ Canva-Arbeitsdatei: https://canva.link/mp6p64febvogrh4
   Mit den Keksen kommt die Figur durch den Flüstergang in den Heizungskeller.
 - Zwischensequenzen (`runCut`, überspringbar, ohne Verbleiste): Rutschpartie durch den Schacht,
   Abstieg über die Kellertreppe am Ende der Hallen-Vorschau.
-- Szenenwahl nur zum Testen (versteckt, erscheint nach fünfmal schnellem Tippen auf den Titel „Gonnng!“): Intro, Prolog, Eingangshalle, Flüstergang, Kantine, Heizungskeller, Musikraum, jeweils mit passendem Spielstand (`SZENEN`).
+- Szenenwahl nur zum Testen (versteckt, erscheint nach fünfmal schnellem Tippen auf den Titel „Gonnng!“): Intro, Prolog, Eingangshalle, Flüstergang, Kantine, Heizungskeller, Musikraum, Biologieraum, Heizungskeller mit Lupe und Holzwolle, jeweils mit passendem Spielstand (`SZENEN`).
   Neue Räume dort mit ergänzen.
 - Zum Testen: `window.__frame(sekunde)` im Intro, `window.__act(verb, id, item)` und `window.__pick(i)` im Prolog.
 - Entschieden: Die Unruh bleibt. Die Große Stundenuhr ist eine Sonderanfertigung (Turmuhren haben sonst meist ein Pendel),
   Krächz erklärt das auf Nachfrage. Die Namen Frau Kallweit, Jonas und Lina bleiben.
 
 - Kapitel 1, vierter Raum: der Heizungskeller (Raum `heiz`, `drawHeizBg`, `makeGrummel`, `actHeiz`). Grummelbart erstarrt im Sessel mit dem
-  Schlüssel in der Faust, Brikett im Spalt hinter dem Kessel (nur glühende Augen), Tor zum Land Später mit Katzenklappe.
-  Die Figur merkt, dass sie den Keks am Lineal festbinden muss (`S.brauchSchnur`). Die Kordel kommt aus dem Musikraum.
-  Entschieden: Kordel aus einem Flötenbeutel (Blockflöten haben keine Schnur). Das Metronom läuft nach einem Anstoß weiter, einen Aufziehschlüssel gibt es nicht,
-  das Orchester braucht nur jemanden, der einzählt.
-
+  Schlüssel in der Faust, Kessel mit Anmachholz und Kohle, aber ohne Streichhölzer (`S.brauchFeuer`). Seit dem Gong steht die Sonne still,
+  ein Sonnenfleck vom Kellerfenster (`fleck`). Holzwolle hinein, Lupe darüber (`brennglas`), die Heizung springt an (`S.feuer`),
+  Grummelbart taut auf (`grummelTaut`). Danach endet die Vorschau vor dem Kompass.
 - Kapitel 1, fünfter Raum: der Musikraum (Raum `musik`, `drawMusikBg`, `makeKind`, `makeFermate`, `actMusik`). Frau Fermate und vier Kinder erstarrt,
-  Metronom auf dem Klavier (`S.metronom`, 80 Schläge in der Minute, `TAKT_MS`). Eingezählt wird mit dem Kochlöffel auf der großen Trommel
-  (`einzaehlen`, `trommeln`), den Kochlöffel leiht Frau Brösel aus (`loeffelLeihen`, `S.brauchSchlaegel`). Kein Klatschen mit Zeitmessung,
-  das war auf dem iPad nicht bedienbar. Emil schenkt die Kordel. Kombinationen: Lineal plus Kordel ergibt `angel`, Angel plus Kekse ergibt `keksangel`.
-  Den Musikraum betritt man erst, wenn die Figur eine Schnur braucht (`S.brauchSchnur`).
+  Metronom auf dem Klavier (`S.metronom`, 80 Schläge in der Minute, `TAKT_MS`). Eingezählt wird mit dem Trommelschlägel auf der großen Trommel
+  (`einzaehlen`, `trommeln`). Danach Pause (`S.pause`), ein Stück Radiergummi in Emils Flöte (`S.floeteZu`), beim nächsten Einzählen holt
+  Frau Fermate eine neue Flöte aus dem Karton (`neueFloeteHolen`, `fermateGeh`, `S.kartonAuf`), die Holzwolle nimmt man einfach.
+- Kapitel 1, sechster Raum: der Biologieraum (Raum `bio`, `drawBioBg`, `makeMia`, `actBio`). Mia sucht Gustav, die Stabschrecke. Der Zweig,
+  der ohne Wind schaukelt, ist Gustav (`S.gustavGefunden`). Zeigt man ihn Mia, zeichnet sie los, wird wach und leiht die Lupe.
+- Flüstergang: Das Aufschiebchen in der Nische knackt Nüsse mit dem Trommelschlägel und tauscht ihn gegen einen Keks (`schlaegelTausch`).
+- Musikraum und Biologieraum betritt man erst, wenn die Figur Feuer braucht (`S.brauchFeuer`), vorher gibt es nur eine Karte.
+- Entschieden (29.09.2026): kein Klatschen mit Zeitmessung (auf dem iPad nicht bedienbar). Brikett, Kordel, Keks-Angel und Kochlöffel sind gestrichen.
+  Figuren sagen nicht an, was man tun soll, Hinweise gibt es versteckt im Gespräch. Vorschläge erst besprechen, gebaut wird erst nach Auftrag.
 
 ## Nächste Schritte
 
-1. Keks-Angel am Spalt: Brikett beißt an, heizt an, Grummelbart taut auf. Danach das Kompass-Rätsel.
+1. Kompass-Rätsel mit Grummelbart (konkrete Ziele), danach das Tor zum Land Später.
+2. Offen: Wird die Lupe in Kapitel 2 als Okular des Fernrohrs weiterverwendet?
 
 ## Online-Dokument
 

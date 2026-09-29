@@ -51,7 +51,8 @@ Der Gegenspieler heißt jetzt **Graf Nimmerjetzt**. Der Name sagt, was er will, 
 | Hauptfigur | Neu an der Schule, neugierig, leicht chaotisch. Als Mädchen oder Junge spielbar, Name frei wählbar | Spielfigur |
 | Krächz | Rabe mit Monokel. War früher Schulleiter und wurde vom Grafen verzaubert, weil er unerträglich pünktlich war | Begleiter, Kommentator, gestuftes Hinweissystem. Running Gag: Er verliert im Lauf des Spiels Monokel und Krawattennadel, jedes Mal unter lautem Protest |
 | Hausmeister Grummelbart | Wohnt im Heizungskeller, redet mit Rohren, weiß mehr, als er zugibt | Gibt Schlüssel und den Kompass der Pläne (Kapitel 1) |
-| Brikett | Kleiner Heizungsdrache, frisst nur Kekse, niest Funken | Tier-Rätsel in Kapitel 1 |
+| Frau Fermate | Musiklehrerin, benannt nach dem Zeichen für Anhalten. Übt im September „Morgen kommt der Weihnachtsmann“ | Musikraum mit Emil und dem Blockflötenorchester (Kapitel 1) |
+| Mia und Gustav | Mia soll Gustav, die Stabschrecke, finden und zeichnen, findet ihn aber nicht | Biologieraum, Lupe (Kapitel 1) |
 | Frau Brösel | Kantinentrollin, kocht seit dreißig Jahren denselben Eintopf, weil sie sich an nichts Neues traut | Aufgabe zerlegen (Kapitel 1) |
 | Die Aufschiebchen | Kobolde in Schlafanzügen, flüstern Ausreden, klauen Hefte, essen Kekskrümel | Handlanger des Grafen, laufende Störer |
 | Professor Kolportus | Fliegender Händler im Sumpf, verkauft Lerntyp-Tee und Pillen für die „anderen 90 Prozent des Gehirns“ | Mythen-Quiz (Kapitel 2) |
@@ -157,7 +158,7 @@ Der Prolog führt die Bedienung ein und endet damit, dass die Hauptfigur einem A
 
 | Gegenstand | Herkunft | Einsatz im Prolog | Späterer Einsatz |
 | --- | --- | --- | --- |
-| Lineal | Federmappe | Hebel am Fenster | passt in den Spalt hinter dem Kessel, mit Kordel zur Keks-Angel für Brikett (K1) |
+| Lineal | Federmappe | Hebel am Fenster | Probe an der Trommel im Musikraum („Das Lineal federt nur“, K1) |
 | Radiergummi | Federmappe | nur Gags | „später“ wegradieren (K4) |
 | Münze | Pultschublade | Schraubendreher am Gitter | Fährgeld für Stakel (K2) |
 | Kreide | Tafelablage | Pflicht vor dem Schacht | Markierungen im Moor (K2), „jetzt“ schreiben (K4) |
@@ -254,24 +255,28 @@ Abschiede, abwechselnd: „Bis gleich.“ Krächz: „‚Gleich‘ sagen hier sc
 
 ## Kapitel 1: Die wandernden Flure (Planen)
 
-Die Hauptfigur muss durch die sich verschiebende Schule in den Heizungskeller, wo der Eingang ins Land Später liegt. Am Ende erhält sie den Kompass der Pläne. Schauplätze: Eingangshalle, vier Flügel, Kantine, Flüstergang, Heizungskeller.
+Die Hauptfigur muss durch die sich verschiebende Schule in den Heizungskeller, wo der Eingang ins Land Später liegt. Am Ende erhält sie den Kompass der Pläne. Schauplätze: Eingangshalle, vier Flügel, Kantine, Flüstergang, Musikraum, Biologieraum, Heizungskeller.
 
 | # | Rätsel | Art | Lösung |
 | --- | --- | --- | --- |
+| 0 | Das Schlägel-Aufschiebchen | Kombination | Im Flüstergang knackt das Aufschiebchen in der Nische mit einem Trommelschlägel Nüsse und haut meist daneben („Erst Arbeit, dann Essen. Falsche Reihenfolge.“). Für einen Keks, den man sofort essen kann, gibt es den Schlägel her. Wer aufschiebt, zieht die kleine Belohnung jetzt der größeren später vor (Steel, 2007) |
 | 1 | Die wandernden Flure | Allgemein, Logik | Siehe Regel unten. Die Figur schaut durch die Türspalten, leitet die Regel aus Gong, Schildern und Aushang selbst ab und läuft in den Flügel, in dem die Kellertreppe nach dem nächsten Gong stehen wird |
-| 2 | Der Musikraum | Allgemein, Rhythmus | Einmal muss die Figur absichtlich im Musikraum landen, um eine Kordel zu holen. Das Orchester ist erstarrt, die Musiklehrerin oder der Musiklehrer steht mit erhobenem Taktstock da. Die Figur stößt das Metronom an und zählt mit einem geliehenen Kochlöffel auf der großen Trommel im Takt ein. Das Orchester setzt ein und wird dabei wach. Zum Dank gibt ein Kind die Kordel von seinem Flötenbeutel |
+| 2 | Der Musikraum | Kombination | Das Orchester ist erstarrt, Frau Fermate steht mit erhobenem Taktstock da. Metronom anstoßen, mit dem Trommelschlägel auf der großen Trommel einzählen, das Orchester spielt und wird wach. In der Pause ein Stück Radiergummi in Emils alte Flöte, beim nächsten Einzählen holt Frau Fermate eine neue aus dem Karton. Die Holzwolle im offenen Karton nimmt die Figur mit |
 | 3 | Frau Brösels Mittagessen | SRL: Planen, Arbeitsumgebung vorbereiten, nahe Teilziele | Mittagessen für zweihundert Schülerinnen und Schüler. Frau Brösel ist erstarrt, weil sie nicht weiß, womit sie anfangen soll. Rätsel 1: Vier Rezeptkarten sortieren (was am längsten braucht, kommt zuerst). Rätsel 2: Alles für den ersten Topf auf den Herd legen, Zucker und Puddingpulver aus der Speisekammer, wo ein Aufschiebchen darauf schläft. Frau Brösel fängt an, wird wach und schenkt Kekse |
 | 4 | Der Flüstergang | SRL: Wenn-dann-Pläne | Drei Aufschiebchen flüstern, wer reinfällt, trottet zurück zur Treppe. Auf der Tafel von Hausmeister Grummelbart stehen seine eigenen Wenn-dann-Pläne. Mit Kreide schreibt die Figur dort für jede erlebte Stolperstelle einen Plan, nur konkrete Handlungen helfen. Danach läuft sie an der Störung von allein vorbei. Der Keks-Plan braucht einen Keks aus der Kantine |
-| 5 | Brikett und die Keks-Angel | Kombination | Brikett sitzt im schmalen Spalt zwischen Kessel und Wand. „Gib Keks an Brikett“ scheitert: Er weicht zurück, die Figur ist zu nah. Die Hand passt nicht in den Spalt, das flache Lineal schon. Ein Keks auf dem Lineal rutscht herunter, er muss festgebunden werden. Lineal plus Kordel ergibt eine Angel, Angel plus Keks die Keks-Angel. Brikett beißt an und lässt sich herausziehen, niest vor Freude Funken in den Kessel, die Heizung springt an, Grummelbart taut auf |
-| 6 | Der Kompass | SRL: konkrete Ziele | Grummelbart gibt Schlüssel und Kompass. Bei vagen Zielen dreht die Nadel wild. Erst ein Ziel mit Was, Bis wann und Woran erkenne ich den Erfolg richtet sie aus |
+| 5 | Gustav und die Lupe | Allgemein, Biologie | Im Biologieraum sucht Mia seit dem Morgen Gustav, die Stabschrecke, und fängt deshalb nie an zu zeichnen. Stabschrecken tarnen sich als Zweige (Mimese) und schaukeln beim Bewegen wie ein Zweig im Wind. Wer den Zweig findet, der ohne Wind schaukelt, und ihn Mia zeigt, weckt sie. Sie leiht die Lupe |
+| 6 | Das Brennglas | Allgemein, Physik | Seit dem Gong steht die Sonne still, ein Sonnenfleck vom Kellerfenster liegt immer an derselben Stelle. Holzwolle in den Fleck, Lupe darüber: Die Sammellinse bündelt das Licht, die Holzwolle glimmt. Mit der Kohlenschaufel in den Kessel, dort liegen Anmachholz und Kohle bereit. Die Heizung springt an, Grummelbart taut auf |
+| 7 | Der Kompass | SRL: konkrete Ziele | Grummelbart gibt Schlüssel und Kompass. Bei vagen Zielen dreht die Nadel wild. Erst ein Ziel mit Was, Bis wann und Woran erkenne ich den Erfolg richtet sie aus |
 
 **Inventar in Kapitel 1**
 
 | Gegenstand | Herkunft | Kombination | Einsatz |
 | --- | --- | --- | --- |
-| Kordel | Flötenbeutel im Musikraum | mit Lineal zur Angel | Keks-Angel (K1) |
-| Kochlöffel | Frau Brösel leiht ihn aus | mit der großen Trommel | Einzählen im Musikraum (K1) |
-| Kekse | Frau Brösel | mit Angel zur Keks-Angel; Krümel für die Verkleidung | Brikett (K1), Keks-Plan im Flüstergang (K1), Verkleidung (K4) |
+| Trommelschlägel | Aufschiebchen in der Nische, gegen einen Keks | mit der großen Trommel | Einzählen im Musikraum (K1) |
+| Kekse | Frau Brösel | Krümel für die Verkleidung | Keks-Plan im Flüstergang (K1), Tausch gegen den Schlägel (K1), Verkleidung (K4) |
+| Holzwolle | Karton mit den neuen Blockflöten im Musikraum | in den Sonnenfleck | Brennglas im Heizungskeller (K1) |
+| Lupe | Mia, Biologieraum | über die Holzwolle im Sonnenfleck | Brennglas (K1); später möglicherweise Okular des Fernrohrs (K2, noch offen) |
+| Radiergummi (aus dem Prolog) |  | ein Stück in Emils Flöte | Musikraum (K1), der Rest für die Später-Treppe (K4) |
 | Einmachglas | Frau Brösel | mit Deckel und Monokel zur Irrlicht-Falle | Irrlichter (K2), Laterne (K4) |
 | Plastiktüten | Kantine | mit Gummiringen zu Moorgamaschen | Schlamm im Moor (K2) |
 | Gummiringe | Kantine, Einmachglas-Regal | siehe Plastiktüten | Schlamm im Moor (K2) |
@@ -280,13 +285,15 @@ Die Hauptfigur muss durch die sich verschiebende Schule in den Heizungskeller, w
 | Kellerschlüssel | Grummelbart |  | Kellertor zum Land Später |
 | Kompass der Pläne | Grummelbart |  | Wegweiser bis zum Finale, Zahnrad der Stundenuhr (K4) |
 
-**Ablauf im Heizungskeller.** Hinter der Eisentür aus dem Flüstergang ist es eiskalt. Hausmeister Grummelbart sitzt erstarrt im Ledersessel, Raureif im Bart, den Schlüssel zum Tor in der gefrorenen Faust. Das Schlüsselbrett an der Wand ist leer. Rechts steht das Holztor zum Land Später mit einer Katzenklappe, durch die der Dieb mit dem Heft verschwunden ist. Im Gespräch erfährt man von Grummelbart, dass der Kessel aus ist, weil Brikett sich seit dem lauten Gong versteckt, dass Brikett nur Kekse frisst und scheu ist und dass keine Hand in den Spalt passt. Auf dem Zettel am Kessel steht: „Anheizen macht Brikett. Er mag Kekse. Bitte nicht erschrecken. Der Hausmeister.“ Im Spalt zwischen Kessel und Ziegelpfeiler leuchten zwei Augen, die zurückweichen, sobald die Figur zu nah kommt.
+**Ablauf im Heizungskeller.** Hinter der Eisentür aus dem Flüstergang ist es eiskalt. Hausmeister Grummelbart sitzt erstarrt im Ledersessel, Raureif im Bart, den Schlüssel zum Tor in der gefrorenen Faust. Das Schlüsselbrett an der Wand ist leer. Rechts steht das Holztor zum Land Später mit einer Katzenklappe, durch die der Dieb mit dem Heft verschwunden ist. Im Gespräch erfährt man: Der Kessel ist seit dem Gong aus, Anmachholz und Kohle liegen schon drin, aber die Streichholzschachtel ist leer („Wollte ich gleich nachkaufen. Gleich.“). Auf die Frage, wie es ohne Streichhölzer geht, erzählt er, dass er als Junge mit Opas Lupe und der Sonne ein Loch in die Zeitung gebrannt hat, und dass an Kohle erst etwas ganz Feines brennen muss. Auf dem Zettel am Kessel steht: „Anheizen: erst was ganz Feines, dann das Holz, dann die Kohle.“ Vom Kellerfenster fällt ein Sonnenfleck auf den Boden, der seit dem Gong nicht mehr wandert.
 
-Was nicht klappt, gibt Hinweise: Den Keks direkt geben verscheucht Brikett. Ein Keks auf dem Boden bleibt liegen, Brikett traut sich nicht heraus. Reinwerfen bringt nichts, er soll ja herauskommen. Das Lineal passt in den Spalt („Lang und flach eben“). Keks und Lineal zusammen: „Der rutscht sofort runter. Ich müsste ihn festbinden. Mit einer Schnur oder einer Kordel.“ Damit ist klar, dass etwas zum Festbinden fehlt. Die Kordel gibt es im Musikraum, der immer im Süden bleibt. So wird das Flur-Rätsel ein drittes Mal gebraucht. Krächz hilft nur auf Nachfrage: erst Grummelbart fragen, dann die Frage, wie man einen Keks in den Spalt hält, zuletzt der Hinweis auf die Flötenbeutel.
+Was nicht klappt, gibt Hinweise: Die Lupe über dem bloßen Stein macht nur einen hellen Punkt („Stein brennt aber nicht“). Holzwolle direkt in den Kessel geht, aber da drin ist es dunkel. Der Zettel des Diebs bleibt draußen, er ist ein Beweis, und weißes Papier wirft das Licht ohnehin zurück. Holzwolle in den Sonnenfleck, Lupe darüber: Sie glimmt, die Figur bringt sie mit der Kohlenschaufel in den Kessel. Die Heizung springt an, die Rohre gluckern, Grummelbart taut auf: „Wie früher bei meinem Opa. Respekt.“ Danach folgt der Kompass. Krächz hilft nur auf Nachfrage.
 
-**Ablauf im Musikraum.** Erst wenn die Figur eine Kordel braucht, geht sie in den Musikraum hinein, vorher reicht ein Blick hinein. Vier Kinder sitzen erstarrt auf ihren Stühlen, die Blockflöten am Mund, an jeder Stuhllehne hängt ein Flötenbeutel mit Kordel. Die Musiklehrerin Frau Fermate (die Fermate ist das Zeichen für Anhalten) hält den Taktstock hoch. Sie erklärt auf Nachfrage: Das Metronom steht still, seit es gegongt hat, und ohne Tempo fängt niemand an. Eingezählt wird bei ihr mit vier Schlägen auf der großen Trommel, weil bei den Flöten niemand ein Klatschen hört. Die Schlägel haben die Aufschiebchen zum Nüsseknacken mitgenommen. Geübt wird „Morgen kommt der Weihnachtsmann“, im September. Die Beutel einfach zu nehmen lehnt die Figur ab („Dann wäre ich nicht besser als mein Dieb“).
+**Ablauf im Biologieraum.** Erst wenn die Figur Feuer braucht, geht sie hinein. Mia sitzt erstarrt auf einem Hocker, die Lupe vor dem Auge, vor dem Terrarium von Gustav, einer Indischen Stabschrecke. An der Tafel steht „Findet Gustav und zeichnet ihn!“. Mia hat ihn nie gefunden und deshalb nie angefangen zu zeichnen. Die Lupe gibt sie nicht her, und erstarrten Leuten nimmt die Figur nichts weg. Das Schild am Terrarium sagt: „Frisst Brombeerblätter. Nachts wach, tagsüber tarnt er sich als Zweig.“ Im Terrarium stehen mehrere Zweige, einer davon schaukelt ganz leicht, obwohl kein Wind geht. Wer ihn anschaut, entdeckt die Beine. Im Gespräch zeigt die Figur Mia den Zweig, Mia zeichnet los, wird wach und leiht die Lupe. Die Topfpflanzen auf dem Regal lehnen sich zum Fenster (Pflanzen wachsen zum Licht hin).
 
-Was nicht klappt, gibt Hinweise: Mit der Hand klingt die Trommel „wie ein nasser Waschlappen“, das Lineal federt nur („Da muss was Dickes vorne dran sein“). Einen Stiel mit dickem Ende gibt es in der Kantine: Frau Brösel leiht der Figur einen Kochlöffel (einfach nehmen tut die Figur ihn nicht). Dafür geht es noch einmal durch die wandernden Flure. Die Figur stößt das Pendel des Metronoms auf dem Klavier an, das Gewicht steht auf 80, also achtzig Schläge in der Minute. „Benutze Kochlöffel mit Trommel“: Die Figur schlägt viermal im Takt des Metronoms, das Orchester setzt ein und wird dabei wach. Ohne laufendes Metronom fragt Frau Fermate: „Welches Tempo soll das denn sein?“ Frau Fermate danach: „Ich wollte erst den perfekten Moment abwarten. Der kommt aber nie von allein.“ Emil schenkt die Kordel. Lineal plus Kordel ergibt die Angel, Angel plus Keks die Keks-Angel. Ein Keks direkt an der Kordel baumelt nur und kommt nicht in den Spalt. (Entscheidung vom 29.09.2026: kein Klatschen mit Zeitmessung, das war auf dem iPad nicht bedienbar.)
+**Ablauf im Musikraum.** Erst wenn die Figur Feuer braucht, geht sie hinein, vorher reicht ein Blick hinein. Vier Kinder sitzen erstarrt auf ihren Stühlen, die Blockflöten am Mund. Die Musiklehrerin Frau Fermate hält den Taktstock hoch. Auf dem Klavier stehen das Metronom und ein zugeklebter Pappkarton „Neue Blockflöten. Vorsicht, zerbrechlich“. Die Figur öffnet ihn nicht, die Flöten gehören der Schule. Frau Fermate auf Nachfrage: Das Metronom steht still, seit es gegongt hat. Eingezählt wird mit vier Schlägen auf der großen Trommel, die Schlägel haben die Aufschiebchen zum Nüsseknacken mitgenommen. Die neuen Flöten gibt es erst, wenn eine alte kaputt ist. Geübt wird „Morgen kommt der Weihnachtsmann“, im September.
+
+Ablauf: Mit der Hand klingt die Trommel „wie ein nasser Waschlappen“, das Lineal federt nur. Ohne laufendes Metronom fragt Frau Fermate: „Welches Tempo soll das denn sein?“ Metronom anstoßen (80 Schläge in der Minute), mit dem Schlägel einzählen: Die Figur schlägt viermal im Takt, das Orchester spielt und wird wach. „Ich wollte erst den perfekten Moment abwarten. Der kommt aber nie von allein.“ Dann ist Pause, die Flöten liegen auf dem Schoß. Emil erzählt im Gespräch, dass seine Flöte uralt ist und nur quietscht. Die Figur bricht ein Stück vom Radiergummi ab und steckt es vorne ins Fenster von Emils Flöte, dort, wo der Ton entsteht. Beim nächsten Einzählen kommt bei Emil nur „Pffft“. Frau Fermate geht zum Karton, reißt ihn auf, holt eine neue Flöte und bringt sie Emil („Die riecht sogar noch nach Holzwolle“). Aus dem offenen Karton quillt Holzwolle, die die Figur einfach mitnimmt, weil sie kein Instrument ist. (Entscheidungen vom 29.09.2026: kein Klatschen mit Zeitmessung, das war auf dem iPad nicht bedienbar; Brikett, Kordel, Keks-Angel und Kochlöffel entfallen.)
 
 **Zwischensequenzen.** Zwischen den Stationen gibt es kurze, überspringbare Szenen ohne Verbleiste: die Rutschpartie durch den Lüftungsschacht (Krächz: „Flügel sind in Schächten übrigens völlig nutzlos!“) und der Abstieg über die kalte Kellertreppe („Die Heizung ist aus. Seit dem Gong steht hier alles still.“).
 
@@ -619,6 +626,10 @@ Das Spiel behauptet nichts, was die Forschung nicht trägt, und nimmt verbreitet
 | Rätsel | Fachinhalt | Stand |
 | --- | --- | --- |
 | Klemmendes Fenster | Hebelwirkung: langer Hebelarm, weniger Kraft | korrekt |
+| Blockflöte | Der Ton entsteht am Fenster (Labium) vorne am Kopf. Ist es verstopft, kommt kein Ton | korrekt |
+| Metronom | Achtzig Schläge in der Minute sind 0,75 Sekunden pro Schlag | korrekt |
+| Gustav | Indische Stabschrecke: frisst Brombeer- und Efeublätter, nachtaktiv, tarnt sich als Zweig (Mimese) und schaukelt beim Bewegen wie ein Zweig im Wind; Insekten haben sechs Beine | korrekt |
+| Brennglas | Eine Sammellinse bündelt Sonnenlicht im Brennpunkt. Feine, trockene Holzwolle entzündet sich, weißes Papier reflektiert viel Licht und wird kaum heiß. Kohle braucht erst feines Material, dann Holz | korrekt |
 | Rundlauf-Moor | Trémaux-Verfahren zum Lösen von Labyrinthen, vereinfacht | korrekt |
 | Fähre | Nahrungskette: Weißstörche fressen unter anderem Amphibien, Frösche fressen größere Insekten wie Libellen, Libellenlarven fressen Kaulquappen. Lösung in sieben Fahrten | korrekt |
 | Pflanzenstandorte | Kaktus trocken und sonnig, Farn schattig und feucht, Seerose im Wasser | korrekt |
@@ -635,6 +646,7 @@ Das Spiel behauptet nichts, was die Forschung nicht trägt, und nimmt verbreitet
 - [ ] Speicherstand auf dem Gerät, damit das Spiel über mehrere Wochen verteilt gespielt werden kann?
 - [ ] Begleitmaterial für Lehrkräfte: eine Karte pro Kapitel, mit der die Strategie im Unterricht benannt und auf echte Aufgaben übertragen wird?
 - [ ] Welches Kapitel wird zuerst als spielbarer Prototyp gebaut?
+- [ ] Lupe aus dem Biologieraum (K1) in Kapitel 2 als Okular des Fernrohrs weiterverwenden? Dann bräuchten die Wiederleser eine andere Belohnung.
 
 ## Quellen
 
@@ -669,7 +681,13 @@ Das Spiel behauptet nichts, was die Forschung nicht trägt, und nimmt verbreitet
 - NABU: [Vogelporträt Weißstorch](https://www.nabu.de/tiere-und-pflanzen/voegel/portraets/weissstorch/) (Nahrung: Mäuse, Amphibien, Reptilien, Regenwürmer, Insekten)
 - t-online: [Was fressen Frösche?](https://www.t-online.de/heim-garten/garten/tiere/id_100735302/was-fressen-froesche-das-ist-der-speiseplan-der-amphibien.html) (auch größere Insekten wie Libellen)
 - Libelleninfo: [Fressen und gefressen werden](https://www.libelleninfo.de/1051.html) (Libellenlarven fressen Kaulquappen)
+- biologie-seite.de: [Indische Stabschrecke](https://biologie-seite.de/Biologie/Indische_Stabschrecke) (Futter, Tarnung, nachtaktiv)
+- Wissenschaftswelle: [Stabheuschrecke](https://www.wissenschaftswelle.de/biologie-artenvielfalt/stabheuschrecke) (Schaukelbewegung wie ein Zweig im Wind, Mimese)
 - Landesbildungsserver Baden-Württemberg: [Experiment von Jan van Helmont](https://lehrerfortbildung-bw.de/u_matnatech/bio/bs/6bg/6bg1/lehrplaneinheit_i/anhang3/) (Pflanzenmasse stammt vor allem aus Kohlenstoffdioxid)
 - Pflanzenforschung.de: [Venusfliegenfallen sind effiziente Strategen](https://www.pflanzenforschung.de/de/pflanzenwissen/journal/venusfliegenfallen-sind-effiziente-strategen-nicht-jede-10566) (zwei Berührungen, Öffnen nach etwa einem halben Tag)
 
 Stand der Prüfung: Alle zentralen Befunde wurden am 26. September 2026 an Abstracts oder Volltexten gegengeprüft. Die Zimmerman-und-Kitsantas-Studie von 1999 ließ sich nicht als Beleg für das Protokollieren bestätigen und wurde durch Kitsantas und Zimmerman (2006) ersetzt. Bei Weiner, Locke und Latham, Monsell, Zimmerman (2002) und Karabenick und Newman sind die Literaturangaben bestätigt, die Aussagen stammen aus den bekannten Kernthesen dieser Arbeiten.
+
+**Physik**
+
+- Siemens Stiftung, Medienportal: [Wir bauen ein thermisches Sonnenkraftwerk. Mit Brennglas und Spiegel](https://medienportal.siemens-stiftung.org/view/105014) (weißes Papier reflektiert einen großen Teil des Lichts)
