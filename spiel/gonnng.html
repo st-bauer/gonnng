@@ -1201,6 +1201,7 @@ function miniItem(g,id,x,y){x=Math.round(x);y=Math.round(y);
   if(id==='zucker')return beutelG(g,x,y,3,3,KR.papier,0.62);
   if(id==='pulver')return kastenG(g,x-2,y-3,4,5,KR.buchY,0.55);
   if(id==='topflappen')return kastenG(g,x-3,y-3,6,6,KR.buchR,0.5);
+  if(id==='floete'){line(g,x-5,y+3,x+4,y-3,'#9a7440');return line(g,x-4,y+3,x+5,y-3,'#f0dcb0');}
   kastenG(g,x-2,y-2,4,4,KR.papier,0.6);}
 function drawFlug(){
   if(S.card)return;const now=performance.now();
@@ -1452,7 +1453,7 @@ function build(){
   SPR.raven=makeRaven({});SPR.ravenFlug=[makeRaven({fluegel:'hoch'}),makeRaven({fluegel:'runter'})];SPR.ravenKnock=makeRaven({knock:1});SPR.ravenTalk=makeRaven({talk:1});
   SPR.imp=makeImp({});SPR.impYawn=makeImp({yawn:1,heft:1});SPR.impHeft=makeImp({heft:1});SPR.impSleep=makeImp({zu:1});SPR.impKeks=makeImp({keks:1});
   SPR.impTalk=makeImp({talk:1});SPR.impStock=[makeImp({stock:0}),makeImp({stock:1}),makeImp({stock:0,talk:1})];SPR.impHeftTalk=makeImp({heft:1,talk:1});SPR.impSleepTalk=makeImp({zu:1,talk:1});SPR.impKeksTalk=makeImp({keks:1,talk:1});
-  SPR.kinder=kinderSprites();SPR.mia=makeMia({lupe:1});SPR.miaTalk=makeMia({lupe:1,talk:1});SPR.miaZeichnet=makeMia({zeichnet:1});SPR.miaZeichnetTalk=makeMia({zeichnet:1,talk:1});SPR.fermate=[0,1,2].map(a=>makeFermate({arm:a,wach:a>0}));SPR.fermateTalk=[makeFermate({talk:1}),makeFermate({arm:1,wach:1,talk:1})];SPR.grummel=makeGrummel({});SPR.grummelTalk=makeGrummel({talk:1});SPR.grummelWarm=makeGrummel({warm:1});SPR.grummelWarmTalk=makeGrummel({warm:1,talk:1});SPR.broesel=makeBroesel({});SPR.broeselTalk=makeBroesel({talk:1});SPR.broeselRuehr=makeBroesel({stir:1});SPR.broeselRuehr2=makeBroesel({stir:2});SPR.broeselGib=makeBroesel({gib:1});
+  SPR.kinder=kinderSprites();SPR.mia=makeMia({lupe:1});SPR.miaGib=makeMia({gib:1});SPR.miaTalk=makeMia({lupe:1,talk:1});SPR.miaZeichnet=makeMia({zeichnet:1});SPR.miaZeichnetTalk=makeMia({zeichnet:1,talk:1});SPR.fermate=[0,1,2].map(a=>makeFermate({arm:a,wach:a>0}));SPR.fermateTalk=[makeFermate({talk:1}),makeFermate({arm:1,wach:1,talk:1}),makeFermate({arm:2,wach:1,talk:1})];SPR.grummel=makeGrummel({});SPR.grummelTalk=makeGrummel({talk:1});SPR.grummelWarm=makeGrummel({warm:1});SPR.grummelReck=makeGrummel({warm:1,reck:1});SPR.grummelWarmTalk=makeGrummel({warm:1,talk:1});SPR.broesel=makeBroesel({});SPR.broeselTalk=makeBroesel({talk:1});SPR.broeselRuehr=makeBroesel({stir:1});SPR.broeselRuehr2=makeBroesel({stir:2});SPR.broeselGib=makeBroesel({gib:1});
   SPR.impWalk=[0,1,2,3].map(i=>makeImp({walk:1,phase:i/4}));SPR.impWalkHeft=[0,1,2,3].map(i=>makeImp({walk:1,phase:i/4,heft:1}));
 }
 // Figur mit Fusspunkt zeichnen, ax = Ankerpunkt im Bild
@@ -2879,10 +2880,11 @@ function makeGrummel(o){
   p.part(RAMP.bshoe,m=>m.ell(27,45.5,4,2),true);
   p.part(RAMP.grey,m=>m.poly([[5,17],[19,16],[22,34],[5,35]]));
   p.part(RAMP.jeans,m=>m.poly([[9,24],[19,24],[21,35],[8,35]]),true);
-  p.part(RAMP.grey,m=>m.limb(15,19,23,30,2.8,2.4),true);
-  p.part(RAMP.skin,m=>m.ell(25,30,2.6,2.2),true);
+  if(o.reck){p.part(RAMP.grey,m=>m.limb(15,19,26,6,2.8,2.4),true);p.part(RAMP.skin,m=>m.ell(27,4,2.6,2.2),true);}
+  else{p.part(RAMP.grey,m=>m.limb(15,19,23,30,2.8,2.4),true);p.part(RAMP.skin,m=>m.ell(25,30,2.6,2.2),true);}
   // Schluessel in der Faust
-  p.px(27,31,'#e8c050').px(28,31,'#fff0a0').px(29,32,'#b88a24').px(28,33,'#b88a24');
+  if(o.reck)p.px(29,3,'#e8c050').px(30,3,'#fff0a0').px(31,4,'#b88a24');else p.px(27,31,'#e8c050').px(28,31,'#fff0a0').px(29,32,'#b88a24').px(28,33,'#b88a24');
+  if(o.reck)p.px(18,14,'#3a0a0e').px(19,14,'#3a0a0e').px(18,15,'#3a0a0e').px(19,15,'#7a2a2e');
   p.part(RAMP.skin,m=>{m.ell(14,9,6,6);m.ell(20,10,1.8,2);});
   p.part(RAMP.grey,m=>{m.poly([[10,11],[21,11],[22,16],[17,21],[11,17]]);},true);
   p.part(RAMP.skirt,m=>{m.poly([[6,6],[21,3],[24,6],[18,7],[7,9]]);m.ell(13,4,7,3.4);},true);
@@ -2918,7 +2920,10 @@ function drawHeiz(now){
   if(S.schaufel==='hand'){const h=S.hero,d=h.flip?-1:1;L.push({y:h.y+0.5,d:()=>{
     const [ex,ey]=S.schaufelTief?[h.x+16*d,h.y-2]:S.schaufelHoch?[h.x+15*d,h.y-36]:[h.x+14*d,h.y-14];
     drawSchaufel(h.x-3*d,h.y-27,ex,ey,S.aufSchaufel,now);}});}
-  L.push({y:100,d:()=>spr(S.speech&&S.talker==='grummel'&&Math.floor(now/140)%2?(S.feuer?SPR.grummelWarmTalk:SPR.grummelTalk):(S.feuer?SPR.grummelWarm:SPR.grummel),84,88,12,34,false)});
+  const warm=S.feuer&&!(S.tauT&&now-S.tauT<1600),reckt=S.reckT&&now-S.reckT<1100;
+  L.push({y:100,d:()=>{spr(reckt?SPR.grummelReck:S.speech&&S.talker==='grummel'&&Math.floor(now/140)%2?(warm?SPR.grummelWarmTalk:SPR.grummelTalk):(warm?SPR.grummelWarm:SPR.grummel),84,88,12,34,false);
+    // Raureif taut: Tropfen fallen von Muetze und Bart
+    if(S.tauT&&now-S.tauT<2600)for(let i=0;i<7;i++){const t=((now-S.tauT)/700+i*0.29)%1,x=76+i*3+(i%2),y=Math.round(58+(i%3)*6+t*30);if(y<100)P(ctx,x,y,t<0.5?'#e8f4ff':'#9ab8d8');}}});
   L.push({y:S.ky,d:()=>spr(ravenImg(now),S.kx,S.ky,11,19,S.kflip)});
   heroLayer(L,now);
   L.sort((p,q)=>p.y-q.y).forEach(o=>o.d());
@@ -3001,7 +3006,8 @@ async function brennglas(){
   return grummelTaut();
 }
 async function grummelTaut(){
-  await sleep(600);
+  S.tauT=performance.now();for(let i=0;i<6;i++)tone('sine',1400-i*120,0.08,0.02,900,i*0.35);await sleep(2600);
+  S.reckT=performance.now();tone('triangle',180,0.6,0.05,120);await sleep(1100);
   await say('grummel','Hmpf. Was … Warm. Endlich warm.');
   await say('grummel','Wer hat denn den Kessel angeheizt? Ohne Streichhölzer?');
   await say('hero','Mit einer Lupe und der Sonne. Und Holzwolle aus dem Musikraum.');
@@ -3242,6 +3248,7 @@ function drawMusik(now){
   if(S.card){R(ctx,0,0,W,SH,'#000000');const t=S.card.title;text(t,Math.round((W-textW(t))/2),34,'#ffe060',false);
     wrap(S.card.text,260).forEach((l,i)=>text(l,Math.round((W-textW(l))/2),56+i*LINEH,'#e8e0ff',false));return;}
   ctx.drawImage(MUSIK,0,0);
+  if(S.tuerM){R(ctx,7,33,24,66,'#1a0c06');polyFill(ctx,[[33,31],[43,34],[43,97],[33,101]],(x,y)=>pick(KR.holz,0.5-(x-33)/30,x,y));}
   plaque(19,20,'Halle');
   drawMetronom(now);
   const L=[];
@@ -3252,7 +3259,7 @@ function drawMusik(now){
     spr(img,k.x,106,16,45,false);}}));
   const fx=S.fx||262,fy=S.fy||106,bob=S.fwalk?Math.floor(now/150)%2:0;
   const arm=S.fwalk||S.fgreif?2:spielt?1+Math.floor(now/TAKT_MS)%2:wach&&!S.speech?1:0;
-  L.push({y:fy,d:()=>{shadow(fx,fy,8);spr(S.speech&&S.talker==='fermate'&&Math.floor(now/140)%2?SPR.fermateTalk[wach?1:0]:SPR.fermate[arm],fx,fy-bob,16,56,S.fflip!==false);
+  L.push({y:fy,d:()=>{shadow(fx,fy,8);spr(S.speech&&S.talker==='fermate'&&Math.floor(now/140)%2?(wach?SPR.fermateTalk[1+Math.floor(now/400)%2]:SPR.fermateTalk[0]):SPR.fermate[arm],fx,fy-bob,16,56,S.fflip!==false);
     if(S.fFloete){const hx=fx+(S.fflip!==false?-12:12);line(ctx,hx,fy-34,hx+(S.fflip!==false?-6:6),fy-28,'#f0dcb0');}}});
   drawKarton();
   L.push({y:106,d:()=>{line(ctx,244,78,244,104,'#343e52');line(ctx,240,104,248,104,'#343e52');polyFill(ctx,[[237,72],[251,72],[252,79],[236,79]],(x,y)=>pick(KR.stahl,0.5-(y-72)/20,x,y));
@@ -3305,14 +3312,16 @@ const HS_MUSIK=[
   {id:'bodenM',name:'Boden',floor:true,rect:()=>[36,100,262,44],walk:[0,0],flip:false}
 ];
 async function enterMusik(){
-  S.room='musik';S.kraechz='musik';S.kx=296;S.ky=34;S.kflip=true;S.hero.x=30;S.hero.y=120;S.hero.flip=false;S.hero.hidden=false;S.fx=262;S.fy=106;S.fflip=true;
+  S.room='musik';S.kraechz='musik';S.kx=20;S.ky=60;S.kflip=true;S.hero.x=24;S.hero.y=116;S.hero.flip=false;S.hero.hidden=false;S.fx=262;S.fy=106;S.fflip=true;
+  S.tuerM=true;tone('sawtooth',160,0.3,0.03,110);kraechzFlug(296,34,1100,16).then(()=>{S.kflip=true;});setTimeout(()=>{S.tuerM=false;tone('square',80,0.15,0.1,50);},1300);
   await walkTo(70,122);
   if(S.musikIntro)return say('hero',S.orchesterWach?'Pause im Musikraum. Alle reden durcheinander.':'Immer noch alle erstarrt. Und das Metronom '+(S.metronom?'tickt vor sich hin.':'steht.'));
   await say('hero','Der Musikraum. Alle sitzen da, die Flöten am Mund, und keiner spielt.');
   S.musikIntro=true;save();
 }
 async function leaveMusik(){
-  S.hero.hidden=true;tone('triangle',300,0.3,0.04,500);await sleep(500);
+  S.aktZiel=[20,66];await reach('greif');S.tuerM=true;tone('sawtooth',160,0.3,0.03,110);await sleep(200);
+  await walkTo(40,116);S.hero.hidden=true;await kraechzFlug(20,60,800,12);S.kx=-40;S.tuerM=false;tone('square',80,0.15,0.1,50);await sleep(300);
   await hallEintritt('musik');
   if(has('holzwolle'))return say('hero','Holzwolle hab ich. Jetzt fehlt nur noch '+(has('lupe')?'der Weg in den Keller.':'eine Lupe.'));
   return say('hero','Wieder in der Halle.');
@@ -3364,7 +3373,8 @@ async function fermateGeh(x){
 async function neueFloeteHolen(){
   await fermateGeh(76);S.fgreif=true;tone('sawtooth',900,0.35,0.03,200);await sleep(500);
   S.kartonAuf=true;tone('triangle',300,0.2,0.03,500);await sleep(400);S.fgreif=false;S.fFloete=true;
-  await fermateGeh(138);S.fflip=true;await sleep(300);S.fFloete=false;S.neueFloete=true;tone('triangle',990,0.2,0.04);
+  await fermateGeh(138);S.fflip=true;await sleep(200);
+  flieg('floete',[126,78],[128,78]);S.fFloete=false;flieg('floete',[122,84],[128,76]);await sleep(500);S.neueFloete=true;tone('triangle',990,0.2,0.04);
   await say('emil','Eine nagelneue! Die riecht sogar noch nach Holzwolle.');
   await fermateGeh(262);S.fy=106;S.fflip=true;S.pause=true;
   await say('fermate','So. Noch ein bisschen Pause, dann geht es weiter.');
@@ -3634,7 +3644,9 @@ function makeMia(o){
   p.part(RAMP.hairRed,m=>{m.limb(9,9,5,20,2.2,1.6);});
   p.part(RAMP.skin,m=>{m.rect(13,13,3,3);m.ell(15,8.5,5.3,5.6);m.ell(20,9,1.3,1.4);});
   p.part(RAMP.hairRed,m=>{m.ell(13.5,4.6,6,3.6);m.ell(10.5,8,2.4,4);});
-  if(o.zeichnet){p.part(RAMP.teal,m=>m.limb(16,17,26,25,2,1.6),true);p.part(RAMP.skin,m=>m.ell(26.5,25,1.7,1.7),true);p.part(RAMP.wood,m=>m.limb(27,25,29,21,0.5,0.5),true);
+  if(o.gib){p.part(RAMP.teal,m=>m.limb(16,17,27,17,2,1.6),true);p.part(RAMP.skin,m=>m.ell(28,17,1.7,1.7),true);
+    p.part(RAMP.wood,m=>m.limb(28,17,29,21,0.6,0.6),true);p.part(RAMP.grey,m=>m.ell(30,14,3,3),true);p.px(30,14,'#e4f0ff');p.px(17,7,'#ffffff').px(18,7,'#241a24');}
+  else if(o.zeichnet){p.part(RAMP.teal,m=>m.limb(16,17,26,25,2,1.6),true);p.part(RAMP.skin,m=>m.ell(26.5,25,1.7,1.7),true);p.part(RAMP.wood,m=>m.limb(27,25,29,21,0.5,0.5),true);
     p.px(17,8,'#241a24').px(18,8,'#241a24');}
   else{p.part(RAMP.teal,m=>m.limb(16,17,23,11,2,1.6),true);p.part(RAMP.skin,m=>m.ell(23,10,1.7,1.7),true);
     if(o.lupe){p.part(RAMP.wood,m=>m.limb(23,10,24,6,0.6,0.6),true);p.part(RAMP.grey,m=>m.ell(25,4,3.2,3.2),true);p.px(24,3,'#e4f0ff').px(25,4,'#b8d0f0').px(25,3,'#e4f0ff');}
@@ -3647,6 +3659,7 @@ function drawBio(now){
   if(S.card){R(ctx,0,0,W,SH,'#000000');const t=S.card.title;text(t,Math.round((W-textW(t))/2),34,'#ffe060',false);
     wrap(S.card.text,260).forEach((l,i)=>text(l,Math.round((W-textW(l))/2),56+i*LINEH,'#e8e0ff',false));return;}
   ctx.drawImage(BIO,0,0);
+  if(S.tuerB){R(ctx,7,33,24,66,'#1a0c06');polyFill(ctx,[[33,31],[43,34],[43,97],[33,101]],(x,y)=>pick(KR.holz,0.5-(x-33)/30,x,y));}
   plaque(19,20,'Halle');
   text('Findet Gustav',152,18,'#e8ece4',false);text('und zeichnet',152,27,'#e8ece4',false);text('ihn!',152,36,'#e8ece4',false);
   // Gustav: ein Zweig, der sich wiegt, obwohl kein Wind geht, mit feinen Beinen
@@ -3661,7 +3674,7 @@ function drawBio(now){
   for(let i=0;i<3;i++){const t=((now/2200)+i*0.33)%1;P(ctx,262,Math.round(77-t*16),'#c8e4ff');}
   const L=[];
   L.push({y:106,d:()=>{const red=S.speech&&S.talker==='mia'&&Math.floor(now/140)%2;shadow(140,106,7);
-    spr(S.miaWach?(red?SPR.miaZeichnetTalk:SPR.miaZeichnet):(red?SPR.miaTalk:SPR.mia),138,106,16,45,false);
+    spr(S.miaGibt?SPR.miaGib:S.miaWach?(red?SPR.miaZeichnetTalk:SPR.miaZeichnet):(red?SPR.miaTalk:SPR.mia),138,106,16,45,!!S.miaGibt);
     if(S.miaWach)kastenG(ctx,154,82,10,2,KR.papier,0.95);}});
   L.push({y:S.ky,d:()=>spr(ravenImg(now),S.kx,S.ky,11,19,S.kflip)});
   heroLayer(L,now);
@@ -3695,7 +3708,8 @@ const HS_BIO=[
   {id:'bodenB',name:'Boden',floor:true,rect:()=>[36,100,262,44],walk:[0,0],flip:false}
 ];
 async function enterBio(){
-  S.room='bio';S.kraechz='bio';S.kx=302;S.ky=30;S.kflip=true;S.hero.x=30;S.hero.y=120;S.hero.flip=false;S.hero.hidden=false;
+  S.room='bio';S.kraechz='bio';S.kx=20;S.ky=60;S.kflip=true;S.hero.x=24;S.hero.y=116;S.hero.flip=false;S.hero.hidden=false;
+  S.tuerB=true;tone('sawtooth',160,0.3,0.03,110);kraechzFlug(302,30,1100,16).then(()=>{S.kflip=true;});setTimeout(()=>{S.tuerB=false;tone('square',80,0.15,0.1,50);},1300);
   await walkTo(104,124);
   if(S.bioIntro)return say('hero',S.miaWach?'Mia zeichnet immer noch.':'Mia starrt immer noch ins Terrarium.');
   await say('hero','Der Biologieraum. Es riecht nach Blumenerde.');
@@ -3703,7 +3717,8 @@ async function enterBio(){
   S.bioIntro=true;save();
 }
 async function leaveBio(){
-  S.hero.hidden=true;tone('triangle',300,0.3,0.04,500);await sleep(500);
+  S.aktZiel=[20,66];await reach('greif');S.tuerB=true;tone('sawtooth',160,0.3,0.03,110);await sleep(200);
+  await walkTo(40,116);S.hero.hidden=true;await kraechzFlug(20,60,800,12);S.kx=-40;S.tuerB=false;tone('square',80,0.15,0.1,50);await sleep(300);
   await hallEintritt('bio');
   if(has('lupe'))return say('hero','Die Lupe hab ich. Jetzt fehlt nur noch '+(has('holzwolle')?'der Weg in den Keller.':'was, das leicht Feuer fängt.'));
   return say('hero','Wieder in der Halle.');
@@ -3728,7 +3743,7 @@ async function miaWacht(){
   await say('mia','Ich fang sofort an zu zeichnen.');
   await say('hero','Kann ich dann deine Lupe leihen?');
   await say('mia','Klar. Zum Zeichnen brauch ich die nicht, er sitzt ja jetzt vor mir.');
-  await reach();give('lupe');tone('triangle',990,0.3,0.05);
+  S.miaGibt=true;await sleep(450);S.aktZiel=[116,76];await reach();give('lupe');tone('triangle',990,0.3,0.05);await sleep(450);S.miaGibt=false;
 }
 async function actBio(verb,h,item){
   const id=h.id,zweige={zweig1:'Ein Zweig. Hängt da rum.',zweig2:'Noch ein Zweig. Sehr zweigig.',zweig3:'Ein Zweig mit Brombeerblättern. Reglos.'};
