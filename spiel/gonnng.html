@@ -3177,6 +3177,7 @@ function drawTrommel(x,y,now){
 const HS_MUSIK=[
   {id:'kraechz',name:'Krächz',rect:()=>[S.kx-11,S.ky-19,22,19],walk:[276,116],flip:false},
   {id:'metronom',name:'Metronom',rect:()=>[76,38,16,24],walk:[84,114],flip:true},
+  {id:'floete',name:()=>S.orchesterWach?'Emils Flöte':'Blockflöte',rect:()=>S.pause&&S.orchester!=='spielt'?[113,82,20,8]:[121,70,13,15],walk:[124,118],flip:false},
   {id:'beutel',name:'Flötenbeutel',rect:()=>[102,75,10,15],walk:[112,116],flip:true},
   {id:'emil',name:()=>S.orchesterWach?'Emil':'Junge mit Blockflöte',rect:()=>[106,62,26,44],walk:[124,118],flip:false},
   {id:'kind2',name:'Mädchen mit Blockflöte',rect:()=>[138,62,26,44],walk:[156,118],flip:false},
@@ -3184,6 +3185,7 @@ const HS_MUSIK=[
   {id:'kind4',name:'Junge mit Blockflöte',rect:()=>[202,62,26,44],walk:[218,118],flip:false},
   {id:'trommel',name:'Große Trommel',rect:()=>[278,84,24,24],walk:[296,120],flip:true},
   {id:'pult',name:'Notenständer',rect:()=>[234,68,20,38],walk:[236,118],flip:false},
+  {id:'holzwolle',name:'Holzwolle',vis:()=>S.kartonAuf&&!S.holzwolleGenommen,rect:()=>[40,37,28,10],walk:[58,114],flip:false},
   {id:'karton',name:'Pappkarton',rect:()=>[40,42,28,19],walk:[58,114],flip:false},
   {id:'fermate',name:'Frau Fermate',rect:()=>[(S.fx||262)-12,(S.fy||106)-58,26,58],walk:[240,120],flip:false},
   {id:'klavier',name:'Klavier',rect:()=>[34,58,70,46],walk:[70,114],flip:true},
@@ -3298,6 +3300,9 @@ async function actMusik(verb,h,item){
       if(item==='lineal'){await reach();tone('square',300,0.05,0.04,200);S.brauchSchlaegel=true;return say('hero','Das Lineal federt nur. Klingt wie ein Lineal. Da muss was Dickes vorne dran sein.');}
       return say('hero','Das klingt nach nichts. Ich brauche was mit Stiel und einem dicken Ende.');}
     if(kind&&item==='radiergummi')return radierInFloete(id);
+    if(id==='floete'&&item==='radiergummi')return radierInFloete('emil');
+    if(id==='floete')return say('hero','Das passt nicht in eine Flöte.');
+    if(id==='holzwolle')return say('hero','Die Holzwolle nehme ich einfach so.');
     if(id==='karton')return say('hero','Der Karton ist '+(S.kartonAuf?'offen. Da muss nichts mehr rein.':'zugeklebt. Und aufmachen mag ich ihn nicht.'));
     if(id==='fermate'&&verb==='gib')return say('fermate',item==='schlaegel'?'Behalt ihn. Du zählst doch so schön ein.':'Danke, aber ich brauche nur ein Tempo.');
     if(kind&&verb==='gib')return say(S.orchesterWach?id:'hero',S.orchesterWach?'Später. Wir üben.':'Mit der Flöte im Mund nimmt hier keiner was.');
@@ -3328,6 +3333,14 @@ async function actMusik(verb,h,item){
       if(S.holzwolleGenommen)return say('hero','Ein Büschel reicht mir.');
       await reach();S.holzwolleGenommen=true;give('holzwolle');tone('triangle',700,0.15,0.04);
       return say('hero','Ein Büschel Holzwolle. Das ist ja kein Instrument.');
+    case 'holzwolle:schau':return say('hero','Holzwolle quillt aus dem Karton. Ganz fein und ganz trocken.');
+    case 'holzwolle:nimm':case 'holzwolle:ziehe':await reach();S.holzwolleGenommen=true;give('holzwolle');tone('triangle',700,0.15,0.04);
+      return say('hero','Ein Büschel Holzwolle. Das ist ja kein Instrument.');
+    case 'floete:schau':
+      if(!S.orchesterWach)return say('hero','Eine Blockflöte. Ziemlich zerkratzt. Emil hält sie am Mund, erstarrt.');
+      return say('hero',S.neueFloete?'Emils neue Flöte. Blitzblank.':S.floeteZu?'Emils alte Flöte. Vorne im Fenster steckt ein Stückchen Radiergummi.':'Emils Flöte. Zerkratzt, und das Fenster vorne ist schon angeknabbert.');
+    case 'floete:nimm':case 'floete:ziehe':return say('hero','Die gehört Emil. Die nehme ich ihm nicht weg.');
+    case 'floete:benutze':return say('hero','Auf Emils Flöte spielen? Das wäre ziemlich eklig.');
     case 'beutel:schau':return say('hero','Flötenbeutel an den Stuhllehnen.');
     case 'beutel:nimm':case 'beutel:ziehe':return say('hero','Die gehören den Kindern.');
     case 'klavier:schau':return say('hero','Ein altes Klavier. Obendrauf ein Metronom und ein Pappkarton.');
