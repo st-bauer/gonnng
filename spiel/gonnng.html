@@ -1452,7 +1452,7 @@ function build(){
   SPR.raven=makeRaven({});SPR.ravenFlug=[makeRaven({fluegel:'hoch'}),makeRaven({fluegel:'runter'})];SPR.ravenKnock=makeRaven({knock:1});SPR.ravenTalk=makeRaven({talk:1});
   SPR.imp=makeImp({});SPR.impYawn=makeImp({yawn:1,heft:1});SPR.impHeft=makeImp({heft:1});SPR.impSleep=makeImp({zu:1});SPR.impKeks=makeImp({keks:1});
   SPR.impTalk=makeImp({talk:1});SPR.impStock=[makeImp({stock:0}),makeImp({stock:1}),makeImp({stock:0,talk:1})];SPR.impHeftTalk=makeImp({heft:1,talk:1});SPR.impSleepTalk=makeImp({zu:1,talk:1});SPR.impKeksTalk=makeImp({keks:1,talk:1});
-  SPR.kinder=kinderSprites();SPR.mia=makeMia({lupe:1});SPR.miaTalk=makeMia({lupe:1,talk:1});SPR.miaZeichnet=makeMia({zeichnet:1});SPR.miaZeichnetTalk=makeMia({zeichnet:1,talk:1});SPR.fermate=[0,1,2].map(a=>makeFermate({arm:a,wach:a>0}));SPR.fermateTalk=[makeFermate({talk:1}),makeFermate({arm:1,wach:1,talk:1})];SPR.grummel=makeGrummel({});SPR.grummelTalk=makeGrummel({talk:1});SPR.grummelWarm=makeGrummel({warm:1});SPR.grummelWarmTalk=makeGrummel({warm:1,talk:1});SPR.broesel=makeBroesel({});SPR.broeselTalk=makeBroesel({talk:1});SPR.broeselRuehr=makeBroesel({stir:1});SPR.broeselRuehr2=makeBroesel({stir:2});
+  SPR.kinder=kinderSprites();SPR.mia=makeMia({lupe:1});SPR.miaTalk=makeMia({lupe:1,talk:1});SPR.miaZeichnet=makeMia({zeichnet:1});SPR.miaZeichnetTalk=makeMia({zeichnet:1,talk:1});SPR.fermate=[0,1,2].map(a=>makeFermate({arm:a,wach:a>0}));SPR.fermateTalk=[makeFermate({talk:1}),makeFermate({arm:1,wach:1,talk:1})];SPR.grummel=makeGrummel({});SPR.grummelTalk=makeGrummel({talk:1});SPR.grummelWarm=makeGrummel({warm:1});SPR.grummelWarmTalk=makeGrummel({warm:1,talk:1});SPR.broesel=makeBroesel({});SPR.broeselTalk=makeBroesel({talk:1});SPR.broeselRuehr=makeBroesel({stir:1});SPR.broeselRuehr2=makeBroesel({stir:2});SPR.broeselGib=makeBroesel({gib:1});
   SPR.impWalk=[0,1,2,3].map(i=>makeImp({walk:1,phase:i/4}));SPR.impWalkHeft=[0,1,2,3].map(i=>makeImp({walk:1,phase:i/4,heft:1}));
 }
 // Figur mit Fusspunkt zeichnen, ax = Ankerpunkt im Bild
@@ -2016,7 +2016,7 @@ function drawGang(now){
   if(S.card){R(ctx,0,0,W,SH,'#000000');const t=S.card.title;text(t,Math.round((W-textW(t))/2),34,'#ffe060',false);
     wrap(S.card.text,260).forEach((l,i)=>text(l,Math.round((W-textW(l))/2),56+i*LINEH,'#e8e0ff',false));return;}
   ctx.drawImage(GANG,0,0);
-  if(S.tuerAuf)R(ctx,282,42,28,64,'#05070c');
+  if(S.tuerAuf){R(ctx,282,42,28,64,'#05070c');polyFill(ctx,[[282,42],[273,46],[273,102],[282,106]],(x,y)=>pick(KR.stahl,0.25+(x-273)/40,x,y));}
   // eigene Plaene der Figur als frische Kreidezeilen unten auf der Tafel
   Object.keys(S.plaene||{}).forEach((k,i)=>{for(let x=0;x<24+i*3;x++)if(bay(58+x,63+i*2)<0.7)P(ctx,58+x,63+i*2,'#ffffff');});
   // Lampe flackert ab und zu
@@ -2091,7 +2091,7 @@ async function stoer(d,plan){
     if(!S.tafelGelesen)await say('hero','Und an der Tafel neben mir hat jemand etwas dazu geschrieben.');}
 }
 async function enterGang(){
-  S.room='gang';S.hero.hidden=false;S.hero.x=26;S.hero.y=120;S.hero.flip=false;S.kraechz='gang';S.kx=92;S.ky=20;S.kflip=false;
+  S.room='gang';S.hero.hidden=false;S.hero.x=26;S.hero.y=120;S.hero.flip=false;S.kraechz='gang';S.kx=8;S.ky=40;S.kflip=true;kraechzFlug(92,20,900,10).then(()=>{S.kflip=false;});
   if(S.gangIntro){await walkTo(46,122);return say('hero','Wieder im Flüstergang. Pssst.');}
   S.auf={x:262,y:118,heft:true,flip:true,walk:false};
   await sleep(500);
@@ -2109,7 +2109,7 @@ async function enterGang(){
   S.gangIntro=true;save();
 }
 async function leaveGang(){
-  S.hero.hidden=true;tone('triangle',300,0.3,0.04,500);await sleep(500);
+  await walkTo(20,116);S.hero.hidden=true;tone('triangle',300,0.3,0.04,500);await kraechzFlug(6,36,600,10);S.kx=-40;await sleep(200);
   await hallEintritt('keller');
   if(!S.suchKantine||has('kekse'))return say('hero','Wieder in der Halle. Die Kellertreppe finde ich ja jetzt.');
   await say('hero','Wieder in der Halle. Jetzt muss ich zur Kantine.');
@@ -2142,6 +2142,9 @@ async function tafelLesen(){
   return say('hero','Platz für eigene Pläne. Jetzt bräuchte ich nur Kreide.');
 }
 // Einen eigenen Plan mit Kreide an die Tafel schreiben
+// An der Tafel schreiben: Arm hoch und runter, Kreide in der Hand, Kreidekratzen
+async function schreiben(){const z=S.aktZiel;if(z)S.hero.flip=z[0]<S.hero.x;S.inHand='kreide';
+  for(let i=0;i<4;i++){S.hero.reach=i%2?'greif':'hoch';tone('square',1100+i*90,0.05,0.02);await sleep(170);}S.hero.reach=0;S.inHand=null;}
 async function planSchreiben(){
   S.erlebt=S.erlebt||{};S.plaene=S.plaene||{};
   const offen=Object.keys(WENN).filter(w=>S.erlebt[w]&&!S.plaene[w]);
@@ -2152,12 +2155,12 @@ async function planSchreiben(){
     {v:'Wenn es gerade passt …',nein:'Passt es jetzt? Oder jetzt? Da weiß ich doch nie, wann der Plan losgehen soll.'},{v:'Ach, doch nichts.'}];
   const c=wahl[await choose(wahl.map(x=>x.v))];
   if(!c.w&&!c.nein)return say('hero','Später. … Moment, nein. Das Wort streiche ich.');
-  await reach();tone('square',1200,0.06,0.02);
+  await schreiben();
   if(c.nein){await say('hero',c.nein);return say('hero','Ich wische es wieder weg.');}
   const w=c.w;
-  await reach();tone('square',1200,0.06,0.02);
+  await schreiben();
   const d=DANN[await choose(DANN.map(x=>x.text))];
-  await reach();tone('square',1100,0.06,0.02);tone('square',1300,0.06,0.02,null,0.12);
+  await schreiben();
   if(!d.passt||d.passt.indexOf(w)<0){
     await say('hero',typeof d.nein==='object'?d.nein[w]:d.nein);
     return say('hero','Ich wische es wieder weg.');
@@ -2193,8 +2196,9 @@ async function actGang(verb,h,item){
     case 'treppe:gehe':case 'treppe:benutze':return leaveGang();
     case 'treppe:schau':return say('hero','Da oben ist die Halle. Da ist es wenigstens warm.');
     case 'tuer:gehe':case 'tuer:oeffne':case 'tuer:benutze':
-      await reach();S.tuerAuf=true;tone('sawtooth',120,0.4,0.05,70);await sleep(500);
+      await reach();S.tuerAuf=true;tone('sawtooth',120,0.4,0.05,70);await sleep(400);
       if(!S.heizIntro)await say('hero','Geschafft. Heizungskeller, ich komme.');
+      await walkTo(300,112);S.hero.hidden=true;await kraechzFlug(296,56,700,12);S.kx=-40;S.tuerAuf=false;tone('square',70,0.2,0.12,40);await sleep(250);
       return enterHeiz();
     case 'tuer:schau':return say('hero','Eine Eisentür. „Heizungskeller“. Da ist der Dieb mit meinem Heft verschwunden.');
     case 'schild:schau':return say('hero','„Flüstergang. Zum Heizungskeller. Bitte nicht stehen bleiben. Der Hausmeister.“');
@@ -2233,7 +2237,7 @@ async function redeAuf1(){
   }
 }
 async function schlaegelTausch(){
-  await reach();await say('hero','Wie wär’s mit einem Keks? Den muss man nicht knacken.');
+  await say('hero','Wie wär’s mit einem Keks? Den muss man nicht knacken.');await reach();flieg('kekse',null,[114,86]);await sleep(500);
   await say('auf1','Ein Keks? Sofort essen, ganz ohne Arbeit?');
   await say('auf1','Nimm den blöden Stock.');
   S.schlaegelWeg=true;give('schlaegel');tone('triangle',880,0.2,0.05);
@@ -2450,6 +2454,11 @@ function drawKantine(now){
   if(S.card){R(ctx,0,0,W,SH,'#000000');const t=S.card.title;text(t,Math.round((W-textW(t))/2),34,'#ffe060',false);
     wrap(S.card.text,260).forEach((l,i)=>text(l,Math.round((W-textW(l))/2),56+i*LINEH,'#e8e0ff',false));return;}
   ctx.drawImage(KANTINE,0,0);
+  if(S.tuerK){R(ctx,6,40,24,56,'#1a0c06');for(let y=40;y<96;y+=6)R(ctx,6,y,24,1,'#241208');polyFill(ctx,[[33,37],[43,40],[43,94],[33,96]],(x,y)=>pick(KR.holz,0.5-(x-33)/30,x,y));}
+  if(S.tuerKammer){R(ctx,161,40,26,56,'#140a04');for(let y=48;y<96;y+=12)R(ctx,161,y,26,2,'#3e2010');polyFill(ctx,[[158,37],[149,40],[149,94],[158,96]],(x,y)=>pick(KR.holz,0.35+(x-149)/40,x,y));}
+  if(S.kuehlAuf){for(let y=24;y<104;y++)for(let x=264;x<300;x++)P(ctx,x,y,pick(KR.email,(y===50||y===72)?0.4:0.9-(y-24)/400,x,y));
+    R(ctx,268,60,10,8,'#e8e0c8');R(ctx,282,64,12,6,'#6ab85a');R(ctx,270,84,6,12,'#f4f6fa');
+    polyFill(ctx,[[302,22],[314,27],[314,110],[302,106]],(x,y)=>pick(KR.email,0.6-(x-302)/40,x,y));}
   for(let i=0;i<9;i++){const t=(now/11000+i*0.113)%1,x=52+i*9+t*70,y=20+t*96+Math.sin(now/900+i)*3;
     if(inPoly(x,y,[[44,16],[84,16],[200,128],[120,142],[44,52]]))P(ctx,x|0,y|0,'#fff6d8');}
   plaque(18,28,'Halle');plaque(174,28,'Vorräte');
@@ -2467,8 +2476,8 @@ function drawKantine(now){
   const wach=S.broesel>=1,bx=wach?196:132;
   // erstarrt steht sie mit erhobenem Loeffel vor der Theke, wach ruehrt sie am Herd
   L.push({y:112,d:()=>{shadow(bx,112,9);
-    const img=bt?SPR.broeselTalk:wach?(Math.floor(now/400)%2?SPR.broeselRuehr:SPR.broeselRuehr2):SPR.broesel;
-    spr(img,bx,112,18,56,!wach);}});
+    const img=S.broeselGibt?SPR.broeselGib:bt?SPR.broeselTalk:wach?(Math.floor(now/400)%2?SPR.broeselRuehr:SPR.broeselRuehr2):SPR.broesel;
+    spr(img,bx,112,18,56,S.broeselGibt||!wach);}});
   L.push({y:S.ky,d:()=>spr(ravenImg(now),S.kx,S.ky,11,19,S.kflip)});
   heroLayer(L,now);
   L.sort((p,q)=>p.y-q.y).forEach(o=>o.d());
@@ -2481,7 +2490,8 @@ function drawKammer(now){
   if(!has('pulver')&&!(S.bereit||{}).pulver){drawPulver(186,104);drawPulver(208,104);}
   const L=[];
   L.push({y:110,d:()=>{
-    if(S.lappenGegeben){drawLappen(250,104);rotSprite(SPR.impSleep,262,104,11,24,-Math.PI/2,false);}
+    if(S.lappenGegeben){drawLappen(250,104);const t=S.rollT?clamp((now-S.rollT)/900,0,1):1;
+      rotSprite(SPR.impSleep,198+(262-198)*t,100+(104-100)*t-Math.sin(t*Math.PI)*6,11,24,-Math.PI/2+t*Math.PI*2,false);}
     else rotSprite(S.speech&&S.talker==='aufK'&&Math.floor(now/140)%2?SPR.impSleepTalk:SPR.impSleep,198,100,11,24,-Math.PI/2,false);
     if(Math.floor(now/900)%2)text('z',S.lappenGegeben?252:188,S.lappenGegeben?84:80,'#c4b6d4',true);}});
   heroLayer(L,now);
@@ -2524,7 +2534,8 @@ const HS_KAMMER=[
   {id:'bodenV',name:'Boden',floor:true,rect:()=>[30,108,270,36],walk:[0,0],flip:false}
 ];
 async function enterKantine(){
-  S.room='kantine';S.hero.hidden=false;S.hero.x=40;S.hero.y=120;S.hero.flip=false;S.kraechz='kantine';S.kx=76;S.ky=55;S.kflip=false;
+  S.room='kantine';S.hero.hidden=false;S.hero.x=22;S.hero.y=116;S.hero.flip=false;S.kraechz='kantine';S.kx=18;S.ky=60;S.kflip=true;
+  S.tuerK=true;tone('sawtooth',160,0.3,0.03,110);kraechzFlug(76,55,900);setTimeout(()=>{S.tuerK=false;tone('square',80,0.15,0.1,50);},1200);
   if(S.kantineIntro){await walkTo(70,120);return say('hero',S.broesel>=1?'Hier riecht es nach Pudding.':'Die Kantine. Frau Brösel seufzt immer noch.');}
   await walkTo(76,120);
   await say('hero','Die Kantine. Und da steht Frau Brösel.');
@@ -2532,21 +2543,24 @@ async function enterKantine(){
   S.kantineIntro=true;save();
 }
 async function leaveKantine(){
-  S.hero.hidden=true;tone('triangle',300,0.3,0.04,500);await sleep(500);
+  S.aktZiel=[18,66];await reach('greif');S.tuerK=true;tone('sawtooth',160,0.3,0.03,110);await sleep(200);
+  await walkTo(40,114);S.hero.hidden=true;await kraechzFlug(18,60,600,10);S.kx=-40;S.tuerK=false;tone('square',80,0.15,0.1,50);await sleep(300);
   await hallEintritt('kantine');
   if(has('kekse'))return say('hero','Kekse in der Tasche. Jetzt zurück zur Kellertreppe.');
   return say('hero','Wieder in der Halle.');
 }
 async function inKammer(){
-  S.hero.hidden=true;tone('sawtooth',160,0.3,0.03,110);await sleep(400);
+  S.aktZiel=[174,66];await reach('greif');S.tuerKammer=true;tone('sawtooth',160,0.3,0.03,110);await sleep(250);
+  await walkTo(174,112);S.hero.hidden=true;await sleep(250);S.tuerKammer=false;tone('square',80,0.15,0.1,50);await sleep(200);
   S.room='kammer';S.hero.x=30;S.hero.y=120;S.hero.flip=false;S.hero.hidden=false;
   await walkTo(60,120);
   if(!S.kammerIntro){S.kammerIntro=true;await say('hero','Die Speisekammer. Und auf dem Zuckersack schnarcht was.');}
 }
 async function ausKammer(){
-  S.hero.hidden=true;tone('sawtooth',160,0.3,0.03,110);await sleep(400);
-  S.room='kantine';S.hero.x=174;S.hero.y=112;S.hero.flip=false;S.hero.hidden=false;
-  await walkTo(160,120);
+  await walkTo(36,120);S.hero.hidden=true;await sleep(250);
+  S.room='kantine';S.tuerKammer=true;tone('sawtooth',160,0.3,0.03,110);await sleep(200);
+  S.hero.x=174;S.hero.y=112;S.hero.flip=true;S.hero.hidden=false;
+  await walkTo(160,120);S.tuerKammer=false;tone('square',80,0.15,0.1,50);
 }
 /* ---------- Rezeptkarten sortieren ---------- */
 const KARTEN=[
@@ -2616,7 +2630,7 @@ async function broeselWacht(){
   await showCard('Eine Stunde später','Es blubbert, es dampft, es duftet nach Vanille und Schokolade. Frau Brösel summt.');
   S.broesel=2;
   await say('broesel','So, Schätzchen. Die ersten Kekse, frisch aus dem Ofen. Für dich.');
-  await reach();give('kekse');tone('triangle',990,0.3,0.05);
+  S.broeselGibt=true;await sleep(400);S.aktZiel=[172,86];await reach();give('kekse');tone('triangle',990,0.3,0.05);await sleep(500);S.broeselGibt=false;
   await say('hero','Genau die haben mir gefehlt.');
   await say('broesel','Und gleich kommt der Salat. Ganz zum Schluss, damit er frisch bleibt.');
 }
@@ -2664,7 +2678,7 @@ async function actKantine(verb,h,item){
     case 'herd:schau':return say('hero',S.broesel>=1?'Da blubbert es. Pudding, dann Suppe.':'Der Herd ist kalt. Hier soll alles hin, was Frau Brösel für den Pudding braucht.');
     case 'herd:benutze':case 'herd:druecke':return say('hero',S.broesel>=1?'Frau Brösel hat alles im Griff.':'Ich soll hier für zweihundert Leute kochen? Ich habe zuletzt Wasser anbrennen lassen.');
     case 'kuehl:schau':return say('hero',S.broesel>=1?'Da steht der erste Pudding und wird langsam fest.':'Ein riesiger Kühlschrank.');
-    case 'kuehl:oeffne':await reach();
+    case 'kuehl:oeffne':await reach();S.kuehlAuf=true;tone('sawtooth',300,0.15,0.02,500);setTimeout(()=>{S.kuehlAuf=false;tone('square',90,0.1,0.06,60);},1800);
       if(S.broesel>=1)return say('hero','Pudding! Der wackelt noch. Tür zu, der soll fest werden.');
       if(has('milch')||(S.bereit||{}).milch)return say('hero','Nur noch Butter und Salatköpfe.');
       give('milch');return say('hero','Milch. Genug für zweihundert Portionen. Eine Kanne nehme ich mit.');
@@ -2682,7 +2696,7 @@ async function actKammer(verb,h,item){
   const id=h.id;
   if(item){
     if(id==='aufK'&&verb==='gib'){
-      if(item==='topflappen'){await reach();take('topflappen');S.lappenGegeben=true;tone('triangle',440,0.3,0.04,330);
+      if(item==='topflappen'){await reach();take('topflappen');S.lappenGegeben=true;S.rollT=performance.now();await sleep(950);tone('triangle',440,0.3,0.04,330);
         await say('aufK','Oh. Weich. Das ist ja noch gemütlicher.');
         return say('hero','Es hat sich auf den Topflappen gerollt. Der Zucker ist frei.');}
       if(item==='kekse')return say('aufK','Kekse im Bett? Krümelt. Später.');
@@ -2742,10 +2756,11 @@ function makeBroesel(o){
   p.part(RAMP.white,m=>m.limb(11,24,8,36,2.6,2.2));
   p.part(RAMP.skin,m=>m.ell(8,37,2,2),true);
   // rechter Arm mit Kochloeffel, beim Ruehren vorn unten
-  const hx=st?30:29,hy=st===1?34:st===2?36:16;
+  const hx=o.gib?32:st?30:29,hy=o.gib?27:st===1?34:st===2?36:16;
   p.part(RAMP.white,m=>m.limb(25,24,hx-1,hy+2,2.6,2.2),true);
   p.part(RAMP.skin,m=>m.ell(hx,hy,2,2),true);
-  p.part(RAMP.wood,m=>{if(st)m.limb(hx+1,hy,hx+4,hy+8,0.8,1.2);else m.limb(hx,hy-1,hx+1,hy-10,0.8,1.4);},true);
+  if(o.gib){p.part(RAMP.grey,m=>m.rect(hx-3,hy-3,7,1),true);p.px(hx-2,hy-4,'#a0622e').px(hx,hy-4,'#6e3c1c').px(hx+2,hy-4,'#a0622e');}
+  else p.part(RAMP.wood,m=>{if(st)m.limb(hx+1,hy,hx+4,hy+8,0.8,1.2);else m.limb(hx,hy-1,hx+1,hy-10,0.8,1.4);},true);
   // Kopf mit roten Wangen
   p.part(RAMP.skin,m=>{m.rect(16,17,4,5);m.ell(18,13,7,7);m.ell(24.5,14,1.3,1.6);});
   p.part(RAMP.skirt,m=>{m.ell(12,12,2.5,4);m.ell(14,8,4,2);});
@@ -2881,6 +2896,7 @@ function makeGrummel(o){
 function drawHeiz(now){
   if(!HEIZ)HEIZ=drawHeizBg();
   ctx.drawImage(HEIZ,0,0);
+  if(S.kTuerAuf){R(ctx,8,32,24,68,'#05070c');polyFill(ctx,[[34,30],[43,34],[43,98],[34,100]],(x,y)=>pick(KR.stahl,0.35-(x-34)/40,x,y));}
   plaque(292,14,'Land Später','holz');plaque(20,20,'Gang','holz');
   // Feuer im Kessel: Feuertuer glueht und flackert, warmer Schein davor, Manometernadel steigt
   if(S.feuer){
@@ -2929,8 +2945,9 @@ const HS_HEIZ=[
   {id:'bodenZ',name:'Boden',floor:true,rect:()=>[36,100,264,44],walk:[0,0],flip:false}
 ];
 async function enterHeiz(){
-  S.hero.hidden=true;tone('sawtooth',120,0.4,0.05,70);await sleep(450);
-  S.room='heiz';S.kraechz='heiz';S.kx=226;S.ky=13;S.kflip=true;S.hero.x=30;S.hero.y=118;S.hero.flip=false;S.hero.hidden=false;
+  S.room='heiz';S.kraechz='heiz';S.kx=20;S.ky=50;S.kflip=true;S.hero.x=24;S.hero.y=114;S.hero.flip=false;S.hero.hidden=false;
+  S.kTuerAuf=true;tone('sawtooth',120,0.4,0.05,70);kraechzFlug(226,13,1000,14);
+  await walkTo(60,120);S.kTuerAuf=false;tone('square',70,0.2,0.12,40);
   await walkTo(120,124);
   if(S.heizIntro)return S.feuer?say('hero','Schön warm hier unten.'):undefined;
   await say('hero','Der Heizungskeller. Hier ist es ja noch kälter als im Gang.');
@@ -2939,9 +2956,11 @@ async function enterHeiz(){
   S.heizIntro=true;save();
 }
 async function leaveHeiz(){
-  S.hero.hidden=true;tone('sawtooth',120,0.4,0.05,70);await sleep(450);
-  S.room='gang';S.kraechz='gang';S.kx=92;S.ky=20;S.kflip=false;S.hero.x=290;S.hero.y=118;S.hero.flip=true;S.hero.hidden=false;
-  await walkTo(270,118);
+  S.aktZiel=[20,66];await reach('greif');S.kTuerAuf=true;tone('sawtooth',120,0.4,0.05,70);await sleep(250);
+  await walkTo(36,112);S.hero.hidden=true;await kraechzFlug(20,50,700,12);S.kTuerAuf=false;tone('square',70,0.2,0.12,40);await sleep(250);
+  S.room='gang';S.kraechz='gang';S.kx=296;S.ky=56;S.tuerAuf=true;tone('sawtooth',120,0.4,0.05,70);
+  S.hero.x=298;S.hero.y=112;S.hero.flip=true;S.hero.hidden=false;kraechzFlug(92,20,1000,12).then(()=>{S.kflip=false;});
+  await walkTo(270,118);S.tuerAuf=false;tone('square',70,0.2,0.12,40);
 }
 async function redeGrummel(){
   if(S.feuer)return say('grummel',['Warm. Herrlich. Die Rohre summen wieder.','Mein Opa wäre stolz auf dich. Mit Lupe und Sonne. Wie früher.'][(S.grummelRede=(S.grummelRede||0)+1)%2]);
