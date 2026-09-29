@@ -213,14 +213,14 @@ class Pup{
 
 /* ---------- Hauptfigur: 32 x 48, Fusspunkt (16,46), schaut nach rechts ---------- */
 function makeHero(o){
-  const p=new Pup(32,48),ph=o.phase||0,walk=o.walk;
+  const p=new Pup(32,48),ph=o.phase||0,walk=o.walk,bueck=o.pose==='bueck',hoch=o.pose==='hoch';
   const a=walk?Math.sin(ph*Math.PI*2)*0.5:0;
-  const bob=walk?Math.round(Math.abs(Math.cos(ph*Math.PI*2))):0;
+  const bob=walk?Math.round(Math.abs(Math.cos(ph*Math.PI*2))):bueck?-5:0;
   const legs=[[a,true],[-a,false]];   // [Winkel, vorn]
   const hipY=31-bob;
   const leg=(ang,front)=>{
     const hx=front?17:15,fx=hx+Math.sin(ang)*9,lift=walk&&ang<-0.1?2:0,fy=43-lift;
-    const kx=(hx+fx)/2+(ang<0?1:0.5),ky=(hipY+fy)/2;
+    const kx=(hx+fx)/2+(ang<0?1:0.5)+(bueck?(front?5:3):0),ky=(hipY+fy)/2-(bueck?1:0);
     const r=front?RAMP.jeans:RAMP.jeansD;
     p.part(r,m=>{m.limb(hx,hipY,kx,ky,2.4,2.2);m.limb(kx,ky,fx,fy-2,2.2,2);},!front);
     p.part(RAMP.jeans,m=>m.ell(fx,fy-2.5,2.6,1.2));
@@ -231,10 +231,12 @@ function makeHero(o){
   const arm=(front)=>{
     const sx=front?17:15,sy=19-bob;
     let hx,hy;
-    if(o.reach&&front){hx=sx+9;hy=sy+2;}
+    if(hoch&&front){hx=sx+10;hy=sy-11;}
+    else if(bueck&&front){hx=sx+9;hy=sy+9;}
+    else if(o.reach&&front){hx=sx+9;hy=sy+2;}
     else{const ang=walk?(front?-a:a)*0.9:(front?0.08:-0.08);hx=sx+Math.sin(ang)*9;hy=sy+Math.cos(ang)*9;}
     p.part(front?RAMP.hood:RAMP.hoodD,m=>m.limb(sx,sy,hx,hy,2.1,1.8),front);
-    p.part(RAMP.skin,m=>m.ell(hx+(o.reach&&front?1:0),hy+1,1.7,1.7),front);
+    p.part(RAMP.skin,m=>m.ell(hx+((o.reach||o.pose)&&front?1:0),hy+1,1.7,1.7),front);
   };
   arm(false);
   leg(legs[1][0],false);
@@ -1173,7 +1175,38 @@ function walkTo(x,y){
   S.hero.path=[[x,y]];S.hero.walking=true;return new Promise(r=>{S.hero.done=r;});
 }
 const face=left=>{S.hero.flip=left;};
-async function reach(){S.hero.reach=1;await sleep(420);S.hero.reach=0;}
+// Greifen: Haltung nach der Hoehe des Ziels (Boden: buecken, Brust: nach vorn, ueber dem Kopf: hoch). Ohne Angabe dreht sich die Figur zum Ziel.
+async function reach(pose){const h=S.hero,z=S.aktZiel;
+  if(!pose&&z){pose=z[1]>h.y-20?'bueck':z[1]<h.y-54?'hoch':'greif';if(Math.abs(z[0]-h.x)>3)h.flip=z[0]<h.x;}
+  h.reach=pose||'greif';await sleep(pose==='bueck'?520:420);h.letzte=h.reach;h.letzteT=performance.now();h.reach=0;}
+// Gegenstaende fliegen sichtbar: beim Nehmen vom Ziel in die Hand, beim Geben und Benutzen von der Hand zum Ziel
+const handPos=()=>[S.hero.x+(S.hero.flip?-10:10),S.hero.y-(S.hero.reach==='bueck'?14:S.hero.reach==='hoch'?38:24)];
+function flieg(id,von,nach){if(!von&&!nach)return;const h=S.hero;
+  if(h.letzte&&performance.now()-h.letzteT<250&&!h.reach){h.reach=h.letzte;setTimeout(()=>{if(h.reach===h.letzte)h.reach=0;},420);}
+  S.flug=(S.flug||[]).concat([{id,von,nach,t0:performance.now()}]);}
+function miniItem(g,id,x,y){x=Math.round(x);y=Math.round(y);
+  if(id==='kekse')return keksG(g,x,y,2.6);
+  if(id==='schlaegel'){line(g,x-4,y+3,x+2,y-2,'#845028');return beutelG(g,x+3,y-3,1.8,1.8,KR.papier,0.6);}
+  if(id==='lupe'){line(g,x+2,y+2,x+5,y+5,'#845028');return ellFill(g,x,y,3,3,(px,py,dx,dy)=>dx*dx+dy*dy>0.5?pick(KR.stahl,0.7,px,py):pick(KR.himmel,0.6-dx*0.3,px,py));}
+  if(id==='holzwolle'){for(let k=0;k<8;k++)line(g,x-3+k%4*2,y-1+(k>>2)*2,x-2+k%4*2+(k%2),y+(k>>2)*2-(k%2),k%3?'#d8b060':'#9a7430');return;}
+  if(id==='lineal')return kastenG(g,x-6,y-1,12,2,KR.dielen,0.8);
+  if(id==='radiergummi')return kastenG(g,x-2,y-1,4,3,KR.rosa,0.6);
+  if(id==='muenze')return ellFill(g,x,y,2,2,(px,py,dx,dy)=>pick(KR.gold,0.6-dx*0.3-dy*0.3,px,py));
+  if(id==='kreide')return kastenG(g,x-3,y,6,2,KR.papier,0.9);
+  if(id==='notiz')return kastenG(g,x-3,y-2,6,5,KR.papier,0.85);
+  if(id==='topf')return zylG(g,x-5,y-3,10,6,KR.stahl,0.4);
+  if(id==='milch')return zylG(g,x-2,y-4,5,8,KR.stahl,0.5);
+  if(id==='zucker')return beutelG(g,x,y,3,3,KR.papier,0.62);
+  if(id==='pulver')return kastenG(g,x-2,y-3,4,5,KR.buchY,0.55);
+  if(id==='topflappen')return kastenG(g,x-3,y-3,6,6,KR.buchR,0.5);
+  kastenG(g,x-2,y-2,4,4,KR.papier,0.6);}
+function drawFlug(){
+  if(S.card)return;const now=performance.now();
+  if(S.inHand){const [hx,hy]=handPos();miniItem(ctx,S.inHand,hx,hy);}
+  if(!S.flug||!S.flug.length)return;
+  S.flug=S.flug.filter(f=>{const t=(now-f.t0)/450;if(t>=1)return false;
+    const a=f.von||handPos(),b=f.nach||handPos(),e=t<0.5?2*t*t:1-2*(1-t)*(1-t);
+    miniItem(ctx,f.id,a[0]+(b[0]-a[0])*e,a[1]+(b[1]-a[1])*e-Math.sin(t*Math.PI)*10);return true;});}
 function stepHero(dt){
   const h=S.hero;if(!h.walking)return;
   let left=dt*44;
@@ -1294,8 +1327,9 @@ async function redeKraechz(){
   if(!S.ziel){await zielGespraech();return;}
   await kraechzMenue();
 }
-function give(id){if(S.inv.indexOf(id)<0)S.inv.push(id);S.invOff=Math.max(0,Math.ceil(S.inv.length/3)-2);}
+function give(id){if(S.aktZiel&&MODE()==='prolog')flieg(id,S.aktZiel,null);if(S.inv.indexOf(id)<0)S.inv.push(id);S.invOff=Math.max(0,Math.ceil(S.inv.length/3)-2);}
 async function act(verb,h,item){
+  if(h&&h.rect&&!h.floor){const [x,y,w,hh]=h.rect();S.aktZiel=[x+w/2,y+hh/2];}else S.aktZiel=null;
   if(S.room==='halle')return actHalle(verb,h,item);
   if(S.room==='gang')return actGang(verb,h,item);
   if(S.room==='kantine')return actKantine(verb,h,item);
@@ -1402,7 +1436,7 @@ let ROOM,DESKS,SPR={};
 function build(){
   ROOM=drawRoom();DESKS=drawDesks();
   const gl=PLAYER.girl?1:0;
-  SPR.heroStand=makeHero({girl:gl});SPR.heroTalk=makeHero({talk:1,girl:gl});SPR.heroBlink=makeHero({blink:1,girl:gl});SPR.heroReach=makeHero({reach:1,girl:gl});
+  SPR.heroStand=makeHero({girl:gl});SPR.heroTalk=makeHero({talk:1,girl:gl});SPR.heroBlink=makeHero({blink:1,girl:gl});SPR.heroReach=makeHero({reach:1,girl:gl});SPR.heroPose={greif:SPR.heroReach,bueck:makeHero({pose:'bueck',girl:gl}),hoch:makeHero({pose:'hoch',girl:gl})};
   SPR.heroWalk=[0,1,2,3,4,5].map(i=>makeHero({walk:1,phase:i/6,girl:gl}));
   SPR.kall=makeKallweit({});SPR.kallTalk=makeKallweit({talk:1});
   SPR.jonas=[makeJonas({shake:0}),makeJonas({shake:1})];SPR.lina=makeLina();
@@ -1461,7 +1495,7 @@ function drawScene(now){
   if(!h.hidden)L.push({y:h.y,d:()=>{
     let img;
     if(h.walking)img=SPR.heroWalk[Math.floor(h.t*9)%6];
-    else if(h.reach)img=SPR.heroReach;
+    else if(h.reach)img=SPR.heroPose[h.reach]||SPR.heroReach;
     else if(S.talker==='hero'&&Math.floor(now/120)%2)img=SPR.heroTalk;
     else img=(now%4200<140)?SPR.heroBlink:SPR.heroStand;
     shadow(h.x,h.y,6);spr(img,h.x,h.y,16,46,h.flip);
@@ -1481,6 +1515,7 @@ function drawScene(now){
   drawSpeech();
 }
 function drawSpeech(){
+  drawFlug();
   if(S.dunkel&&S.room!=='halle')R(ctx,0,0,W,SH,'#05040a');
   if(S.speech){const [x,y]=S.speech.who==='hero'?heroHead():HEADS[S.speech.who]();
     const lines=wrap(S.speech.text,170);const top=Math.max(2,y-lines.length*LINEH-2);
@@ -1700,7 +1735,7 @@ function drawHalle(now){
   L.push({y:S.ky,d:()=>spr(S.speech&&S.talker==='kraechz'&&Math.floor(now/140)%2?SPR.ravenTalk:SPR.raven,S.kx,S.ky,11,19,S.kflip)});
   const h=S.hero;
   if(!h.hidden)L.push({y:h.y,d:()=>{let img;
-    if(h.walking)img=SPR.heroWalk[Math.floor(h.t*9)%6];else if(h.reach)img=SPR.heroReach;
+    if(h.walking)img=SPR.heroWalk[Math.floor(h.t*9)%6];else if(h.reach)img=SPR.heroPose[h.reach]||SPR.heroReach;
     else if(S.talker==='hero'&&Math.floor(now/120)%2)img=SPR.heroTalk;else img=(now%4200<140)?SPR.heroBlink:SPR.heroStand;
     shadow(h.x,h.y,6);spr(img,h.x,h.y,16,46,h.flip);}});
   L.sort((p,q)=>p.y-q.y).forEach(o=>o.d());
@@ -1873,7 +1908,7 @@ const VORBEI={
   'hunger:keks':[['hero','Ich esse meinen eigenen Keks.'],['auf3','Mmpf! Der ist ja … noch warm! Unfair.']]
 };
 const has=id=>S.inv.indexOf(id)>=0;
-function take(id){const i=S.inv.indexOf(id);if(i>=0)S.inv.splice(i,1);S.invOff=Math.min(S.invOff||0,Math.max(0,Math.ceil(S.inv.length/3)-2));}
+function take(id){if(S.aktZiel&&MODE()==='prolog')flieg(id,null,S.aktZiel);const i=S.inv.indexOf(id);if(i>=0)S.inv.splice(i,1);S.invOff=Math.min(S.invOff||0,Math.max(0,Math.ceil(S.inv.length/3)-2));}
 let GANG=null;
 function drawGangBg(){
   const [c,g]=mk(W,SH);
@@ -1970,7 +2005,7 @@ function drawGang(now){
     const img=au.walk?SPR.impWalkHeft[Math.floor(now/110)%4]:au.yawn?SPR.impYawn:(S.speech&&S.talker==='auf'&&Math.floor(now/140)%2?SPR.impHeftTalk:SPR.impHeft);shadow(au.x,au.y,4);spr(img,au.x,au.y,11,27,au.flip);}});}
   const h=S.hero;
   if(!h.hidden)L.push({y:h.y,d:()=>{let img;
-    if(h.walking)img=SPR.heroWalk[Math.floor(h.t*9)%6];else if(h.reach)img=SPR.heroReach;
+    if(h.walking)img=SPR.heroWalk[Math.floor(h.t*9)%6];else if(h.reach)img=SPR.heroPose[h.reach]||SPR.heroReach;
     else if(S.talker==='hero'&&Math.floor(now/120)%2)img=SPR.heroTalk;else img=(now%4200<140)?SPR.heroBlink:SPR.heroStand;
     shadow(h.x,h.y,6);spr(img,h.x,h.y,16,46,h.flip);}});
   L.sort((p,q)=>p.y-q.y).forEach(o=>o.d());
@@ -2052,6 +2087,7 @@ async function leaveGang(){
 }
 // Gegenstaende miteinander benutzen. Bisher passt hier nichts zusammen.
 async function combine(a,b){
+  S.aktZiel=null;
   if(a===b)return say('hero','Mit sich selbst? Philosophisch.');
   const paar=(p,q)=>[a,b].includes(p)&&[a,b].includes(q);
   if(paar('lupe','holzwolle'))return say('hero','Im Schatten passiert gar nichts. Dafür brauche ich richtige Sonne.');
@@ -2425,7 +2461,7 @@ function drawKammer(now){
 function heroLayer(L,now){
   const h=S.hero;
   if(!h.hidden)L.push({y:h.y,d:()=>{let img;
-    if(h.walking)img=SPR.heroWalk[Math.floor(h.t*9)%6];else if(h.reach)img=SPR.heroReach;
+    if(h.walking)img=SPR.heroWalk[Math.floor(h.t*9)%6];else if(h.reach)img=SPR.heroPose[h.reach]||SPR.heroReach;
     else if(S.talker==='hero'&&Math.floor(now/120)%2)img=SPR.heroTalk;else img=(now%4200<140)?SPR.heroBlink:SPR.heroStand;
     shadow(h.x,h.y,6);spr(img,h.x,h.y,16,46,h.flip);}});
 }
@@ -2897,12 +2933,12 @@ async function redeGrummel(){
 }
 // Holzwolle im Sonnenfleck, Lupe darueber: Glut, mit der Kohlenschaufel in den Kessel, die Heizung springt an
 async function brennglas(){
-  await reach();S.brennpunkt=performance.now();
+  face(false);S.hero.reach='bueck';S.inHand='lupe';S.brennpunkt=performance.now();
   await say('hero','Die Lupe ganz ruhig halten. Der Lichtpunkt muss ganz klein werden.');
-  await sleep(1200);S.glut=true;tone('sawtooth',200,0.4,0.02,120);
+  await sleep(1200);S.glut=true;tone('sawtooth',200,0.4,0.02,120);S.hero.reach=0;S.inHand=null;
   await say('hero','Es qualmt! Es glimmt!');
   await say('hero','Schnell, mit der Schaufel in den Kessel.');
-  await walkTo(146,112);face(false);await reach();S.schaufel='hand';tone('square',300,0.06,0.03,200);await sleep(200);
+  await walkTo(146,112);face(false);await reach('greif');S.schaufel='hand';tone('square',300,0.06,0.03,200);await sleep(200);
   await walkTo(144,120);face(false);S.schaufelTief=true;await sleep(350);tone('sawtooth',400,0.25,0.02,200);
   S.wolleImFleck=false;S.aufSchaufel=true;await sleep(350);S.schaufelTief=false;await sleep(200);
   await walkTo(184,116);face(false);
@@ -2911,7 +2947,7 @@ async function brennglas(){
   for(let i=0;i<6;i++)tone('sawtooth',80+i*30,0.3,0.03,60,i*0.15);
   await sleep(500);S.schaufelHoch=false;await sleep(300);
   await say('hero','Es brennt! Erst die Holzwolle, jetzt das Holz.');
-  await walkTo(146,112);face(false);await reach();S.schaufel=null;
+  await walkTo(146,112);face(false);await reach('greif');S.schaufel=null;
   await sleep(900);tone('triangle',180,0.5,0.04,260);tone('triangle',220,0.5,0.04,300,0.4);
   await say('kraechz','Hörst du? Die Rohre gluckern.');
   return grummelTaut();
