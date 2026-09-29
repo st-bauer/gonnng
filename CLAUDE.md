@@ -98,7 +98,7 @@ Canva-Arbeitsdatei: https://canva.link/mp6p64febvogrh4
   Mit den Keksen kommt die Figur durch den Flüstergang in den Heizungskeller.
 - Zwischensequenzen (`runCut`, überspringbar, ohne Verbleiste): Rutschpartie durch den Schacht,
   Abstieg über die Kellertreppe am Ende der Hallen-Vorschau.
-- Szenenwahl nur zum Testen (versteckt, erscheint nach fünfmal schnellem Tippen auf den Titel „Gonnng!“): Intro, Prolog, Eingangshalle, Flüstergang, Kantine, Heizungskeller, Musikraum, Biologieraum, Heizungskeller mit Lupe und Holzwolle, jeweils mit passendem Spielstand (`SZENEN`).
+- Szenenwahl nur zum Testen (versteckt, erscheint nach fünfmal schnellem Tippen auf den Titel „Gonnng!“): Intro, Prolog, Eingangshalle, Flüstergang, Kantine, Heizungskeller, Musikraum, Biologieraum, Heizungskeller mit Lupe und Holzwolle, Heizungskeller: Schlüsselkiste, jeweils mit passendem Spielstand (`SZENEN`).
   Neue Räume dort mit ergänzen.
 - Zum Testen: `window.__frame(sekunde)` im Intro, `window.__act(verb, id, item)` und `window.__pick(i)` im Prolog.
 - Entschieden: Die Unruh bleibt. Die Große Stundenuhr ist eine Sonderanfertigung (Turmuhren haben sonst meist ein Pendel),
@@ -107,7 +107,11 @@ Canva-Arbeitsdatei: https://canva.link/mp6p64febvogrh4
 - Kapitel 1, vierter Raum: der Heizungskeller (Raum `heiz`, `drawHeizBg`, `makeGrummel`, `actHeiz`). Grummelbart erstarrt im Sessel mit dem
   Schlüssel in der Faust, Kessel mit Anmachholz und Kohle, aber ohne Streichhölzer (`S.brauchFeuer`). Seit dem Gong steht die Sonne still,
   ein Sonnenfleck vom Kellerfenster (`fleck`). Holzwolle hinein, Lupe darüber (`brennglas`), die Heizung springt an (`S.feuer`),
-  Grummelbart taut auf (`grummelTaut`). Danach endet die Vorschau vor dem Kompass.
+  Grummelbart taut auf (`grummelTaut`) und schließt seine Schlüsselkiste auf (`S.kisteAuf`). Rätsel: erst das Schlüsselloch anschauen (`S.lochGesehen`),
+  dann mit der Lupe die Bärte vergleichen (`schluesselSuchen`, `SCHLUESSEL`, Nahansicht über `S.sort`), wahllos probieren scheitert (`zufallsProbe`).
+  Mit dem Torschlüssel geht das Tor auf (`torAufschliessen`), Grummelbart schenkt den Kompass der Pläne, Ende von Kapitel 1.
+- Animationen: `reach()` wählt die Haltung nach der Höhe des Ziels (bücken, greifen, hoch), `flieg()` lässt Gegenstände sichtbar wandern,
+  Türen gehen auf und zu (`durchTuer`, `ausTuer`, `hallEintritt` in der Halle), Krächz fliegt mit Flügelschlag (`kraechzFlug`).
 - Kapitel 1, fünfter Raum: der Musikraum (Raum `musik`, `drawMusikBg`, `makeKind`, `makeFermate`, `actMusik`). Frau Fermate und vier Kinder erstarrt,
   Metronom auf dem Klavier (`S.metronom`, 80 Schläge in der Minute, `TAKT_MS`). Eingezählt wird mit dem Trommelschlägel auf der großen Trommel
   (`einzaehlen`, `trommeln`). Danach Pause (`S.pause`), ein Stück Radiergummi in Emils Flöte (`S.floeteZu`), beim nächsten Einzählen holt
@@ -121,7 +125,7 @@ Canva-Arbeitsdatei: https://canva.link/mp6p64febvogrh4
 
 ## Nächste Schritte
 
-1. Kompass-Rätsel mit Grummelbart (konkrete Ziele), danach das Tor zum Land Später.
+1. Kapitel 1 ist komplett. Als Nächstes Kapitel 2 (Sumpf der Ablenkung), dort auch eine Aufgabe für den Kompass der Pläne.
 2. Offen: Wird die Lupe in Kapitel 2 als Okular des Fernrohrs weiterverwendet?
 
 ## Online-Dokument

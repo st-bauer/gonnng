@@ -72,7 +72,8 @@ SRL-Trainings wirken in der Grundschule und in der Sekundarstufe nachweislich au
 
 | Strategie | Phase | Wo im Spiel | Beleg |
 | --- | --- | --- | --- |
-| Konkrete, nahe Ziele setzen | Planen | Prolog, Kompass der Pläne, Kantine (K1) | Locke & Latham, 2002; Bandura & Schunk, 1981 |
+| Konkrete, nahe Ziele setzen | Planen | Prolog, Kantine (K1) | Locke & Latham, 2002; Bandura & Schunk, 1981 |
+| Aufgabe untersuchen und Vorgehen wählen | Planen | Schlüsselkiste im Heizungskeller (K1) | Zimmerman, 2002 |
 | Wenn-dann-Pläne | Planen | Grummelbarts Tafel im Flüstergang (K1), Finale | Gollwitzer & Sheeran, 2006 (Meta-Analyse, 94 Studien, d = 0,65) |
 | Lernumgebung gestalten | Planen, Ausführung | Irrlicht-Glas (K2) | Zimmerman & Martinez-Pons, 1986 |
 | Selbstbeobachtung und Protokoll | Überwachen | Kreidemarken im Moor, Fernrohr (K2) | Kitsantas & Zimmerman, 2006; Zimmerman, 2002 |
@@ -255,7 +256,7 @@ Abschiede, abwechselnd: „Bis gleich.“ Krächz: „‚Gleich‘ sagen hier sc
 
 ## Kapitel 1: Die wandernden Flure (Planen)
 
-Die Hauptfigur muss durch die sich verschiebende Schule in den Heizungskeller, wo der Eingang ins Land Später liegt. Am Ende erhält sie den Kompass der Pläne. Schauplätze: Eingangshalle, vier Flügel, Kantine, Flüstergang, Musikraum, Biologieraum, Heizungskeller.
+Die Hauptfigur muss durch die sich verschiebende Schule in den Heizungskeller, wo der Eingang ins Land Später liegt. Am Ende schließt sie das Tor zum Land Später auf und erhält den Kompass der Pläne. Schauplätze: Eingangshalle, vier Flügel, Kantine, Flüstergang, Musikraum, Biologieraum, Heizungskeller.
 
 | # | Rätsel | Art | Lösung |
 | --- | --- | --- | --- |
@@ -266,7 +267,7 @@ Die Hauptfigur muss durch die sich verschiebende Schule in den Heizungskeller, w
 | 4 | Der Flüstergang | SRL: Wenn-dann-Pläne | Drei Aufschiebchen flüstern, wer reinfällt, trottet zurück zur Treppe. Auf der Tafel von Hausmeister Grummelbart stehen seine eigenen Wenn-dann-Pläne. Mit Kreide schreibt die Figur dort für jede erlebte Stolperstelle einen Plan, nur konkrete Handlungen helfen. Danach läuft sie an der Störung von allein vorbei. Der Keks-Plan braucht einen Keks aus der Kantine |
 | 5 | Gustav und die Lupe | Allgemein, Biologie | Im Biologieraum sucht Mia seit dem Morgen Gustav, die Stabschrecke, und fängt deshalb nie an zu zeichnen. Stabschrecken tarnen sich als Zweige (Mimese) und schaukeln beim Bewegen wie ein Zweig im Wind. Wer den Zweig findet, der ohne Wind schaukelt, und ihn Mia zeigt, weckt sie. Sie leiht die Lupe |
 | 6 | Das Brennglas | Allgemein, Physik | Seit dem Gong steht die Sonne still, ein Sonnenfleck vom Kellerfenster liegt immer an derselben Stelle. Holzwolle in den Fleck, Lupe darüber: Die Sammellinse bündelt das Licht, die Holzwolle glimmt. Mit der Kohlenschaufel in den Kessel, dort liegen Anmachholz und Kohle bereit. Die Heizung springt an, Grummelbart taut auf |
-| 7 | Der Kompass | SRL: konkrete Ziele | Grummelbart gibt Schlüssel und Kompass. Bei vagen Zielen dreht die Nadel wild. Erst ein Ziel mit Was, Bis wann und Woran erkenne ich den Erfolg richtet sie aus |
+| 7 | Die Schlüsselkiste | SRL: Aufgabe untersuchen und Vorgehen wählen | Der Torschlüssel liegt in Grummelbarts Kiste zwischen dreißig fast gleichen Schlüsseln. Grummelbart probiert seit dreißig Jahren wahllos („Hin, rütteln, zurück“), wer es ihm nachmacht, scheitert genauso. Wer erst das Schlüsselloch im Tor anschaut (unten zwei Kerben, oben eine Nase) und dann mit Mias Lupe die Bärte vergleicht, findet den passenden. Grummelbart: „Erst gucken, dann suchen. Warum bin ich da nie drauf gekommen?“ Danach gibt er den Kompass der Pläne als Geschenk mit |
 
 **Inventar in Kapitel 1**
 
@@ -282,12 +283,12 @@ Die Hauptfigur muss durch die sich verschiebende Schule in den Heizungskeller, w
 | Gummiringe | Kantine, Einmachglas-Regal | siehe Plastiktüten | Schlamm im Moor (K2) |
 | Papprolle | leere Küchenrolle, Kantine | mit Monokel und Lupe zum Fernrohr | Fernrohr (K2) |
 | Kreide (aus dem Prolog) |  | mit Grummelbarts Tafel | eigene Wenn-dann-Pläne im Flüstergang (K1) |
-| Kellerschlüssel | Grummelbart |  | Kellertor zum Land Später |
-| Kompass der Pläne | Grummelbart |  | Wegweiser bis zum Finale, Zahnrad der Stundenuhr (K4) |
+| Torschlüssel | Grummelbarts Schlüsselkiste, mit der Lupe gefunden |  | Tor zum Land Später |
+| Kompass der Pläne | Grummelbart, als Geschenk nach dem Aufschließen |  | Wegweiser bis zum Finale, Zahnrad der Stundenuhr (K4); seine Aufgabe als Werkzeug ist noch offen |
 
 **Ablauf im Heizungskeller.** Hinter der Eisentür aus dem Flüstergang ist es eiskalt. Hausmeister Grummelbart sitzt erstarrt im Ledersessel, Raureif im Bart, den Schlüssel zum Tor in der gefrorenen Faust. Das Schlüsselbrett an der Wand ist leer. Rechts steht das Holztor zum Land Später mit einer Katzenklappe, durch die der Dieb mit dem Heft verschwunden ist. Im Gespräch erfährt man: Der Kessel ist seit dem Gong aus, Anmachholz und Kohle liegen schon drin, aber die Streichholzschachtel ist leer („Wollte ich gleich nachkaufen. Gleich.“). Auf die Frage, wie es ohne Streichhölzer geht, erzählt er, dass er als Junge mit Opas Lupe und der Sonne ein Loch in die Zeitung gebrannt hat, und dass an Kohle erst etwas ganz Feines brennen muss. Auf dem Zettel am Kessel steht: „Anheizen: erst was ganz Feines, dann das Holz, dann die Kohle.“ Vom Kellerfenster fällt ein Sonnenfleck auf den Boden, der seit dem Gong nicht mehr wandert.
 
-Was nicht klappt, gibt Hinweise: Die Lupe über dem bloßen Stein macht nur einen hellen Punkt („Stein brennt aber nicht“). Holzwolle direkt in den Kessel geht, aber da drin ist es dunkel. Der Zettel des Diebs bleibt draußen, er ist ein Beweis, und weißes Papier wirft das Licht ohnehin zurück. Holzwolle in den Sonnenfleck, Lupe darüber: Sie glimmt, die Figur bringt sie mit der Kohlenschaufel in den Kessel. Die Heizung springt an, die Rohre gluckern, Grummelbart taut auf: „Wie früher bei meinem Opa. Respekt.“ Danach folgt der Kompass. Krächz hilft nur auf Nachfrage.
+Was nicht klappt, gibt Hinweise: Die Lupe über dem bloßen Stein macht nur einen hellen Punkt („Stein brennt aber nicht“). Holzwolle direkt in den Kessel geht, aber da drin ist es dunkel. Der Zettel des Diebs bleibt draußen, er ist ein Beweis, und weißes Papier wirft das Licht ohnehin zurück. Holzwolle in den Sonnenfleck, Lupe darüber: Sie glimmt, die Figur bringt sie mit der Kohlenschaufel in den Kessel. Die Heizung springt an, die Rohre gluckern, Grummelbart taut auf: „Wie früher bei meinem Opa. Respekt.“ Mit dem Schlüssel aus seiner Faust schließt er die Schlüsselkiste auf, darin liegt der Torschlüssel zwischen dreißig anderen. Danach folgt die Schlüsselkiste (Rätsel 7), dann gehen die Figur und Krächz durch das Tor in den Nebel. Ende von Kapitel 1. Krächz hilft nur auf Nachfrage.
 
 **Ablauf im Biologieraum.** Erst wenn die Figur Feuer braucht, geht sie hinein. Mia sitzt erstarrt auf einem Hocker, die Lupe vor dem Auge, vor dem Terrarium von Gustav, einer Indischen Stabschrecke. An der Tafel steht „Findet Gustav und zeichnet ihn!“. Mia hat ihn nie gefunden und deshalb nie angefangen zu zeichnen. Die Lupe gibt sie nicht her, und erstarrten Leuten nimmt die Figur nichts weg. Das Schild am Terrarium sagt: „Frisst Brombeerblätter. Nachts wach, tagsüber tarnt er sich als Zweig.“ Im Terrarium stehen mehrere Zweige, einer davon schaukelt ganz leicht, obwohl kein Wind geht. Wer ihn anschaut, entdeckt die Beine. Im Gespräch zeigt die Figur Mia den Zweig, Mia zeichnet los, wird wach und leiht die Lupe. Die Topfpflanzen auf dem Regal lehnen sich zum Fenster (Pflanzen wachsen zum Licht hin). Zur Ausstattung gehören außerdem ein Skelett mit Pudelmütze, eine Rollkarte zum Blutkreislauf, ein Aquarium, ein Präparateschrank mit ausgestopftem Eichhörnchen, ein Kresseversuch auf der Fensterbank und vorne Schülertische mit Mikroskopen unter Staubhauben. Diese Dinge haben nur Sätze beim Anschauen, das einzige Rätsel im Raum ist Gustav.
 
