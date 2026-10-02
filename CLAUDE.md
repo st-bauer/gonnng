@@ -98,7 +98,10 @@ Canva-Arbeitsdatei: https://canva.link/mp6p64febvogrh4
   Mit den Keksen kommt die Figur durch den Flüstergang in den Heizungskeller.
 - Zwischensequenzen (`runCut`, überspringbar, ohne Verbleiste): Rutschpartie durch den Schacht,
   Abstieg über die Kellertreppe am Ende der Hallen-Vorschau.
-- Szenenwahl nur zum Testen (versteckt, erscheint nach fünfmal schnellem Tippen auf den Titel „Gonnng!“): Intro, Prolog, Eingangshalle, Flüstergang, Kantine, Heizungskeller, Musikraum, Biologieraum, Heizungskeller mit Lupe und Holzwolle, Heizungskeller: Schlüsselkiste, jeweils mit passendem Spielstand (`SZENEN`).
+  Übergang zu Kapitel 2 am Ende von Kapitel 1 (`uebergangKapitel2`, `cutLand`, `LAND`, `LAND_LINES`, 42 Sekunden): Wendeltreppe im Schacht (`treppeBg`),
+  Panorama des Landes Später mit Kameraschwenk, wachsendem Geschirrturm, Irrlichtern, Papiermotten und Vokabelpilzen (`panoBg`, 480 Pixel breit),
+  Turmzimmer der Gestalt mit Unruh über dem Kamin und Heftstapel (`turmBg`, `Intro.graf`), Moorrand mit Pling und Kapiteltitel (`moorBg`, `titelGross`).
+- Szenenwahl nur zum Testen (versteckt, erscheint nach fünfmal schnellem Tippen auf den Titel „Gonnng!“): Intro, Prolog, Eingangshalle, Flüstergang, Kantine, Heizungskeller, Musikraum, Biologieraum, Heizungskeller mit Lupe und Holzwolle, Heizungskeller: Schlüsselkiste, Übergang zu Kapitel 2, jeweils mit passendem Spielstand (`SZENEN`).
   Neue Räume dort mit ergänzen.
 - Durchlauf am Stück (Neues Spiel bis Ende von Kapitel 1, mit Neuladen nach jedem Raum): `scripts/durchlauf_test.js`, braucht Playwright (`NPM_ROOT=$(npm root -g)`) und einen Server auf Port 8765 (`python3 -m http.server 8765` im Repo). Letzter Lauf am 02.10.2026 ohne Fehler.
 - Zum Testen: `window.__frame(sekunde)` im Intro, `window.__act(verb, id, item)` und `window.__pick(i)` im Prolog.

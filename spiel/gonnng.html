@@ -58,6 +58,7 @@ button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
       <button data-szene="bio">Der Biologieraum</button>
       <button data-szene="feuer">Heizungskeller mit Lupe und Holzwolle</button>
       <button data-szene="kiste">Heizungskeller: Schlüsselkiste</button>
+      <button data-szene="land">Übergang zu Kapitel 2</button>
       <button id="szenenZurueck">Zurück</button>
     </div>
     <div class="overlay setup" id="setup" hidden>
@@ -71,8 +72,8 @@ button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
       <button class="primary" id="los">Los geht’s</button>
     </div>
     <div class="overlay" id="end" hidden>
-      <h1>Weiter geht’s …</h1>
-      <p>Ende von Kapitel 1. Das Land Später wartet in Kapitel 2.</p>
+      <h1>Fortsetzung folgt …</h1>
+      <p>Ende von Kapitel 1. Kapitel 2 ist in Arbeit. Das Moor wartet schon, die Irrlichter auch.</p>
       <button class="primary" id="zumTitel">Zum Titel</button>
     </div>
   </div>
@@ -439,7 +440,17 @@ const KR={
   grasW:mkRamp(['#1a1a08','#3a3a14','#5a5a22','#8a7a34'],8),
   wegN:mkRamp(['#140e0a','#2a2018','#443628','#62523e','#8a7a62'],10),
   ziegelN:mkRamp(['#12060a','#2a0e14','#461a20','#62282c','#843a3a'],10),
-  ziegelW:mkRamp(['#3a1408','#6a2a14','#a04a22','#d0783a','#f0a860'],10)
+  ziegelW:mkRamp(['#3a1408','#6a2a14','#a04a22','#d0783a','#f0a860'],10),
+  nebelS:mkRamp(['#06040e','#140e26','#2a2044','#463a68','#6a5c90','#9a8cbc','#d0c4e8'],12),     // Stein im violetten Leuchten von unten
+  abend:mkRamp(['#0e0820','#22123a','#3e1e52','#62305e','#8c4664','#b86068','#e08a70','#f6b888','#fde2b8'],14),   // Himmel im Land Spaeter
+  moorW:mkRamp(['#04050a','#0a0e1c','#161a30','#262840','#3a3656','#544a6c'],10),
+  nebelV:mkRamp(['#2a2440','#4a4266','#6e6690','#9a92b8','#c8c0dc','#ece6f6'],10),
+  torf:mkRamp(['#060504','#120e0a','#221a10','#36281a','#4e3a22','#6a5030'],10),
+  schilf:mkRamp(['#0a0806','#1e1a0e','#363016','#58502a','#84743e','#b49c5a'],10),
+  irr:mkRamp(['#0a2a2a','#145850','#24907e','#58c8b0','#a8f0dc','#f0fff8'],10),
+  porz:mkRamp(['#1a1824','#3a3a4c','#62667e','#9aa0b4','#d0d6e4','#f8faff'],12),
+  feuer:mkRamp(['#1a0604','#4a1006','#8a2408','#c84a10','#f08a20','#ffc850','#fff4b0'],12),
+  samt:mkRamp(['#12040a','#2e0a14','#561424','#802236','#a83a4a','#d06a6a'],10)
 };
 // Farbe aus einer Rampe waehlen, mit Bayer-Rasterung nur zwischen zwei benachbarten Stufen
 function pick(r,t,x,y){const n=r.length-1,v=clamp(t,0,0.9999)*n,k=Math.floor(v);return (v-k)>bay(x,y)?r[Math.min(n,k+1)]:r[k];}
@@ -1089,7 +1100,8 @@ const API={onDone:null,
   skip:finish,advance,
   still(t){build();buildClassSprites();frame(t);},
   mute(m){if(M)M.gain.value=m?0:0.55;},
-  get playing(){return playing;}};
+  get playing(){return playing;},
+  graf:(o,k)=>makeGraf(o,k)};
 window.__frame=t=>{build();buildClassSprites();frame(t);};window.__now=()=>playing?now():null;
 return API;
 })();
@@ -1152,7 +1164,7 @@ function icon(g,id,x,y){
   if(id==='notiz'){kastenG(g,x+10,y+3,12,11,KR.papier,0.8);for(let i=5;i<13;i+=2)for(let k=12;k<20;k++)P(g,x+k,y+i,'#8a8aa0');P(g,x+19,y+11,'#b07c48');P(g,x+13,y+12,'#b07c48');}
 }
 
-const K={hero:'#ffffff',kraechz:'#9ab8ff',kallweit:'#ff9ac8',jonas:'#8af08a',lina:'#ffd070',auf:'#d0a8ff',auf1:'#d0a8ff',auf2:'#d0a8ff',auf3:'#d0a8ff',broesel:'#ffb070',aufK:'#d0a8ff',grummel:'#b8dcf0',fermate:'#ffb8e0',emil:'#a0e8ff',kind2:'#c8f0a0',kind3:'#c8f0a0',kind4:'#c8f0a0',mia:'#ffc080'};
+const K={gestalt:'#ff9ac8',hero:'#ffffff',kraechz:'#9ab8ff',kallweit:'#ff9ac8',jonas:'#8af08a',lina:'#ffd070',auf:'#d0a8ff',auf1:'#d0a8ff',auf2:'#d0a8ff',auf3:'#d0a8ff',broesel:'#ffb070',aufK:'#d0a8ff',grummel:'#b8dcf0',fermate:'#ffb8e0',emil:'#a0e8ff',kind2:'#c8f0a0',kind3:'#c8f0a0',kind4:'#c8f0a0',mia:'#ffc080'};
 const heroHead=()=>[S.hero.x,S.hero.y-46];
 const HEADS={kallweit:()=>[102,42],jonas:()=>[132,94],lina:()=>[42,96],kraechz:()=>[S.kx,S.ky-20],auf:()=>S.auf?[S.auf.x,S.auf.y-28]:[250,80],auf1:()=>[119,74],auf2:()=>[187,52],auf3:()=>[252,62],broesel:()=>S.broesel>=1?[196,52]:[132,52],aufK:()=>[198,78],grummel:()=>[94,50],fermate:()=>[S.fx||262,(S.fy||106)-56],emil:()=>[120,62],kind2:()=>[152,62],kind3:()=>[184,62],kind4:()=>[216,62],mia:()=>S.room==='heiz'?[S.mx,S.my-52]:[138,62]};
 
@@ -3266,7 +3278,7 @@ async function torAufschliessen(){
   if(has('lupe'))await miaAmTor();
   await say('kraechz','Dann los. Bevor ich es mir anders überlege.');
   await walkTo(292,108);S.hero.hidden=true;await kraechzFlug(292,56,700,10);S.kx=-40;await sleep(400);
-  await showCard('Ende von Kapitel 1','Hinter dem Tor liegt Nebel. Und irgendwo darin das Land Später.');
+  await uebergangKapitel2();
   S.over=true;save();if(API.onDone)API.onDone('kapitel1');
 }
 // Mia holt ihre Lupe ab, bevor es durch das Tor geht
@@ -4178,12 +4190,387 @@ function cutKeller(t,now){
   S.cut.pos={hero:[hx,hy-48],kraechz:[kx,ky-20]};
 }
 
+/* =====================================================================
+   Zwischensequenz: Hinter dem Tor. Vom Heizungskeller ins Land Spaeter
+   1. Wendeltreppe in die Tiefe   2. Panorama des Landes Spaeter
+   3. Das Turmzimmer der Gestalt  4. Am Moorrand: Pling!
+   ===================================================================== */
+let TREPPE_BG=null,PANO_BG=null,TURM_BG=null,MOOR_BG=null;
+// Blick schraeg hinunter in einen runden Schacht. Die Treppe windet sich an der Wand nach unten,
+// oben faellt warmes Licht aus dem Tor herein, von unten leuchtet violetter Nebel herauf.
+const TR={CX:164,VY:80,H0:46,RF:176,ASP:0.5,Z0:1.0,PITCH:0.55,ST:30,TD:0.72,ZMAX:7.5};
+function trPunkt(phi,z,r){r=r||1;const k=TR.RF/z;return[TR.CX+k*r*Math.cos(phi),TR.VY-TR.H0/z+k*r*Math.sin(phi)*TR.ASP];}
+function treppeBg(){
+  const [c,g]=mk(W,SH),hash=(a,b)=>((a*73856093)^(b*19349663))>>>0;
+  const MW=mkMix(KR.stein,KR.steinW,8),MV=mkMix(KR.stein,KR.nebelS,8);
+  const warm=(z,phi)=>clamp(1.35-0.42*z,0,1)*(0.55+0.45*Math.max(0,-Math.sin(phi)));
+  const viol=z=>clamp((z-2)/3.6,0,1);
+  const farbe=(t,z,phi,x,y)=>{const w=warm(z,phi),v=viol(z);return w>=v?pickMix(MW,clamp(w*1.3,0,1),t,x,y):pickMix(MV,clamp(v*1.1,0,1),t,x,y);};
+  // ganz unten: Nebelsee, der von innen leuchtet
+  for(let y=0;y<SH;y++)for(let x=0;x<W;x++){const d=Math.hypot((x-TR.CX)/42,(y-TR.VY+4)/20);P(g,x,y,pick(KR.nebelS,0.95-d*0.45,x,y));}
+  const helix=phi=>{const k=Math.floor(((phi%(2*Math.PI))+2*Math.PI)%(2*Math.PI)/(2*Math.PI)*TR.ST);return k/TR.ST;};
+  // Wand und Stufen von hinten (tief) nach vorn (oben) malen
+  for(let z=TR.ZMAX;z>=TR.Z0;){
+    const k=TR.RF/z,dz=0.45/(TR.RF/(z*z)+TR.H0/(z*z)+1);
+    const dphi=0.7/Math.max(8,k);
+    for(let phi=-Math.PI;phi<Math.PI;phi+=dphi){
+      const s=Math.sin(phi);if(s>0.2)continue;                       // vordere Wand sieht man nicht
+      const [x,y]=trPunkt(phi,z);if(x<-2||x>W+1||y<-2||y>SH+1)continue;
+      const face=0.55+0.45*Math.max(0,-s);
+      // Steinbloecke in Umfang und Tiefe
+      const row=Math.floor(z*26),u=(phi+Math.PI)*k*0.9+(row%2)*9,bx=Math.floor(u/20),lu=u%20,lz=(z*26)%1;
+      let t=0.08+face*0.12+warm(z,phi)*0.62+viol(z)*0.38+((hash(bx,row)%7)-3)*0.02;
+      if(lz<0.12||lu<1.1)t-=0.12;else if(lz<0.25)t+=0.04;
+      // Schatten unter der naechsten Stufe darueber
+      const fz=helix(phi);let n=Math.floor((z-TR.Z0)/TR.PITCH-fz),zh=TR.Z0+(fz+n)*TR.PITCH;
+      if(z-zh>0&&z-zh<0.13)t-=0.22*(1-(z-zh)/0.13);
+      // Moos und Wurzeln in den Fugen oben, wo es feucht ist
+      const moos=(lz<0.12||lu<1.1)&&hash(bx*7,row*3)%5===0&&z<3;
+      P(g,x,y,moos?pick(KR.blatt,0.15+warm(z,phi)*0.35,x,y):farbe(t,z,phi,x,y));if(k>40)P(g,x+1,y,moos?pick(KR.blatt,0.15+warm(z,phi)*0.35,x,y):farbe(t,z,phi,x+1,y));
+    }
+    // Stufen auf dieser Tiefe: Trittflaeche als Ringstueck, Vorderkante dunkel
+    for(let phi=-Math.PI;phi<Math.PI;phi+=dphi){
+      const fz=helix(phi),n=Math.round((z-TR.Z0)/TR.PITCH-fz),zh=TR.Z0+(fz+n)*TR.PITCH;
+      if(Math.abs(zh-z)>dz*0.6||n<0)continue;
+      const a=((phi+2*Math.PI)%(2*Math.PI))/(2*Math.PI)*TR.ST%1;
+      for(let r=1;r>=TR.TD;r-=0.6/Math.max(8,k)){
+        const [x,y]=trPunkt(phi,zh,r);if(x<0||x>=W||y<0||y>=SH)continue;
+        let t=0.2+warm(zh,phi)*0.7+viol(zh)*0.3+(1-r)*0.25;
+        if(r<TR.TD+0.04)t-=0.25;                                       // Kante zur Mitte
+        if(a<0.08)t-=0.18;                                              // Absatz zur naechsten Stufe
+        if(a>0.92)t+=0.08;
+        P(g,x,y,farbe(t,zh,phi,x,y));
+        // Stirnseite der Stufe unter der Kante
+        if(r<TR.TD+0.02&&Math.sin(phi)<0.2)for(let j=1;j<=Math.max(1,Math.round(k*0.03));j++)P(g,x,y+j,farbe(0.06+warm(zh,phi)*0.25,zh,phi,x,y+j));
+      }
+    }
+    z-=dz;
+  }
+  // vorn die Kante des Schachts: darunter der Absatz am Fuss des Tors, dazwischen die Innenwand im Streiflicht
+  const lip=x=>{const u=clamp((x-TR.CX)/(TR.RF/TR.Z0),-1,1);return TR.VY-TR.H0/TR.Z0+Math.sqrt(1-u*u)*TR.RF*TR.ASP/TR.Z0;};
+  for(let y=0;y<SH;y++)for(let x=0;x<W;x++){
+    const ly=lip(x),dy=y-ly;if(dy<-9)continue;
+    if(dy<0){const [px,py]=[x,y];const q=(dy+9)/9;P(g,px,py,pickMix(MW,0.5,0.06+q*0.12,px,py));continue;}   // Innenwand dicht unter der Kante, fast im Dunkeln
+    const L=clamp(1-Math.hypot(x-140,(y-170)*1.5)/230,0,1);
+    const BR=12;let t;
+    if(dy<BR){                                                                            // Bruestung aus Quadern, oben eine Deckplatte
+      const sy=Math.floor((dy-3)/5),off=(sy%2)*9,fx=(x+off)%18,fuge=dy>=3&&((Math.floor(dy-3)%5===0)||fx===0);
+      if(dy<1.5)t=0.85+L*0.12;else if(dy<3)t=0.45+L*0.3;
+      else{t=0.24+L*0.4-(dy-3)/60+((hash(Math.floor((x+off)/18),sy)%5)-2)*0.03;if(fuge)t-=0.12;}
+    }else{                                                                                // Boden davor, Platten in der Flucht
+      const fy=y-ly-BR,u=(x-TR.CX)/(1+fy*0.08),fuge=(Math.floor(u)%26===0)||fy%5===0;
+      t=0.36+L*0.42-(fy<2?0.2:0)+((hash(Math.floor(u/26),Math.floor(fy/5))%5)-2)*0.025;if(fuge)t-=0.1;
+    }
+    P(g,x,y,pickMix(MW,0.45+L*0.55,t,x,y));}
+  return c;
+}
+function cutTreppe(t,now){
+  if(!TREPPE_BG)TREPPE_BG=treppeBg();ctx.drawImage(TREPPE_BG,0,0);
+  // Nebel unten dreht sich langsam
+  for(let i=0;i<14;i++){const a=now/4000+i*0.45,r=6+((i*7)%10),x=TR.CX+Math.cos(a)*r*1.6,y=TR.VY-6+Math.sin(a)*r*0.5;
+    for(let j=0;j<8;j++)P(ctx,Math.round(x+j-4),Math.round(y+Math.sin(j*0.8+a)*0.6),j%3?'#9a8cbc':'#d0c4e8');}
+  const p=clamp(t/7.5,0,1),hx=30+p*150,hy=141,step=Math.floor(t*6)%6;
+  shadow(hx,hy,6);spr(SPR.heroWalk[step],hx,hy,16,46,false);
+  const kx=hx-30,ky=hy-50+Math.sin(t*6)*2;spr(SPR.ravenFlug[Math.floor(now/90)%2],kx,ky,11,19,true);
+  if(Math.floor(now/700)%5===0)P(ctx,Math.round(kx+5),Math.round(ky-13),'#ffffff');   // Kraechz' Monokel blitzt
+  S.cut.pos={hero:[hx,hy-50],kraechz:[kx,ky-22]};
+}
+// Panorama des Landes Spaeter, 480 Pixel breit, die Kamera schwenkt darueber.
+// Licht: tief stehende, traege Sonne rechts hinten, violetter Himmel, das Moor spiegelt ihn.
+const PW=480,HY=70,SONNE=[388,50];
+function noise1(x,s){return Math.sin(x*0.031*s+1.3)*0.5+Math.sin(x*0.083*s+0.7)*0.3+Math.sin(x*0.21*s+2.1)*0.2;}
+function himmelT(x,y){const d=Math.hypot(x-SONNE[0],(y-SONNE[1])*1.6);return clamp(0.05+Math.pow(y/HY,1.3)*0.78+Math.max(0,1-d/150)*0.28,0,1);}
+function panoBg(){
+  const [c,g]=mk(PW,SH),hash=(a,b)=>((a*73856093)^(b*19349663))>>>0;
+  // Himmel mit Sonnenschein
+  for(let y=0;y<HY;y++)for(let x=0;x<PW;x++)P(g,x,y,pick(KR.abend,himmelT(x,y),x,y));
+  // Wolkenbaender: oben violett, unten von der Sonne angestrahlt
+  const WOLKEN=[[60,26,90,5],[230,18,120,4],[330,40,140,4],[420,30,70,3],[150,46,110,3]];
+  WOLKEN.forEach(([wx,wy,wl,wh])=>{for(let y=wy-wh;y<=wy+wh;y++)for(let x=wx-wl;x<=wx+wl;x++){
+    const u=(x-wx)/wl,v=(y-wy)/wh,form=1-u*u-Math.abs(v)*1.1+Math.sin(x*0.12+wy)*0.15;if(form<0||x<0||x>=PW)continue;
+    const sonne=Math.max(0,1-Math.hypot(x-SONNE[0],y-SONNE[1])/200);P(g,x,y,pick(KR.abend,0.22+(v>0?0.18+sonne*0.4:0.02)+sonne*0.15,x,y));}});
+  // Die traege Sonne, halb hinter einem Wolkenstreifen
+  ellFill(g,SONNE[0],SONNE[1],13,12,(x,y,dx,dy)=>pick(KR.abend,0.93+(-dx-dy)*0.04,x,y));
+  for(let x=SONNE[0]-24;x<SONNE[0]+30;x++)for(let y=SONNE[1]+2;y<SONNE[1]+5;y++)P(g,x,y,pick(KR.abend,0.55+Math.max(0,1-Math.abs(x-SONNE[0])/30)*0.2,x,y));
+  // Gebirge in der Ferne, zwei Ketten im Dunst
+  for(let x=0;x<PW;x++){const h1=HY-10-noise1(x,1)*7-noise1(x*2.3,1.7)*3,h2=HY-4-noise1(x+300,1.4)*4;
+    for(let y=Math.floor(h1);y<HY;y++)P(g,x,y,pick(KR.abend,himmelT(x,HY)*0.62+(y-h1)*0.004,x,y));
+    for(let y=Math.floor(h2);y<HY;y++)P(g,x,y,pick(KR.abend,himmelT(x,HY)*0.44,x,y));}
+  // der Huegel, auf dem der Turm steht
+  for(let x=230;x<370;x++){const u=(x-300)/70,top=HY-13*Math.max(0,1-u*u)-1;for(let y=Math.floor(top);y<HY+2;y++)P(g,x,y,pick(KR.abend,0.28+(x>300?0.04:0)+(y-top<1.5&&x>290?0.18:0),x,y));}
+  // Moor: Torfbuckel, Wasserflaechen spiegeln den Himmel
+  const pool=(x,y)=>{const yy=(y-HY);return Math.sin(x*0.028+yy*0.21)+Math.sin(x*0.061-yy*0.37+1.5)*0.7+Math.sin(x*0.013+3)*0.5;};
+  for(let y=HY;y<SH;y++){const tief=(y-HY)/(SH-HY);
+    for(let x=0;x<PW;x++){
+      const p=pool(x/(0.4+tief*1.4),y);
+      if(p>0.55-tief*0.4){const ry=HY-(y-HY)*1.6-1,rx=x+Math.sin(y*0.9+x*0.05)*1.5;          // Spiegelung
+        let t=himmelT(rx,Math.max(0,ry))*0.82-0.04;if(p<0.62-tief*0.4)t-=0.25;                 // dunkler Uferrand
+        P(g,x,y,pick(KR.abend,t,x,y));continue;}
+      const licht=Math.max(0,1-Math.hypot(x-SONNE[0],(y-HY)*3)/260);
+      let t=0.18+tief*0.12+licht*0.3+((hash(x>>2,y>>1)%5)-2)*0.025;
+      if(hash(x,y*3)%9===0)t+=0.12;                                                          // Grashalme
+      P(g,x,y,pick(tief>0.4?KR.schilf:KR.torf,t,x,y));}}
+  // abgestorbene Birken als Silhouetten, mit Lichtkante zur Sonne
+  const baum=(bx,by,h,s)=>{for(let y=by-h;y<by;y++){const w=y<by-h*0.6?1:2;for(let k=0;k<w;k++)P(g,bx+k,y,k===w-1&&bx<SONNE[0]?pick(KR.abend,0.42,bx,y):'#120c1c');}
+    [[0.3,-1],[0.45,1],[0.6,-1],[0.75,1]].forEach(([f,d],i)=>{const y0=by-Math.round(h*f);line(g,bx,y0,bx+d*Math.round(h*0.25*s),y0-Math.round(h*0.18),'#120c1c');});};
+  baum(150,HY+6,26,1);baum(212,HY+3,16,0.8);baum(278,HY+9,30,1.1);baum(440,HY+5,20,0.9);
+  // vorn links: Fels mit dem Torbogen, aus dem die Treppe kommt. Im Bogen leuchtet der Nebel aus dem Schacht.
+  const fels=x=>x<118?18+noise1(x,2)*8+Math.max(0,x-70)*1.1:SH+1;
+  const hf=(x,y)=>noise1(x*1.7+y*0.6,1.3)*3+noise1(y*2.1-x*0.4+40,1.1)*2;              // Hoehenfeld der Felsoberflaeche
+  for(let x=0;x<130;x++)for(let y=Math.floor(fels(x));y<SH;y++){
+    const bogen=Math.hypot((x-50)/14,(y-100)/22)<1&&y<118||(Math.abs(x-50)<14&&y>=100&&y<118);
+    if(bogen){const d=Math.hypot((x-50)/14,(y-112)/20);P(g,x,y,pick(KR.nebelS,0.85-d*0.5,x,y));continue;}
+    const rand=Math.hypot((x-50)/17,(y-100)/25)<1&&y<121||(Math.abs(x-50)<17&&y>=100&&y<121);
+    const neig=hf(x+1,y)-hf(x-1,y),schicht=((y*1.0+x*0.18+noise1(x,4)*2)%9);
+    let t=0.16+neig*0.07+(fels(x+3)>fels(x)+1?0:0.04)+(y-fels(x)<2?0.28:0)+Math.max(0,x-60)/260;
+    if(schicht<1)t-=0.1;else if(schicht<2)t+=0.05;
+    if(rand){const a=Math.atan2(y-100,x-50),st=((a+Math.PI)/(Math.PI/6))%1;t=0.32+(x>50?0.08:-0.04)-(st<0.1||Math.hypot((x-50)/17,(y-100)/25)>0.94&&y<100?0.12:0);}
+    t+=Math.max(0,1-Math.hypot((x-50)/30,(y-108)/34))*0.22;                          // violetter Schein aus dem Bogen
+    P(g,x,y,pick(KR.nebelS,t,x,y));}
+  // Bohlenweg vom Tor ins Moor, in der Flucht schmaler
+  for(let y=118;y<SH;y++){const f=(y-118)/(SH-118),x0=Math.round(66+f*18),x1=Math.round(110+f*90);
+    for(let x=x0;x<x1;x++){const brett=Math.floor((y-118)/(2+f*4)),fuge=(y-118)%(2+Math.round(f*4))===0;
+      P(g,x,y,pick(KR.holz,0.32+f*0.18+(x>x1-3?-0.15:0)+((hash(brett,7)%5)-2)*0.04-(fuge?0.14:0),x,y));}}
+  for(let i=0;i<9;i++){const y=96+i*2.6,f=(y-96)/40,x0=Math.round(150+i*14-f*30),x1=x0+Math.round(12+i*3);   // weiter hinten im Moor
+    for(let x=x0;x<x1;x++)P(g,x,Math.round(y),pick(KR.holz,0.28+((hash(i,x)%3)-1)*0.04,x,y));}
+  // Schilf im Vordergrund
+  for(let i=0;i<70;i++){const bx=180+((i*37)%140)+(i>40?150:0),h=14+(i*13)%16,by=SH-((i*7)%6);
+    for(let k=0;k<h;k++){const x=Math.round(bx+Math.sin(k*0.12+i)*k*0.12),y=by-k;if(x>=0&&x<PW)P(g,x,y,pick(KR.schilf,0.18+k/h*0.35+(i%3)*0.05,x,y));}
+    if(i%4===0){for(let k=0;k<4;k++)P(g,Math.round(bx+Math.sin(h*0.12+i)*h*0.12),by-h-k,pick(KR.holz,0.35,bx,by));}}
+  // rechts vorn: bemooste Boeschung, Vokabelpilze wachsen darauf (Stiele hier, Huete mit Schrift zur Laufzeit)
+  const MOOS=mkMix(KR.torf,KR.blatt,6);for(let x=360;x<PW;x++){const top=118-Math.sin((x-360)/120*Math.PI)*10-noise1(x,3)*2;for(let y=Math.floor(top);y<SH;y++){const L=Math.max(0,1-Math.hypot(x-SONNE[0],y-60)/200);P(g,x,y,pickMix(MOOS,0.15+L*0.2,0.2+(y-top<1.5?0.35:y-top<3?0.15:0)+L*0.25-(y-top)/120+((hash(x>>1,y>>1)%5)-2)*0.03,x,y));}}
+  return c;
+}
+const PILZE=[[392,112,'the'],[418,116,'le'],[446,110,'ser']];
+const TURM_STOCK=[['teller',9],['tasse',6,5],['teller',8],['kanne',6,7],['teller',7],['tasse',5,5],['teller',6],['kanne',4,5],['tasse',4,4]];
+// Geschirrturm in der Ferne: Teller, Tassen und Kannen gestapelt, schief, gegen die Sonne mit Lichtkante. In der Kanne brennt Licht.
+function drawTurmFern(ox,bx,by,n,fall){
+  const sil=(x,y,rimR)=>P(ctx,x,y,pick(KR.abend,rimR?0.66:0.17+((x+y)%3===0?0.02:0),x,y));
+  let y=by;
+  TURM_STOCK.slice(0,n).forEach(([art,w,h],i)=>{const neu=i===n-1&&fall>0,sx=Math.round(bx+ox+i*0.7+Math.sin(i*1.7)*0.8),yy0=neu?y-Math.round(fall*30):y;
+    if(art==='teller'){for(let k=0;k<2;k++){const ry=yy0-k*2;for(let j=-w+k;j<=w-k;j++){sil(sx+j,ry,j>=w-k-1);sil(sx+j,ry-1,j>=w-k-2||k===1);}}y-=4;}
+    else if(art==='tasse'){for(let j=-w-2;j<=w+2;j++)sil(sx+j,yy0,j>=w+1);                                    // Untertasse
+      for(let k=1;k<=h;k++){const ww=w-Math.round((h-k)/h*2);for(let j=-ww;j<=ww;j++)sil(sx+j,yy0-k,j>=ww-1);}
+      for(let k=2;k<h-1;k++){sil(sx+w+2,yy0-k,true);}sil(sx+w+1,yy0-2,true);sil(sx+w+1,yy0-h+1,true);y-=h+1;}
+    else{ellFill(ctx,sx,yy0-h/2,w,h/2,(px,py,dx,dy)=>pick(KR.abend,dx>0.6?0.66:0.17,px,py));                    // Kanne mit Schnabel und Deckelknauf
+      line(ctx,sx-w,yy0-h/2,sx-w-3,yy0-h+1,pick(KR.abend,0.17,0,0));sil(sx,yy0-h-1,false);sil(sx,yy0-h-2,true);
+      if(i===3){R(ctx,sx-1,yy0-Math.round(h/2),2,1,KR.feuer[9]);}y-=h+2;}});
+  return y;
+}
+function irrlicht(x,y,glanz,now){const r=3+glanz*2;ellFill(ctx,x,y,r+2,r+1,(px,py,dx,dy)=>{const d=dx*dx+dy*dy;return d>0.75?null:pick(KR.irr,0.25+(1-d)*0.5+glanz*0.2,px,py);});
+  ellFill(ctx,x,y,1.6,1.4,(px,py)=>pick(KR.irr,0.9,px,py));}
+function motte(x,y,now,i){const f=Math.floor(now/120+i)%2;x=Math.round(x);y=Math.round(y);
+  R(ctx,x-1,y,3,2,'#ece6d6');P(ctx,x,y+1,'#9a92a8');if(f){P(ctx,x-2,y-1,'#fbf6ea');P(ctx,x+2,y-1,'#fbf6ea');}else{P(ctx,x-2,y+1,'#c0b8a8');P(ctx,x+2,y+1,'#c0b8a8');}}
+let NEBELBAND=null;
+function nebelBand(){const [c,g]=mk(PW,26),img=g.createImageData(PW,26);
+  for(let y=0;y<26;y++)for(let x=0;x<PW;x++){const u=x/PW*6.2832,v=Math.sin(u*3+y*0.2)+Math.sin(u*5-y*0.11)*0.7+Math.sin(u*11)*0.3;
+    const rand=Math.min(1,y/9,(25-y)/9),d=clamp(((v+2)/4)*rand,0,1),a=Math.floor(d*4)/4*0.55;const i=(y*PW+x)*4;
+    img.data[i]=176;img.data[i+1]=166;img.data[i+2]=204;img.data[i+3]=Math.round(a*255);}
+  g.putImageData(img,0,0);return c;}
+function cutPano(t,now){
+  if(!PANO_BG){PANO_BG=panoBg();NEBELBAND=nebelBand();}
+  const cam=Math.round(clamp((t-1.5)/9,0,1)*150*(0.5-0.5*Math.cos(Math.PI*clamp((t-1.5)/9,0,1)))/ (0.5+0.5*0)) ;
+  const ox=-Math.round(clamp((t-1.5)/9,0,1)<1?150*(0.5-0.5*Math.cos(Math.PI*clamp((t-1.5)/9,0,1))):150);
+  ctx.drawImage(PANO_BG,ox,0);
+  // der Turm waechst bei t=8.2 um ein Stockwerk
+  const n=t<8?8:9,fall=t>=8?Math.max(0,1-(t-8)/0.35):0;
+  if(t>=8.35&&!S.cut.klirr){S.cut.klirr=true;for(let i=0;i<4;i++)tone('square',1400+i*230,0.06,0.03,900,i*0.05);}
+  drawTurmFern(ox,300,HY-13,n,fall);
+  // Nebelbaender ueber dem Moor
+  ctx.save();ctx.beginPath();ctx.rect(ox+118,0,PW,SH);ctx.clip();
+  ctx.globalAlpha=0.9;const o1=(now/90)%PW;ctx.drawImage(NEBELBAND,ox-o1,HY+4);ctx.drawImage(NEBELBAND,ox-o1+PW,HY+4);
+  ctx.globalAlpha=0.7;const o2=(now/60)%PW;ctx.drawImage(NEBELBAND,ox+o2-PW,HY+20);ctx.drawImage(NEBELBAND,ox+o2,HY+20);ctx.globalAlpha=1;ctx.restore();
+  // Irrlichter tanzen ueber dem Wasser, ab und zu blinkt eins auf
+  [[170,86],[236,80],[300,92],[262,100],[410,84]].forEach(([x,y],i)=>{const b=Math.sin(now/600+i*1.7),gl=(Math.floor(now/1700+i*0.6)%4===0)?1:0;
+    irrlicht(ox+x+Math.sin(now/900+i)*4,y+b*3,gl,now);});
+  // Vokabelpilze
+  PILZE.forEach(([x,y,w])=>{const sx=ox+x;R(ctx,sx-2,y,4,8,'#d8ccb4');R(ctx,sx+1,y,1,8,'#a89a80');
+    ellFill(ctx,sx,y,13,6,(px,py,dx,dy)=>dy>0.5?null:pick(KR.rosa,0.25+(-dx-dy)*0.2,px,py));text(w,Math.round(sx-textW(w)/2),y-5,'#3a1020',false);});
+  // Papiermotten: ungeschriebene Aufsaetze
+  for(let i=0;i<5;i++){const mx=ox+((now/30+i*97)%(PW+40))-20,my=40+i*12+Math.sin(now/300+i*2)*6;motte(mx,my,now,i);}
+  // Figur tritt aus dem Bogen auf den Bohlenweg
+  const p=clamp(t/3.2,0,1),hx=ox+50+p*42,hy=118+p*12,step=Math.floor(t*6)%6;
+  shadow(hx,hy,6);spr(p<1?SPR.heroWalk[step]:(S.cut.sprecher==='hero'&&Math.floor(now/140)%2?SPR.heroTalk:SPR.heroStand),hx,hy,16,46,false);
+  const kx=hx+18,ky=hy-56+Math.sin(t*5)*2;spr(SPR.ravenFlug[Math.floor(now/90)%2],kx,ky,11,19,false);
+  S.cut.pos={hero:[Math.max(40,hx),hy-50],kraechz:[Math.max(40,kx),ky-22]};
+}
+// Turmzimmer der Gestalt: Waende aus gestapeltem Geschirr, rundes Fenster mit kuehlem Abendlicht links,
+// Kamin rechts mit warmem Feuer, darueber schwingt die Unruh. Ein Berg aus Heften neben dem Ohrensessel.
+const porzW=mkRamp(['#1e0e08','#4a2614','#8a5430','#c88c58','#f0c490','#fff0d8'],12);
+const FEUER_P=[284,98],FENSTER=[70,40];
+function turmLicht(x,y){const f=Math.max(0,1-Math.hypot(x-FEUER_P[0],(y-FEUER_P[1])*1.15)/190),w=Math.max(0,1-Math.hypot(x-FENSTER[0],(y-FENSTER[1])*1.1)/120);return[f,w];}
+function turmBg(){
+  const [c,g]=mk(W,SH),hash=(a,b)=>((a*73856093)^(b*19349663))>>>0;
+  const MIXP=mkMix(KR.porz,porzW,8),MIXH=mkMix(KR.dielen.map(x=>x),KR.dielen,2);
+  const farbe=(t,x,y)=>{const [f,w]=turmLicht(x,y);return pickMix(MIXP,clamp(f/(f+w*0.8+0.05),0,1),t,x,y);};
+  const hell=(x,y)=>{const [f,w]=turmLicht(x,y);return 0.06+f*0.62+w*0.42;};
+  // Rueckwand: Tellerkanten in Reihen, die Wand ist rund, die Raender liegen im Schatten
+  // Rueckwand aus Tellerstapeln: jede Saeule ein Stapel, jeder Teller zwei Pixel, Kanten nach aussen dunkler
+  for(let y=0;y<100;y++)for(let x=0;x<W;x++){
+    const plate=Math.floor(y/2),ly=y%2,sp=Math.floor((x+3)/16),jit=(hash(sp,plate)%3)-1,lx=(x+3+jit)%16,rund=Math.pow(Math.abs(x-160)/170,2);
+    const tasse=hash(sp,Math.floor(y/26))%5===0;                                       // ab und zu ein Turm aus Tassen
+    let t=hell(x,y)-rund*0.25;
+    const quer=Math.abs(lx-7.5)/7.5;t+=(1-quer*quer)*0.12-0.06;
+    if(tasse){const ty=y%13;t+=ty<2?0.12:ty>11?-0.15:0;if(lx===15&&ty>3&&ty<9)t+=0.1;}
+    else if(ly===0)t+=0.14;else t-=0.06;
+    if(lx===0||lx===15)t-=0.22;
+    const muster=!tasse&&ly===1&&hash(sp,plate)%5===0&&lx>2&&lx<14&&lx%2===0;              // blauer Rand auf manchen Tellern
+    P(g,x,y,muster?pick(KR.buchB,0.25+hell(x,y)*0.5,x,y):farbe(t,x,y));}
+  // Boden: Dielen in der Flucht, warmer Fleck vor dem Kamin
+  for(let y=100;y<SH;y++)for(let x=0;x<W;x++){const d=(y-100)/44,u=(x-160)/(0.55+d*1.5),seam=((u%14)+14)%14<0.9,fy=Math.floor(y*0.9)%7===0;
+    let t=0.1+hell(x,y)*0.75-0.05+(seam?-0.12:0)+((hash(Math.floor(u/14),Math.floor(y/7))%5)-2)*0.02;
+    if(y===100)t-=0.15;P(g,x,y,pick(KR.dielen,t,x,y));}
+  // Teppich unter dem Sessel
+  ellFill(g,206,120,58,11,(x,y,dx,dy)=>{const r=dx*dx+dy*dy,rand=r>0.78&&r<0.86;return pick(KR.samt,0.04+hell(x,y)*0.32+(rand?0.12:0)+(r<0.3&&Math.abs(dx*6)%1<0.2?0.06:0),x,y);});
+  // rundes Fenster: draussen der violette Abendhimmel, Sprossen aus Untertassen
+  ellFill(g,FENSTER[0],FENSTER[1],19,19,(x,y,dx,dy)=>{const r=Math.hypot(dx,dy);if(r>0.82)return pick(KR.porz,0.5+(-dx-dy)*0.2,x,y);
+    if(Math.abs(x+0.5-FENSTER[0])<1||Math.abs(y+0.5-FENSTER[1])<1)return pick(KR.porz,0.35,x,y);
+    return pick(KR.abend,0.12+((y-FENSTER[1]+16)/32)*0.55,x,y);});
+  for(let x=FENSTER[0]-15;x<FENSTER[0]+16;x++){const y=FENSTER[1]+7+Math.round(Math.sin(x*0.4)*1);if(Math.hypot(x-FENSTER[0],y-FENSTER[1])<15)for(let k=y;k<FENSTER[1]+16;k++)if(Math.hypot(x-FENSTER[0],k-FENSTER[1])<15.5&&Math.abs(x-FENSTER[0])>0&&Math.abs(k-FENSTER[1])>0)P(g,x,k,pick(KR.abend,0.08,x,k));}
+  // Tuer links: Bogen, dahinter dunkle Treppe
+  for(let y=44;y<100;y++)for(let x=6;x<44;x++){const innen=Math.hypot((x-25)/15,(y-60)/16)<1&&y<60||(Math.abs(x-25)<15&&y>=60);
+    const rahmen=!innen&&(Math.hypot((x-25)/19,(y-60)/20)<1&&y<60||(Math.abs(x-25)<19&&y>=60));
+    if(innen)P(g,x,y,pick(KR.stein,0.04+(y-44)/600,x,y));else if(rahmen)P(g,x,y,farbe(0.2+hell(x,y)*0.5+(x<25?0.05:-0.05),x,y));}
+  // Kamin rechts: Sims, Oeffnung, Ziegel aus Geschirr verbacken
+  for(let y=58;y<100;y++)for(let x=250;x<318;x++){const sims=y<64,offen=x>=262&&x<306&&y>=72;
+    if(offen){const d=Math.hypot((x-284)/22,(y-100)/26);P(g,x,y,pick(KR.feuer,0.12+Math.max(0,1-d)*0.25,x,y));continue;}
+    const row=Math.floor(y/4),fuge=y%4===0||((x+(row%2)*6)%12===0);
+    let t=sims?(y===58?0.95:0.6-(y-58)*0.05):0.42+((hash(Math.floor((x+(row%2)*6)/12),row)%5)-2)*0.03-(fuge?0.12:0);
+    t+=x>=258&&x<310&&y>=64&&y<72?0.12:0;
+    P(g,x,y,pick(porzW,t,x,y));}
+  // Halterung der Unruh am Sims
+  for(let y=14;y<58;y++){P(g,283,y,pick(KR.gold,0.35+(y%6===0?0.2:0),283,y));P(g,284,y,pick(KR.gold,0.6,284,y));}
+  // Berg aus Heften neben dem Sessel, jedes Heft mit eigener Farbe
+  const BUNT=[KR.buchR,KR.buchB,KR.buchG,KR.buchY,KR.rosa,KR.buchB];
+  for(let k=0;k<17;k++){const y=98-k*3,x0=146+Math.round(Math.sin(k*1.9)*4+k*0.3),w=30-Math.round(k*0.4),rp=BUNT[hash(k,3)%BUNT.length];
+    for(let j=0;j<3;j++)for(let x=x0;x<x0+w;x++){const t=(j===0?0.75:j===1?0.45:0.25)+hell(x,y)*0.25+(x>x0+w-3?0.1:0);P(g,x,y-j,j===0&&x%5===0&&x>x0+2?pick(KR.papier,0.6,x,y):pick(rp,t,x,y-j));}}
+  // Ohrensessel: Ruecken und Ohren, roter Samt, vom Feuer angestrahlt
+  const SAMTG=mkRamp(['#020806','#06180f','#0c2a1c','#163e2a','#24563a','#3a7250','#5a9068'],12);
+  const sessel=[[204,54],[214,48],[240,48],[248,56],[250,100],[200,100]];
+  polyFill(g,sessel,(x,y)=>{const ohr=y<70&&(x<210||x>244),t=0.1+hell(x,y)*0.6+(x>238?0.14:0)-(ohr?0.04:0)+(y<52?0.1:0)+((x-204)%9===0&&y>58&&y<92?-0.1:0)+(((x-204)%9===4)&&y>58&&y<92&&(y%10===0)?0.12:0);return pick(SAMTG,t,x,y);});
+  for(let y=86;y<102;y++)for(let x=198;x<252;x++)P(g,x,y,pick(SAMTG,0.16+hell(x,y)*0.55+(y===86?0.15:0),x,y));      // Sitzflaeche und Front
+  for(let x=200;x<252;x+=48)for(let y=102;y<106;y++)P(g,x,y,pick(KR.holz,0.4,x,y));
+  // Geschirr liegt herum
+  [[120,104],[132,110],[60,118],[300,124]].forEach(([x,y],i)=>{ellFill(g,x,y,6,2,(px,py,dx,dy)=>pick(porzW,0.35+hell(px,py)*0.5-dy*0.1,px,py));if(i%2)kastenG(g,x-2,y-6,5,5,porzW,0.4+hell(x,y)*0.4);});
+  return c;
+}
+// Die Unruh: Goldring mit Speichen und Spirale, schwingt hin und her
+function drawUnruh(x,y,now){const a=Math.sin(now/1000*Math.PI*2*0.9)*1.6;
+  ellFill(ctx,x,y,11,11,(px,py,dx,dy)=>{const r=dx*dx+dy*dy;return r>0.62?pick(KR.gold,0.55+(-dx-dy)*0.25+(dx>0.3?0.15:0),px,py):null;});
+  for(let k=0;k<4;k++){const w=a+k*Math.PI/2;line(ctx,x,y,x+Math.cos(w)*8,y+Math.sin(w)*8,KR.gold[7]);}
+  for(let i=0;i<30;i++){const w=a*0.6+i*0.55,r=1+i*0.13;P(ctx,Math.round(x+Math.cos(w)*r),Math.round(y+Math.sin(w)*r),KR.gold[9]);}
+  ellFill(ctx,x,y,1.5,1.5,()=>KR.gold[11]);}
+function cutTurm(t,now){
+  if(!TURM_BG){TURM_BG=turmBg();SPR.grafSitz=Intro.graf({sit:1},1);SPR.grafSitzBlink=Intro.graf({sit:1,blink:1},1);}
+  ctx.drawImage(TURM_BG,0,0);
+  // Feuer im Kamin
+  for(let x=264;x<304;x++){const h=12+Math.sin(now/90+x*0.9)*4+Math.sin(now/47+x*1.7)*2+Math.sin(x*0.35)*5;
+    for(let y=99;y>99-h&&y>=73;y--){const f=(99-y)/h;P(ctx,x,y,f<0.25?KR.feuer[11]:f<0.5?KR.feuer[9]:f<0.8?KR.feuer[7]:KR.feuer[4]);}}
+  drawUnruh(284,26,now);
+  // Gestalt im Sessel, zwei gluehende Augen unter der Kapuze
+  const blink=Math.floor(now/2600)%7===0;spr(blink?SPR.grafSitzBlink:SPR.grafSitz,226,104,24,78,true);
+  // Aufschiebchen kommt mit dem Heft durch die Tuer und legt es auf den Stapel
+  const p=clamp((t-0.6)/3.2,0,1),ax=26+p*112,ay=104,hat=t<4.4;
+  if(t<6.5||t>9){const geht=p>0&&p<1||t>9,back=t>9,bx=back?138-clamp((t-9)/2.2,0,1)*112:ax;
+    const img=geht?(hat?SPR.impWalkHeft:SPR.impWalk)[Math.floor(now/110)%4]:(hat?SPR.impHeft:(S.cut.sprecher==='auf'&&Math.floor(now/140)%2?SPR.impTalk:SPR.imp));
+    shadow(bx,ay,4);spr(img,bx,ay,11,27,back);S.cut.pos.auf=[bx,ay-30];}
+  else{const img=S.cut.sprecher==='auf'&&Math.floor(now/140)%2?SPR.impTalk:SPR.imp;shadow(138,104,4);spr(img,138,104,11,27,false);S.cut.pos.auf=[138,74];}
+  if(t>=4.4&&t<4.9){const f=(t-4.4)/0.5;kastenG(ctx,Math.round(140+f*6),Math.round(80-f*30+f*f*30),10,3,KR.buchR,0.6);}   // Heft fliegt auf den Stapel
+  if(t>=4.9)kastenG(ctx,148,46,12,3,KR.buchR,0.7);
+  S.cut.pos.gestalt=[218,40];
+}
+// Am Moorrand: naeher dran. Bohlenweg ins Moor, Schilf links und rechts, eine tote Birke, Wasser spiegelt den Abendhimmel.
+const MHY=50,MSONNE=[300,30];
+function moorHimmel(x,y){const d=Math.hypot(x-MSONNE[0],(y-MSONNE[1])*1.5);return clamp(0.06+Math.pow(Math.max(0,y)/MHY,1.3)*0.76+Math.max(0,1-d/140)*0.3,0,1);}
+function moorBg(){
+  const [c,g]=mk(W,SH),hash=(a,b)=>((a*73856093)^(b*19349663))>>>0;
+  for(let y=0;y<MHY;y++)for(let x=0;x<W;x++)P(g,x,y,pick(KR.abend,moorHimmel(x,y),x,y));
+  [[90,16,70,3],[230,10,90,3],[170,30,60,2]].forEach(([wx,wy,wl,wh])=>{for(let y=wy-wh;y<=wy+wh;y++)for(let x=wx-wl;x<=wx+wl;x++){
+    const u=(x-wx)/wl,v=(y-wy)/wh,form=1-u*u-Math.abs(v)+Math.sin(x*0.15+wy)*0.15;if(form<0||x<0||x>=W)continue;
+    const s=Math.max(0,1-Math.hypot(x-MSONNE[0],y-MSONNE[1])/180);P(g,x,y,pick(KR.abend,0.2+(v>0?0.2+s*0.4:0)+s*0.12,x,y));}});
+  ellFill(g,MSONNE[0],MSONNE[1]+6,10,9,(x,y,dx,dy)=>y>MHY-2?null:pick(KR.abend,0.93,x,y));
+  for(let x=0;x<W;x++){const h=MHY-5-noise1(x+80,1.6)*4;for(let y=Math.floor(h);y<MHY;y++)P(g,x,y,pick(KR.abend,moorHimmel(x,MHY)*0.5,x,y));}
+  // winziger Geschirrturm am Horizont
+  for(let k=0;k<9;k++){const w=3-Math.floor(k/3),y=MHY-6-k*1.6;for(let j=-w;j<=w;j++)P(g,62+j+Math.round(k*0.3),Math.round(y),pick(KR.abend,j===w?0.5:0.2,62,y));}
+  // Moor: grosse Wasserflaechen, dazwischen Torf und Gras
+  const pool=(x,y)=>Math.sin(x*0.035+y*0.19)+Math.sin(x*0.07-y*0.33+1.2)*0.7+Math.sin(x*0.017+2)*0.6;
+  for(let y=MHY;y<SH;y++){const tief=(y-MHY)/(SH-MHY);
+    for(let x=0;x<W;x++){const p=pool(x/(0.5+tief*1.6),y);
+      if(p>0.5-tief*0.3){const ry=MHY-(y-MHY)*1.3-1,rx=x+Math.sin(y*0.8+x*0.04)*(1+tief*2);
+        let t=moorHimmel(rx,Math.max(0,ry))*0.8-0.05;if(p<0.58-tief*0.3)t-=0.28;if(Math.sin(y*1.7+x*0.02)>0.97)t+=0.12;
+        P(g,x,y,pick(KR.abend,t,x,y));continue;}
+      const licht=Math.max(0,1-Math.hypot(x-MSONNE[0],(y-MHY)*2.5)/260);
+      let t=0.16+tief*0.14+licht*0.28+((hash(x>>1,y>>1)%5)-2)*0.025;if(hash(x,y*5)%7===0)t+=0.14;
+      P(g,x,y,pick(tief>0.35?KR.schilf:KR.torf,t,x,y));}}
+  // Bohlenweg vom unteren Rand ins Moor hinein
+  for(let y=78;y<SH;y++){const f=(y-78)/(SH-78),x0=Math.round(150-f*58),x1=Math.round(176+f*70),bh=1+Math.round(f*4);
+    for(let x=x0;x<x1;x++){const brett=Math.floor((y-78)/bh),fuge=(y-78)%bh===0,kante=x<x0+1||x>x1-2;
+      P(g,x,y,pick(KR.holz,0.3+f*0.2+((hash(brett,9)%5)-2)*0.04-(fuge?0.15:0)-(kante?0.12:0)+Math.max(0,1-Math.abs(x-(x0+x1)/2)/(x1-x0))*0.06,x,y));}
+    if(y%12===0)for(let k=1;k<5;k++)P(g,x0+2,y+k,pick(KR.holz,0.15,x0,y));}
+  // tote Birke rechts: weisse Rinde mit dunklen Flecken, Lichtkante zur Sonne
+  for(let y=14;y<126;y++){const w=y<40?2:y<80?3:4,bx=262+Math.round((126-y)*0.06);for(let k=0;k<w;k++){const x=bx+k,fleck=hash(x,y>>1)%6===0;
+    P(g,x,y,fleck?'#1a141e':pick(KR.porz,0.25+(k===w-1?0.4:k===0?-0.1:0.15)+(y<30?-0.05:0),x,y));}}
+  [[50,-1,26],[70,1,14],[34,-1,14],[90,1,10]].forEach(([y,d,l])=>{const bx=262+Math.round((126-y)*0.06);line(g,bx,y,bx+d*l,y-Math.round(l*0.35),pick(KR.porz,0.25,bx,y));line(g,bx,y+1,bx+d*l,y-Math.round(l*0.35)+1,'#1a141e');});
+  // Schilf vorn links und rechts als dunkle Silhouetten mit Lichtkante
+  const schilf=(bx,by,n,seed)=>{for(let i=0;i<n;i++){const x0=bx+((i*seed)%34)-17,h=26+((i*seed*3)%30),neig=((i%5)-2)*0.12;
+    for(let k=0;k<h;k++){const x=Math.round(x0+neig*k+Math.sin(k*0.08+i)*1.2),y=by-k;if(x>=0&&x<W&&y>=0)P(g,x,y,pick(KR.schilf,0.1+(k/h)*0.32+(i%3===0?0.1:0),x,y));}
+    if(i%3===0){const x=Math.round(x0+neig*h),y=by-h;for(let k=0;k<5;k++)P(g,x,y-k,pick(KR.holz,0.2+(k<2?0.1:0),x,y));}}};
+  schilf(18,SH,40,7);schilf(300,SH,34,11);schilf(60,SH-6,14,5);
+  return c;
+}
+function cutMoor(t,now){
+  if(!MOOR_BG){MOOR_BG=moorBg();if(!NEBELBAND)NEBELBAND=nebelBand();}
+  ctx.drawImage(MOOR_BG,0,0);
+  ctx.globalAlpha=0.75;const o=(now/80)%PW;ctx.drawImage(NEBELBAND,-o,MHY+6);ctx.drawImage(NEBELBAND,PW-o,MHY+6);ctx.globalAlpha=1;
+  // weitere Irrlichter weit draussen
+  [[200,70],[236,64],[110,74]].forEach(([x,y],i)=>irrlicht(x+Math.sin(now/800+i)*3,y+Math.sin(now/500+i*2)*2,0,now));
+  // das nahe Irrlicht schwebt links heran und macht Pling
+  const ix=40+Math.min(1,t/2.2)*34+Math.sin(now/700)*3,iy=92+Math.sin(now/450)*3,pling=t>2.4&&t<2.9;
+  irrlicht(ix,iy,pling?1:0,now);
+  if(pling){const r=Math.round((t-2.4)*24);for(let a=0;a<12;a++){const w=a*Math.PI/6;P(ctx,Math.round(ix+Math.cos(w)*(r+5)),Math.round(iy+Math.sin(w)*(r+5)*0.8),KR.irr[8]);}
+    if(!S.cut.pling){S.cut.pling=true;tone('triangle',1760,0.12,0.06);tone('triangle',2640,0.18,0.05,null,0.08);}}
+  const turn=t>2.75,hx=158,hy=128;
+  shadow(hx,hy,6);spr(S.cut.sprecher==='hero'&&Math.floor(now/140)%2?SPR.heroTalk:SPR.heroStand,hx,hy,16,46,turn);
+  // Kraechz sitzt auf dem Birkenast
+  const kx=246,ky=48;spr(S.cut.sprecher==='kraechz'&&Math.floor(now/140)%2?SPR.ravenTalk||SPR.raven:SPR.raven,kx,ky,11,19,true);
+  S.cut.pos={hero:[hx,hy-50],kraechz:[kx-6,ky-20]};
+  // Titel des Kapitels
+  if(t>5.2){const a=clamp((t-5.2)/0.8,0,1);ctx.globalAlpha=a*0.55;R(ctx,0,0,W,SH,'#05030c');ctx.globalAlpha=1;
+    if(a>0.5){const t1='Kapitel 2';text(t1,Math.round((W-textW(t1))/2),50,'#c8b890',true);titelGross('Der Sumpf der Ablenkung',64);}}
+}
+// Kapiteltitel: Pixelschrift doppelt so gross, goldener Verlauf von oben nach unten, dunkler Schlagschatten
+function titelGross(s,y){const k=2,w=textW(s)*k,x0=Math.round((W-w)/2),ROW=['#fff4c0','#ffe08a','#f8c858','#e8a838','#d08a28','#b06a1c','#8a4e14','#6a3a10'];
+  for(const pass of [0,1]){let x=x0;for(const ch of s){if(ch!==' '){const gl=G[ch]||G['?'];const oy=HIGH[ch]||0;
+    for(let r=0;r<gl.length;r++)for(let c=0;c<gl[r].length;c++)if(gl[r][c]==='#'){
+      if(pass===0){R(ctx,x+c*k-1,y+(r-oy)*k-1,k+2,k+2,'#1a0c04');R(ctx,x+c*k+1,y+(r-oy)*k+1,k+1,k+1,'#1a0c04');}
+      else R(ctx,x+c*k,y+(r-oy)*k,k,k,ROW[Math.min(ROW.length-1,r)]);}}
+    x+=(gw(ch)+1)*k;}}}
+// Ablauf der ganzen Zwischensequenz: vier Einstellungen mit Ueberblendung ueber Schwarz
+const LAND=[[0,8.5,cutTreppe],[8.5,21,cutPano],[21,33,cutTurm],[33,42,cutMoor]];
+const LAND_LINES=[
+  [1.2,6.6,'kraechz','Zähl nicht die Stufen. Ich hab’s mal versucht. Bei dreihundert hab ich beschlossen, später weiterzuzählen.'],
+  [8.5+5.2,8.5+7.6,'hero','Was ist das für ein Turm?'],
+  [8.5+9.0,8.5+11.6,'kraechz','Keine Ahnung. Gestern war er kleiner.'],
+  [21+4.6,21+7.2,'auf','Heft abgegeben. Fast pünktlich.'],
+  [21+7.6,21+11.6,'gestalt','Hmmaah … Leg es zu den anderen. Ich sehe es mir später an.'],
+  [33+3.1,33+4.4,'kraechz','Nicht hinsehen.'],
+  [33+4.5,33+5.6,'hero','Wohin?']];
+function cutLand(t,now){
+  const sh=LAND.find(s=>t>=s[0]&&t<s[1])||LAND[LAND.length-1],lt=t-sh[0];
+  const zl=LAND_LINES.find(l=>t>=l[0]&&t<l[1]);S.cut.sprecher=zl?zl[2]:null;
+  S.cut.pos={};sh[2](lt,now);
+  const rest=sh[1]-t,a=lt<0.45?1-lt/0.45:rest<0.45&&sh!==LAND[LAND.length-1]?1-rest/0.45:0;
+  if(a>0){ctx.globalAlpha=clamp(a,0,1);R(ctx,0,0,W,SH,'#000000');ctx.globalAlpha=1;}
+}
+async function uebergangKapitel2(){await runCut(42,cutLand,LAND_LINES);}
+window.__cutStill=(f,t)=>{S.cut={draw:{treppe:cutTreppe,pano:cutPano,turm:cutTurm,moor:cutMoor,land:cutLand}[f],lines:f==='land'?LAND_LINES:[],t0:performance.now()-t*1000,pos:{}};};
+
 // Speichern: nur die Teile des Zustands, die das Spiel ausmachen
 const KEEP=['spur','room','takt','zettelGelesen','flureGeschafft','halleIntro','fehlwege','heft','kraechz','kx','ky','kflip','fenster','ziel','kruemelGesehen','gitter','federmappe','muenze','kreide','tipp','kraechzKennt','jonas','inv','gefragt','tschuess','eingangDone','kallFrozen','fertig','gangIntro','passed','erlebt','plaene','tafelGelesen','suchKantine','kantineErklaert','invOff','kantineIntro','broesel','broeselKekse','broeselRede','sortiert','bereit','lappenGegeben','kammerIntro','heizIntro','grummelTor','musikIntro','metronom','orchesterWach','fermateRede','brauchSchlaegel','schlaegelWeg','pause','floeteZu','neueFloete','kartonAuf','holzwolleGenommen','emilRede','bioIntro','miaFrage','miaRuhe','kopfGenommen','miaZurueck','gustavGefunden','miaWach','miaRede','brauchFeuer','wolleImFleck','feuer','grummelRede','kisteAuf','lochGesehen','probiert','torAuf'];
 function save(){const d={};KEEP.forEach(k=>{if(S[k]!==undefined)d[k]=S[k];});d.hero={x:S.hero.x,y:S.hero.y,flip:S.hero.flip};SAVE.write({prolog:d});}
 let looping=false;
 const API={onDone:null,
-  start(saved){reset(saved);build();initAudio();last=performance.now();if(!looping){looping=true;requestAnimationFrame(loop);}if(!S.eingangDone)eingang();else if(S.room==='halle'&&!S.halleIntro)run(()=>enterHalle());else if(S.room==='gang'&&!S.gangIntro)run(()=>enterGang());else if(S.room==='kantine'&&!S.kantineIntro)run(()=>enterKantine());else if(S.room==='heiz'&&!S.heizIntro)run(()=>enterHeiz());else if(S.room==='musik'&&!S.musikIntro)run(()=>enterMusik());else if(S.room==='bio'&&!S.bioIntro)run(()=>enterBio());},
+  start(saved){reset(saved);build();initAudio();last=performance.now();if(!looping){looping=true;requestAnimationFrame(loop);}if(!S.eingangDone)eingang();else if(S.room==='halle'&&!S.halleIntro)run(()=>enterHalle());else if(S.room==='gang'&&!S.gangIntro)run(()=>enterGang());else if(S.room==='kantine'&&!S.kantineIntro)run(()=>enterKantine());else if(S.room==='heiz'&&!S.heizIntro)run(()=>enterHeiz());else if(S.room==='musik'&&!S.musikIntro)run(()=>enterMusik());else if(S.room==='bio'&&!S.bioIntro)run(()=>enterBio());else if(S.zeigeUebergang){S.zeigeUebergang=false;run(()=>uebergangKapitel2());}},
   mute(m){if(M)M.gain.value=m?0:0.5;}};
 window.__S=()=>S;window.__skip=()=>{if(skipLine)skipLine();};
 window.__act=(verb,id,item)=>{const h=curHS().find(x=>x.id===id);return run(async()=>{if(!await goTo(h.walk[0],h.walk[1]))return;face(h.flip);await act(verb,h,item);});};
@@ -4218,6 +4605,7 @@ SZENEN.bio=Object.assign({},SZENEN.keller,{room:'bio',bioIntro:false,heizIntro:t
 SZENEN.feuer=Object.assign({},SZENEN.keller,{heizIntro:true,kraechz:'heiz',kx:226,ky:13,kflip:true,hero:{x:120,y:124,flip:false},brauchFeuer:true,schlaegelWeg:true,orchesterWach:true,musikIntro:true,kartonAuf:true,holzwolleGenommen:true,neueFloete:true,floeteZu:true,
   bioIntro:true,miaFrage:true,gustavGefunden:true,miaWach:true,miaRuhe:true,kopfGenommen:true,inv:['lineal','radiergummi','muenze','kreide','notiz','kekse','schlaegel','holzwolle','lupe']});
 SZENEN.kiste=Object.assign({},SZENEN.feuer,{feuer:true,kisteAuf:true,inv:['lineal','radiergummi','muenze','kreide','notiz','kekse','schlaegel','lupe']});
+SZENEN.land=Object.assign({},SZENEN.kiste,{zeigeUebergang:true});
 function szeneStarten(id){
   const s=SAVE.read();PLAYER.name=(s&&s.name)||PLAYER.name||'Robin';PLAYER.girl=s?!!s.girl:PLAYER.girl;
   SAVE.clear();

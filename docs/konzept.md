@@ -396,6 +396,8 @@ Fachlich stimmt das so: Pudding aus Puddingpulver wird mit Milch und Zucker geko
 
 ## Kapitel 2: Der Sumpf der Ablenkung (Überwachen)
 
+**Übergang: Hinter dem Tor.** Eine Zwischensequenz von etwa 40 Sekunden verbindet die Kapitel. 1. Eine Wendeltreppe führt in einen tiefen Schacht, unten leuchtet violetter Nebel. Krächz: „Zähl nicht die Stufen. Ich hab’s mal versucht. Bei dreihundert hab ich beschlossen, später weiterzuzählen.“ 2. Die Figur tritt aus einem Felsentor auf einen Bohlenweg, die Kamera schwenkt über das Land Später: träge Abendsonne, Moor mit Irrlichtern, Papiermotten (ungeschriebene Aufsätze), Pilze mit Vokabeln, am Horizont ein schiefer Turm aus Geschirr, der beim Hinsehen um ein Stockwerk wächst. „Was ist das für ein Turm?“ Krächz: „Keine Ahnung. Gestern war er kleiner.“ 3. Im Turmzimmer aus Tellerstapeln sitzt die Gestalt im Ohrensessel, über dem Kamin schwingt die Unruh. Das Aufschiebchen legt das Heft auf einen Berg anderer Hefte: „Heft abgegeben. Fast pünktlich.“ Die Gestalt gähnt: „Leg es zu den anderen. Ich sehe es mir später an.“ Wer die Gestalt ist, bleibt offen. 4. Am Moorrand macht ein Irrlicht „Pling!“, die Figur dreht sich um. Krächz: „Nicht hinsehen.“ Figur: „Wohin?“ Dann der Titel „Kapitel 2: Der Sumpf der Ablenkung“.
+
 Hinter dem Kellertor beginnt das Land Später mit einem Moor voller Irrlichter. Die Hauptfigur muss es durchqueren und erhält am Ende das Fernrohr der Umsicht. Schauplätze: Moorrand, Rundlauf-Moor, Froschbrücke, Fährstelle, Kolportus’ Marktstand, Madame Merkwohls Hütte.
 
 | # | Rätsel | Art | Lösung |
