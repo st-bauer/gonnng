@@ -17,7 +17,7 @@ Konter im Finale („Ausreden-Duell“). Das vollständige Konzept steht in `doc
 ## Technische Entscheidungen
 
 - Zielplattform: Browser, auch iPad. Das Spiel wird eine einzelne HTML-Datei (plus Grafikdateien), ohne Server.
-- Bildformat: 320 × 200 Pixel (VGA), per CSS pixelgenau hochskaliert (`image-rendering: pixelated`).
+- Bildformat: 320 × 200 Pixel (VGA), per CSS pixelgenau hochskaliert (`image-rendering: pixelated`), nur in ganzen Vielfachen (2×, 3× …), sonst wird die Pixelschrift unscharf (`fit()` am Anfang des Skripts).
 - Bedienung wie im Vorbild: neun Verben (Gib, Nimm, Benutze, Öffne, Schau an, Drücke, Schließe, Rede mit, Ziehe),
   Standardverb „Gehe zu“, Inventar, „Benutze X mit Y“, Sprechtext farbig über der Figur.
   Mit „Gehe zu“ läuft die Figur nur hin (Ausgänge führen weiter). Anschauen, Nehmen usw. gibt es nur mit dem passenden Verb.
@@ -87,19 +87,20 @@ Canva-Arbeitsdatei: https://canva.link/mp6p64febvogrh4
   Drei flüsternde Aufschiebchen, wer reinfällt, trottet zurück (`goTo`, `stoer`, erlebte Stolperstellen in `S.erlebt`).
   Grummelbarts Tafel zeigt seine eigenen Wenn-dann-Pläne. Mit Kreide schreibt die Figur dort eigene Pläne (`planSchreiben`,
   Auswahl aus `WENN` und `DANN`, gespeichert in `S.plaene`). Nur konkrete Handlungen passen, dann läuft die Figur von allein vorbei.
-  Der Keks-Plan braucht einen Keks: Im Gespräch mit dem Aufschiebchen auf der Kiste erfährt man, dass Frau Brösel in der Kantine die Kekse backt.
+  Der Keks-Plan („Wenn mein Magen knurrt, dann esse ich meinen eigenen Keks“) gilt nur mit einem Keks in der Tasche. Im Gespräch mit dem Aufschiebchen auf der Kiste erfährt man, dass Frau Brösel in der Kantine die Kekse backt. Der Weg dorthin hat einen eigenen Grund: Die Figur will der erstarrten Frau Brösel helfen, die Kekse sind der Dank.
   Grundsatz: Krächz hilft nur, jedes Rätsel ist auch ohne ihn lösbar. Vorschläge vor dem Einbau auf Sinn in der Spielwelt prüfen.
   Inventar mit Blättern (Pfeile links neben den Feldern).
 - Kapitel 1, dritter Raum: die Kantine (Raum `kantine`) mit Speisekammer (Raum `kammer`). Frau Brösel (`makeBroesel`) ist erstarrt
   vor dem Mittagessen für zweihundert Schülerinnen und Schüler. Rätsel 1: Rezeptkarten sortieren (`sortieren`, `KARTEN`, `RICHTIG`:
   Pudding, Suppe, Kekse, Salat). Rätsel 2: Topf, Milch, Zucker, Puddingpulver auf den Herd legen (`aufHerd`, `S.bereit`), Zucker und
-  Pulver liegen unter einem schlafenden Aufschiebchen, das den Topflappen als Kissen nimmt. Frau Brösel wird wach (`S.broesel` 1 und 2)
+  Pulver: Das Aufschiebchen schläft mit dem Kopf auf den Pulverpäckchen, der Zuckersack steht daneben. „Benutze Topflappen mit Puddingpulver“ zieht die Päckchen weg und schiebt im selben Zug den Topflappen unter den Kopf (`lappenTausch`), das Aufschiebchen rollt nicht. Frau Brösel wird wach (`S.broesel` 1 und 2)
   und schenkt Kekse (`kekse`).
   Mit den Keksen kommt die Figur durch den Flüstergang in den Heizungskeller.
 - Zwischensequenzen (`runCut`, überspringbar, ohne Verbleiste): Rutschpartie durch den Schacht,
   Abstieg über die Kellertreppe am Ende der Hallen-Vorschau.
 - Szenenwahl nur zum Testen (versteckt, erscheint nach fünfmal schnellem Tippen auf den Titel „Gonnng!“): Intro, Prolog, Eingangshalle, Flüstergang, Kantine, Heizungskeller, Musikraum, Biologieraum, Heizungskeller mit Lupe und Holzwolle, Heizungskeller: Schlüsselkiste, jeweils mit passendem Spielstand (`SZENEN`).
   Neue Räume dort mit ergänzen.
+- Durchlauf am Stück (Neues Spiel bis Ende von Kapitel 1, mit Neuladen nach jedem Raum): `scripts/durchlauf_test.js`, braucht Playwright (`NPM_ROOT=$(npm root -g)`) und einen Server auf Port 8765 (`python3 -m http.server 8765` im Repo). Letzter Lauf am 02.10.2026 ohne Fehler.
 - Zum Testen: `window.__frame(sekunde)` im Intro, `window.__act(verb, id, item)` und `window.__pick(i)` im Prolog.
 - Entschieden: Die Unruh bleibt. Die Große Stundenuhr ist eine Sonderanfertigung (Turmuhren haben sonst meist ein Pendel),
   Krächz erklärt das auf Nachfrage. Die Namen Frau Kallweit, Jonas und Lina bleiben.
@@ -107,8 +108,8 @@ Canva-Arbeitsdatei: https://canva.link/mp6p64febvogrh4
 - Kapitel 1, vierter Raum: der Heizungskeller (Raum `heiz`, `drawHeizBg`, `makeGrummel`, `actHeiz`). Grummelbart erstarrt im Sessel mit dem
   Schlüssel in der Faust, Kessel mit Anmachholz und Kohle, aber ohne Streichhölzer (`S.brauchFeuer`). Seit dem Gong steht die Sonne still,
   ein Sonnenfleck vom Kellerfenster (`fleck`). Holzwolle hinein, Lupe darüber (`brennglas`), die Heizung springt an (`S.feuer`),
-  Grummelbart taut auf (`grummelTaut`) und schließt seine Schlüsselkiste auf (`S.kisteAuf`). Rätsel: erst das Schlüsselloch anschauen (`S.lochGesehen`),
-  dann mit der Lupe die Bärte vergleichen (`schluesselSuchen`, `SCHLUESSEL`, Nahansicht über `S.sort`), wahllos probieren scheitert (`zufallsProbe`).
+  Grummelbart taut auf (`grummelTaut`) und schließt seine Schlüsselkiste auf (`S.kisteAuf`). Danach trägt Grummelbart die Kiste zum Tor, probiert Schlüssel um Schlüssel und gibt auf (`grummelProbiert`, `makeGrummelSteht`). Rätsel: Das Schlüsselloch ist ohne Lupe zu klein („Viel zu klein, um etwas zu erkennen“, Hinweis auf die Lupe),
+  mit „Benutze Lupe mit Schlüsselloch“ erkennt die Figur die Form (`S.lochGesehen`, die Figur schaut nie von allein hin). Die Kiste lässt sich ohne Lupe anschauen und die Bärte mit der Lochskizze vergleichen (`schluesselSuchen`, `SCHLUESSEL`, Nahansicht über `S.sort`), wahllos probieren scheitert (`zufallsProbe`).
   Mit dem Torschlüssel geht das Tor auf (`torAufschliessen`), Grummelbart schenkt den Kompass der Pläne, Ende von Kapitel 1.
 - Animationen: `reach()` wählt die Haltung nach der Höhe des Ziels (bücken, greifen, hoch), `flieg()` lässt Gegenstände sichtbar wandern,
   Türen gehen auf und zu (`durchTuer`, `ausTuer`, `hallEintritt` in der Halle), Krächz fliegt mit Flügelschlag (`kraechzFlug`).
