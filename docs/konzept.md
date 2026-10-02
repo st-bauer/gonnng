@@ -60,7 +60,7 @@ Der Gegenspieler heißt jetzt **Graf Nimmerjetzt**. Der Name sagt, was er will, 
 | Madame Merkwohl | Uralte Sumpfschildkröte, spricht langsam, vergisst nie etwas | Gibt das Fernrohr der Umsicht (Kapitel 2) |
 | Frau Dr. Wurzelberg | Biolehrerin, zur Hälfte in einen Kaktus verwandelt, entsprechend stachelig gelaunt. Ihre Topfpflanzen streiten ständig | Pflanzenrätsel und Reflexion (Kapitel 3) |
 | Das Zerrbild | Das düstere Spiegelbild der Hauptfigur im Spiegelsee, schiebt jede Schuld auf andere | Ursachenzuschreibung (Kapitel 3) |
-| Graf Nimmerjetzt | Trägt einen Morgenmantel über der Rüstung, gähnt beim Drohen, wohnt in einem Turm aus ungesüpltem Geschirr | Gegenspieler, Ausreden-Duell (Kapitel 4) |
+| Graf Nimmerjetzt | Trägt einen Morgenmantel über der Rüstung, gähnt beim Drohen, wohnt in einem Turm aus ungespültem Geschirr | Gegenspieler, Ausreden-Duell (Kapitel 4) |
 
 **Das Geheimnis des Grafen:** Er war einmal Schüler in Sankt Irgendwann. Einen Aufsatz hat er so lange aufgeschoben, bis er selbst im Land Später verschwand. Heimlich will er zurück, traut sich aber nicht anzufangen. Diese Wendung trägt das Finale.
 
@@ -525,7 +525,7 @@ Hinter dem Moor liegt ein stiller See. Er zeigt keine Gesichter, er zeigt Gedank
 
 ## Kapitel 4: Der Turm des Grafen
 
-Im Finale steigt die Hauptfigur in den Turm aus ungesüpltem Geschirr, besiegt Graf Nimmerjetzt im Ausreden-Duell und bringt die Unruh zurück in die Große Stundenuhr. Hier greifen alle Strategien ineinander. Schauplätze: Turmfuß, Treppe der Stapel, Thronsaal, Glockenturm der Schule.
+Im Finale steigt die Hauptfigur in den Turm aus ungespültem Geschirr, besiegt Graf Nimmerjetzt im Ausreden-Duell und bringt die Unruh zurück in die Große Stundenuhr. Hier greifen alle Strategien ineinander. Schauplätze: Turmfuß, Treppe der Stapel, Thronsaal, Glockenturm der Schule.
 
 | # | Rätsel | Art | Lösung |
 | --- | --- | --- | --- |

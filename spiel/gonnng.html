@@ -4415,7 +4415,13 @@ function turmBg(){
     else if(ly===0)t+=0.14;else t-=0.06;
     if(lx===0||lx===15)t-=0.22;
     const muster=!tasse&&ly===1&&hash(sp,plate)%5===0&&lx>2&&lx<14&&lx%2===0;              // blauer Rand auf manchen Tellern
-    P(g,x,y,muster?pick(KR.buchB,0.25+hell(x,y)*0.5,x,y):farbe(t,x,y));}
+    const hs=hash(sp*13,plate*7),fx=3+hs%9;                                              // Essensreste: Sosse, Spinat, Kaffeeraender
+    const sosse=!tasse&&hs%6===0&&Math.abs(lx-fx)<2+(hs>>4)%2,spinat=!tasse&&hs%11===1&&Math.abs(lx-fx)<2&&ly===0;
+    const kaffee=tasse&&(y%13===1||y%13===2)&&lx>2&&lx<13;
+    if(sosse)P(g,x,y,pick(KR.terra,0.15+hell(x,y)*0.45+(ly===0?0.1:0),x,y));
+    else if(spinat)P(g,x,y,pick(KR.blatt,0.05+hell(x,y)*0.3,x,y));
+    else if(kaffee)P(g,x,y,pick(KR.holz,0.08+hell(x,y)*0.35,x,y));
+    else P(g,x,y,muster?pick(KR.buchB,0.25+hell(x,y)*0.5,x,y):farbe(t,x,y));}
   // Boden: Dielen in der Flucht, warmer Fleck vor dem Kamin
   for(let y=100;y<SH;y++)for(let x=0;x<W;x++){const d=(y-100)/44,u=(x-160)/(0.55+d*1.5),seam=((u%14)+14)%14<0.9,fy=Math.floor(y*0.9)%7===0;
     let t=0.1+hell(x,y)*0.75-0.05+(seam?-0.12:0)+((hash(Math.floor(u/14),Math.floor(y/7))%5)-2)*0.02;
@@ -4450,8 +4456,29 @@ function turmBg(){
   polyFill(g,sessel,(x,y)=>{const ohr=y<70&&(x<210||x>244),t=0.1+hell(x,y)*0.6+(x>238?0.14:0)-(ohr?0.04:0)+(y<52?0.1:0)+((x-204)%9===0&&y>58&&y<92?-0.1:0)+(((x-204)%9===4)&&y>58&&y<92&&(y%10===0)?0.12:0);return pick(SAMTG,t,x,y);});
   for(let y=86;y<102;y++)for(let x=198;x<252;x++)P(g,x,y,pick(SAMTG,0.16+hell(x,y)*0.55+(y===86?0.15:0),x,y));      // Sitzflaeche und Front
   for(let x=200;x<252;x+=48)for(let y=102;y<106;y++)P(g,x,y,pick(KR.holz,0.4,x,y));
-  // Geschirr liegt herum
-  [[120,104],[132,110],[60,118],[300,124]].forEach(([x,y],i)=>{ellFill(g,x,y,6,2,(px,py,dx,dy)=>pick(porzW,0.35+hell(px,py)*0.5-dy*0.1,px,py));if(i%2)kastenG(g,x-2,y-6,5,5,porzW,0.4+hell(x,y)*0.4);});
+  // Stapel mit ungespueltem Geschirr: Teller schief aufeinander, Sossenraender, oben eine Tasse mit Kaffeerest, mal eine Gabel
+  const stapel=(bx,by,n,w,seed,tasse,gabel)=>{let y=by;
+    for(let i=0;i<n;i++){const jx=Math.round(Math.sin(i*1.9+seed)*1.4+(i*0.15*((seed%2)?1:-1))),cx=bx+jx,hs=hash(seed,i);
+      for(let j=-w;j<=w;j++){const x=cx+j,rand=Math.abs(j)>=w-1,L=hell(x,y);
+        P(g,x,y,farbe(0.42+L*0.5+(j>0?0.08:-0.04)-(rand?0.1:0),x,y));                           // Kante oben, hell wie Porzellan
+        P(g,x,y+1,farbe(0.14+L*0.35,x,y+1));                                               // Unterseite im Schatten
+        if(hs%3===0&&Math.abs(j-((hs>>3)%(2*w)-w))<2)P(g,x,y,pick(KR.terra,0.12+L*0.45,x,y));  // Sosse quillt raus
+        if(hs%5===1&&j===((hs>>2)%w))P(g,x,y,pick(KR.blatt,0.1+L*0.3,x,y));}
+      y-=2;}
+    if(tasse){const cx=bx+Math.round(Math.sin(n*1.9+seed)*1.4);for(let k=1;k<=6;k++)for(let j=-4;j<=4;j++){const x=cx+j,yy=y-k+2,L=hell(x,yy);P(g,x,yy,farbe(0.36+L*0.5+(j>1?0.1:0)-(Math.abs(j)===4?0.12:0),x,yy));}
+      for(let j=-3;j<=3;j++)P(g,cx+j,y-4,pick(KR.holz,0.1+hell(cx,y)*0.3,cx,y));                   // Kaffeerand oben
+      P(g,cx+5,y-1,farbe(0.6,cx,y));P(g,cx+6,y-2,farbe(0.6,cx,y));P(g,cx+5,y-3,farbe(0.6,cx,y));}
+    if(gabel){line(g,bx-w+2,y+3,bx-w-3,y-8,pick(KR.stahl,0.6,bx,y));line(g,bx-w-4,y-8,bx-w-2,y-10,pick(KR.stahl,0.8,bx,y));}};
+  stapel(54,98,9,8,3,true,false);                                              // an der Wand neben der Tuer
+  stapel(188,98,13,7,8,false,true);                                            // zwischen Heftberg und Sessel
+  stapel(124,99,6,9,5,true,false);
+  stapel(46,140,8,10,11,true,true);                                            // vorn links
+  stapel(116,142,5,8,4,false,false);
+  stapel(306,141,11,9,7,true,false);                                           // vorn rechts am Kamin
+  // ein Topf mit angebrannter Suppe und Kelle
+  zylG(g,264,124,14,9,KR.stahl,0.35);ellFill(g,271,124,7,2,(x,y)=>pick(KR.terra,0.15+hell(x,y)*0.3,x,y));line(g,272,123,280,112,pick(KR.stahl,0.7,272,123));
+  // einzelne Tassen und Teller auf dem Boden, nicht gespuelt
+  [[150,108],[86,122],[236,134]].forEach(([x,y],i)=>{ellFill(g,x,y,6,2,(px,py,dx,dy)=>farbe(0.45+hell(px,py)*0.5-dy*0.1,px,py));ellFill(g,x,y,2.5,1,(px,py)=>pick(KR.terra,0.15+hell(px,py)*0.4,px,py));});
   return c;
 }
 // Die Unruh: Goldring mit Speichen und Spirale, schwingt hin und her
