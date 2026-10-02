@@ -4394,91 +4394,119 @@ function cutPano(t,now){
   const kx=hx+18,ky=hy-56+Math.sin(t*5)*2;spr(SPR.ravenFlug[Math.floor(now/90)%2],kx,ky,11,19,false);
   S.cut.pos={hero:[Math.max(40,hx),hy-50],kraechz:[Math.max(40,kx),ky-22]};
 }
-// Turmzimmer der Gestalt: Waende aus gestapeltem Geschirr, rundes Fenster mit kuehlem Abendlicht links,
-// Kamin rechts mit warmem Feuer, darueber schwingt die Unruh. Ein Berg aus Heften neben dem Ohrensessel.
+// Turmzimmer der Gestalt in Zentralperspektive: Rueckwand, zwei Seitenwaende und Balkendecke laufen auf den Fluchtpunkt zu.
+// Waende aus gestapelten, ungespuelten Tellern. Licht: kuehles Abendlicht durchs runde Fenster links, warmes Feuer im Kamin rechts.
+// Kamin, Sessel, Heftberg und Geschirrstapel sind Koerper mit Ober- und Seitenflaechen, ihre Schatten liegen im Boden.
 const porzW=mkRamp(['#1e0e08','#4a2614','#8a5430','#c88c58','#f0c490','#fff0d8'],12);
-const FEUER_P=[284,98],FENSTER=[70,40];
-function turmLicht(x,y){const f=Math.max(0,1-Math.hypot(x-FEUER_P[0],(y-FEUER_P[1])*1.15)/190),w=Math.max(0,1-Math.hypot(x-FENSTER[0],(y-FENSTER[1])*1.1)/120);return[f,w];}
+const TZ={VX:160,VY:40,BL:52,BR:268,BT:20,WB:96};
+const FEUER_P=[234,92],FENSTER=[86,48];
+function turmLicht(x,y){const f=Math.max(0,1-Math.hypot(x-FEUER_P[0],(y-FEUER_P[1])*1.15)/200),w=Math.max(0,1-Math.hypot(x-FENSTER[0],(y-FENSTER[1])*1.1)/120);return[f,w];}
 function turmBg(){
-  const [c,g]=mk(W,SH),hash=(a,b)=>((a*73856093)^(b*19349663))>>>0;
-  const MIXP=mkMix(KR.porz,porzW,8),MIXH=mkMix(KR.dielen.map(x=>x),KR.dielen,2);
+  const [c,g]=mk(W,SH),hash=(a,b)=>((a*73856093)^(b*19349663))>>>0,{VX,VY,BL,BR,BT,WB}=TZ;
+  const zum=(x,y,k)=>[x+(VX-x)*k,y+(VY-y)*k];
+  const MIXP=mkMix(KR.porz,porzW,8),SAMTG=mkRamp(['#020806','#06180f','#0c2a1c','#163e2a','#24563a','#3a7250','#5a9068'],12);
   const farbe=(t,x,y)=>{const [f,w]=turmLicht(x,y);return pickMix(MIXP,clamp(f/(f+w*0.8+0.05),0,1),t,x,y);};
-  const hell=(x,y)=>{const [f,w]=turmLicht(x,y);return 0.06+f*0.62+w*0.42;};
-  // Rueckwand: Tellerkanten in Reihen, die Wand ist rund, die Raender liegen im Schatten
-  // Rueckwand aus Tellerstapeln: jede Saeule ein Stapel, jeder Teller zwei Pixel, Kanten nach aussen dunkler
-  for(let y=0;y<100;y++)for(let x=0;x<W;x++){
-    const plate=Math.floor(y/2),ly=y%2,sp=Math.floor((x+3)/16),jit=(hash(sp,plate)%3)-1,lx=(x+3+jit)%16,rund=Math.pow(Math.abs(x-160)/170,2);
-    const tasse=hash(sp,Math.floor(y/26))%5===0;                                       // ab und zu ein Turm aus Tassen
-    let t=hell(x,y)-rund*0.25;
+  const hell=(x,y)=>{const [f,w]=turmLicht(x,y);return 0.05+f*0.62+w*0.42;};
+  // Tellerwand: (u,v) sind Koordinaten auf der Wand, tief = 1 an der Rueckwand, groesser zum Betrachter hin
+  const teller=(x,y,u,v,tief,schatten)=>{
+    const plate=Math.floor(v/2),ly=Math.floor(v)%2,sp=Math.floor((u+3)/16),jit=(hash(sp,plate)%3)-1,lx=((Math.floor(u)+3+jit)%16+16)%16;
+    const tasse=hash(sp,Math.floor(v/26))%5===0;let t=hell(x,y)-schatten;
     const quer=Math.abs(lx-7.5)/7.5;t+=(1-quer*quer)*0.12-0.06;
-    if(tasse){const ty=y%13;t+=ty<2?0.12:ty>11?-0.15:0;if(lx===15&&ty>3&&ty<9)t+=0.1;}
-    else if(ly===0)t+=0.14;else t-=0.06;
+    if(tasse){const ty=Math.floor(v)%13;t+=ty<2?0.12:ty>11?-0.15:0;}else if(ly===0)t+=0.14;else t-=0.06;
     if(lx===0||lx===15)t-=0.22;
-    const muster=!tasse&&ly===1&&hash(sp,plate)%5===0&&lx>2&&lx<14&&lx%2===0;              // blauer Rand auf manchen Tellern
-    const hs=hash(sp*13,plate*7),fx=3+hs%9;                                              // Essensreste: Sosse, Spinat, Kaffeeraender
-    const sosse=!tasse&&hs%6===0&&Math.abs(lx-fx)<2+(hs>>4)%2,spinat=!tasse&&hs%11===1&&Math.abs(lx-fx)<2&&ly===0;
-    const kaffee=tasse&&(y%13===1||y%13===2)&&lx>2&&lx<13;
-    if(sosse)P(g,x,y,pick(KR.terra,0.15+hell(x,y)*0.45+(ly===0?0.1:0),x,y));
-    else if(spinat)P(g,x,y,pick(KR.blatt,0.05+hell(x,y)*0.3,x,y));
-    else if(kaffee)P(g,x,y,pick(KR.holz,0.08+hell(x,y)*0.35,x,y));
-    else P(g,x,y,muster?pick(KR.buchB,0.25+hell(x,y)*0.5,x,y):farbe(t,x,y));}
-  // Boden: Dielen in der Flucht, warmer Fleck vor dem Kamin
-  for(let y=100;y<SH;y++)for(let x=0;x<W;x++){const d=(y-100)/44,u=(x-160)/(0.55+d*1.5),seam=((u%14)+14)%14<0.9,fy=Math.floor(y*0.9)%7===0;
-    let t=0.1+hell(x,y)*0.75-0.05+(seam?-0.12:0)+((hash(Math.floor(u/14),Math.floor(y/7))%5)-2)*0.02;
-    if(y===100)t-=0.15;P(g,x,y,pick(KR.dielen,t,x,y));}
-  // Teppich unter dem Sessel
-  ellFill(g,206,120,58,11,(x,y,dx,dy)=>{const r=dx*dx+dy*dy,rand=r>0.78&&r<0.86;return pick(KR.samt,0.04+hell(x,y)*0.32+(rand?0.12:0)+(r<0.3&&Math.abs(dx*6)%1<0.2?0.06:0),x,y);});
-  // rundes Fenster: draussen der violette Abendhimmel, Sprossen aus Untertassen
-  ellFill(g,FENSTER[0],FENSTER[1],19,19,(x,y,dx,dy)=>{const r=Math.hypot(dx,dy);if(r>0.82)return pick(KR.porz,0.5+(-dx-dy)*0.2,x,y);
-    if(Math.abs(x+0.5-FENSTER[0])<1||Math.abs(y+0.5-FENSTER[1])<1)return pick(KR.porz,0.35,x,y);
-    return pick(KR.abend,0.12+((y-FENSTER[1]+16)/32)*0.55,x,y);});
-  for(let x=FENSTER[0]-15;x<FENSTER[0]+16;x++){const y=FENSTER[1]+7+Math.round(Math.sin(x*0.4)*1);if(Math.hypot(x-FENSTER[0],y-FENSTER[1])<15)for(let k=y;k<FENSTER[1]+16;k++)if(Math.hypot(x-FENSTER[0],k-FENSTER[1])<15.5&&Math.abs(x-FENSTER[0])>0&&Math.abs(k-FENSTER[1])>0)P(g,x,k,pick(KR.abend,0.08,x,k));}
-  // Tuer links: Bogen, dahinter dunkle Treppe
-  for(let y=44;y<100;y++)for(let x=6;x<44;x++){const innen=Math.hypot((x-25)/15,(y-60)/16)<1&&y<60||(Math.abs(x-25)<15&&y>=60);
-    const rahmen=!innen&&(Math.hypot((x-25)/19,(y-60)/20)<1&&y<60||(Math.abs(x-25)<19&&y>=60));
-    if(innen)P(g,x,y,pick(KR.stein,0.04+(y-44)/600,x,y));else if(rahmen)P(g,x,y,farbe(0.2+hell(x,y)*0.5+(x<25?0.05:-0.05),x,y));}
-  // Kamin rechts: Sims, Oeffnung, Ziegel aus Geschirr verbacken
-  for(let y=58;y<100;y++)for(let x=250;x<318;x++){const sims=y<64,offen=x>=262&&x<306&&y>=72;
-    if(offen){const d=Math.hypot((x-284)/22,(y-100)/26);P(g,x,y,pick(KR.feuer,0.12+Math.max(0,1-d)*0.25,x,y));continue;}
+    const hs=hash(sp*13,plate*7),fx=3+hs%9;
+    if(!tasse&&hs%6===0&&Math.abs(lx-fx)<2+(hs>>4)%2)return pick(KR.terra,0.15+hell(x,y)*0.45+(ly===0?0.1:0)-schatten,x,y);   // Sosse
+    if(!tasse&&hs%11===1&&Math.abs(lx-fx)<2&&ly===0)return pick(KR.blatt,0.05+hell(x,y)*0.3,x,y);                         // Spinat
+    if(tasse&&(Math.floor(v)%13===1||Math.floor(v)%13===2)&&lx>2&&lx<13)return pick(KR.holz,0.08+hell(x,y)*0.35-schatten,x,y); // Kaffeerand
+    if(!tasse&&ly===1&&hs%5===0&&lx>2&&lx<14&&lx%2===0)return pick(KR.buchB,0.25+hell(x,y)*0.5-schatten,x,y);
+    return farbe(t,x,y);};
+  // Bodenlinie der Seitenwaende
+  const linksUnten=x=>VY+(WB-VY)*(VX-x)/(VX-BL),linksOben=x=>VY+(BT-VY)*(VX-x)/(VX-BL);
+  const rechtsUnten=x=>VY+(WB-VY)*(x-VX)/(BR-VX),rechtsOben=x=>VY+(BT-VY)*(x-VX)/(BR-VX);
+  for(let y=0;y<SH;y++)for(let x=0;x<W;x++){
+    if(x>=BL&&x<BR&&y>=BT&&y<WB){                                                      // Rueckwand
+      const ecke=Math.max(0,1-(x-BL)/14)*0.18+Math.max(0,1-(BR-1-x)/14)*0.18+Math.max(0,1-(y-BT)/10)*0.2+Math.max(0,1-(WB-1-y)/6)*0.15;
+      P(g,x,y,teller(x,y,x-BL,y-BT,1,ecke));continue;}
+    if(x<BL&&y>=linksOben(x)&&y<linksUnten(x)){                                         // linke Seitenwand, im Schatten
+      const z=(VX-x)/(VX-BL),v=(y-VY)/z+VY-BT,u=(1-1/z)*260;
+      P(g,x,y,teller(x,y,u,v,z,0.12+Math.max(0,1-(BL-x)/10)*0.1));continue;}
+    if(x>=BR&&y>=rechtsOben(x)&&y<rechtsUnten(x)){                                      // rechte Seitenwand, vom Feuer angestrahlt
+      const z=(x-VX)/(BR-VX),v=(y-VY)/z+VY-BT,u=(1-1/z)*260;
+      P(g,x,y,teller(x,y,u,v,z,0.04+Math.max(0,1-(x-BR)/10)*0.1));continue;}
+    if(y<BT&&y<linksOben(Math.min(x,BL))+(x<BL?0:0)||(x<BL&&y<linksOben(x))||(x>=BR&&y<rechtsOben(x))){   // Decke mit Balken zum Fluchtpunkt
+      const a=Math.atan2(y-VY,x-VX),balken=((a*180/Math.PI+720)%9)<2.2,d=Math.hypot(x-VX,y-VY);
+      let t=0.08+hell(x,y)*0.35-(balken?0:0.06)+(balken&&((a*180/Math.PI+720)%9)<0.8?0.08:0);
+      if(!balken&&Math.floor(d/7)%2===0)t-=0.02;
+      P(g,x,y,pick(KR.holz,t,x,y));continue;}
+    // Boden: Dielen laufen auf den Fluchtpunkt zu, Querfugen werden nach hinten dichter
+    const d=y-VY,u=(x-VX)*56/d,dl=Math.floor(u/9),ro=Math.floor(700/d+((hash(dl,3)%4)*0.25)),fu=u/9-dl;
+    let t=0.08+hell(x,y)*0.72+((hash(dl,ro)%5)-2)*0.02;
+    if(fu<0.07)t-=0.14;else if(fu<0.16)t+=0.04;
+    if(((700/d+((hash(dl,3)%4)*0.25))%1)<0.06)t-=0.1;
+    P(g,x,y,pick(KR.dielen,t,x,y));}
+  // Kontaktschatten, wo Wand und Boden sich treffen
+  for(let x=0;x<W;x++){const y0=x<BL?linksUnten(x):x>=BR?rechtsUnten(x):WB;for(let k=0;k<3;k++){const y=Math.floor(y0)+k;if(y<SH)P(g,x,y,pick(KR.dielen,0.05+hell(x,y)*0.35*(k/3),x,y));}}
+  // Lichtfleck vom Fenster auf dem Boden
+  polyFill(g,[[78,100],[100,100],[124,122],[96,124]],(x,y)=>pick(KR.dielen,0.22+hell(x,y)*0.72,x,y));
+  // Teppich in der Flucht
+  ellFill(g,184,122,62,11,(x,y,dx,dy)=>{const r=dx*dx+dy*dy,rand=r>0.78&&r<0.88;return pick(KR.samt,0.04+hell(x,y)*0.34+(rand?0.12:0)+(r<0.3&&Math.abs(dx*6)%1<0.2?0.06:0),x,y);});
+  // Schatten vom Kaminfeuer: Sessel, Heftberg und Stapel werfen sie nach links ueber den Boden
+  const schlag=(x0,x1,yb,h)=>{const L=FEUER_P,f=Math.min(2.6,h/14);
+    const p=[[x1,yb],[x0,yb],[x0+(x0-L[0])*f*0.35,yb+(yb-L[1])*f*0.5],[x1+(x1-L[0])*f*0.35,yb+(yb-L[1])*f*0.5]];
+    polyFill(g,p,(x,y)=>pick(KR.dielen,0.06+hell(x,y)*0.25,x,y));};
+  schlag(150,198,108,44);schlag(98,128,106,52);schlag(40,58,110,16);schlag(272,292,124,22);
+  // Tuer in der linken Seitenwand, dahinter die Treppe nach unten mit violettem Schimmer
+  const tuer=[[10,54],[34,52],[34,105],[10,118]];
+  polyFill(g,tuer,(x,y)=>pick(KR.nebelS,0.06+Math.max(0,1-Math.hypot(x-22,y-112)/26)*0.35,x,y));
+  for(let y=50;y<120;y++){const a=10,b=34;[[a-2,a],[b,b+2]].forEach(([u0,u1])=>{for(let x=u0;x<u1;x++){const yt=x<22?54:52,yb=x<22?118-(x-10)*0.54:105;if(y>=yt-2&&y<yb)P(g,x,y,farbe(0.32+(x>b?0.12:0),x,y));}});}
+  // rundes Fenster in der Rueckwand: draussen der violette Abendhimmel
+  ellFill(g,FENSTER[0],FENSTER[1],18,18,(x,y,dx,dy)=>{const r=Math.hypot(dx,dy);if(r>0.82)return farbe(0.5+(-dx-dy)*0.2,x,y);
+    if(Math.abs(x+0.5-FENSTER[0])<1||Math.abs(y+0.5-FENSTER[1])<1)return farbe(0.35,x,y);
+    const horiz=y>FENSTER[1]+6+Math.round(Math.sin(x*0.4));return pick(KR.abend,horiz?0.1:0.14+((y-FENSTER[1]+15)/30)*0.6,x,y);});
+  // Kamin als Block vor der Rueckwand: Front, linke Seitenflaeche, Sims oben
+  const KX0=206,KX1=264,KT=54,KB=104,KK=0.11;
+  const [b0x,b0y]=zum(KX0,KT,KK),[b1x,b1y]=zum(KX1,KT,KK),[b2x,b2y]=zum(KX0,KB,KK);
+  polyFill(g,[[KX0,KT],[b0x,b0y],[b2x,b2y],[KX0,KB]],(x,y)=>pick(porzW,0.22+hell(x,y)*0.2-(y-KT)/300,x,y));        // Seitenflaeche, vom Feuer abgewandt
+  polyFill(g,[[KX0-2,KT],[KX1+2,KT],[b1x+2,b1y],[b0x-2,b0y]],(x,y)=>pick(porzW,0.8,x,y));                          // Sims oben, hell
+  for(let y=KT;y<KB;y++)for(let x=KX0;x<KX1;x++){const offen=x>=216&&x<254&&y>=76,sims=y<KT+5;
+    if(offen){const d=Math.hypot((x-235)/20,(y-104)/26);P(g,x,y,pick(KR.feuer,0.1+Math.max(0,1-d)*0.25,x,y));continue;}
     const row=Math.floor(y/4),fuge=y%4===0||((x+(row%2)*6)%12===0);
-    let t=sims?(y===58?0.95:0.6-(y-58)*0.05):0.42+((hash(Math.floor((x+(row%2)*6)/12),row)%5)-2)*0.03-(fuge?0.12:0);
-    t+=x>=258&&x<310&&y>=64&&y<72?0.12:0;
+    let t=sims?(y===KT?0.95:0.62-(y-KT)*0.06):0.42+((hash(Math.floor((x+(row%2)*6)/12),row)%5)-2)*0.03-(fuge?0.12:0);
+    if(!sims&&x>=212&&x<258&&y>=70&&y<76)t+=0.15;
     P(g,x,y,pick(porzW,t,x,y));}
-  // Halterung der Unruh am Sims
-  for(let y=14;y<58;y++){P(g,283,y,pick(KR.gold,0.35+(y%6===0?0.2:0),283,y));P(g,284,y,pick(KR.gold,0.6,284,y));}
-  // Berg aus Heften neben dem Sessel, jedes Heft mit eigener Farbe
+  for(let y=6;y<KT-1;y++){P(g,234,y,pick(KR.gold,0.35+(y%6===0?0.2:0),234,y));P(g,235,y,pick(KR.gold,0.6,235,y));}   // Halterung der Unruh
+  // Heftberg als Koerper: jedes Heft mit Vorderkante, Oberseite und rechter Seitenflaeche
   const BUNT=[KR.buchR,KR.buchB,KR.buchG,KR.buchY,KR.rosa,KR.buchB];
-  for(let k=0;k<17;k++){const y=98-k*3,x0=146+Math.round(Math.sin(k*1.9)*4+k*0.3),w=30-Math.round(k*0.4),rp=BUNT[hash(k,3)%BUNT.length];
-    for(let j=0;j<3;j++)for(let x=x0;x<x0+w;x++){const t=(j===0?0.75:j===1?0.45:0.25)+hell(x,y)*0.25+(x>x0+w-3?0.1:0);P(g,x,y-j,j===0&&x%5===0&&x>x0+2?pick(KR.papier,0.6,x,y):pick(rp,t,x,y-j));}}
-  // Ohrensessel: Ruecken und Ohren, roter Samt, vom Feuer angestrahlt
-  const SAMTG=mkRamp(['#020806','#06180f','#0c2a1c','#163e2a','#24563a','#3a7250','#5a9068'],12);
-  const sessel=[[204,54],[214,48],[240,48],[248,56],[250,100],[200,100]];
-  polyFill(g,sessel,(x,y)=>{const ohr=y<70&&(x<210||x>244),t=0.1+hell(x,y)*0.6+(x>238?0.14:0)-(ohr?0.04:0)+(y<52?0.1:0)+((x-204)%9===0&&y>58&&y<92?-0.1:0)+(((x-204)%9===4)&&y>58&&y<92&&(y%10===0)?0.12:0);return pick(SAMTG,t,x,y);});
-  for(let y=86;y<102;y++)for(let x=198;x<252;x++)P(g,x,y,pick(SAMTG,0.16+hell(x,y)*0.55+(y===86?0.15:0),x,y));      // Sitzflaeche und Front
-  for(let x=200;x<252;x+=48)for(let y=102;y<106;y++)P(g,x,y,pick(KR.holz,0.4,x,y));
-  // Stapel mit ungespueltem Geschirr: Teller schief aufeinander, Sossenraender, oben eine Tasse mit Kaffeerest, mal eine Gabel
+  for(let k=0;k<17;k++){const y=104-k*3,x0=98+Math.round(Math.sin(k*1.9)*3+k*0.3),w=30-Math.round(k*0.4),rp=BUNT[hash(k,3)%BUNT.length];
+    const [sx,sy]=zum(x0+w,y-2,0.07);
+    polyFill(g,[[x0+w,y-2],[sx,sy],[sx,sy+3],[x0+w,y+1]],(x,yy)=>pick(rp,0.25+hell(x,yy)*0.3,x,yy));                  // Seitenflaeche
+    for(let x=x0;x<x0+w;x++){P(g,x,y-2,pick(KR.papier,0.4+hell(x,y)*0.4,x,y));for(let j=-1;j<=0;j++)P(g,x,y+j,pick(rp,0.35+hell(x,y)*0.35+(j<0?0.1:0),x,y));}
+    if(k===16)polyFill(g,[[x0,y-2],[x0+w,y-2],[sx,sy],[x0+(sx-x0-w),sy]],(x,yy)=>pick(rp,0.6+hell(x,yy)*0.3,x,yy));}
+  // Ohrensessel als Koerper: Sitz mit Oberflaeche, Front, hohe Lehne links mit Ohren, alles in gruenem Samt
+  const sitzT=[[150,90],[198,90],[192,84],[156,84]];
+  polyFill(g,sitzT,(x,y)=>pick(SAMTG,0.3+hell(x,y)*0.5,x,y));                                                      // Sitzflaeche
+  for(let y=90;y<106;y++)for(let x=150;x<198;x++)P(g,x,y,pick(SAMTG,0.14+hell(x,y)*0.5+(y===90?0.12:0)-(x<153?0.08:0),x,y));   // Front
+  polyFill(g,[[146,44],[160,40],[162,86],[150,106],[144,106]],(x,y)=>{const ohr=y<60,t=0.1+hell(x,y)*0.55+(x>156?0.12:0)+(ohr&&x>154?0.06:0)+(((x-146)%5===2)&&y>60&&y%8===0?0.12:0);return pick(SAMTG,t,x,y);});   // Lehne
+  polyFill(g,[[160,40],[166,42],[166,84],[162,86]],(x,y)=>pick(SAMTG,0.2+hell(x,y)*0.65,x,y));                     // Kante der Lehne zum Feuer
+  for(let y=78;y<92;y++)for(let x=192;x<200;x++)P(g,x,y,pick(SAMTG,0.2+hell(x,y)*0.6+(y===78?0.2:0),x,y));        // Armlehne vorn
+  [150,195].forEach(x=>{for(let y=106;y<110;y++)P(g,x,y,pick(KR.holz,0.35+hell(x,y)*0.3,x,y));});
+  // Stapel mit ungespueltem Geschirr als Zylinder: Teller schief, Sossenraender, oben Tasse oder Gabel
   const stapel=(bx,by,n,w,seed,tasse,gabel)=>{let y=by;
-    for(let i=0;i<n;i++){const jx=Math.round(Math.sin(i*1.9+seed)*1.4+(i*0.15*((seed%2)?1:-1))),cx=bx+jx,hs=hash(seed,i);
-      for(let j=-w;j<=w;j++){const x=cx+j,rand=Math.abs(j)>=w-1,L=hell(x,y);
-        P(g,x,y,farbe(0.42+L*0.5+(j>0?0.08:-0.04)-(rand?0.1:0),x,y));                           // Kante oben, hell wie Porzellan
-        P(g,x,y+1,farbe(0.14+L*0.35,x,y+1));                                               // Unterseite im Schatten
-        if(hs%3===0&&Math.abs(j-((hs>>3)%(2*w)-w))<2)P(g,x,y,pick(KR.terra,0.12+L*0.45,x,y));  // Sosse quillt raus
+    for(let i=0;i<n;i++){const cx=bx+Math.round(Math.sin(i*1.9+seed)*1.4),hs=hash(seed,i);
+      for(let j=-w;j<=w;j++){const x=cx+j,L=hell(x,y),rund=Math.pow(j/w,2);
+        P(g,x,y,farbe(0.42+L*0.5-rund*0.25+(j>0?0.06:-0.02),x,y));P(g,x,y+1,farbe(0.12+L*0.3-rund*0.1,x,y+1));
+        if(hs%3===0&&Math.abs(j-((hs>>3)%(2*w)-w))<2)P(g,x,y,pick(KR.terra,0.12+L*0.45,x,y));
         if(hs%5===1&&j===((hs>>2)%w))P(g,x,y,pick(KR.blatt,0.1+L*0.3,x,y));}
       y-=2;}
-    if(tasse){const cx=bx+Math.round(Math.sin(n*1.9+seed)*1.4);for(let k=1;k<=6;k++)for(let j=-4;j<=4;j++){const x=cx+j,yy=y-k+2,L=hell(x,yy);P(g,x,yy,farbe(0.36+L*0.5+(j>1?0.1:0)-(Math.abs(j)===4?0.12:0),x,yy));}
-      for(let j=-3;j<=3;j++)P(g,cx+j,y-4,pick(KR.holz,0.1+hell(cx,y)*0.3,cx,y));                   // Kaffeerand oben
-      P(g,cx+5,y-1,farbe(0.6,cx,y));P(g,cx+6,y-2,farbe(0.6,cx,y));P(g,cx+5,y-3,farbe(0.6,cx,y));}
+    ellFill(g,bx+Math.round(Math.sin(n*1.9+seed)*1.4),y+1,w,1.6,(x,yy,dx)=>farbe(0.6+hell(x,yy)*0.35-dx*0.1,x,yy));   // oberster Teller von oben
+    if(tasse){const cx=bx+Math.round(Math.sin(n*1.9+seed)*1.4);for(let k=1;k<=6;k++)for(let j=-4;j<=4;j++){const x=cx+j,yy=y-k+1;P(g,x,yy,farbe(0.36+hell(x,yy)*0.5-Math.pow(j/4,2)*0.25,x,yy));}
+      ellFill(g,cx,y-5,4,1.2,(x,yy)=>pick(KR.holz,0.12+hell(x,yy)*0.3,x,yy));P(g,cx+5,y-1,farbe(0.6,cx,y));P(g,cx+6,y-2,farbe(0.6,cx,y));P(g,cx+5,y-3,farbe(0.6,cx,y));}
     if(gabel){line(g,bx-w+2,y+3,bx-w-3,y-8,pick(KR.stahl,0.6,bx,y));line(g,bx-w-4,y-8,bx-w-2,y-10,pick(KR.stahl,0.8,bx,y));}};
-  stapel(54,98,9,8,3,true,false);                                              // an der Wand neben der Tuer
-  stapel(188,98,13,7,8,false,true);                                            // zwischen Heftberg und Sessel
-  stapel(124,99,6,9,5,true,false);
-  stapel(46,140,8,10,11,true,true);                                            // vorn links
-  stapel(116,142,5,8,4,false,false);
-  stapel(306,141,11,9,7,true,false);                                           // vorn rechts am Kamin
-  // ein Topf mit angebrannter Suppe und Kelle
-  zylG(g,264,124,14,9,KR.stahl,0.35);ellFill(g,271,124,7,2,(x,y)=>pick(KR.terra,0.15+hell(x,y)*0.3,x,y));line(g,272,123,280,112,pick(KR.stahl,0.7,272,123));
-  // einzelne Tassen und Teller auf dem Boden, nicht gespuelt
-  [[150,108],[86,122],[236,134]].forEach(([x,y],i)=>{ellFill(g,x,y,6,2,(px,py,dx,dy)=>farbe(0.45+hell(px,py)*0.5-dy*0.1,px,py));ellFill(g,x,y,2.5,1,(px,py)=>pick(KR.terra,0.15+hell(px,py)*0.4,px,py));});
+  stapel(48,108,8,8,3,true,false);stapel(140,100,10,6,8,false,true);stapel(282,122,11,9,7,true,false);
+  stapel(42,140,8,10,11,true,true);stapel(126,142,5,8,4,false,false);stapel(300,140,6,8,9,false,true);
+  // Topf mit angebrannter Suppe und Kelle neben dem Kamin, Teller auf dem Boden
+  zylG(g,256,112,14,9,KR.stahl,0.35);ellFill(g,263,112,7,2,(x,y)=>pick(KR.terra,0.15+hell(x,y)*0.3,x,y));line(g,264,111,272,100,pick(KR.stahl,0.7,264,111));
+  [[208,116],[86,126],[236,134]].forEach(([x,y])=>{ellFill(g,x,y,6,2,(px,py,dx,dy)=>farbe(0.45+hell(px,py)*0.5-dy*0.1,px,py));ellFill(g,x,y,2.5,1,(px,py)=>pick(KR.terra,0.15+hell(px,py)*0.4,px,py));});
   return c;
 }
 // Die Unruh: Goldring mit Speichen und Spirale, schwingt hin und her
@@ -4491,20 +4519,22 @@ function cutTurm(t,now){
   if(!TURM_BG){TURM_BG=turmBg();SPR.grafSitz=Intro.graf({sit:1},1);SPR.grafSitzBlink=Intro.graf({sit:1,blink:1},1);}
   ctx.drawImage(TURM_BG,0,0);
   // Feuer im Kamin
-  for(let x=264;x<304;x++){const h=12+Math.sin(now/90+x*0.9)*4+Math.sin(now/47+x*1.7)*2+Math.sin(x*0.35)*5;
-    for(let y=99;y>99-h&&y>=73;y--){const f=(99-y)/h;P(ctx,x,y,f<0.25?KR.feuer[11]:f<0.5?KR.feuer[9]:f<0.8?KR.feuer[7]:KR.feuer[4]);}}
-  drawUnruh(284,26,now);
-  // Gestalt im Sessel, zwei gluehende Augen unter der Kapuze
-  const blink=Math.floor(now/2600)%7===0;spr(blink?SPR.grafSitzBlink:SPR.grafSitz,226,104,24,78,true);
-  // Aufschiebchen kommt mit dem Heft durch die Tuer und legt es auf den Stapel
-  const p=clamp((t-0.6)/3.2,0,1),ax=26+p*112,ay=104,hat=t<4.4;
-  if(t<6.5||t>9){const geht=p>0&&p<1||t>9,back=t>9,bx=back?138-clamp((t-9)/2.2,0,1)*112:ax;
-    const img=geht?(hat?SPR.impWalkHeft:SPR.impWalk)[Math.floor(now/110)%4]:(hat?SPR.impHeft:(S.cut.sprecher==='auf'&&Math.floor(now/140)%2?SPR.impTalk:SPR.imp));
-    shadow(bx,ay,4);spr(img,bx,ay,11,27,back);S.cut.pos.auf=[bx,ay-30];}
-  else{const img=S.cut.sprecher==='auf'&&Math.floor(now/140)%2?SPR.impTalk:SPR.imp;shadow(138,104,4);spr(img,138,104,11,27,false);S.cut.pos.auf=[138,74];}
-  if(t>=4.4&&t<4.9){const f=(t-4.4)/0.5;kastenG(ctx,Math.round(140+f*6),Math.round(80-f*30+f*f*30),10,3,KR.buchR,0.6);}   // Heft fliegt auf den Stapel
-  if(t>=4.9)kastenG(ctx,148,46,12,3,KR.buchR,0.7);
-  S.cut.pos.gestalt=[218,40];
+  for(let x=218;x<252;x++){const h=12+Math.sin(now/90+x*0.9)*4+Math.sin(now/47+x*1.7)*2+Math.sin(x*0.35)*5;
+    for(let y=103;y>103-h&&y>=77;y--){const f=(103-y)/h;P(ctx,x,y,f<0.25?KR.feuer[11]:f<0.5?KR.feuer[9]:f<0.8?KR.feuer[7]:KR.feuer[4]);}}
+  drawUnruh(235,30,now);
+  // Gestalt im Sessel, dem Feuer zugewandt
+  const blink=Math.floor(now/2600)%7===0;spr(blink?SPR.grafSitzBlink:SPR.grafSitz,178,106,24,78,false);
+  // Aufschiebchen kommt mit dem Heft aus der Tuer und legt es oben auf den Heftberg
+  const z0=[24,114],z1=[92,108],p=clamp((t-0.6)/3.2,0,1),hat=t<4.4;
+  const pos=f=>[z0[0]+(z1[0]-z0[0])*f,z0[1]+(z1[1]-z0[1])*f];
+  let bx,by,flip=false,geht;
+  if(t<6.5){[bx,by]=pos(p);geht=p>0&&p<1;}else if(t<9){[bx,by]=z1;geht=false;}else{[bx,by]=pos(1-clamp((t-9)/2.2,0,1));geht=true;flip=true;}
+  const img=geht?(hat?SPR.impWalkHeft:SPR.impWalk)[Math.floor(now/110)%4]:(hat?SPR.impHeft:(S.cut.sprecher==='auf'&&Math.floor(now/140)%2?SPR.impTalk:SPR.imp));
+  if(!(t>11.1)){shadow(bx,by,4);spr(img,bx,by,11,27,flip);}
+  S.cut.pos.auf=[bx,by-30];
+  if(t>=4.4&&t<4.9){const f=(t-4.4)/0.5;kastenG(ctx,Math.round(96+f*10),Math.round(80-f*36+f*f*10),10,3,KR.buchR,0.6);}   // Heft fliegt auf den Berg
+  if(t>=4.9)kastenG(ctx,108,52,12,3,KR.buchR,0.7);
+  S.cut.pos.gestalt=[176,32];
 }
 // Am Moorrand: naeher dran. Bohlenweg ins Moor, Schilf links und rechts, eine tote Birke, Wasser spiegelt den Abendhimmel.
 const MHY=50,MSONNE=[300,30];
