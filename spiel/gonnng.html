@@ -1143,7 +1143,7 @@ function icon(g,id,x,y){
 
 const K={hero:'#ffffff',kraechz:'#9ab8ff',kallweit:'#ff9ac8',jonas:'#8af08a',lina:'#ffd070',auf:'#d0a8ff',auf1:'#d0a8ff',auf2:'#d0a8ff',auf3:'#d0a8ff',broesel:'#ffb070',aufK:'#d0a8ff',grummel:'#b8dcf0',fermate:'#ffb8e0',emil:'#a0e8ff',kind2:'#c8f0a0',kind3:'#c8f0a0',kind4:'#c8f0a0',mia:'#ffc080'};
 const heroHead=()=>[S.hero.x,S.hero.y-46];
-const HEADS={kallweit:()=>[102,42],jonas:()=>[132,94],lina:()=>[42,96],kraechz:()=>[S.kx,S.ky-20],auf:()=>S.auf?[S.auf.x,S.auf.y-28]:[250,80],auf1:()=>[119,74],auf2:()=>[187,52],auf3:()=>[252,62],broesel:()=>S.broesel>=1?[196,52]:[132,52],aufK:()=>S.lappenGegeben?[262,80]:[198,78],grummel:()=>[94,50],fermate:()=>[S.fx||262,(S.fy||106)-56],emil:()=>[120,62],kind2:()=>[152,62],kind3:()=>[184,62],kind4:()=>[216,62],mia:()=>[138,62]};
+const HEADS={kallweit:()=>[102,42],jonas:()=>[132,94],lina:()=>[42,96],kraechz:()=>[S.kx,S.ky-20],auf:()=>S.auf?[S.auf.x,S.auf.y-28]:[250,80],auf1:()=>[119,74],auf2:()=>[187,52],auf3:()=>[252,62],broesel:()=>S.broesel>=1?[196,52]:[132,52],aufK:()=>[198,78],grummel:()=>[94,50],fermate:()=>[S.fx||262,(S.fy||106)-56],emil:()=>[120,62],kind2:()=>[152,62],kind3:()=>[184,62],kind4:()=>[216,62],mia:()=>[138,62]};
 
 const HS=[
   {id:'kraechz',name:'Krächz',rect:()=>S.kraechz==='aussen'?[34,62,22,18]:[S.kx-11,S.ky-19,22,19],walk:[80,106],flip:true},
@@ -2495,14 +2495,15 @@ function drawKantine(now){
 function drawKammer(now){
   if(!KAMMER)KAMMER=drawKammerBg();
   ctx.drawImage(KAMMER,0,0);
-  if(!has('zucker')&&!(S.bereit||{}).zucker)drawZucker(196,98);
-  if(!has('pulver')&&!(S.bereit||{}).pulver){drawPulver(186,104);drawPulver(208,104);}
+  if(!has('zucker')&&!(S.bereit||{}).zucker)drawZucker(166,100);
+  const tt=S.tauschT?clamp((now-S.tauschT)/700,0,1):1;
+  if(!has('pulver')&&!(S.bereit||{}).pulver){
+    if(!S.lappenGegeben||tt<0.5){const lift=S.lappenGegeben?Math.round(tt*14):0;drawPulver(186,104-lift);drawPulver(208,104-lift);}
+    if(S.lappenGegeben)drawLappen(192,102+Math.round((1-tt)*-8));}
   const L=[];
   L.push({y:110,d:()=>{
-    if(S.lappenGegeben){drawLappen(250,104);const t=S.rollT?clamp((now-S.rollT)/900,0,1):1;
-      rotSprite(SPR.impSleep,198+(262-198)*t,100+(104-100)*t-Math.sin(t*Math.PI)*6,11,24,-Math.PI/2+t*Math.PI*2,false);}
-    else rotSprite(S.speech&&S.talker==='aufK'&&Math.floor(now/140)%2?SPR.impSleepTalk:SPR.impSleep,198,100,11,24,-Math.PI/2,false);
-    if(Math.floor(now/900)%2)text('z',S.lappenGegeben?252:188,S.lappenGegeben?84:80,'#c4b6d4',true);}});
+    rotSprite(S.speech&&S.talker==='aufK'&&Math.floor(now/140)%2?SPR.impSleepTalk:SPR.impSleep,198,100-(S.tauschT&&tt<1?Math.round(Math.sin(tt*Math.PI)*2):0),11,24,-Math.PI/2,false);
+    if(Math.floor(now/900)%2)text('z',188,80,'#c4b6d4',true);}});
   heroLayer(L,now);
   L.sort((p,q)=>p.y-q.y).forEach(o=>o.d());
   drawPanel();drawSpeech();
@@ -2530,9 +2531,9 @@ const HS_KANTINE=[
   {id:'bodenK',name:'Boden',floor:true,rect:()=>[36,106,266,38],walk:[0,0],flip:false}
 ];
 const HS_KAMMER=[
-  {id:'aufK',name:'Schlafendes Aufschiebchen',rect:()=>S.lappenGegeben?[244,92,30,16]:[184,88,30,16],get walk(){return S.lappenGegeben?[232,120]:[170,120];},flip:false},
+  {id:'aufK',name:'Schlafendes Aufschiebchen',rect:()=>[184,88,30,16],walk:[176,120],flip:false},
   {id:'pulver',name:'Puddingpulver',vis:()=>!has('pulver')&&!(S.bereit||{}).pulver,rect:()=>[184,102,34,12],walk:[176,120],flip:false},
-  {id:'zucker',name:'Zuckersack',vis:()=>!has('zucker')&&!(S.bereit||{}).zucker,rect:()=>[194,96,16,16],walk:[180,120],flip:false},
+  {id:'zucker',name:'Zuckersack',vis:()=>!has('zucker')&&!(S.bereit||{}).zucker,rect:()=>[164,96,18,16],walk:[160,120],flip:false},
   {id:'glaeser',name:'Einmachgläser',rect:()=>[68,84,42,16],walk:[90,118],flip:false},
   {id:'kartoffeln',name:'Kartoffelsack',rect:()=>[122,84,30,26],walk:[132,118],flip:false},
   {id:'aepfel',name:'Apfelkiste',rect:()=>[156,90,26,20],walk:[160,118],flip:false},
@@ -2701,13 +2702,20 @@ async function actKantine(verb,h,item){
   if(verb==='schau')return say('hero',FALLBACK.schau(h));
   return say('hero',FALLBACK[verb]?FALLBACK[verb](h):FALLBACK.benutze());
 }
+// Pulverpaeckchen unter dem Kopf wegziehen und im selben Zug den Topflappen darunterschieben
+async function lappenTausch(){
+  await reach('bueck');take('topflappen');S.lappenGegeben=true;S.tauschT=performance.now();
+  tone('square',500,0.05,0.03);await sleep(380);tone('square',380,0.05,0.03);await sleep(320);
+  give('pulver');tone('triangle',440,0.3,0.04,330);await sleep(500);
+  await say('aufK','Mmpf. Weich. Wer hat das Kissen weicher gemacht?');
+  await say('hero','Er hat nichts gemerkt.');
+}
 async function actKammer(verb,h,item){
   const id=h.id;
   if(item){
+    if(item==='topflappen'&&(id==='pulver'||id==='aufK')&&!S.lappenGegeben)return lappenTausch();
+    if(item==='topflappen'&&(id==='pulver'||id==='aufK'))return say('hero','Der Topflappen liegt schon unter seinem Kopf.');
     if(id==='aufK'&&verb==='gib'){
-      if(item==='topflappen'){await reach();take('topflappen');S.lappenGegeben=true;S.rollT=performance.now();await sleep(950);tone('triangle',440,0.3,0.04,330);
-        await say('aufK','Oh. Weich. Das ist ja noch gemütlicher.');
-        return say('hero','Es hat sich auf den Topflappen gerollt. Der Zucker ist frei.');}
       if(item==='kekse')return say('aufK','Kekse im Bett? Krümelt. Später.');
       return say('aufK','Zu hart. Mmpf. Später.');
     }
@@ -2717,18 +2725,18 @@ async function actKammer(verb,h,item){
   switch(id+':'+verb){
     case 'tuerV:gehe':case 'tuerV:benutze':case 'tuerV:oeffne':return ausKammer();
     case 'tuerV:schau':return say('hero','Da geht es zurück in die Küche.');
-    case 'aufK:schau':return say('hero',schlaeft?'Ein Aufschiebchen. Es schläft auf dem Zuckersack, den Kopf auf dem Puddingpulver.':'Es schnarcht auf dem Topflappen. Sehr zufrieden.');
+    case 'aufK:schau':return say('hero',schlaeft?'Ein Aufschiebchen. Es schläft tief, den Kopf auf den Puddingpulverpäckchen.':'Es schnarcht auf dem Topflappen. Sehr zufrieden.');
     case 'aufK:rede':
       if(!schlaeft)return say('aufK','Chrrr. Später. Chrrr.');
       await say('hero','Könntest du mal kurz aufstehen?');
-      await say('aufK','Das ist mein Kissen. Hart, aber meins.');
+      await say('aufK','Das ist mein Kissen. Hart, aber meins. Wenn du mich weckst, hol ich mir ein neues. Später.');
       return say('aufK','Ein weicheres hätte ich gern. Such ich mir später.');
     case 'aufK:ziehe':case 'aufK:druecke':return say('hero','Es klammert sich fest und schnarcht lauter.');
     case 'pulver:schau':return say('hero',schlaeft?'Puddingpulver. Leider als Kopfkissen im Einsatz.':'Puddingpulver. Jetzt frei.');
-    case 'pulver:nimm':if(schlaeft)return say('hero','Es klammert sich an die Päckchen und schnarcht lauter.');
+    case 'pulver:nimm':if(schlaeft)return say('hero','Das Aufschiebchen liegt mit dem ganzen Kopf drauf. Wenn ich zupfe, wacht es auf.');
       await reach();give('pulver');return say('hero','Puddingpulver. Hab ich.');
-    case 'zucker:schau':return say('hero',schlaeft?'Ein Zuckersack. Mit einem Aufschiebchen obendrauf.':'Ein Zuckersack. Endlich frei.');
-    case 'zucker:nimm':if(schlaeft)return say('hero','Da liegt ein Aufschiebchen drauf. Und es ist schwerer, als es aussieht.');
+    case 'zucker:schau':return say('hero','Ein Zuckersack. Gleich neben dem schlafenden Aufschiebchen.');
+    case 'zucker:nimm':
       await reach();give('zucker');return say('hero','Zucker. Hab ich.');
     case 'glaeser:schau':return say('hero','Eingemachte Gurken, Bohnen und Kirschen. Wer weiß, wofür man so ein Glas mal braucht.');
     case 'regal:schau':return say('hero','Mehl, Reis, Nudeln, Tomaten, Marmelade, Honig, Öl, Eier, Brot, Käse. Alles da. Nur keine Kekse.');
@@ -2749,7 +2757,7 @@ async function kantineTipp(){
   const b=S.bereit||{};let t;
   if(!S.broeselKekse)t='Frau Brösel weiß bestimmt, wo es Kekse gibt. Frag sie doch mal.';
   else if(!S.sortiert)t='Die Rezeptkarten hängen durcheinander. Was braucht insgesamt am längsten, bis es fertig ist?';
-  else if(S.broesel<1&&!b.zucker&&!has('zucker')&&!S.lappenGegeben)t='In der Speisekammer schläft jemand auf dem Zucker. Was ist weicher als ein Zuckersack?';
+  else if(S.broesel<1&&!b.pulver&&!has('pulver')&&!S.lappenGegeben)t='Das Aufschiebchen liegt mit dem Kopf auf dem Puddingpulver. Ein weicheres Kissen müsste her, und zwar unbemerkt.';
   else if(S.broesel<1)t='Alles, was Frau Brösel für den Pudding braucht, gehört auf den Herd.';
   else t='Kekse hast du. Zurück in den Flüstergang.';
   await say('kraechz',t);
@@ -2891,7 +2899,7 @@ function makeGrummel(o){
   if(o.reck){p.part(RAMP.grey,m=>m.limb(15,19,26,6,2.8,2.4),true);p.part(RAMP.skin,m=>m.ell(27,4,2.6,2.2),true);}
   else{p.part(RAMP.grey,m=>m.limb(15,19,23,30,2.8,2.4),true);p.part(RAMP.skin,m=>m.ell(25,30,2.6,2.2),true);}
   // Schluessel in der Faust
-  if(o.reck)p.px(29,3,'#e8c050').px(30,3,'#fff0a0').px(31,4,'#b88a24');else p.px(27,31,'#e8c050').px(28,31,'#fff0a0').px(29,32,'#b88a24').px(28,33,'#b88a24');
+  if(o.reck)p.px(29,3,'#e8c050').px(30,3,'#fff0a0').px(31,4,'#b88a24');else if(!o.warm)p.px(27,31,'#e8c050').px(28,31,'#fff0a0').px(29,32,'#b88a24').px(28,33,'#b88a24');
   if(o.reck)p.px(18,14,'#3a0a0e').px(19,14,'#3a0a0e').px(18,15,'#3a0a0e').px(19,15,'#7a2a2e');
   p.part(RAMP.skin,m=>{m.ell(14,9,6,6);m.ell(20,10,1.8,2);});
   p.part(RAMP.grey,m=>{m.poly([[10,11],[21,11],[22,16],[17,21],[11,17]]);},true);
@@ -2960,7 +2968,7 @@ const HS_HEIZ=[
   {id:'brett',name:'Schlüsselbrett',rect:()=>[120,38,30,14],walk:[134,114],flip:false},
   {id:'thermos',name:'Thermoskanne',rect:()=>[46,72,12,18],walk:[60,116],flip:true},
   {id:'klappe',name:'Katzenklappe',rect:()=>[283,84,18,16],walk:[286,116],flip:false},
-  {id:'schloss',name:'Schlüsselloch',rect:()=>[295,53,11,14],walk:[284,116],flip:false},
+  {id:'schloss',name:'Schlüsselloch',rect:()=>[291,50,17,20],walk:[284,116],flip:false},
   {id:'kiste',name:'Schlüsselkiste',rect:()=>[108,88,26,17],walk:[128,116],flip:true},
   {id:'tor',name:'Tor zum Land Später',rect:()=>[268,20,48,82],walk:[284,116],flip:false},
   {id:'fensterZ',name:'Kellerfenster',rect:()=>[132,0,38,20],walk:[150,114],flip:false},
@@ -3043,8 +3051,9 @@ async function grummelTaut(){
   await say('grummel','Und jetzt willst du durch das Tor, was? Hinter dem Wicht mit deinem Heft her.');
   await say('hero','Genau.');
   await say('grummel','Der Torschlüssel liegt in meiner Kiste. Zwischen dreißig anderen. Irgendeiner ist es.');
+  await say('grummel','Die Kiste mach ich mit dem hier auf. Der aus meiner Faust.');
   await sleep(300);tone('square',260,0.08,0.06);tone('square',400,0.1,0.05,null,0.15);S.kisteAuf=true;save();
-  await say('grummel','So. Kiste ist auf. Viel Spaß beim Suchen.');
+  await say('grummel','So. Kiste ist auf. Der Schlüssel aus der Faust hat seinen Dienst getan. Viel Spaß beim Suchen.');
 }
 async function actHeiz(verb,h,item){
   const id=h.id;
@@ -3063,7 +3072,7 @@ async function actHeiz(verb,h,item){
       return say('hero','Das gehört nicht in den Kessel.');
     }
     if(id==='kiste'&&item==='lupe')return schluesselSuchen();
-    if(id==='schloss'&&item==='lupe')return say('hero','Das Schlüsselloch sehe ich auch so. Unten zwei Kerben, oben eine Nase.');
+    if(id==='schloss'&&item==='lupe'){S.lochGesehen=true;return say('hero','Das Schlüsselloch sehe ich auch so. Unten zwei Kerben, oben eine Nase.');}
     if((id==='schloss'||id==='tor')&&item==='torschluessel')return torAufschliessen();
     if(id==='grummel'&&verb==='gib'){
       if(item==='kekse')return say('grummel','Mit gefrorenen Zähnen? Nee. Später.');
@@ -3077,7 +3086,7 @@ async function actHeiz(verb,h,item){
     case 'tuerZ:schau':return say('hero','Da geht es zurück in den Flüstergang.');
     case 'grummel:rede':return redeGrummel();
     case 'grummel:schau':return say('hero',S.feuer?'Grummelbart. Rote Wangen, der Raureif ist weg.':'Hausmeister Grummelbart. Raureif im Bart, und in der Faust hält er einen Schlüssel.');
-    case 'grummel:nimm':case 'grummel:ziehe':await reach();return say('hero',S.feuer?'Den Schlüssel gibt er mir, wenn er so weit ist.':'Er hält den Schlüssel fest wie einen Eiszapfen. Die Finger sind steif gefroren.');
+    case 'grummel:nimm':case 'grummel:ziehe':await reach();return say('hero',S.feuer?'Seine Hände sind leer. Der Schlüssel aus seiner Faust war ja nur für die Kiste.':'Er hält den Schlüssel fest wie einen Eiszapfen. Die Finger sind steif gefroren.');
     case 'grummel:druecke':return say('hero','Er ist steif wie ein Brett. Ein kaltes Brett.');
     case 'fleck:schau':return say('hero','Ein Sonnenfleck vom Kellerfenster. Seit dem Gong wandert er nicht mehr. Und er ist richtig warm.');
     case 'wolleZ:schau':return say('hero','Die Holzwolle liegt in der Sonne. Warm ist sie schon. Brennen tut sie noch nicht.');
@@ -3150,10 +3159,15 @@ function schluesselWahl(){
 }
 async function schluesselSuchen(){
   if(!S.kisteAuf)return say('hero','Die Kiste ist zu.');
+  if(!S.lochGesehen){
+    await say('hero','Die Bärte sehen alle ähnlich aus. Wonach suche ich eigentlich? Das Schlüsselloch muss ich mir erst ansehen.');
+    await walkTo(284,116);face(false);S.aktZiel=[300,60];await reach('hoch');S.lochGesehen=true;save();
+    await say('hero','Unten zwei Kerben, oben eine Nase. Das merke ich mir.');
+    await walkTo(128,116);face(true);S.aktZiel=[120,98];
+  }
   await reach();await say('hero','Jetzt sehe ich die Bärte genau. Jeder hat andere Kerben.');
   const i=await schluesselWahl();if(i===null)return;
   const s=SCHLUESSEL[i];
-  if(!S.lochGesehen)return say('hero','Aber welcher passt? Ich weiß ja gar nicht, wie das Schlüsselloch aussieht.');
   if(!s.ok)return say('hero',s.nein);
   await say('hero','Zwei Kerben unten, die Nase oben, schmaler Bart. Der hier.');
   give('torschluessel');tone('triangle',990,0.3,0.05);
@@ -3841,7 +3855,7 @@ async function redeMia(){
     if(S.gustavGefunden)o.push('Da, der Zweig, der wackelt. Das ist Gustav!');
     o.push('Tschüss.');
     const a=await choose(o),q=o[a];await say('hero',q);
-    if(a===0){await say('mia','Gustav suchen. Dann zeichnen. Seit heute früh.');await say('mia','Da sind nur Zweige. Nur Zweige, die rumhängen.');continue;}
+    if(a===0){S.miaFrage=true;await say('mia','Gustav suchen. Dann zeichnen. Seit heute früh.');await say('mia','Da sind nur Zweige. Nur Zweige, die rumhängen.');continue;}
     if(a===1){await say('mia','Die brauch ich. Ohne Lupe finde ich Gustav nie.');continue;}
     if(q==='Da, der Zweig, der wackelt. Das ist Gustav!')return miaWacht();
     return say('mia','Gleich. Wenn ich ihn gefunden hab.');
@@ -3869,6 +3883,7 @@ async function actBio(verb,h,item){
     case 'tuerB:gehe':case 'tuerB:benutze':case 'tuerB:oeffne':return leaveBio();
     case 'tuerB:schau':return say('hero','Da geht es zurück in die Halle.');
     case 'gustav:schau':
+      if(!S.miaFrage)return say('hero','Ein Zweig. Hängt da rum.');
       if(!S.gustavGefunden){S.gustavGefunden=true;return say('hero','Moment. Der Zweig da wackelt, obwohl hier kein Wind geht. Und er hat Beine!');}
       return say('hero','Gustav. Er schaukelt ganz leicht hin und her, wie ein Zweig im Wind.');
     case 'gustav:nimm':case 'gustav:druecke':case 'gustav:ziehe':case 'gustav:oeffne':return say('hero','Das Terrarium lasse ich zu. Sonst ist Gustav weg, bevor ihn jemand gefunden hat.');
@@ -3908,7 +3923,8 @@ async function actBio(verb,h,item){
 }
 async function bioTipp(){
   let t;
-  if(!S.gustavGefunden)t='Stabschrecken sehen aus wie Zweige. Aber ein echter Zweig bewegt sich nur, wenn Wind geht.';
+  if(!S.miaFrage)t='Mia starrt seit heute früh ins Terrarium. Frag sie doch mal, was sie da macht.';
+  else if(!S.gustavGefunden)t='Stabschrecken sehen aus wie Zweige. Aber ein echter Zweig bewegt sich nur, wenn Wind geht.';
   else if(!S.miaWach)t='Du hast Gustav gefunden. Mia noch nicht. Sag es ihr.';
   else t='Die Lupe hast du. Ab in den Heizungskeller.';
   await say('kraechz',t);
@@ -4064,7 +4080,7 @@ const SZENEN={
 SZENEN.musik=Object.assign({},SZENEN.keller,{room:'musik',musikIntro:false,heizIntro:true,brauchFeuer:true,schlaegelWeg:true,inv:['lineal','radiergummi','muenze','kreide','notiz','kekse','schlaegel']});
 SZENEN.bio=Object.assign({},SZENEN.keller,{room:'bio',bioIntro:false,heizIntro:true,brauchFeuer:true});
 SZENEN.feuer=Object.assign({},SZENEN.keller,{heizIntro:true,kraechz:'heiz',kx:226,ky:13,kflip:true,hero:{x:120,y:124,flip:false},brauchFeuer:true,schlaegelWeg:true,orchesterWach:true,musikIntro:true,kartonAuf:true,holzwolleGenommen:true,neueFloete:true,floeteZu:true,
-  bioIntro:true,gustavGefunden:true,miaWach:true,inv:['lineal','radiergummi','muenze','kreide','notiz','kekse','schlaegel','holzwolle','lupe']});
+  bioIntro:true,miaFrage:true,gustavGefunden:true,miaWach:true,inv:['lineal','radiergummi','muenze','kreide','notiz','kekse','schlaegel','holzwolle','lupe']});
 SZENEN.kiste=Object.assign({},SZENEN.feuer,{feuer:true,kisteAuf:true,inv:['lineal','radiergummi','muenze','kreide','notiz','kekse','schlaegel','lupe']});
 function szeneStarten(id){
   const s=SAVE.read();PLAYER.name=(s&&s.name)||PLAYER.name||'Robin';PLAYER.girl=s?!!s.girl:PLAYER.girl;
