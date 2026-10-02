@@ -118,7 +118,10 @@ Canva-Arbeitsdatei: https://canva.link/mp6p64febvogrh4
   (`einzaehlen`, `trommeln`). Danach Pause (`S.pause`), ein Stück Radiergummi in Emils Flöte (`S.floeteZu`), beim nächsten Einzählen holt
   Frau Fermate eine neue Flöte aus dem Karton (`neueFloeteHolen`, `fermateGeh`, `S.kartonAuf`), die Holzwolle nimmt man einfach.
 - Kapitel 1, sechster Raum: der Biologieraum (Raum `bio`, `drawBioBg`, `makeMia`, `actBio`). Mia sucht Gustav, die Stabschrecke. Der Zweig,
-  der ohne Wind schaukelt, ist Gustav (`S.gustavGefunden`). Zeigt man ihn Mia, zeichnet sie los, wird wach und leiht die Lupe.
+  der ohne Wind schaukelt, ist Gustav (`S.gustavGefunden`, erkennbar erst nach dem Gespräch mit Mia, `S.miaFrage`). Zeigt man ihn Mia, wird sie wach (`S.miaWach`),
+  will aber Ruhe vor dem Gedudel aus dem Musikraum. Die Kopfhörer hängen frei im Musikraum am Schrank über der Trommel (`kopfG`, `S.kopfGenommen`).
+  Mit den Kopfhörern zeichnet sie los (`miaKopf`, `S.miaRuhe`) und leiht die Lupe, nur geliehen. Am Tor kommt Mia stehend herein (`makeMiaSteht`, `miaAmTor`),
+  holt die Lupe zurück (`S.miaZurueck`), Pointe mit Grummelbart: „Welches Flüstern?“
 - Flüstergang: Das Aufschiebchen in der Nische knackt Nüsse mit dem Trommelschlägel und tauscht ihn gegen einen Keks (`schlaegelTausch`).
 - Musikraum und Biologieraum betritt man erst, wenn die Figur Feuer braucht (`S.brauchFeuer`), vorher gibt es nur eine Karte.
 - Entschieden (29.09.2026): kein Klatschen mit Zeitmessung (auf dem iPad nicht bedienbar). Brikett, Kordel, Keks-Angel und Kochlöffel sind gestrichen.
@@ -126,7 +129,7 @@ Canva-Arbeitsdatei: https://canva.link/mp6p64febvogrh4
 
 ## Nächste Schritte
 
-1. Kapitel 1: Mia-Szene bauen (Kopfhörer im Musikraum, Lupe nur geliehen, Mia am Tor). Danach Kapitel 2 (Sumpf der Ablenkung): Teeglas von Kolportus, Nebelpfad mit dem Kompass, Fernrohr aus Holunder, Moorgamaschen gestrichen.
+1. Kapitel 1 ist komplett, Mia-Szene eingebaut. Als Nächstes Kapitel 2 (Sumpf der Ablenkung): Teeglas von Kolportus, Nebelpfad mit dem Kompass, Fernrohr aus Holunder, Moorgamaschen gestrichen.
 2. Entschieden: Mias Lupe ist nur geliehen und geht am Tor zurück, das Okular in Kapitel 2 ist die Leselupe der Frösche.
 
 ## Online-Dokument

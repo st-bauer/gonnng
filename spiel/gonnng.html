@@ -1105,7 +1105,7 @@ function reset(saved){
     fenster:false,ziel:false,kruemelGesehen:false,gitter:false,federmappe:false,muenze:false,kreide:2,
     tipp:{fenster:0,kruemel:0,gitter:0,flure:0},kraechzKennt:false,jonas:0,
     inv:[],verb:'gehe',item:null,busy:false,globus:0,speech:null,narr:null,dialog:null,over:false,talker:null,mouse:null};
-  if(saved){Object.assign(S,saved,{hero:Object.assign(S.hero,saved.hero||{})});S.inv=S.inv.filter(id=>ITEMS[id]);}
+  if(saved){Object.assign(S,saved,{hero:Object.assign(S.hero,saved.hero||{})});S.inv=S.inv.filter(id=>ITEMS[id]);if(S.miaWach&&(S.inv.indexOf('lupe')>=0||S.feuer))S.miaRuhe=true;}
 }
 reset();
 const ITEMS={
@@ -1121,12 +1121,18 @@ const ITEMS={
   kekse:{name:'Kekse',look:'Frau Brösels Kekse. Noch warm. Riechen nach Schokolade und Anfang.'},
   schlaegel:{name:'Trommelschlägel',look:'Ein Trommelschlägel mit Filzkopf. Etwas angeknabbert. Riecht nach Nuss.'},
   holzwolle:{name:'Holzwolle',look:'Ein Büschel Holzwolle. Ganz fein, ganz trocken. Knistert.'},
-  lupe:{name:'Lupe',look:'Mias Lupe. Groß, rund und schwer. Damit sieht man jede Fussel.'},
+  lupe:{name:'Lupe',look:'Mias Lupe. Groß, rund und schwer. Nur geliehen, sie ist von ihrem Opa.'},
+  kopfhoerer:{name:'Kopfhörer',look:'Dicke rote Ohrenschützer. Damit hört man fast nichts mehr. Herrlich.'},
   torschluessel:{name:'Torschlüssel',look:'Zwei Kerben unten, die Nase oben. Der passt ins Tor zum Land Später.'},
   kompass:{name:'Kompass der Pläne',look:'Ein Messingkompass. Die Nadel zittert unentschlossen. Er zeigt nur, wenn man weiß, wohin.'},
   notiz:{name:'Zettel',look:'„Heft im Heizungskeller abgeben. Gleich. Oder später.“ Voller Kekskrümel. Die Schrift ist sehr klein.'}
 };
+// Gehoerschutz: Buegel und zwei rote Muscheln
+function kopfG(g,x,y,k){k=k||1;
+  for(let i=-5;i<=5;i++){const yy=Math.round(y-Math.sqrt(Math.max(0,30-i*i))*0.9*k);P(g,x+Math.round(i*k),yy,i<0?'#5a5a6a':'#3a3a46');P(g,x+Math.round(i*k),yy+1,'#2a2a34');}
+  [-5,5].forEach(d=>ellFill(g,x+Math.round(d*k),y+1,2*k,2.6*k,(px,py,dx,dy)=>pick(KR.buchR,0.6-dx*0.3-dy*0.3,px,py)));}
 function icon(g,id,x,y){
+  if(id==='kopfhoerer')kopfG(g,x+16,y+9,1.4);
   if(id==='lineal'){kastenG(g,x+2,y+6,28,5,KR.dielen,0.8);for(let i=4;i<30;i+=3)for(let k=0;k<(i%6===1?3:2);k++)P(g,x+i,y+6+k,'#3a2410');}
   if(id==='radiergummi'){kastenG(g,x+9,y+5,8,7,KR.rosa,0.6);kastenG(g,x+17,y+5,7,7,KR.buchB,0.6);}
   if(id==='muenze')ellFill(g,x+16,y+8,6,6,(px,py,dx,dy)=>{const d=dx*dx+dy*dy;return pick(KR.gold,(d>0.6?0.35:0.6)-dx*0.25-dy*0.25,px,py);});
@@ -1148,7 +1154,7 @@ function icon(g,id,x,y){
 
 const K={hero:'#ffffff',kraechz:'#9ab8ff',kallweit:'#ff9ac8',jonas:'#8af08a',lina:'#ffd070',auf:'#d0a8ff',auf1:'#d0a8ff',auf2:'#d0a8ff',auf3:'#d0a8ff',broesel:'#ffb070',aufK:'#d0a8ff',grummel:'#b8dcf0',fermate:'#ffb8e0',emil:'#a0e8ff',kind2:'#c8f0a0',kind3:'#c8f0a0',kind4:'#c8f0a0',mia:'#ffc080'};
 const heroHead=()=>[S.hero.x,S.hero.y-46];
-const HEADS={kallweit:()=>[102,42],jonas:()=>[132,94],lina:()=>[42,96],kraechz:()=>[S.kx,S.ky-20],auf:()=>S.auf?[S.auf.x,S.auf.y-28]:[250,80],auf1:()=>[119,74],auf2:()=>[187,52],auf3:()=>[252,62],broesel:()=>S.broesel>=1?[196,52]:[132,52],aufK:()=>[198,78],grummel:()=>[94,50],fermate:()=>[S.fx||262,(S.fy||106)-56],emil:()=>[120,62],kind2:()=>[152,62],kind3:()=>[184,62],kind4:()=>[216,62],mia:()=>[138,62]};
+const HEADS={kallweit:()=>[102,42],jonas:()=>[132,94],lina:()=>[42,96],kraechz:()=>[S.kx,S.ky-20],auf:()=>S.auf?[S.auf.x,S.auf.y-28]:[250,80],auf1:()=>[119,74],auf2:()=>[187,52],auf3:()=>[252,62],broesel:()=>S.broesel>=1?[196,52]:[132,52],aufK:()=>[198,78],grummel:()=>[94,50],fermate:()=>[S.fx||262,(S.fy||106)-56],emil:()=>[120,62],kind2:()=>[152,62],kind3:()=>[184,62],kind4:()=>[216,62],mia:()=>S.room==='heiz'?[S.mx,S.my-52]:[138,62]};
 
 const HS=[
   {id:'kraechz',name:'Krächz',rect:()=>S.kraechz==='aussen'?[34,62,22,18]:[S.kx-11,S.ky-19,22,19],walk:[80,106],flip:true},
@@ -1200,6 +1206,7 @@ function flieg(id,von,nach){if(!von&&!nach)return;const h=S.hero;
 function miniItem(g,id,x,y){x=Math.round(x);y=Math.round(y);
   if(id==='kekse')return keksG(g,x,y,2.6);
   if(id==='schlaegel'){line(g,x-4,y+3,x+2,y-2,'#845028');return beutelG(g,x+3,y-3,1.8,1.8,KR.papier,0.6);}
+  if(id==='kopfhoerer')return kopfG(g,x,y,0.6);
   if(id==='lupe'){line(g,x+2,y+2,x+5,y+5,'#845028');return ellFill(g,x,y,3,3,(px,py,dx,dy)=>dx*dx+dy*dy>0.5?pick(KR.stahl,0.7,px,py):pick(KR.himmel,0.6-dx*0.3,px,py));}
   if(id==='holzwolle'){for(let k=0;k<8;k++)line(g,x-3+k%4*2,y-1+(k>>2)*2,x-2+k%4*2+(k%2),y+(k>>2)*2-(k%2),k%3?'#d8b060':'#9a7430');return;}
   if(id==='lineal')return kastenG(g,x-6,y-1,12,2,KR.dielen,0.8);
@@ -1466,7 +1473,7 @@ function build(){
   SPR.raven=makeRaven({});SPR.ravenFlug=[makeRaven({fluegel:'hoch'}),makeRaven({fluegel:'runter'})];SPR.ravenKnock=makeRaven({knock:1});SPR.ravenTalk=makeRaven({talk:1});
   SPR.imp=makeImp({});SPR.impYawn=makeImp({yawn:1,heft:1});SPR.impHeft=makeImp({heft:1});SPR.impSleep=makeImp({zu:1});SPR.impKeks=makeImp({keks:1});
   SPR.impTalk=makeImp({talk:1});SPR.impStock=[makeImp({stock:0}),makeImp({stock:1}),makeImp({stock:0,talk:1})];SPR.impHeftTalk=makeImp({heft:1,talk:1});SPR.impSleepTalk=makeImp({zu:1,talk:1});SPR.impKeksTalk=makeImp({keks:1,talk:1});
-  SPR.kinder=kinderSprites();SPR.mia=makeMia({lupe:1});SPR.miaGib=makeMia({gib:1});SPR.miaTalk=makeMia({lupe:1,talk:1});SPR.miaZeichnet=makeMia({zeichnet:1});SPR.miaZeichnetTalk=makeMia({zeichnet:1,talk:1});SPR.fermate=[0,1,2].map(a=>makeFermate({arm:a,wach:a>0}));SPR.fermateTalk=[makeFermate({talk:1}),makeFermate({arm:1,wach:1,talk:1}),makeFermate({arm:2,wach:1,talk:1})];SPR.grummel=makeGrummel({});SPR.grummelTalk=makeGrummel({talk:1});SPR.grummelWarm=makeGrummel({warm:1});SPR.grummelReck=makeGrummel({warm:1,reck:1});SPR.grummelWarmTalk=makeGrummel({warm:1,talk:1});SPR.gSteht={};['haengt','trag','greif','hoch','unten'].forEach(a=>[0,1,2].forEach(st=>{SPR.gSteht[a+st]=makeGrummelSteht({arm:a,step:st});SPR.gSteht[a+st+'k']=makeGrummelSteht({arm:a,step:st,key:1});SPR.gSteht[a+st+'t']=makeGrummelSteht({arm:a,step:st,talk:1});}));SPR.broesel=makeBroesel({});SPR.broeselTalk=makeBroesel({talk:1});SPR.broeselRuehr=makeBroesel({stir:1});SPR.broeselRuehr2=makeBroesel({stir:2});SPR.broeselGib=makeBroesel({gib:1});
+  SPR.kinder=kinderSprites();SPR.mia=makeMia({lupe:1});SPR.miaGib=makeMia({gib:1,kopf:1});SPR.miaSteht={};['haengt','gib','tipp','zeig'].forEach(a=>[0,1,2].forEach(st=>{SPR.miaSteht[a+st]=makeMiaSteht({arm:a,step:st});SPR.miaSteht[a+st+'t']=makeMiaSteht({arm:a,step:st,talk:1});}));SPR.miaTalk=makeMia({lupe:1,talk:1});SPR.miaZeichnet=makeMia({zeichnet:1,kopf:1});SPR.miaZeichnetTalk=makeMia({zeichnet:1,kopf:1,talk:1});SPR.fermate=[0,1,2].map(a=>makeFermate({arm:a,wach:a>0}));SPR.fermateTalk=[makeFermate({talk:1}),makeFermate({arm:1,wach:1,talk:1}),makeFermate({arm:2,wach:1,talk:1})];SPR.grummel=makeGrummel({});SPR.grummelTalk=makeGrummel({talk:1});SPR.grummelWarm=makeGrummel({warm:1});SPR.grummelReck=makeGrummel({warm:1,reck:1});SPR.grummelWarmTalk=makeGrummel({warm:1,talk:1});SPR.gSteht={};['haengt','trag','greif','hoch','unten'].forEach(a=>[0,1,2].forEach(st=>{SPR.gSteht[a+st]=makeGrummelSteht({arm:a,step:st});SPR.gSteht[a+st+'k']=makeGrummelSteht({arm:a,step:st,key:1});SPR.gSteht[a+st+'t']=makeGrummelSteht({arm:a,step:st,talk:1});}));SPR.broesel=makeBroesel({});SPR.broeselTalk=makeBroesel({talk:1});SPR.broeselRuehr=makeBroesel({stir:1});SPR.broeselRuehr2=makeBroesel({stir:2});SPR.broeselGib=makeBroesel({gib:1});
   SPR.impWalk=[0,1,2,3].map(i=>makeImp({walk:1,phase:i/4}));SPR.impWalkHeft=[0,1,2,3].map(i=>makeImp({walk:1,phase:i/4,heft:1}));
 }
 // Figur mit Fusspunkt zeichnen, ax = Ankerpunkt im Bild
@@ -2199,6 +2206,7 @@ async function redeAuf3(){
 async function actGang(verb,h,item){
   const id=h.id;
   if(item){
+    if(item==='kopfhoerer')return say('hero','Meine Pläne reichen mir. Und die sind sowieso für Mia.');
     if(id==='tafel'&&item==='kreide')return planSchreiben();
     if(id==='tafel')return say('hero','Auf eine Tafel schreibt man mit Kreide.');
     if(id==='kraechz'&&verb==='gib')return say('kraechz','Behalte das mal schön selbst.');
@@ -2985,6 +2993,8 @@ function drawHeiz(now){
   if(!S.gUp)L.push({y:100,d:()=>{spr(reckt?SPR.grummelReck:S.speech&&S.talker==='grummel'&&Math.floor(now/140)%2?(warm?SPR.grummelWarmTalk:SPR.grummelTalk):(warm?SPR.grummelWarm:SPR.grummel),84,88,12,34,false);
     // Raureif taut: Tropfen fallen von Muetze und Bart
     if(S.tauT&&now-S.tauT<2600)for(let i=0;i<7;i++){const t=((now-S.tauT)/700+i*0.29)%1,x=76+i*3+(i%2),y=Math.round(58+(i%3)*6+t*30);if(y<100)P(ctx,x,y,t<0.5?'#e8f4ff':'#9ab8d8');}}});
+  if(S.mUp)L.push({y:S.my,d:()=>{const k=S.speech&&S.talker==='mia'&&Math.floor(now/140)%2?'t':'';
+    spr(SPR.miaSteht[S.marm+(S.mwalk?1+Math.floor(now/160)%2:0)+k],S.mx,S.my,14,48,S.mflip);}});
   L.push({y:S.ky,d:()=>spr(ravenImg(now),S.kx,S.ky,11,19,S.kflip)});
   heroLayer(L,now);
   L.sort((p,q)=>p.y-q.y).forEach(o=>o.d());
@@ -3253,10 +3263,33 @@ async function torAufschliessen(){
   S.aktZiel=[96,70];await reach();give('kompass');tone('triangle',880,0.3,0.05);
   await say('grummel','Den Kompass der Pläne hat der alte Direktor hiergelassen. Er zeigt nur, wenn man weiß, wohin.');
   await say('hero','Ich weiß, wohin. Hinter dem Dieb her. Und dann zur Unruh.');
+  if(has('lupe'))await miaAmTor();
   await say('kraechz','Dann los. Bevor ich es mir anders überlege.');
   await walkTo(292,108);S.hero.hidden=true;await kraechzFlug(292,56,700,10);S.kx=-40;await sleep(400);
   await showCard('Ende von Kapitel 1','Hinter dem Tor liegt Nebel. Und irgendwo darin das Land Später.');
   S.over=true;save();if(API.onDone)API.onDone('kapitel1');
+}
+// Mia holt ihre Lupe ab, bevor es durch das Tor geht
+async function miaGeh(x){S.mwalk=true;S.mflip=x<S.mx;while(Math.abs(S.mx-x)>1){S.mx+=Math.sign(x-S.mx)*Math.min(2,Math.abs(x-S.mx));await sleep(28);}S.mx=x;S.mwalk=false;}
+async function miaAmTor(){
+  S.kTuerAuf=true;tone('sawtooth',120,0.4,0.05,70);S.mUp=true;S.mx=24;S.my=116;S.marm='haengt';S.mflip=false;await sleep(300);
+  await say('mia','Halt! Warte mal!');
+  S.kTuerAuf=false;tone('square',70,0.2,0.12,40);
+  await miaGeh(250);face(true);
+  await say('mia','Da bist du ja! Ich hab dich überall gesucht. Hast du nicht was vergessen?');
+  for(;;){const o=['Meine Hausaufgaben?','Die Lupe! Entschuldige.'];const a=await choose(o);await say('hero',o[a]);
+    if(a===0){await say('mia','Die auch. Aber ich meine was anderes.');continue;}break;}
+  S.aktZiel=[S.mx+6,S.my-28];await reach('greif');take('lupe');flieg('lupe',null,[S.mx+10,S.my-29]);S.marm='gib';tone('triangle',990,0.2,0.04);await sleep(600);S.marm='haengt';
+  await say('mia','Danke. Opa hätte sonst geschimpft. Ganz langsam, aber sehr lange.');
+  await say('grummel','Wie bist du denn durch den Flüstergang gekommen, Mädchen?');
+  S.marm='tipp';await say('mia','Damit. Die hab ich immer dabei, wenn ich zeichne.');
+  await say('grummel','Und das Flüstern?');
+  await say('mia','Welches Flüstern?');S.marm='haengt';await sleep(300);
+  S.marm='zeig';await say('mia','Guck mal. Sechs Beine. Ich hab nachgezählt.');
+  await say('hero','Sieht genau aus wie ein Zweig.');
+  await say('mia','Danke! Das ist das Schönste, was man über eine Stabschrecke sagen kann.');S.marm='haengt';
+  S.kTuerAuf=true;tone('sawtooth',120,0.4,0.05,70);await miaGeh(22);S.mUp=false;await sleep(200);S.kTuerAuf=false;tone('square',70,0.2,0.12,40);
+  S.miaZurueck=true;await sleep(300);face(false);
 }
 async function heizTipp(){
   let t;
@@ -3435,6 +3468,7 @@ function drawMusik(now){
   if(S.tuerM){R(ctx,7,33,24,66,'#1a0c06');polyFill(ctx,[[33,31],[43,34],[43,97],[33,101]],(x,y)=>pick(KR.holz,0.5-(x-33)/30,x,y));}
   plaque(19,20,'Halle');
   drawMetronom(now);
+  if(!S.kopfGenommen){line(ctx,294,58,294,60,'#2a2a34');kopfG(ctx,294,67,1);}
   const L=[];
   const wach=S.orchesterWach,spielt=S.orchester==='spielt';
   const pause=wach&&!spielt&&S.pause;
@@ -3482,6 +3516,7 @@ const HS_MUSIK=[
   {id:'kind2',name:'Mädchen mit Blockflöte',rect:()=>[138,62,26,44],walk:[156,118],flip:false},
   {id:'kind3',name:'Mädchen mit Blockflöte',rect:()=>[170,62,26,44],walk:[188,118],flip:false},
   {id:'kind4',name:'Junge mit Blockflöte',rect:()=>[202,62,26,44],walk:[218,118],flip:false},
+  {id:'kopfhoerer',name:'Kopfhörer',vis:()=>!S.kopfGenommen,rect:()=>[285,56,18,16],walk:[284,116],flip:false},
   {id:'trommel',name:'Große Trommel',rect:()=>[278,84,24,24],walk:[296,120],flip:true},
   {id:'pult',name:'Notenständer',rect:()=>[234,68,20,38],walk:[236,118],flip:false},
   {id:'holzwolle',name:'Holzwolle',vis:()=>S.kartonAuf&&!S.holzwolleGenommen,rect:()=>[40,37,28,10],walk:[58,114],flip:false},
@@ -3635,6 +3670,9 @@ async function actMusik(verb,h,item){
       await reach();S.holzwolleGenommen=true;give('holzwolle');tone('triangle',700,0.15,0.04);
       return say('hero','Ein Büschel Holzwolle. Das ist ja kein Instrument.');
     case 'holzwolle:schau':return say('hero','Holzwolle quillt aus dem Karton. Ganz fein und ganz trocken.');
+    case 'kopfhoerer:schau':return say('hero','Ohrenschützer für die große Trommel. Die hängen hier einfach so rum.');
+    case 'kopfhoerer:nimm':case 'kopfhoerer:ziehe':await reach('hoch');S.kopfGenommen=true;give('kopfhoerer');tone('triangle',620,0.15,0.04);
+      return say('hero',S.miaWach?'Ohrenschützer. Genau so was meinte Mia.':'Ohrenschützer. Die nimmt keiner mehr, die hängen schon ganz staubig.');
     case 'holzwolle:nimm':case 'holzwolle:ziehe':await reach();S.holzwolleGenommen=true;give('holzwolle');tone('triangle',700,0.15,0.04);
       return say('hero','Ein Büschel Holzwolle. Das ist ja kein Instrument.');
     case 'floete:schau':
@@ -3835,6 +3873,25 @@ function makeMia(o){
   else{p.part(RAMP.teal,m=>m.limb(16,17,23,11,2,1.6),true);p.part(RAMP.skin,m=>m.ell(23,10,1.7,1.7),true);
     if(o.lupe){p.part(RAMP.wood,m=>m.limb(23,10,24,6,0.6,0.6),true);p.part(RAMP.grey,m=>m.ell(25,4,3.2,3.2),true);p.px(24,3,'#e4f0ff').px(25,4,'#b8d0f0').px(25,3,'#e4f0ff');}
     p.px(17,7,'#ffffff').px(18,7,'#241a24');}
+  if(o.kopf){p.part(RAMP.grey,m=>m.limb(12,7,16,2.4,0.9,0.9),true);p.part(RAMP.shoe,m=>m.ell(13,9,2.2,2.8),true);}
+  if(o.talk)p.px(18,12,'#3a0a0e').px(19,12,'#7a2a2e');else p.px(18,12,'#6a3424').px(19,12,'#6a3424');
+  return p.canvas();
+}
+// Mia stehend (30 x 50, Fuesse bei (14,48)): geht, gibt, tippt auf die Kopfhoerer am Hals, zeigt ihre Zeichnung
+function makeMiaSteht(o){
+  const p=new Pup(30,50),st=o.step||0,f1=st===1?-3:st===2?3:0,f2=-f1,arm=o.arm||'haengt';
+  p.part(RAMP.jeans,m=>{m.limb(12,29,12+f1,45,2.4,2.1);m.limb(16,29,16+f2,45,2.4,2.1);});
+  p.part(RAMP.shoe,m=>{m.ell(14+f1,46.5,3.2,1.6);m.ell(18+f2,46.5,3.2,1.6);},true);
+  p.part(RAMP.teal,m=>m.poly([[9,15],[18,15],[19,30],[9,30]]));
+  p.part(RAMP.hairRed,m=>{m.limb(9,9,5,20,2.2,1.6);});
+  p.part(RAMP.skin,m=>{m.rect(13,13,3,3);m.ell(15,8.5,5.3,5.6);m.ell(20,9,1.3,1.4);});
+  p.part(RAMP.hairRed,m=>{m.ell(13.5,4.6,6,3.6);m.ell(10.5,8,2.4,4);});
+  // Kopfhoerer um den Hals
+  p.part(RAMP.grey,m=>m.limb(10,15,18,15,1.1,1.1),true);p.part(RAMP.shoe,m=>m.ell(18,16.5,2.8,3.2),true);p.part(RAMP.shoe,m=>m.ell(10.5,16.5,1.6,2.6),true);
+  const A={haengt:[15,17,15,28],gib:[15,17,25,19],tipp:[15,17,18,15],zeig:[15,17,23,12]}[arm];
+  p.part(RAMP.teal,m=>m.limb(A[0],A[1],A[2],A[3],2,1.6),true);p.part(RAMP.skin,m=>m.ell(A[2]+0.5,A[3],1.7,1.7),true);
+  if(arm==='zeig'){p.part(RAMP.white,m=>m.rect(21,4,8,9),true);p.px(23,7,'#6a5a2a').px(24,8,'#6a5a2a').px(25,9,'#6a5a2a').px(26,10,'#6a5a2a').px(24,10,'#6a5a2a').px(26,8,'#6a5a2a');}
+  p.px(17,7,'#ffffff').px(18,7,'#241a24');
   if(o.talk)p.px(18,12,'#3a0a0e').px(19,12,'#7a2a2e');else p.px(18,12,'#6a3424').px(19,12,'#6a3424');
   return p.canvas();
 }
@@ -3858,8 +3915,8 @@ function drawBio(now){
   for(let i=0;i<3;i++){const t=((now/2200)+i*0.33)%1;P(ctx,262,Math.round(77-t*16),'#c8e4ff');}
   const L=[];
   L.push({y:106,d:()=>{const red=S.speech&&S.talker==='mia'&&Math.floor(now/140)%2;shadow(140,106,7);
-    spr(S.miaGibt?SPR.miaGib:S.miaWach?(red?SPR.miaZeichnetTalk:SPR.miaZeichnet):(red?SPR.miaTalk:SPR.mia),138,106,16,45,!!S.miaGibt);
-    if(S.miaWach)kastenG(ctx,154,82,10,2,KR.papier,0.95);}});
+    spr(S.miaGibt?SPR.miaGib:S.miaRuhe?(red?SPR.miaZeichnetTalk:SPR.miaZeichnet):(red?SPR.miaTalk:SPR.mia),138,106,16,45,!!S.miaGibt);
+    if(S.miaRuhe)kastenG(ctx,154,82,10,2,KR.papier,0.95);}});
   L.push({y:S.ky,d:()=>spr(ravenImg(now),S.kx,S.ky,11,19,S.kflip)});
   heroLayer(L,now);
   L.sort((p,q)=>p.y-q.y).forEach(o=>o.d());
@@ -3895,7 +3952,7 @@ async function enterBio(){
   S.room='bio';S.kraechz='bio';S.kx=20;S.ky=60;S.kflip=true;S.hero.x=24;S.hero.y=116;S.hero.flip=false;S.hero.hidden=false;
   S.tuerB=true;tone('sawtooth',160,0.3,0.03,110);kraechzFlug(302,30,1100,16).then(()=>{S.kflip=true;});setTimeout(()=>{S.tuerB=false;tone('square',80,0.15,0.1,50);},1300);
   await walkTo(104,124);
-  if(S.bioIntro)return say('hero',S.miaWach?'Mia zeichnet immer noch.':'Mia starrt immer noch ins Terrarium.');
+  if(S.bioIntro)return say('hero',S.miaRuhe?'Mia zeichnet immer noch.':S.miaWach?'Mia sitzt immer noch da und lauscht.':'Mia starrt immer noch ins Terrarium.');
   await say('hero','Der Biologieraum. Es riecht nach Blumenerde.');
   await say('hero','Und da sitzt jemand mit einer Lupe vor einem Terrarium.');
   S.bioIntro=true;save();
@@ -3908,6 +3965,14 @@ async function leaveBio(){
   return say('hero','Wieder in der Halle.');
 }
 async function redeMia(){
+  if(S.miaWach&&!S.miaRuhe)for(;;){
+    const o=['Fang doch einfach an!','Wo kriegt man hier Ruhe her?','Kannst du mir jetzt die Lupe leihen?','Bis gleich.'];
+    const a=await choose(o);await say('hero',o[a]);
+    if(a===0){await say('mia','Aus dem Musikraum kommt ständig so ein Gedudel. Gerade ist es still, aber gleich geht das wieder los.');await say('mia','Und dann bin ich mitten im dritten Bein raus.');continue;}
+    if(a===1){await say('mia','Die an der Trommel haben’s gut. Die kriegen immer Ohrenschützer.');continue;}
+    if(a===2){await say('mia','Wenn ich erst mal zeichne, brauch ich sie nicht mehr. Aber ich fang ja noch nicht an.');continue;}
+    return say('mia','Ich bleib hier. Gustav läuft ja nicht weg. Ganz langsam jedenfalls.');
+  }
   if(S.miaWach)return say('mia',['Er hat sechs Beine. Ich hab nachgezählt.','Gustav frisst gerade ein Brombeerblatt. Ganz, ganz langsam.'][(S.miaRede=(S.miaRede||0)+1)%2]);
   for(;;){
     const o=['Was machst du da?','Kannst du mir deine Lupe leihen?'];
@@ -3924,15 +3989,26 @@ async function miaWacht(){
   await say('mia','Wo? … Da! Der schaukelt ja!');
   await say('mia','Der tut so, als wär er ein Zweig im Wind. Frechheit.');
   tone('triangle',520,0.2,0.05);tone('triangle',780,0.3,0.05,null,0.2);S.miaWach=true;await sleep(600);
+  await say('mia','So. Jetzt zeichnen.');
+  await say('mia','Moment. Aus dem Musikraum kommt ständig so ein Gedudel. Gerade ist es still, aber gleich geht das wieder los.');
+  await say('mia','Dabei krieg ich keinen Strich hin. Ich brauch Ruhe.');
+}
+// Mia bekommt die Ohrenschuetzer, zeichnet los und leiht die Lupe
+async function miaKopf(){
+  await reach();take('kopfhoerer');flieg('kopfhoerer',null,[134,62]);await sleep(500);S.miaRuhe=true;tone('triangle',440,0.2,0.04);
+  await say('mia','Oh. Ohrenschützer. … Herrlich. Ich hör nur noch mich.');
   await say('mia','Ich fang sofort an zu zeichnen.');
   await say('hero','Kann ich dann deine Lupe leihen?');
   await say('mia','Klar. Zum Zeichnen brauch ich die nicht, er sitzt ja jetzt vor mir.');
   S.miaGibt=true;await sleep(450);S.aktZiel=[116,76];await reach();give('lupe');tone('triangle',990,0.3,0.05);await sleep(450);S.miaGibt=false;
+  await say('mia','Aber nur geliehen. Die ist von meinem Opa.');
 }
 async function actBio(verb,h,item){
   const id=h.id,zweige={zweig1:'Ein Zweig. Hängt da rum.',zweig2:'Noch ein Zweig. Sehr zweigig.',zweig3:'Ein Zweig mit Brombeerblättern. Reglos.'};
   if(item){
-    if(id==='mia'&&verb==='gib')return say('mia',S.miaWach?'Danke, ich hab alles, was ich brauche.':'Später. Ich such Gustav.');
+    if(id==='mia'&&item==='kopfhoerer'&&S.miaWach&&!S.miaRuhe)return miaKopf();
+    if(id==='mia'&&item==='kopfhoerer')return say('mia','Später. Ich such Gustav.');
+    if(id==='mia'&&verb==='gib')return say('mia',S.miaRuhe?'Danke, ich hab alles, was ich brauche.':S.miaWach?'Das macht das Gedudel auch nicht leiser.':'Später. Ich such Gustav.');
     if(zweige[id]||id==='gustav'||id==='terrarium')return say('hero','Das Terrarium lasse ich zu.');
     if(id==='kraechz'&&verb==='gib')return say('kraechz','Behalte das mal schön selbst.');
     return say('hero',FALLBACK.benutze());
@@ -3951,8 +4027,8 @@ async function actBio(verb,h,item){
     case 'schildT:schau':return say('hero','„Gustav. Indische Stabschrecke. Frisst Brombeerblätter. Nachts wach, tagsüber tarnt er sich als Zweig.“');
     case 'lampeB:schau':return say('hero','Eine Wärmelampe. Gustav mag es warm.');
     case 'mia:rede':return redeMia();
-    case 'mia:schau':return say('hero',S.miaWach?'Mia zeichnet Gustav. Mit Zunge im Mundwinkel.':'Ein Mädchen mit einer Lupe vor dem Auge. Sie starrt ins Terrarium. Seit heute früh.');
-    case 'mia:nimm':return say('hero',S.miaWach?'Die Lupe hat sie mir ja geliehen.':'Sie hält die Lupe fest. Erstarrten Leuten nehme ich nichts weg.');
+    case 'mia:schau':return say('hero',S.miaRuhe?'Mia zeichnet Gustav. Mit Zunge im Mundwinkel und Ohrenschützern.':S.miaWach?'Mia hat den Stift in der Hand. Sie lauscht Richtung Musikraum.':'Ein Mädchen mit einer Lupe vor dem Auge. Sie starrt ins Terrarium. Seit heute früh.');
+    case 'mia:nimm':return say('hero',S.miaRuhe?'Die Lupe hat sie mir ja geliehen.':S.miaWach?'Sie hält die Lupe noch. Fragen ist netter.':'Sie hält die Lupe fest. Erstarrten Leuten nehme ich nichts weg.');
     case 'tafelB:schau':return say('hero','An der Tafel steht: „Findet Gustav und zeichnet ihn!“');
     case 'skelett:schau':return say('hero','Das Schulskelett. Jemand hat ihm eine Mütze aufgesetzt. Steht ihm.');
     case 'skelett:rede':return say('hero','Hallo? Nichts. Der ist noch erstarrter als alle anderen.');
@@ -3985,6 +4061,7 @@ async function bioTipp(){
   if(!S.miaFrage)t='Mia starrt seit heute früh ins Terrarium. Frag sie doch mal, was sie da macht.';
   else if(!S.gustavGefunden)t='Stabschrecken sehen aus wie Zweige. Aber ein echter Zweig bewegt sich nur, wenn Wind geht.';
   else if(!S.miaWach)t='Du hast Gustav gefunden. Mia noch nicht. Sag es ihr.';
+  else if(!S.miaRuhe)t=has('kopfhoerer')?'Mia will Ruhe. Du hast doch was für die Ohren.':'Mia will Ruhe vor dem Gedudel. Im Musikraum gibt es doch was für die Ohren.';
   else t='Die Lupe hast du. Ab in den Heizungskeller.';
   await say('kraechz',t);
 }
@@ -4102,7 +4179,7 @@ function cutKeller(t,now){
 }
 
 // Speichern: nur die Teile des Zustands, die das Spiel ausmachen
-const KEEP=['spur','room','takt','zettelGelesen','flureGeschafft','halleIntro','fehlwege','heft','kraechz','kx','ky','kflip','fenster','ziel','kruemelGesehen','gitter','federmappe','muenze','kreide','tipp','kraechzKennt','jonas','inv','gefragt','tschuess','eingangDone','kallFrozen','fertig','gangIntro','passed','erlebt','plaene','tafelGelesen','suchKantine','kantineErklaert','invOff','kantineIntro','broesel','broeselKekse','broeselRede','sortiert','bereit','lappenGegeben','kammerIntro','heizIntro','grummelTor','musikIntro','metronom','orchesterWach','fermateRede','brauchSchlaegel','schlaegelWeg','pause','floeteZu','neueFloete','kartonAuf','holzwolleGenommen','emilRede','bioIntro','miaFrage','gustavGefunden','miaWach','miaRede','brauchFeuer','wolleImFleck','feuer','grummelRede','kisteAuf','lochGesehen','probiert','torAuf'];
+const KEEP=['spur','room','takt','zettelGelesen','flureGeschafft','halleIntro','fehlwege','heft','kraechz','kx','ky','kflip','fenster','ziel','kruemelGesehen','gitter','federmappe','muenze','kreide','tipp','kraechzKennt','jonas','inv','gefragt','tschuess','eingangDone','kallFrozen','fertig','gangIntro','passed','erlebt','plaene','tafelGelesen','suchKantine','kantineErklaert','invOff','kantineIntro','broesel','broeselKekse','broeselRede','sortiert','bereit','lappenGegeben','kammerIntro','heizIntro','grummelTor','musikIntro','metronom','orchesterWach','fermateRede','brauchSchlaegel','schlaegelWeg','pause','floeteZu','neueFloete','kartonAuf','holzwolleGenommen','emilRede','bioIntro','miaFrage','miaRuhe','kopfGenommen','miaZurueck','gustavGefunden','miaWach','miaRede','brauchFeuer','wolleImFleck','feuer','grummelRede','kisteAuf','lochGesehen','probiert','torAuf'];
 function save(){const d={};KEEP.forEach(k=>{if(S[k]!==undefined)d[k]=S[k];});d.hero={x:S.hero.x,y:S.hero.y,flip:S.hero.flip};SAVE.write({prolog:d});}
 let looping=false;
 const API={onDone:null,
@@ -4139,7 +4216,7 @@ const SZENEN={
 SZENEN.musik=Object.assign({},SZENEN.keller,{room:'musik',musikIntro:false,heizIntro:true,brauchFeuer:true,schlaegelWeg:true,inv:['lineal','radiergummi','muenze','kreide','notiz','kekse','schlaegel']});
 SZENEN.bio=Object.assign({},SZENEN.keller,{room:'bio',bioIntro:false,heizIntro:true,brauchFeuer:true});
 SZENEN.feuer=Object.assign({},SZENEN.keller,{heizIntro:true,kraechz:'heiz',kx:226,ky:13,kflip:true,hero:{x:120,y:124,flip:false},brauchFeuer:true,schlaegelWeg:true,orchesterWach:true,musikIntro:true,kartonAuf:true,holzwolleGenommen:true,neueFloete:true,floeteZu:true,
-  bioIntro:true,miaFrage:true,gustavGefunden:true,miaWach:true,inv:['lineal','radiergummi','muenze','kreide','notiz','kekse','schlaegel','holzwolle','lupe']});
+  bioIntro:true,miaFrage:true,gustavGefunden:true,miaWach:true,miaRuhe:true,kopfGenommen:true,inv:['lineal','radiergummi','muenze','kreide','notiz','kekse','schlaegel','holzwolle','lupe']});
 SZENEN.kiste=Object.assign({},SZENEN.feuer,{feuer:true,kisteAuf:true,inv:['lineal','radiergummi','muenze','kreide','notiz','kekse','schlaegel','lupe']});
 function szeneStarten(id){
   const s=SAVE.read();PLAYER.name=(s&&s.name)||PLAYER.name||'Robin';PLAYER.girl=s?!!s.girl:PLAYER.girl;
