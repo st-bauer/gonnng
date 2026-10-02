@@ -11,7 +11,7 @@ body{color:var(--ink);font-family:ui-monospace,Menlo,Consolas,monospace;padding:
 .brand{font-size:26px;color:var(--gold);letter-spacing:.04em;text-shadow:2px 2px 0 #3a1c06;font-weight:700}
 .sub{font-size:15px;color:var(--muted)}
 .screen{position:relative;width:100%;aspect-ratio:16/10;background:#000;border:2px solid var(--line);border-radius:6px;overflow:hidden;user-select:none;-webkit-user-select:none;touch-action:manipulation;cursor:pointer}
-canvas{display:block;width:100%;height:100%;image-rendering:pixelated;image-rendering:crisp-edges}
+canvas{display:block;width:100%;height:100%;margin:auto;image-rendering:pixelated;image-rendering:crisp-edges}
 .overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;background:rgba(5,4,14,.84);text-align:center;padding:16px;cursor:default}
 .overlay h1{margin:0;font-size:clamp(34px,8vw,72px);color:var(--gold);letter-spacing:.04em;text-shadow:4px 4px 0 #3a1c06}
 .overlay p{margin:0;font-size:clamp(14px,2.4vw,19px);color:#c9c0ea;max-width:44ch;line-height:1.35}
@@ -87,6 +87,11 @@ button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
 (()=>{
 const W=320,H=200,SH=144;
 const cv=document.getElementById('cv'),ctx=cv.getContext('2d');ctx.imageSmoothingEnabled=false;
+// ganzzahlige Vergroesserung (2x, 3x ...), damit jedes Pixel gleich gross ist und die Schrift scharf bleibt
+(function(){const scr=document.getElementById('screen');
+  function fit(){const w=scr.clientWidth,h=scr.clientHeight,k=Math.floor(Math.min(w/320,h/200));
+    if(k>=1){cv.style.width=320*k+'px';cv.style.height=200*k+'px';}else{cv.style.width='100%';cv.style.height='100%';}}
+  fit();window.addEventListener('resize',fit);if(window.ResizeObserver)new ResizeObserver(fit).observe(scr);})();
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 
@@ -1461,7 +1466,7 @@ function build(){
   SPR.raven=makeRaven({});SPR.ravenFlug=[makeRaven({fluegel:'hoch'}),makeRaven({fluegel:'runter'})];SPR.ravenKnock=makeRaven({knock:1});SPR.ravenTalk=makeRaven({talk:1});
   SPR.imp=makeImp({});SPR.impYawn=makeImp({yawn:1,heft:1});SPR.impHeft=makeImp({heft:1});SPR.impSleep=makeImp({zu:1});SPR.impKeks=makeImp({keks:1});
   SPR.impTalk=makeImp({talk:1});SPR.impStock=[makeImp({stock:0}),makeImp({stock:1}),makeImp({stock:0,talk:1})];SPR.impHeftTalk=makeImp({heft:1,talk:1});SPR.impSleepTalk=makeImp({zu:1,talk:1});SPR.impKeksTalk=makeImp({keks:1,talk:1});
-  SPR.kinder=kinderSprites();SPR.mia=makeMia({lupe:1});SPR.miaGib=makeMia({gib:1});SPR.miaTalk=makeMia({lupe:1,talk:1});SPR.miaZeichnet=makeMia({zeichnet:1});SPR.miaZeichnetTalk=makeMia({zeichnet:1,talk:1});SPR.fermate=[0,1,2].map(a=>makeFermate({arm:a,wach:a>0}));SPR.fermateTalk=[makeFermate({talk:1}),makeFermate({arm:1,wach:1,talk:1}),makeFermate({arm:2,wach:1,talk:1})];SPR.grummel=makeGrummel({});SPR.grummelTalk=makeGrummel({talk:1});SPR.grummelWarm=makeGrummel({warm:1});SPR.grummelReck=makeGrummel({warm:1,reck:1});SPR.grummelWarmTalk=makeGrummel({warm:1,talk:1});SPR.broesel=makeBroesel({});SPR.broeselTalk=makeBroesel({talk:1});SPR.broeselRuehr=makeBroesel({stir:1});SPR.broeselRuehr2=makeBroesel({stir:2});SPR.broeselGib=makeBroesel({gib:1});
+  SPR.kinder=kinderSprites();SPR.mia=makeMia({lupe:1});SPR.miaGib=makeMia({gib:1});SPR.miaTalk=makeMia({lupe:1,talk:1});SPR.miaZeichnet=makeMia({zeichnet:1});SPR.miaZeichnetTalk=makeMia({zeichnet:1,talk:1});SPR.fermate=[0,1,2].map(a=>makeFermate({arm:a,wach:a>0}));SPR.fermateTalk=[makeFermate({talk:1}),makeFermate({arm:1,wach:1,talk:1}),makeFermate({arm:2,wach:1,talk:1})];SPR.grummel=makeGrummel({});SPR.grummelTalk=makeGrummel({talk:1});SPR.grummelWarm=makeGrummel({warm:1});SPR.grummelReck=makeGrummel({warm:1,reck:1});SPR.grummelWarmTalk=makeGrummel({warm:1,talk:1});SPR.gSteht={};['haengt','trag','greif','hoch','unten'].forEach(a=>[0,1,2].forEach(st=>{SPR.gSteht[a+st]=makeGrummelSteht({arm:a,step:st});SPR.gSteht[a+st+'k']=makeGrummelSteht({arm:a,step:st,key:1});SPR.gSteht[a+st+'t']=makeGrummelSteht({arm:a,step:st,talk:1});}));SPR.broesel=makeBroesel({});SPR.broeselTalk=makeBroesel({talk:1});SPR.broeselRuehr=makeBroesel({stir:1});SPR.broeselRuehr2=makeBroesel({stir:2});SPR.broeselGib=makeBroesel({gib:1});
   SPR.impWalk=[0,1,2,3].map(i=>makeImp({walk:1,phase:i/4}));SPR.impWalkHeft=[0,1,2,3].map(i=>makeImp({walk:1,phase:i/4,heft:1}));
 }
 // Figur mit Fusspunkt zeichnen, ax = Ankerpunkt im Bild
@@ -2911,15 +2916,39 @@ function makeGrummel(o){
   if(!o.warm){[[12,14],[15,17],[19,13],[16,12],[9,5],[14,2],[20,4],[11,20],[6,24]].forEach(([x,y])=>p.px(x,y,'#e8f4ff'));}
   return p.canvas();
 }
+function drawKiste(ox,oy){
+  for(let y=94;y<104;y++)for(let x=110;x<132;x++){let t=0.3-(x-110)/80+(y===94?0.2:0)-(y>101?0.1:0);if(x===117||x===124)t-=0.12;P(ctx,x+ox,y+oy,pick(KR.stahl,t,x,y));}
+  if(S.kisteAuf){polyFill(ctx,[[110+ox,94+oy],[132+ox,94+oy],[130+ox,86+oy],[112+ox,86+oy]],(x,y)=>pick(KR.stahl,0.18+(y-oy-86)/40,x,y));for(let i=0;i<8;i++)P(ctx,112+ox+(i*2.6|0),95+oy+(i%2),i%3?'#b88a24':'#e8c050');}
+  else kastenG(ctx,119+ox,97+oy,3,3,KR.gold,0.5);
+}
+// Grummelbart stehend (36 x 54, Fuesse bei (14,52)): geht, traegt die Kiste, greift zum Schloss
+function makeGrummelSteht(o){
+  const p=new Pup(36,54),st=o.step||0,arm=o.arm||'haengt';
+  const f1=st===1?-3:st===2?3:0,f2=-f1;
+  p.part(RAMP.jeans,m=>{m.limb(11,34,11+f1,50,3,2.6);m.limb(17,34,17+f2,50,3,2.6);});
+  p.part(RAMP.bshoe,m=>{m.ell(13+f1,51.5,4,2);m.ell(19+f2,51.5,4,2);},true);
+  p.part(RAMP.grey,m=>m.poly([[7,17],[21,16],[22,36],[6,37]]));
+  p.part(RAMP.jeans,m=>m.poly([[10,25],[19,25],[21,37],[8,37]]),true);
+  const A={haengt:[16,20,17,33,17,34],trag:[16,20,24,31,25,32],greif:[16,20,26,26,27,26],hoch:[16,20,25,8,26,6],unten:[16,20,24,38,25,40]}[arm];
+  p.part(RAMP.grey,m=>m.limb(A[0],A[1],A[2],A[3],2.8,2.4),true);
+  p.part(RAMP.skin,m=>m.ell(A[4],A[5],2.6,2.2),true);
+  if(o.key)p.px(A[4]+2,A[5]-1,'#e8c050').px(A[4]+3,A[5]-1,'#fff0a0').px(A[4]+3,A[5],'#b88a24');
+  p.part(RAMP.skin,m=>{m.ell(14,9,6,6);m.ell(20,10,1.8,2);});
+  p.part(RAMP.grey,m=>{m.poly([[10,11],[21,11],[22,16],[17,21],[11,17]]);},true);
+  p.part(RAMP.skirt,m=>{m.poly([[6,6],[21,3],[24,6],[18,7],[7,9]]);m.ell(13,4,7,3.4);},true);
+  p.px(17,8,'#ffffff').px(18,8,'#101018').px(16,6,'#3a3a44').px(17,6,'#3a3a44').px(18,6,'#3a3a44');
+  p.px(18,11,'#6e6e7c').px(19,11,'#6e6e7c').px(20,12,'#6e6e7c');
+  if(o.talk)p.px(18,14,'#3a0a0e').px(19,14,'#3a0a0e').px(18,15,'#7a2a2e');
+  return p.canvas();
+}
 function drawHeiz(now){
   if(!HEIZ)HEIZ=drawHeizBg();
   ctx.drawImage(HEIZ,0,0);
   // Schluesselschild am Tor mit geformtem Loch: Nase oben, zwei Kerben unten
   kastenG(ctx,297,54,8,12,KR.gold,0.55);R(ctx,300,57,2,6,'#0a0604');P(ctx,301,56,'#0a0604');P(ctx,299,62,'#0a0604');P(ctx,302,62,'#0a0604');
-  // Schluesselkiste neben dem Sessel, aufgeklappt mit rostigen Schluesseln
-  for(let y=94;y<104;y++)for(let x=110;x<132;x++){let t=0.3-(x-110)/80+(y===94?0.2:0)-(y>101?0.1:0);if(x===117||x===124)t-=0.12;P(ctx,x,y,pick(KR.stahl,t,x,y));}
-  if(S.kisteAuf){polyFill(ctx,[[110,94],[132,94],[130,86],[112,86]],(x,y)=>pick(KR.stahl,0.18+(y-86)/40,x,y));for(let i=0;i<8;i++)P(ctx,112+i*2.6|0,95+(i%2),i%3?'#b88a24':'#e8c050');}
-  else kastenG(ctx,119,97,3,3,KR.gold,0.5);
+  // Schluesselkiste neben dem Sessel, aufgeklappt mit rostigen Schluesseln (Grummelbart traegt sie beim Probieren zum Tor)
+  if(!S.kisteTrag&&!S.kisteBoden)drawKiste(0,0);
+  if(S.kisteBoden)drawKiste(S.kisteBoden[0],S.kisteBoden[1]);
   if(S.torAuf){const tn=performance.now()/1000;
     // Nebel hinter dem Tor: helle Schwaden ziehen langsam, unten dichter, oben dunkler
     for(let y=26;y<100;y++)for(let x=272;x<312;x++){const w=Math.sin(x*0.11+y*0.05+tn*0.6)*0.5+Math.sin(x*0.05-y*0.13-tn*0.4)*0.5;
@@ -2948,7 +2977,12 @@ function drawHeiz(now){
     const [ex,ey]=S.schaufelTief?[h.x+16*d,h.y-2]:S.schaufelHoch?[h.x+15*d,h.y-36]:[h.x+14*d,h.y-14];
     drawSchaufel(h.x-3*d,h.y-27,ex,ey,S.aufSchaufel,now);}});}
   const warm=S.feuer&&!(S.tauT&&now-S.tauT<1600),reckt=S.reckT&&now-S.reckT<1100;
-  L.push({y:100,d:()=>{spr(reckt?SPR.grummelReck:S.speech&&S.talker==='grummel'&&Math.floor(now/140)%2?(warm?SPR.grummelWarmTalk:SPR.grummelTalk):(warm?SPR.grummelWarm:SPR.grummel),84,88,12,34,false);
+  if(S.gUp)L.push({y:S.gy,d:()=>{
+    const k=S.gKey?'k':S.speech&&S.talker==='grummel'&&Math.floor(now/140)%2?'t':'';
+    const sh=S.gShake?Math.round(Math.sin(now/40)*1):0;
+    spr(SPR.gSteht[S.garm+(S.gwalk?1+Math.floor(now/160)%2:0)+k],S.gx+sh,S.gy,14,52,S.gflip);
+    if(S.kisteTrag){const d=S.gflip?-1:1;drawKiste(Math.round(S.gx+d*8-121),Math.round(S.gy-30-98));}}});
+  if(!S.gUp)L.push({y:100,d:()=>{spr(reckt?SPR.grummelReck:S.speech&&S.talker==='grummel'&&Math.floor(now/140)%2?(warm?SPR.grummelWarmTalk:SPR.grummelTalk):(warm?SPR.grummelWarm:SPR.grummel),84,88,12,34,false);
     // Raureif taut: Tropfen fallen von Muetze und Bart
     if(S.tauT&&now-S.tauT<2600)for(let i=0;i<7;i++){const t=((now-S.tauT)/700+i*0.29)%1,x=76+i*3+(i%2),y=Math.round(58+(i%3)*6+t*30);if(y<100)P(ctx,x,y,t<0.5?'#e8f4ff':'#9ab8d8');}}});
   L.push({y:S.ky,d:()=>spr(ravenImg(now),S.kx,S.ky,11,19,S.kflip)});
@@ -2962,7 +2996,7 @@ function drawHeiz(now){
 const HS_HEIZ=[
   {id:'kraechz',name:'Krächz',rect:()=>[S.kx-11,S.ky-19,22,19],walk:[220,116],flip:false},
   {id:'zettelK',name:'Zettel am Kessel',rect:()=>[176,48,15,13],walk:[184,114],flip:false},
-  {id:'grummel',name:'Hausmeister Grummelbart',rect:()=>[70,50,40,52],walk:[124,114],flip:true},
+  {id:'grummel',name:'Hausmeister Grummelbart',rect:()=>S.gUp?[S.gx-12,S.gy-50,28,52]:[70,50,40,52],walk:[124,114],flip:true},
   {id:'kessel',name:'Heizkessel',rect:()=>[172,28,64,74],walk:[204,116],flip:false},
   {id:'kohle',name:'Kohlenhaufen',rect:()=>[138,80,32,24],walk:[150,116],flip:false},
   {id:'brett',name:'Schlüsselbrett',rect:()=>[120,38,30,14],walk:[134,114],flip:false},
@@ -3053,7 +3087,30 @@ async function grummelTaut(){
   await say('grummel','Der Torschlüssel liegt in meiner Kiste. Zwischen dreißig anderen. Irgendeiner ist es.');
   await say('grummel','Die Kiste mach ich mit dem hier auf. Der aus meiner Faust.');
   await sleep(300);tone('square',260,0.08,0.06);tone('square',400,0.1,0.05,null,0.15);S.kisteAuf=true;save();
-  await say('grummel','So. Kiste ist auf. Der Schlüssel aus der Faust hat seinen Dienst getan. Viel Spaß beim Suchen.');
+  await say('grummel','So. Kiste ist auf. Ich zeig dir, wie ich das mache.');
+  await grummelProbiert();
+  await say('grummel','Siehst du. Dreißig Jahre. Viel Spaß beim Suchen.');
+}
+// Grummelbart traegt die Kiste zum Tor, stellt sie ab und probiert Schluessel, einen nach dem anderen. Es klappt nie, irgendwann gibt er auf.
+async function gehe(x,ms){S.gwalk=true;S.gflip=x<S.gx;const d=Math.abs(x-S.gx),n=Math.max(1,Math.round(d/2));for(let i=0;i<n;i++){S.gx+=Math.sign(x-S.gx)*Math.min(2,Math.abs(x-S.gx));await sleep(ms||30);}S.gwalk=false;}
+async function grummelProbiert(){
+  S.gUp=true;S.gx=98;S.gy=112;S.garm='haengt';S.gflip=false;S.gwalk=false;tone('triangle',150,0.15,0.04,100);await sleep(500);
+  await gehe(124,34);S.gflip=false;S.garm='trag';await sleep(300);S.kisteTrag=true;tone('square',200,0.1,0.04,120);await sleep(300);
+  await gehe(246,28);S.garm='unten';await sleep(300);S.kisteTrag=false;S.kisteBoden=[130,16];tone('square',140,0.12,0.06,90);await sleep(400);S.garm='haengt';
+  const reden=['Nein.','Auch nicht.','Wieder nicht.',null];
+  for(let i=0;i<4;i++){
+    const ms=Math.max(14,34-i*8);
+    S.gflip=S.gx>251;S.garm='unten';await sleep(300-i*60);S.gKey=true;S.garm='greif';tone('square',900,0.04,0.03);await sleep(250-i*50);
+    await gehe(286,ms);S.gflip=false;S.garm='hoch';await sleep(260);
+    for(let k=0;k<3;k++){S.gShake=true;tone('square',280+k*30,0.06,0.05,200);await sleep(110);}S.gShake=false;
+    if(reden[i])await say('grummel',reden[i]);
+    S.garm='haengt';await gehe(262,ms);S.gflip=true;S.garm='unten';await sleep(240);
+    S.gKey=false;flieg('schluessel',[S.gx-8,S.gy-20],[S.kisteBoden[0]+121,S.kisteBoden[1]+96]);tone('square',600,0.05,0.03);await sleep(300);S.garm='haengt';
+  }
+  await say('grummel','Ach. Gleich probier ich weiter. Später.');
+  S.gflip=true;S.garm='unten';await sleep(300);S.kisteBoden=null;S.kisteTrag=true;S.garm='trag';tone('square',200,0.1,0.04,120);await sleep(300);
+  await gehe(124,26);S.garm='unten';await sleep(300);S.kisteTrag=false;tone('square',140,0.12,0.06,90);await sleep(300);
+  S.garm='haengt';await gehe(98,30);S.gUp=false;tone('triangle',130,0.2,0.04,90);await sleep(400);
 }
 async function actHeiz(verb,h,item){
   const id=h.id;
@@ -3104,7 +3161,7 @@ async function actHeiz(verb,h,item){
     case 'thermos:nimm':return say('hero','Die gehört Grummelbart. Und leer ist sie auch.');
     case 'schloss:schau':S.lochGesehen=true;return say('hero','Ein altes Schlüsselloch mit besonderer Form: unten zwei Kerben, oben eine Nase.');
     case 'kiste:schau':if(!S.kisteAuf)return say('hero','Eine eiserne Schlüsselkiste. Abgeschlossen.');
-      return say('hero','Dreißig Schlüssel, alle gleich rostig. Die Bärte sind winzig. Da müsste ich genauer hinschauen können.');
+      return schluesselSuchen();
     case 'kiste:oeffne':return say('hero',S.kisteAuf?'Die ist schon offen.':'Abgeschlossen. Den Schlüssel dazu hat Grummelbart in der Faust.');
     case 'kiste:nimm':return zufallsProbe();
     case 'tor:schau':return say('hero','Ein schweres Holztor mit Eisenbändern. Dahinter liegt das Land Später.');
@@ -3147,14 +3204,21 @@ function drawGrossSchluessel(g,x,y,s){
 function drawSchluesselWahl(){
   if(!S.sort||!S.sort.schluessel)return;
   for(let y=0;y<SH;y++)for(let x=0;x<W;x++)P(ctx,x,y,pick(KR.holz,0.12+Math.sin(x*0.3+Math.sin(y*0.2))*0.02,x,y));
-  text('Unter der Lupe: Welcher Schlüssel passt ins Tor?',8,4,'#ffe060',false);
+  text('Die Schlüssel in der Kiste. Welcher passt ins Tor?',8,4,'#ffe060',false);
   SCHLUESSEL.forEach((s,i)=>drawGrossSchluessel(ctx,24+i*38,18,s));
+  // das Loch im Tor als Skizze zum Vergleichen: dunkel ist, wo der Bart hineinpasst
+  const LX=196,LY=88;R(ctx,LX,LY,44,36,'#586070');for(let x=0;x<44;x++)P(ctx,LX+x,LY,'#7a8498');
+  const sol=(xx,yy)=>P(ctx,xx,yy,'#0a0604');
+  for(let yy=LY+2;yy<LY+34;yy++)for(let xx=LX+11;xx<LX+14;xx++)sol(xx,yy);
+  for(let yy=LY+20;yy<LY+34;yy++)for(let xx=LX+14;xx<LX+26;xx++){const rel=xx-(LX+14);if(yy>=LY+29&&((rel>=2&&rel<4)||(rel>=6&&rel<8)))continue;sol(xx,yy);}
+  for(let yy=LY+16;yy<LY+20;yy++)for(let xx=LX+21;xx<LX+25;xx++)sol(xx,yy);
+  text('Das Loch im Tor:',92,98,'#e8ece4',false);
   text('Tippe einen Schlüssel an.',8,130,'#c4b6d4',false);text('Zurück',276,130,'#a8f8a8',false);
 }
 function schluesselWahl(){
   return new Promise(res=>{S.sort={schluessel:true,click(x,y){
     if(y>=126&&x>=260){S.sort=null;res(null);return;}
-    const i=Math.floor((x-12)/38);if(i<0||i>=SCHLUESSEL.length||y<14||y>100)return;
+    const i=Math.floor((x-12)/38);if(i<0||i>=SCHLUESSEL.length||y<14||y>84)return;
     tone('square',700,0.05,0.03);S.sort=null;res(i);}};});
 }
 async function schluesselSuchen(){
@@ -3165,7 +3229,7 @@ async function schluesselSuchen(){
     await say('hero','Unten zwei Kerben, oben eine Nase. Das merke ich mir.');
     await walkTo(128,116);face(true);S.aktZiel=[120,98];
   }
-  await reach();await say('hero','Jetzt sehe ich die Bärte genau. Jeder hat andere Kerben.');
+  await reach();await say('hero','Ich schaue mir jeden Bart genau an. Jeder hat andere Kerben.');
   const i=await schluesselWahl();if(i===null)return;
   const s=SCHLUESSEL[i];
   if(!s.ok)return say('hero',s.nein);
@@ -3204,7 +3268,7 @@ async function heizTipp(){
   if(S.feuer&&has('torschluessel'))t='Du hast den Schlüssel. Das Tor wartet.';
   else if(S.feuer&&!(S.probiert>0)&&!S.lochGesehen)t='Grummelbart probiert seit dreißig Jahren. Du könntest erst mal schauen.';
   else if(S.feuer&&!S.lochGesehen)t='Das Schlüsselloch im Tor hat eine Form. Die Schlüssel auch.';
-  else if(S.feuer)t='Die Kerben an den Bärten sind winzig. Mit der Lupe siehst du sie.';
+  else if(S.feuer)t='Die Bärte sind winzig. Du musst sie dir einzeln ansehen.';
   else if(!S.brauchFeuer)t='Grummelbart friert. Frag ihn doch mal, warum es hier so kalt ist.';
   else if(!has('lupe')&&!S.wolleImFleck)t='Ohne Streichhölzer bleibt nur die Sonne. Und mit einer Lupe wird aus Sonne Hitze. Lupen gibt es im Biologieraum.';
   else if(!has('holzwolle')&&!S.wolleImFleck)t='Kohle fängt nicht einfach so. Erst muss was ganz Feines, Trockenes brennen. So was steckt oft in Paketen.';
@@ -4043,7 +4107,7 @@ function cutKeller(t,now){
 }
 
 // Speichern: nur die Teile des Zustands, die das Spiel ausmachen
-const KEEP=['spur','room','takt','zettelGelesen','flureGeschafft','halleIntro','fehlwege','heft','kraechz','kx','ky','kflip','fenster','ziel','kruemelGesehen','gitter','federmappe','muenze','kreide','tipp','kraechzKennt','jonas','inv','gefragt','tschuess','eingangDone','kallFrozen','fertig','gangIntro','passed','erlebt','plaene','tafelGelesen','suchKantine','kantineErklaert','invOff','kantineIntro','broesel','broeselKekse','broeselRede','sortiert','bereit','lappenGegeben','kammerIntro','heizIntro','grummelTor','musikIntro','metronom','orchesterWach','fermateRede','brauchSchlaegel','schlaegelWeg','pause','floeteZu','neueFloete','kartonAuf','holzwolleGenommen','emilRede','bioIntro','gustavGefunden','miaWach','miaRede','brauchFeuer','wolleImFleck','feuer','grummelRede','kisteAuf','lochGesehen','probiert','torAuf'];
+const KEEP=['spur','room','takt','zettelGelesen','flureGeschafft','halleIntro','fehlwege','heft','kraechz','kx','ky','kflip','fenster','ziel','kruemelGesehen','gitter','federmappe','muenze','kreide','tipp','kraechzKennt','jonas','inv','gefragt','tschuess','eingangDone','kallFrozen','fertig','gangIntro','passed','erlebt','plaene','tafelGelesen','suchKantine','kantineErklaert','invOff','kantineIntro','broesel','broeselKekse','broeselRede','sortiert','bereit','lappenGegeben','kammerIntro','heizIntro','grummelTor','musikIntro','metronom','orchesterWach','fermateRede','brauchSchlaegel','schlaegelWeg','pause','floeteZu','neueFloete','kartonAuf','holzwolleGenommen','emilRede','bioIntro','miaFrage','gustavGefunden','miaWach','miaRede','brauchFeuer','wolleImFleck','feuer','grummelRede','kisteAuf','lochGesehen','probiert','torAuf'];
 function save(){const d={};KEEP.forEach(k=>{if(S[k]!==undefined)d[k]=S[k];});d.hero={x:S.hero.x,y:S.hero.y,flip:S.hero.flip};SAVE.write({prolog:d});}
 let looping=false;
 const API={onDone:null,
