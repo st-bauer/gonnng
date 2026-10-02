@@ -2181,7 +2181,7 @@ async function planSchreiben(){
   }
   S.plaene[w]=d.id;
   await say('hero',WENN[w].replace(' …',',')+' '+d.text.replace('… ',''));
-  if(d.id==='keks'&&!has('kekse'))return say('hero','Guter Plan. Jetzt bräuchte ich nur noch einen Keks.');
+  if(d.id==='keks'&&!has('kekse'))return say('hero','Guter Plan. Der gilt nur, wenn ich einen Keks in der Tasche habe.');
   return say('hero','So. Das steht jetzt da. Und in meinem Kopf auch.');
 }
 // Gespraech mit dem Aufschiebchen auf der Kiste: Hier erfaehrt man, woher die Kekse kommen
@@ -2191,7 +2191,7 @@ async function redeAuf3(){
     const a=await choose(o);await say('hero',o[a]);
     if(a===0){await say('auf3','Mmpf. Nein. Knusper.');continue;}
     if(a===1){await say('auf3','Aus der Kantine. Die backt Frau Brösel. Die merkt gerade nichts, die ist erstarrt.');
-      if(!S.suchKantine){S.suchKantine=true;await say('hero','Frau Brösel. Kantine. Dann muss ich da wohl hin und sie irgendwie wach kriegen.');}continue;}
+      if(!S.suchKantine){S.suchKantine=true;await say('hero','Frau Brösel. Erstarrt wie alle hier, die nicht anfangen können. Vielleicht kann ich ihr helfen. Dann hat sie bestimmt auch einen Keks übrig.');}continue;}
     if(a===2){await say('auf3','In den Heizungskeller. Heft abgeben. Oder später. Mmpf.');continue;}
     return say('auf3','Knusper.');
   }
@@ -2646,16 +2646,16 @@ async function broeselWacht(){
   S.broesel=2;
   await say('broesel','So, Schätzchen. Die ersten Kekse, frisch aus dem Ofen. Für dich.');
   S.broeselGibt=true;await sleep(400);S.aktZiel=[172,86];await reach();give('kekse');tone('triangle',990,0.3,0.05);await sleep(500);S.broeselGibt=false;
-  await say('hero','Genau die haben mir gefehlt.');
+  await say('hero','Danke! Die nehme ich mit in den Flüstergang. Falls mein Magen wieder knurrt.');
   await say('broesel','Und gleich kommt der Salat. Ganz zum Schluss, damit er frisch bleibt.');
 }
 async function redeBroesel(){
   if(S.broesel>=2)return say('broesel',['Noch zwei Stunden, dann ist der Pudding fest. Wer hätte das gedacht.','Noch ein Keks? Die nächsten sind für das Mittagessen, Schätzchen.'][(S.broeselRede=(S.broeselRede||0)+1)%2]);
   for(;;){
     const o=S.sortiert?['Was brauchen Sie denn alles?','Können Sie das nicht selbst holen?','Bis gleich.']
-      :['Haben Sie Kekse für mich?','Womit fangen Sie denn an?','Warum stehen Sie hier so herum?','Bis gleich.'];
+      :['Haben Sie Kekse? Als Proviant.','Womit fangen Sie denn an?','Warum stehen Sie hier so herum?','Bis gleich.'];
     const a=await choose(o),q=o[a];await say('hero',q);
-    if(q==='Haben Sie Kekse für mich?'){await say('broesel','Alle weg. Da waren kleine Wichte im Schlafanzug. Mit Krümeln im Gesicht.');
+    if(q==='Haben Sie Kekse? Als Proviant.'){await say('broesel','Alle weg. Da waren kleine Wichte im Schlafanzug. Mit Krümeln im Gesicht.');
       await say('broesel','Neue backe ich, wenn das Mittagessen läuft. Also nie.');S.broeselKekse=true;continue;}
     if(q==='Womit fangen Sie denn an?'){await say('broesel','Mit dem Seufzen. Da bin ich schon ziemlich weit.');
       await say('broesel','Und danach? Keine Ahnung. Suppe, Pudding, Kekse, Salat. Alle rufen gleichzeitig: Ich zuerst!');
@@ -3129,7 +3129,7 @@ async function actHeiz(verb,h,item){
       return say('hero','Das gehört nicht in den Kessel.');
     }
     if(id==='kiste'&&item==='lupe')return schluesselSuchen();
-    if(id==='schloss'&&item==='lupe'){S.lochGesehen=true;return say('hero','Das Schlüsselloch sehe ich auch so. Unten zwei Kerben, oben eine Nase.');}
+    if(id==='schloss'&&item==='lupe'){await reach('hoch');S.lochGesehen=true;save();return say('hero','Jetzt erkenne ich es: unten zwei Kerben, oben eine Nase. Ein schmales Loch.');}
     if((id==='schloss'||id==='tor')&&item==='torschluessel')return torAufschliessen();
     if(id==='grummel'&&verb==='gib'){
       if(item==='kekse')return say('grummel','Mit gefrorenen Zähnen? Nee. Später.');
@@ -3159,7 +3159,7 @@ async function actHeiz(verb,h,item){
     case 'brett:schau':return say('hero','Ein Schlüsselbrett. Alle Haken leer. Den wichtigsten Schlüssel hat Grummelbart wohl bei sich.');
     case 'thermos:schau':return say('hero','Grummelbarts Thermoskanne. Leer. Der Kaffee hat nicht bis heute gereicht.');
     case 'thermos:nimm':return say('hero','Die gehört Grummelbart. Und leer ist sie auch.');
-    case 'schloss:schau':S.lochGesehen=true;return say('hero','Ein altes Schlüsselloch mit besonderer Form: unten zwei Kerben, oben eine Nase.');
+    case 'schloss:schau':return say('hero',S.lochGesehen?'Das Schlüsselloch: unten zwei Kerben, oben eine Nase.':'Ein Schlüsselloch in einem Eisenschild. Viel zu klein, um etwas zu erkennen.');
     case 'kiste:schau':if(!S.kisteAuf)return say('hero','Eine eiserne Schlüsselkiste. Abgeschlossen.');
       return schluesselSuchen();
     case 'kiste:oeffne':return say('hero',S.kisteAuf?'Die ist schon offen.':'Abgeschlossen. Den Schlüssel dazu hat Grummelbart in der Faust.');
@@ -3207,12 +3207,12 @@ function drawSchluesselWahl(){
   text('Die Schlüssel in der Kiste. Welcher passt ins Tor?',8,4,'#ffe060',false);
   SCHLUESSEL.forEach((s,i)=>drawGrossSchluessel(ctx,24+i*38,18,s));
   // das Loch im Tor als Skizze zum Vergleichen: dunkel ist, wo der Bart hineinpasst
-  const LX=196,LY=88;R(ctx,LX,LY,44,36,'#586070');for(let x=0;x<44;x++)P(ctx,LX+x,LY,'#7a8498');
+  if(S.lochGesehen){const LX=196,LY=88;R(ctx,LX,LY,44,36,'#586070');for(let x=0;x<44;x++)P(ctx,LX+x,LY,'#7a8498');
   const sol=(xx,yy)=>P(ctx,xx,yy,'#0a0604');
   for(let yy=LY+2;yy<LY+34;yy++)for(let xx=LX+11;xx<LX+14;xx++)sol(xx,yy);
   for(let yy=LY+20;yy<LY+34;yy++)for(let xx=LX+14;xx<LX+26;xx++){const rel=xx-(LX+14);if(yy>=LY+29&&((rel>=2&&rel<4)||(rel>=6&&rel<8)))continue;sol(xx,yy);}
   for(let yy=LY+16;yy<LY+20;yy++)for(let xx=LX+21;xx<LX+25;xx++)sol(xx,yy);
-  text('Das Loch im Tor:',92,98,'#e8ece4',false);
+  text('Das Loch im Tor:',92,98,'#e8ece4',false);}
   text('Tippe einen Schlüssel an.',8,130,'#c4b6d4',false);text('Zurück',276,130,'#a8f8a8',false);
 }
 function schluesselWahl(){
@@ -3223,12 +3223,7 @@ function schluesselWahl(){
 }
 async function schluesselSuchen(){
   if(!S.kisteAuf)return say('hero','Die Kiste ist zu.');
-  if(!S.lochGesehen){
-    await say('hero','Die Bärte sehen alle ähnlich aus. Wonach suche ich eigentlich? Das Schlüsselloch muss ich mir erst ansehen.');
-    await walkTo(284,116);face(false);S.aktZiel=[300,60];await reach('hoch');S.lochGesehen=true;save();
-    await say('hero','Unten zwei Kerben, oben eine Nase. Das merke ich mir.');
-    await walkTo(128,116);face(true);S.aktZiel=[120,98];
-  }
+  if(!S.lochGesehen)return say('hero','Einer davon passt. Aber ohne das Loch im Tor zu kennen, rate ich nur.');
   await reach();await say('hero','Ich schaue mir jeden Bart genau an. Jeder hat andere Kerben.');
   const i=await schluesselWahl();if(i===null)return;
   const s=SCHLUESSEL[i];
@@ -3267,7 +3262,7 @@ async function heizTipp(){
   let t;
   if(S.feuer&&has('torschluessel'))t='Du hast den Schlüssel. Das Tor wartet.';
   else if(S.feuer&&!(S.probiert>0)&&!S.lochGesehen)t='Grummelbart probiert seit dreißig Jahren. Du könntest erst mal schauen.';
-  else if(S.feuer&&!S.lochGesehen)t='Das Schlüsselloch im Tor hat eine Form. Die Schlüssel auch.';
+  else if(S.feuer&&!S.lochGesehen)t='Das Schlüsselloch im Tor hat eine Form. Die ist winzig. Vergrößern müsste man können.';
   else if(S.feuer)t='Die Bärte sind winzig. Du musst sie dir einzeln ansehen.';
   else if(!S.brauchFeuer)t='Grummelbart friert. Frag ihn doch mal, warum es hier so kalt ist.';
   else if(!has('lupe')&&!S.wolleImFleck)t='Ohne Streichhölzer bleibt nur die Sonne. Und mit einer Lupe wird aus Sonne Hitze. Lupen gibt es im Biologieraum.';
