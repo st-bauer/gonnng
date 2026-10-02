@@ -126,8 +126,8 @@ Canva-Arbeitsdatei: https://canva.link/mp6p64febvogrh4
 
 ## Nächste Schritte
 
-1. Kapitel 1 ist komplett. Als Nächstes Kapitel 2 (Sumpf der Ablenkung), dort auch eine Aufgabe für den Kompass der Pläne.
-2. Offen: Wird die Lupe in Kapitel 2 als Okular des Fernrohrs weiterverwendet?
+1. Kapitel 1: Mia-Szene bauen (Kopfhörer im Musikraum, Lupe nur geliehen, Mia am Tor). Danach Kapitel 2 (Sumpf der Ablenkung): Teeglas von Kolportus, Nebelpfad mit dem Kompass, Fernrohr aus Holunder, Moorgamaschen gestrichen.
+2. Entschieden: Mias Lupe ist nur geliehen und geht am Tor zurück, das Okular in Kapitel 2 ist die Leselupe der Frösche.
 
 ## Online-Dokument
 
