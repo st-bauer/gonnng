@@ -1,4 +1,4 @@
-// Durchlauf Neues Spiel bis Ende von Kapitel 1 mit Neuladen nach jedem Raum. Start: NPM_ROOT=$(npm root -g) SP=/tmp node scripts/durchlauf_test.js (Server auf Port 8765 im Repo). Protokoll: $SP/durch_log.txt
+// Durchlauf Neues Spiel bis zum Moorrand in Kapitel 2 mit Neuladen nach jedem Raum. Start: NPM_ROOT=$(npm root -g) SP=/tmp node scripts/durchlauf_test.js (Server auf Port 8765 im Repo). Protokoll: $SP/durch_log.txt
 const { chromium } = require(process.env.NPM_ROOT + '/playwright');
 const fs = require('fs');
 (async () => {
@@ -9,7 +9,7 @@ const fs = require('fs');
   const install = () => p.evaluate(() => { window.__log = window.__log || []; window.__q = []; let last = '';
     window.__auto = setInterval(() => { const S = window.__S();
       const sp = S.speech ? S.speech.who + ': ' + S.speech.text : (S.card ? 'KARTE ' + S.card.title : ''); if (sp && sp !== last) { last = sp; window.__log.push(sp); }
-      if (S.dialog) { const o = S.dialog.options, i = window.__q.length ? window.__q.shift() : o.length - 1; window.__log.push('?? ' + o[i]); window.__pick(i); }
+      if (S.dialog) { const o = S.dialog.options, i = S.quizAkt != null ? S.quizAkt : window.__q.length ? window.__q.shift() : o.length - 1; window.__log.push('?? ' + o[i]); window.__pick(i); }
       window.__skip(); }, 40); });
   const flush = async () => { const l = await p.evaluate(() => { const x = window.__log || []; window.__log = []; return x; }); l.forEach(log); };
   const idle = async (what) => { for (let i = 0; i < 900; i++) { if (await p.evaluate(() => !window.__S().busy && !window.__S().dialog && !window.__S().card)) return; await p.waitForTimeout(100); } log('!!! HAENGT bei ' + what); await flush(); fs.writeFileSync((process.env.SP||'/tmp') + '/durch_log.txt', LOG.join('\n')); console.log('HAENGT bei', what, errs); await p.locator('#cv').screenshot({ path: (process.env.SP||'/tmp') + '/durch_haengt.png' }); process.exit(1); };
@@ -108,8 +108,17 @@ const fs = require('fs');
   pr = act('schau', 'kiste'); await wahl(5); await pr;
   await must(() => window.__S().inv.indexOf('torschluessel') >= 0, 'Torschlüssel');
   await act('benutze', 'tor', 'torschluessel', [0, 1]);
+  await p.waitForFunction(() => window.__S().room === 'moorrand' && !window.__S().busy, null, { timeout: 90000 }).catch(() => log('KEIN MOORRAND'));
+  await must(() => window.__S().inv.indexOf('lupe') < 0 && window.__S().miaZurueck, 'Lupe an Mia zurück');
+  await neuladen('Moorrand erreicht');
+  // ---- Kapitel 2: Moorrand mit Kolportus
+  await act('rede', 'kolportus', null, [2]);
+  await act('rede', 'kolportus', null, [2]);
+  await must(() => window.__S().inv.indexOf('teeglas') >= 0, 'Teeglas von Kolportus');
+  await neuladen('Moorrand Quiz');
+  await act('gehe', 'wegR');
   await p.waitForFunction(() => window.__mode() === 'end', null, { timeout: 90000 }).catch(() => log('KEIN ENDE'));
-  await must(() => window.__S().inv.indexOf('lupe') < 0 && window.__S().miaZurueck, 'Lupe an Mia zurück'); await flush(); log('Ende: ' + JSON.stringify(await st()));
+  await flush(); log('Ende: ' + JSON.stringify(await st()));
   fs.writeFileSync((process.env.SP||'/tmp') + '/durch_log.txt', LOG.join('\n'));
   console.log('Fehler:', errs.length ? errs : 'keine'); await b.close();
 })();

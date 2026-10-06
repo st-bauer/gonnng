@@ -101,9 +101,9 @@ Canva-Arbeitsdatei: https://canva.link/mp6p64febvogrh4
   Übergang zu Kapitel 2 am Ende von Kapitel 1 (`uebergangKapitel2`, `cutLand`, `LAND`, `LAND_LINES`, 42 Sekunden): Wendeltreppe im Schacht (`treppeBg`),
   Panorama des Landes Später mit Kameraschwenk, wachsendem Geschirrturm, Irrlichtern, Papiermotten und Vokabelpilzen (`panoBg`, 480 Pixel breit),
   Turmzimmer der Gestalt mit Unruh über dem Kamin und Heftstapel (`turmBg`, `Intro.graf`), Moorrand mit Pling und Kapiteltitel (`moorBg`, `titelGross`).
-- Szenenwahl nur zum Testen (versteckt, erscheint nach fünfmal schnellem Tippen auf den Titel „Gonnng!“): Intro, Prolog, Eingangshalle, Flüstergang, Kantine, Heizungskeller, Musikraum, Biologieraum, Heizungskeller mit Lupe und Holzwolle, Heizungskeller: Schlüsselkiste, Übergang zu Kapitel 2, jeweils mit passendem Spielstand (`SZENEN`).
+- Szenenwahl nur zum Testen (versteckt, erscheint nach fünfmal schnellem Tippen auf den Titel „Gonnng!“): Intro, Prolog, Eingangshalle, Flüstergang, Kantine, Heizungskeller, Musikraum, Biologieraum, Heizungskeller mit Lupe und Holzwolle, Heizungskeller: Schlüsselkiste, Übergang zu Kapitel 2, Kapitel 2: Der Moorrand, jeweils mit passendem Spielstand (`SZENEN`).
   Neue Räume dort mit ergänzen.
-- Durchlauf am Stück (Neues Spiel bis Ende von Kapitel 1, mit Neuladen nach jedem Raum): `scripts/durchlauf_test.js`, braucht Playwright (`NPM_ROOT=$(npm root -g)`) und einen Server auf Port 8765 (`python3 -m http.server 8765` im Repo). Letzter Lauf am 02.10.2026 ohne Fehler.
+- Durchlauf am Stück (Neues Spiel bis zum Moorrand in Kapitel 2, mit Neuladen nach jedem Raum): `scripts/durchlauf_test.js`, braucht Playwright (`NPM_ROOT=$(npm root -g)`) und einen Server auf Port 8765 (`python3 -m http.server 8765` im Repo). Letzter Lauf am 02.10.2026 ohne Fehler.
 - Zum Testen: `window.__frame(sekunde)` im Intro, `window.__act(verb, id, item)` und `window.__pick(i)` im Prolog.
 - Entschieden: Die Unruh bleibt. Die Große Stundenuhr ist eine Sonderanfertigung (Turmuhren haben sonst meist ein Pendel),
   Krächz erklärt das auf Nachfrage. Die Namen Frau Kallweit, Jonas und Lina bleiben.
@@ -125,6 +125,9 @@ Canva-Arbeitsdatei: https://canva.link/mp6p64febvogrh4
   will aber Ruhe vor dem Gedudel aus dem Musikraum. Die Kopfhörer hängen frei im Musikraum am Schrank über der Trommel (`kopfG`, `S.kopfGenommen`).
   Mit den Kopfhörern zeichnet sie los (`miaKopf`, `S.miaRuhe`) und leiht die Lupe, nur geliehen. Am Tor kommt Mia stehend herein (`makeMiaSteht`, `miaAmTor`),
   holt die Lupe zurück (`S.miaZurueck`), Pointe mit Grummelbart: „Welches Flüstern?“
+- Kapitel 2, erster Schauplatz: der Moorrand (Raum `moorrand`, `moorrandBg`, `moorrandVorne`, `makeKolportus`, `actMoorrand`). Nach der Zwischensequenz kommt die Figur dort an.
+  Kolportus’ Marktstand mit Quiz „Wahr oder Mumpitz“ (`MUMPITZ`, `quizSpielen`, alle sechs müssen stimmen, bei Fehler korrigiert Krächz trocken und es beginnt neu),
+  Gewinn ist das Teeglas mit Deckel (`teeglas`, `S.teeglas`). Holunderstrauch und Wegweiser stehen schon da. Der Weg rechts zeigt bis zum Bau der Irrlichtwiese eine Vorschau (`irrlichtwieseVorschau`).
 - Flüstergang: Das Aufschiebchen in der Nische knackt Nüsse mit dem Trommelschlägel und tauscht ihn gegen einen Keks (`schlaegelTausch`).
 - Musikraum und Biologieraum betritt man erst, wenn die Figur Feuer braucht (`S.brauchFeuer`), vorher gibt es nur eine Karte.
 - Entschieden (29.09.2026): kein Klatschen mit Zeitmessung (auf dem iPad nicht bedienbar). Brikett, Kordel, Keks-Angel und Kochlöffel sind gestrichen.
@@ -132,7 +135,7 @@ Canva-Arbeitsdatei: https://canva.link/mp6p64febvogrh4
 
 ## Nächste Schritte
 
-1. Kapitel 1 ist komplett, Mia-Szene eingebaut. Als Nächstes Kapitel 2 (Sumpf der Ablenkung): Teeglas von Kolportus, Nebelpfad mit dem Kompass, Fernrohr aus Holunder, Moorgamaschen gestrichen.
+1. Kapitel 2 (Sumpf der Ablenkung): Moorrand mit Kolportus steht. Als Nächstes Irrlichtwiese, dann Nebelpfad (Glocke, Kompass, Kreidezeichen), Froschbrücke, Fährstelle, Merkwohls Hütte mit Fernrohr aus Holunder.
 2. Entschieden: Mias Lupe ist nur geliehen und geht am Tor zurück, das Okular in Kapitel 2 ist die Leselupe der Frösche.
 
 ## Online-Dokument

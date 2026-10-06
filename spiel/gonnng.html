@@ -59,6 +59,7 @@ button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
       <button data-szene="feuer">Heizungskeller mit Lupe und Holzwolle</button>
       <button data-szene="kiste">Heizungskeller: Schlüsselkiste</button>
       <button data-szene="land">Übergang zu Kapitel 2</button>
+      <button data-szene="moorrand">Kapitel 2: Der Moorrand</button>
       <button id="szenenZurueck">Zurück</button>
     </div>
     <div class="overlay setup" id="setup" hidden>
@@ -73,7 +74,7 @@ button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
     </div>
     <div class="overlay" id="end" hidden>
       <h1>Fortsetzung folgt …</h1>
-      <p>Ende von Kapitel 1. Kapitel 2 ist in Arbeit. Das Moor wartet schon, die Irrlichter auch.</p>
+      <p>Kapitel 2 ist in Arbeit. Das Moor wartet schon, die Irrlichter auch.</p>
       <button class="primary" id="zumTitel">Zum Titel</button>
     </div>
   </div>
@@ -1134,6 +1135,7 @@ const ITEMS={
   schlaegel:{name:'Trommelschlägel',look:'Ein Trommelschlägel mit Filzkopf. Etwas angeknabbert. Riecht nach Nuss.'},
   holzwolle:{name:'Holzwolle',look:'Ein Büschel Holzwolle. Ganz fein, ganz trocken. Knistert.'},
   lupe:{name:'Lupe',look:'Mias Lupe. Groß, rund und schwer. Nur geliehen, sie ist von ihrem Opa.'},
+  teeglas:{name:'Teeglas',look:'Ein leeres Glas mit Deckel aus Kolportus’ Regal. Riecht ein bisschen nach Kamille.'},
   kopfhoerer:{name:'Kopfhörer',look:'Dicke rote Ohrenschützer. Damit hört man fast nichts mehr. Herrlich.'},
   torschluessel:{name:'Torschlüssel',look:'Zwei Kerben unten, die Nase oben. Der passt ins Tor zum Land Später.'},
   kompass:{name:'Kompass der Pläne',look:'Ein Messingkompass. Die Nadel zittert unentschlossen. Er zeigt nur, wenn man weiß, wohin.'},
@@ -1145,6 +1147,7 @@ function kopfG(g,x,y,k){k=k||1;
   [-5,5].forEach(d=>ellFill(g,x+Math.round(d*k),y+1,2*k,2.6*k,(px,py,dx,dy)=>pick(KR.buchR,0.6-dx*0.3-dy*0.3,px,py)));}
 function icon(g,id,x,y){
   if(id==='kopfhoerer')kopfG(g,x+16,y+9,1.4);
+  if(id==='teeglas'){for(let j=0;j<11;j++)for(let i=0;i<9;i++)P(g,x+12+i,y+5+j,pick(KR.himmel,0.25+(i===1?0.6:0)-(i===8?0.2:0)+j/40,x+i,y+j));kastenG(g,x+11,y+3,11,2,KR.stahl,0.6);}
   if(id==='lineal'){kastenG(g,x+2,y+6,28,5,KR.dielen,0.8);for(let i=4;i<30;i+=3)for(let k=0;k<(i%6===1?3:2);k++)P(g,x+i,y+6+k,'#3a2410');}
   if(id==='radiergummi'){kastenG(g,x+9,y+5,8,7,KR.rosa,0.6);kastenG(g,x+17,y+5,7,7,KR.buchB,0.6);}
   if(id==='muenze')ellFill(g,x+16,y+8,6,6,(px,py,dx,dy)=>{const d=dx*dx+dy*dy;return pick(KR.gold,(d>0.6?0.35:0.6)-dx*0.25-dy*0.25,px,py);});
@@ -1164,9 +1167,9 @@ function icon(g,id,x,y){
   if(id==='notiz'){kastenG(g,x+10,y+3,12,11,KR.papier,0.8);for(let i=5;i<13;i+=2)for(let k=12;k<20;k++)P(g,x+k,y+i,'#8a8aa0');P(g,x+19,y+11,'#b07c48');P(g,x+13,y+12,'#b07c48');}
 }
 
-const K={gestalt:'#ff9ac8',hero:'#ffffff',kraechz:'#9ab8ff',kallweit:'#ff9ac8',jonas:'#8af08a',lina:'#ffd070',auf:'#d0a8ff',auf1:'#d0a8ff',auf2:'#d0a8ff',auf3:'#d0a8ff',broesel:'#ffb070',aufK:'#d0a8ff',grummel:'#b8dcf0',fermate:'#ffb8e0',emil:'#a0e8ff',kind2:'#c8f0a0',kind3:'#c8f0a0',kind4:'#c8f0a0',mia:'#ffc080'};
+const K={kolportus:'#f0c860',gestalt:'#ff9ac8',hero:'#ffffff',kraechz:'#9ab8ff',kallweit:'#ff9ac8',jonas:'#8af08a',lina:'#ffd070',auf:'#d0a8ff',auf1:'#d0a8ff',auf2:'#d0a8ff',auf3:'#d0a8ff',broesel:'#ffb070',aufK:'#d0a8ff',grummel:'#b8dcf0',fermate:'#ffb8e0',emil:'#a0e8ff',kind2:'#c8f0a0',kind3:'#c8f0a0',kind4:'#c8f0a0',mia:'#ffc080'};
 const heroHead=()=>[S.hero.x,S.hero.y-46];
-const HEADS={kallweit:()=>[102,42],jonas:()=>[132,94],lina:()=>[42,96],kraechz:()=>[S.kx,S.ky-20],auf:()=>S.auf?[S.auf.x,S.auf.y-28]:[250,80],auf1:()=>[119,74],auf2:()=>[187,52],auf3:()=>[252,62],broesel:()=>S.broesel>=1?[196,52]:[132,52],aufK:()=>[198,78],grummel:()=>[94,50],fermate:()=>[S.fx||262,(S.fy||106)-56],emil:()=>[120,62],kind2:()=>[152,62],kind3:()=>[184,62],kind4:()=>[216,62],mia:()=>S.room==='heiz'?[S.mx,S.my-52]:[138,62]};
+const HEADS={kolportus:()=>[124,40],kallweit:()=>[102,42],jonas:()=>[132,94],lina:()=>[42,96],kraechz:()=>[S.kx,S.ky-20],auf:()=>S.auf?[S.auf.x,S.auf.y-28]:[250,80],auf1:()=>[119,74],auf2:()=>[187,52],auf3:()=>[252,62],broesel:()=>S.broesel>=1?[196,52]:[132,52],aufK:()=>[198,78],grummel:()=>[94,50],fermate:()=>[S.fx||262,(S.fy||106)-56],emil:()=>[120,62],kind2:()=>[152,62],kind3:()=>[184,62],kind4:()=>[216,62],mia:()=>S.room==='heiz'?[S.mx,S.my-52]:[138,62]};
 
 const HS=[
   {id:'kraechz',name:'Krächz',rect:()=>S.kraechz==='aussen'?[34,62,22,18]:[S.kx-11,S.ky-19,22,19],walk:[80,106],flip:true},
@@ -1219,6 +1222,7 @@ function miniItem(g,id,x,y){x=Math.round(x);y=Math.round(y);
   if(id==='kekse')return keksG(g,x,y,2.6);
   if(id==='schlaegel'){line(g,x-4,y+3,x+2,y-2,'#845028');return beutelG(g,x+3,y-3,1.8,1.8,KR.papier,0.6);}
   if(id==='kopfhoerer')return kopfG(g,x,y,0.6);
+  if(id==='teeglas'){kastenG(g,x-2,y-3,5,6,KR.himmel,0.4);return kastenG(g,x-3,y-4,7,1,KR.stahl,0.6);}
   if(id==='lupe'){line(g,x+2,y+2,x+5,y+5,'#845028');return ellFill(g,x,y,3,3,(px,py,dx,dy)=>dx*dx+dy*dy>0.5?pick(KR.stahl,0.7,px,py):pick(KR.himmel,0.6-dx*0.3,px,py));}
   if(id==='holzwolle'){for(let k=0;k<8;k++)line(g,x-3+k%4*2,y-1+(k>>2)*2,x-2+k%4*2+(k%2),y+(k>>2)*2-(k%2),k%3?'#d8b060':'#9a7430');return;}
   if(id==='lineal')return kastenG(g,x-6,y-1,12,2,KR.dielen,0.8);
@@ -1264,7 +1268,7 @@ const FALLBACK={
   schliesse:()=>'Da gibt es nichts zu schließen.',druecke:()=>'Da tut sich nichts.',ziehe:()=>'Da tut sich nichts.',
   rede:()=>'Mit Gegenständen rede ich nur im Notfall.',gib:()=>'Das will hier niemand haben.',benutze:()=>'Das bringt nichts.'
 };
-function stage(){if(S.room==='heiz')return'heiz';if(S.room==='musik')return'musikraum';if(S.room==='bio')return'bio';if(S.room==='gang')return'gang';if(S.room==='halle'&&S.brauchFeuer&&!S.feuer&&(!has('lupe')||!has('holzwolle'))&&!S.wolleImFleck)return'feuer';if(S.room==='kantine'||S.room==='kammer')return'kueche';if(S.room==='halle')return S.suchKantine&&!has('kekse')?'kantine':has('kekse')?'flure':S.flureGeschafft?'fertig':(S.spur?'flure':'spur');if(!S.fenster)return'fenster';if(!S.ziel)return'ziel';if(!S.kruemelGesehen)return'kruemel';if(!S.gitter)return'gitter';if(S.inv.indexOf('kreide')<0)return'kreide';return'fertig';}
+function stage(){if(S.room==='moorrand')return'moorrand';if(S.room==='heiz')return'heiz';if(S.room==='musik')return'musikraum';if(S.room==='bio')return'bio';if(S.room==='gang')return'gang';if(S.room==='halle'&&S.brauchFeuer&&!S.feuer&&(!has('lupe')||!has('holzwolle'))&&!S.wolleImFleck)return'feuer';if(S.room==='kantine'||S.room==='kammer')return'kueche';if(S.room==='halle')return S.suchKantine&&!has('kekse')?'kantine':has('kekse')?'flure':S.flureGeschafft?'fertig':(S.spur?'flure':'spur');if(!S.fenster)return'fenster';if(!S.ziel)return'ziel';if(!S.kruemelGesehen)return'kruemel';if(!S.gitter)return'gitter';if(S.inv.indexOf('kreide')<0)return'kreide';return'fertig';}
 const TIPPS={flure:['Hau mal auf den Gong und schau, was mit den Schildern passiert.','Wenn du losläufst, gongt es. Geh also dahin, wo die Kellertreppe nach dem nächsten Gong steht.','Die Räume rücken im Uhrzeigersinn eine Tür weiter und hüpfen am Musikraum vorbei. Von Osten geht es also direkt nach Westen.'],kruemel:['Wohin ist der Dieb wohl verschwunden?','Wer klaut, hat es eilig. Und wer es eilig hat, krümelt. Schau mal nach unten.','Die Krümel führen zum Gitter.'],
   kantine:['Diesmal suchst du die Kantine. Hau auf den Gong und schau, wohin sie wandert.','Beim Losgehen gongt es. Geh also dahin, wo die Kantine nach dem nächsten Gong steht.','Such das Schild „Kantine“. Die Tür im Uhrzeigersinn daneben ist deine, der Süden zählt nicht mit.'],
   gitter:['Schrauben brauchen einen Dreher.','Schlitzschrauben mag alles, was flach und rund ist.','In Pulten liegt oft Kleingeld.']};
@@ -1277,6 +1281,7 @@ async function tipp(){const st=stage();
   if(st==='heiz')return heizTipp();
   if(st==='musikraum')return musikTipp();
   if(st==='bio')return bioTipp();
+  if(st==='moorrand')return moorrandTipp();
   if(st==='feuer'){await say('kraechz',!has('lupe')?'Eine Lupe gibt es dort, wo man kleine Tiere anschaut. Im Biologieraum.':'Zum Anzünden braucht es was Feines, Trockenes. So was steckt oft in Paketen.');return;}
   const i=Math.min(S.tipp[st]||0,2);S.tipp[st]=i+1;await say('kraechz',TIPPS[st][i]);}
 function choose(options){return new Promise(r=>{S.dialog={options,resolve:i=>{S.dialog=null;r(i);}};});}
@@ -1372,6 +1377,7 @@ async function act(verb,h,item){
   if(S.room==='heiz')return actHeiz(verb,h,item);
   if(S.room==='musik')return actMusik(verb,h,item);
   if(S.room==='bio')return actBio(verb,h,item);
+  if(S.room==='moorrand')return actMoorrand(verb,h,item);
   const id=h.id;
   if(item){
     if(verb==='gib'){if(id==='kraechz')return say('kraechz','Behalte das mal schön selbst.');if(['jonas','lina','kallweit'].includes(id))return say(id,'Gleich.');return say('hero',FALLBACK.gib());}
@@ -1485,7 +1491,7 @@ function build(){
   SPR.raven=makeRaven({});SPR.ravenFlug=[makeRaven({fluegel:'hoch'}),makeRaven({fluegel:'runter'})];SPR.ravenKnock=makeRaven({knock:1});SPR.ravenTalk=makeRaven({talk:1});
   SPR.imp=makeImp({});SPR.impYawn=makeImp({yawn:1,heft:1});SPR.impHeft=makeImp({heft:1});SPR.impSleep=makeImp({zu:1});SPR.impKeks=makeImp({keks:1});
   SPR.impTalk=makeImp({talk:1});SPR.impStock=[makeImp({stock:0}),makeImp({stock:1}),makeImp({stock:0,talk:1})];SPR.impHeftTalk=makeImp({heft:1,talk:1});SPR.impSleepTalk=makeImp({zu:1,talk:1});SPR.impKeksTalk=makeImp({keks:1,talk:1});
-  SPR.kinder=kinderSprites();SPR.mia=makeMia({lupe:1});SPR.miaGib=makeMia({gib:1,kopf:1});SPR.miaSteht={};['haengt','gib','tipp','zeig'].forEach(a=>[0,1,2].forEach(st=>{SPR.miaSteht[a+st]=makeMiaSteht({arm:a,step:st});SPR.miaSteht[a+st+'t']=makeMiaSteht({arm:a,step:st,talk:1});}));SPR.miaTalk=makeMia({lupe:1,talk:1});SPR.miaZeichnet=makeMia({zeichnet:1,kopf:1});SPR.miaZeichnetTalk=makeMia({zeichnet:1,kopf:1,talk:1});SPR.fermate=[0,1,2].map(a=>makeFermate({arm:a,wach:a>0}));SPR.fermateTalk=[makeFermate({talk:1}),makeFermate({arm:1,wach:1,talk:1}),makeFermate({arm:2,wach:1,talk:1})];SPR.grummel=makeGrummel({});SPR.grummelTalk=makeGrummel({talk:1});SPR.grummelWarm=makeGrummel({warm:1});SPR.grummelReck=makeGrummel({warm:1,reck:1});SPR.grummelWarmTalk=makeGrummel({warm:1,talk:1});SPR.gSteht={};['haengt','trag','greif','hoch','unten'].forEach(a=>[0,1,2].forEach(st=>{SPR.gSteht[a+st]=makeGrummelSteht({arm:a,step:st});SPR.gSteht[a+st+'k']=makeGrummelSteht({arm:a,step:st,key:1});SPR.gSteht[a+st+'t']=makeGrummelSteht({arm:a,step:st,talk:1});}));SPR.broesel=makeBroesel({});SPR.broeselTalk=makeBroesel({talk:1});SPR.broeselRuehr=makeBroesel({stir:1});SPR.broeselRuehr2=makeBroesel({stir:2});SPR.broeselGib=makeBroesel({gib:1});
+  SPR.kinder=kinderSprites();SPR.mia=makeMia({lupe:1});SPR.miaGib=makeMia({gib:1,kopf:1});SPR.miaSteht={};['haengt','gib','tipp','zeig'].forEach(a=>[0,1,2].forEach(st=>{SPR.miaSteht[a+st]=makeMiaSteht({arm:a,step:st});SPR.miaSteht[a+st+'t']=makeMiaSteht({arm:a,step:st,talk:1});}));SPR.miaTalk=makeMia({lupe:1,talk:1});SPR.miaZeichnet=makeMia({zeichnet:1,kopf:1});SPR.miaZeichnetTalk=makeMia({zeichnet:1,kopf:1,talk:1});SPR.fermate=[0,1,2].map(a=>makeFermate({arm:a,wach:a>0}));SPR.fermateTalk=[makeFermate({talk:1}),makeFermate({arm:1,wach:1,talk:1}),makeFermate({arm:2,wach:1,talk:1})];SPR.grummel=makeGrummel({});SPR.kolportus={};['ruhe','zeig','glas','jubel'].forEach(a=>{SPR.kolportus[a]=makeKolportus({arm:a});SPR.kolportus[a+'t']=makeKolportus({arm:a,talk:1});});SPR.grummelTalk=makeGrummel({talk:1});SPR.grummelWarm=makeGrummel({warm:1});SPR.grummelReck=makeGrummel({warm:1,reck:1});SPR.grummelWarmTalk=makeGrummel({warm:1,talk:1});SPR.gSteht={};['haengt','trag','greif','hoch','unten'].forEach(a=>[0,1,2].forEach(st=>{SPR.gSteht[a+st]=makeGrummelSteht({arm:a,step:st});SPR.gSteht[a+st+'k']=makeGrummelSteht({arm:a,step:st,key:1});SPR.gSteht[a+st+'t']=makeGrummelSteht({arm:a,step:st,talk:1});}));SPR.broesel=makeBroesel({});SPR.broeselTalk=makeBroesel({talk:1});SPR.broeselRuehr=makeBroesel({stir:1});SPR.broeselRuehr2=makeBroesel({stir:2});SPR.broeselGib=makeBroesel({gib:1});
   SPR.impWalk=[0,1,2,3].map(i=>makeImp({walk:1,phase:i/4}));SPR.impWalkHeft=[0,1,2,3].map(i=>makeImp({walk:1,phase:i/4,heft:1}));
 }
 // Figur mit Fusspunkt zeichnen, ax = Ankerpunkt im Bild
@@ -1505,6 +1511,7 @@ function drawScene(now){
   if(S.room==='heiz')return drawHeiz(now);
   if(S.room==='musik')return drawMusik(now);
   if(S.room==='bio')return drawBio(now);
+  if(S.room==='moorrand')return drawMoorrand(now);
   ctx.drawImage(ROOM,0,0);
   // Sekundenzeiger zittert auf der Stelle
   const a=-2.2+Math.sin(now/40)*0.08;line(ctx,226,24,226+Math.cos(a)*7,24+Math.sin(a)*7,'#c83030');
@@ -1573,7 +1580,7 @@ const VCELL=(i)=>{const col=Math.floor(i/3),row=i%3;return[4+col*62,156+row*14,6
 const ORDER=['gib','nimm','benutze','oeffne','schau','druecke','schliesse','rede','ziehe'];
 const ICELL=i=>[208+(i%3)*37,156+Math.floor(i/3)*22,35,20];
 const IUP=[195,156,11,20],IDOWN=[195,178,11,20];
-const isFloor=id=>id==='boden'||id==='bodenH'||id==='bodenG'||id==='bodenZ'||id==='bodenM'||id==='bodenB';
+const isFloor=id=>id==='bodenMR'||id==='boden'||id==='bodenH'||id==='bodenG'||id==='bodenZ'||id==='bodenM'||id==='bodenB';
 function invAt(x,y){for(let k=0;k<6;k++){const i=(S.invOff||0)*3+k;if(i<S.inv.length&&inR(x,y,ICELL(k)))return i;}return -1;}
 function inR(x,y,[a,b,w,h]){return x>=a&&x<a+w&&y>=b&&y<b+h;}
 const optDY=()=>S.dialog&&S.dialog.options.length>4?10:12;   // bei vielen Antworten enger
@@ -1650,7 +1657,7 @@ const START=['kantine','bio','keller'];           // Takt 0: Nord, Ost, West
 const RAUM_NAME={kantine:'Kantine',bio:'Biologieraum',keller:'Kellertreppe',musik:'Musikraum'};
 function raumAn(tuer,takt){if(tuer==='sued')return'musik';const i=RING.indexOf(tuer);return START[((i-takt)%3+3)%3];}
 const BAND_HALLE={x0:22,x1:298,y0:98,y1:136};
-const curBand=()=>S.room==='halle'?BAND_HALLE:S.room==='gang'?BAND_GANG:S.room==='kantine'?BAND_KANTINE:S.room==='kammer'?BAND_KAMMER:S.room==='heiz'?BAND_HEIZ:S.room==='musik'?BAND_MUSIK:S.room==='bio'?BAND_BIO:BAND;
+const curBand=()=>S.room==='halle'?BAND_HALLE:S.room==='gang'?BAND_GANG:S.room==='kantine'?BAND_KANTINE:S.room==='kammer'?BAND_KAMMER:S.room==='heiz'?BAND_HEIZ:S.room==='musik'?BAND_MUSIK:S.room==='bio'?BAND_BIO:S.room==='moorrand'?BAND_MOOR:BAND;
 
 let HALLE=null;
 function drawHalleBg(){
@@ -1825,7 +1832,7 @@ const HS_HALLE=[
   {id:'sued',name:()=>'Weg nach Süden',exit:true,rect:()=>[120,124,80,20],walk:[160,136],flip:false},
   {id:'bodenH',name:'Boden',floor:true,rect:()=>[20,98,280,40],walk:[0,0],flip:false}
 ];
-const curHS=()=>S.room==='halle'?HS_HALLE:S.room==='gang'?HS_GANG:S.room==='kantine'?HS_KANTINE:S.room==='kammer'?HS_KAMMER:S.room==='heiz'?HS_HEIZ:S.room==='musik'?HS_MUSIK:S.room==='bio'?HS_BIO:HS;
+const curHS=()=>S.room==='halle'?HS_HALLE:S.room==='gang'?HS_GANG:S.room==='kantine'?HS_KANTINE:S.room==='kammer'?HS_KAMMER:S.room==='heiz'?HS_HEIZ:S.room==='musik'?HS_MUSIK:S.room==='bio'?HS_BIO:S.room==='moorrand'?HS_MOORRAND:HS;
 const TUER={nord:{tor:[160,98],drin:[160,108],k:[160,62]},west:{tor:[24,104],drin:[48,114],k:[26,62]},ost:{tor:[296,104],drin:[272,114],k:[294,62]},sued:{tor:[160,146],drin:[160,124],k:[160,150]}};
 async function durchTuer(tuer){const T=TUER[tuer];
   if(tuer!=='sued'){S.aktZiel=[T.k[0],80];await reach('greif');S.offen=tuer;tone('sawtooth',160,0.3,0.03,110);await sleep(250);}
@@ -3279,7 +3286,7 @@ async function torAufschliessen(){
   await say('kraechz','Dann los. Bevor ich es mir anders überlege.');
   await walkTo(292,108);S.hero.hidden=true;await kraechzFlug(292,56,700,10);S.kx=-40;await sleep(400);
   await uebergangKapitel2();
-  S.over=true;save();if(API.onDone)API.onDone('kapitel1');
+  return enterMoorrand();
 }
 // Mia holt ihre Lupe ab, bevor es durch das Tor geht
 async function miaGeh(x){S.mwalk=true;S.mflip=x<S.mx;while(Math.abs(S.mx-x)>1){S.mx+=Math.sign(x-S.mx)*Math.min(2,Math.abs(x-S.mx));await sleep(28);}S.mx=x;S.mwalk=false;}
@@ -4620,14 +4627,281 @@ function cutLand(t,now){
   if(a>0){ctx.globalAlpha=clamp(a,0,1);R(ctx,0,0,W,SH,'#000000');ctx.globalAlpha=1;}
 }
 async function uebergangKapitel2(){await runCut(42,cutLand,LAND_LINES);}
+/* =====================================================================
+   Kapitel 2, erster Schauplatz: der Moorrand mit Professor Kolportus' Marktstand
+   Ein Bohlenweg fuehrt quer durchs Bild, links das Felsentor zur Treppe, rechts der Wegweiser ins Moor.
+   Licht: tiefe Abendsonne hinten rechts, dazu die warme Laterne unter dem Sonnendach des Stands.
+   Raetsel: Wahr oder Mumpitz. Wer alle sechs Aussagen richtig einordnet, bekommt ein leeres Teeglas mit Deckel.
+   ===================================================================== */
+const BAND_MOOR={x0:30,x1:300,y0:116,y1:134};
+const MR={VX:160,VY:44,LAT:[118,58],SON:[286,30]};
+let MOORRAND=null,MOORRAND_VORNE=null;
+function mrLicht(x,y){const l=Math.max(0,1-Math.hypot(x-MR.LAT[0],(y-MR.LAT[1])*1.2)/95),s=Math.max(0,1-Math.hypot(x-MR.SON[0],(y-MR.SON[1])*1.4)/260);return[l,s];}
+function moorrandBg(){
+  const [c,g]=mk(W,SH),hash=(a,b)=>((a*73856093)^(b*19349663))>>>0,{VX,VY}=MR;
+  const zum=(x,y,k)=>[x+(VX-x)*k,y+(VY-y)*k];
+  const HOLZM=mkMix(mkRamp(['#08060c','#1c1622','#352a38','#54404a','#7a5a58','#a07a68'],10),KR.holz,8);   // Holz im Abendlicht und im Laternenlicht
+  const holz=(t,x,y)=>{const [l]=mrLicht(x,y);return pickMix(HOLZM,clamp(l*1.6,0,1),t,x,y);};
+  const hell=(x,y)=>{const [l,s]=mrLicht(x,y);return 0.06+l*0.6+s*0.3;};
+  // Himmel, Sonne, Wolken, Gebirge
+  const ht=(x,y)=>{const d=Math.hypot(x-MR.SON[0],(y-MR.SON[1])*1.5);return clamp(0.06+Math.pow(Math.max(0,y)/VY,1.3)*0.76+Math.max(0,1-d/140)*0.3,0,1);};
+  for(let y=0;y<VY;y++)for(let x=0;x<W;x++)P(g,x,y,pick(KR.abend,ht(x,y),x,y));
+  [[60,12,60,2],[200,8,90,3],[250,24,60,2]].forEach(([wx,wy,wl,wh])=>{for(let y=wy-wh;y<=wy+wh;y++)for(let x=wx-wl;x<=wx+wl;x++){const u=(x-wx)/wl,v=(y-wy)/wh;if(1-u*u-Math.abs(v)+Math.sin(x*0.15+wy)*0.15<0||x<0||x>=W)continue;
+    const s=Math.max(0,1-Math.hypot(x-MR.SON[0],y-MR.SON[1])/180);P(g,x,y,pick(KR.abend,0.2+(v>0?0.2+s*0.4:0)+s*0.12,x,y));}});
+  ellFill(g,MR.SON[0],MR.SON[1]+4,9,8,(x,y)=>y>VY-3?null:pick(KR.abend,0.94,x,y));
+  for(let x=0;x<W;x++){const h=VY-5-noise1(x+40,1.5)*4;for(let y=Math.floor(h);y<VY;y++)P(g,x,y,pick(KR.abend,ht(x,VY)*0.5,x,y));}
+  for(let k=0;k<9;k++){const w=2-Math.floor(k/4),y=VY-5-k*1.4;for(let j=-w;j<=w;j++)P(g,214+j+Math.round(k*0.3),Math.round(y),pick(KR.abend,j===w?0.5:0.2,214,y));}
+  // Moor bis zur Lichtung: Wasser spiegelt den Himmel, dazwischen Torf und Schilf
+  const pool=(x,y)=>Math.sin(x*0.035+y*0.23)+Math.sin(x*0.07-y*0.4+1.2)*0.7+Math.sin(x*0.017+2)*0.6;
+  for(let y=VY;y<106;y++){const tief=(y-VY)/62;
+    for(let x=0;x<W;x++){const p=pool(x/(0.5+tief*1.6),y);
+      if(p>0.6-tief*0.2&&y<96){const ry=VY-(y-VY)*1.3-1,rx=x+Math.sin(y*0.8+x*0.04)*(1+tief*2);let t=ht(rx,Math.max(0,ry))*0.8-0.05;if(p<0.68-tief*0.2)t-=0.28;P(g,x,y,pick(KR.abend,t,x,y));continue;}
+      let t=0.14+tief*0.16+hell(x,y)*0.35+((hash(x>>1,y>>1)%5)-2)*0.025;if(hash(x,y*5)%7===0)t+=0.12;
+      P(g,x,y,pick(tief>0.5?KR.schilf:KR.torf,t,x,y));}}
+  // festgetretene Lichtung und Boden vorn, Bohlenweg quer durchs Bild, Bretter laufen zum Fluchtpunkt
+  for(let y=96;y<SH;y++)for(let x=0;x<W;x++){
+    const imWeg=y>=112&&y<140;
+    if(imWeg){const d=y-VY,u=(x-VX)*60/d,br=Math.floor(u/7),fu=u/7-br,rand=y<114||y>137;
+      let t=0.22+hell(x,y)*0.55+((hash(br,5)%5)-2)*0.04-(y-112)/200;
+      if(fu<0.12)t-=0.16;else if(fu<0.24)t+=0.05;if(rand)t-=y<114?-0.1:0.18;
+      if(hash(br,y>>2)%23===0)t-=0.08;                                           // Astloecher
+      P(g,x,y,holz(t,x,y));continue;}
+    let t=0.12+hell(x,y)*0.45+((hash(x>>1,y)%5)-2)*0.03-(y>=140?0.05:0);if(hash(x*3,y)%6===0)t+=0.1;
+    if(y>=110&&y<112)t-=0.12;                                                     // Kante vor dem Weg
+    P(g,x,y,pick(y<104?KR.torf:KR.schilf,t,x,y));}
+  // Laternenschein auf Weg und Boden unter dem Stand ist im Licht schon drin, dazu der Schatten des Stands nach vorn links
+  polyFill(g,[[66,104],[164,104],[150,118],[50,118]],(x,y)=>y>=112?holz(0.08+hell(x,y)*0.2,x,y):pick(KR.torf,0.06+hell(x,y)*0.2,x,y));
+  // Felsentor links mit violettem Schimmer aus dem Schacht
+  const fels=x=>x<44?30+noise1(x,2)*6+Math.max(0,x-26)*2.6:SH+1;
+  for(let x=0;x<48;x++)for(let y=Math.floor(fels(x));y<114;y++){const bogen=Math.hypot((x-16)/11,(y-86)/18)<1&&y<104||(Math.abs(x-16)<11&&y>=86&&y<112);
+    if(bogen){const d=Math.hypot((x-16)/11,(y-104)/18);P(g,x,y,pick(KR.nebelS,0.8-d*0.5,x,y));continue;}
+    const sch=((y+x*0.2+noise1(x,4)*2)%8);let t=0.14+(y-fels(x)<2?0.25:0)+Math.max(0,x-20)/120+(sch<1?-0.08:0)+Math.max(0,1-Math.hypot((x-16)/24,(y-96)/28))*0.2;
+    P(g,x,y,pick(KR.nebelS,t,x,y));}
+  // Marktstand: Raeder, Front mit Brettern, Theke oben, rechte Seitenflaeche, Rueckwand mit Regal, Pfosten, Sonnendach
+  const FX0=64,FX1=164,FT=76,FB=102,KK=0.16;
+  const [r0x,r0y]=zum(FX1,FT,KK),[r1x,r1y]=zum(FX1,FB,KK),[l0x,l0y]=zum(FX0,FT,KK);
+  // Rueckwand mit zwei Regalbrettern, darauf Teeglaeser und Pillendosen (Glaeser selbst zur Laufzeit nicht noetig)
+  const RX0=Math.round(l0x),RX1=Math.round(r0x),RT=48;
+  for(let y=RT;y<Math.round(r0y);y++)for(let x=RX0;x<RX1;x++){const brett=(y===60||y===61||y===71||y===72);let t=0.18+hell(x,y)*0.45+Math.sin(x*0.7)*0.03;if(brett)t+=y%2?-0.1:0.18;if((x-RX0)%14===0)t-=0.1;P(g,x,y,holz(t,x,y));}
+  const glas=(x,y,rp,kar)=>{for(let j=0;j<7;j++)for(let i=0;i<5;i++){const xx=x+i,yy=y-j,t=0.35+hell(xx,yy)*0.4+(i===1?0.25:0)-(i===4?0.15:0);
+      P(g,xx,yy,kar&&((i+j)%2===0)?pick(KR.papier,t,xx,yy):pick(rp,t,xx,yy));}
+    for(let i=-1;i<6;i++){P(g,x+i,y-7,pick(KR.stahl,0.55+hell(x,y)*0.3,x+i,y));P(g,x+i,y-8,pick(KR.stahl,0.8,x+i,y));}};
+  [[RX0+4,KR.buchB,0],[RX0+12,KR.buchB,0],[RX0+20,KR.buchR,0],[RX0+28,KR.buchR,0],[RX0+36,KR.buchY,1],[RX0+44,KR.buchY,1],[RX0+54,KR.buchB,0],[RX0+62,KR.buchR,0],[RX0+70,KR.buchY,1]].forEach(([x,rp,kar])=>glas(x,59,rp,kar));
+  for(let i=0;i<8;i++){const x=RX0+4+i*10;zylG(g,x,64,6,6,i%2?KR.rosa:KR.buchG,0.35+hell(x,64)*0.4);}
+  // Theke oben und Front
+  polyFill(g,[[FX0,FT],[FX1,FT],[r0x,r0y],[l0x,l0y]],(x,y)=>holz(0.45+hell(x,y)*0.45,x,y));
+  for(let y=FT;y<FB;y++)for(let x=FX0;x<FX1;x++){const br=Math.floor((y-FT)/5),fuge=(y-FT)%5===0,rand=x<FX0+2||x>FX1-3;
+    let t=0.22+hell(x,y)*0.5+((hash(br,x>>4)%5)-2)*0.04-(fuge?0.14:0)+(rand?0.08:0)+Math.sin(x*0.35+br*2)*0.03;if(y===FT)t+=0.2;P(g,x,y,holz(t,x,y));}
+  polyFill(g,[[FX1,FT],[r0x,r0y],[r1x,r1y],[FX1,FB]],(x,y)=>holz(0.1+hell(x,y)*0.3,x,y));                    // Seitenflaeche, vom Licht abgewandt
+  // Pfosten und Sonnendach mit roten und cremefarbenen Bahnen, vorn ein Bogenrand
+  [[60,48,104],[166,48,104]].forEach(([x,y0,y1])=>{for(let y=y0;y<y1;y++){P(g,x,y,holz(0.5+hell(x,y)*0.3,x,y));P(g,x+1,y,holz(0.2+hell(x,y)*0.3,x,y));}});
+  polyFill(g,[[54,50],[174,50],[164,34],[66,34]],(x,y)=>{const u=(x-VX)/((y-VY)||-1),bahn=Math.floor((x-54+(50-y)*0.1)/10)%2,t=0.25+hell(x,y)*0.5+(50-y)/60;
+    return bahn?pick(KR.buchR,t,x,y):pick(KR.papier,t-0.1,x,y);});
+  for(let x=54;x<174;x++){const b=Math.floor((x-54)/10),f=(x-54)%10,h=2+Math.round(Math.sin(f/10*Math.PI)*3);for(let y=50;y<50+h;y++)P(g,x,y,b%2?pick(KR.buchR,0.3+hell(x,y)*0.4,x,y):pick(KR.papier,0.2+hell(x,y)*0.4,x,y));}
+  // Schild oben auf dem Dach
+  for(let y=22;y<33;y++)for(let x=78;x<152;x++){const rand=x<80||x>149||y<24||y>30;P(g,x,y,holz(rand?0.25:0.5+hell(x,y)*0.3-(y-24)/40,x,y));}
+  [[86,33],[144,33]].forEach(([x,y])=>{P(g,x,y,holz(0.3,x,y));P(g,x,y+1,holz(0.3,x,y));});
+  // Tafel "Wahr oder Mumpitz?" als Aufsteller vor dem Stand
+  polyFill(g,[[170,88],[218,88],[222,114],[166,114]],(x,y)=>holz(0.15+hell(x,y)*0.3,x,y));
+  for(let y=90;y<110;y++)for(let x=172;x<216;x++)P(g,x,y,pick(KR.tafel,0.25+hell(x,y)*0.3,x,y));
+  // Holunderstrauch rechts: dunkle Blaetter, Lichtkante von der Sonne, schwarze Beerendolden
+  for(let i=0;i<220;i++){const a=hash(i,7)%628/100,r=(hash(i,9)%100)/100,bx=Math.round(244+Math.cos(a)*r*28),by=Math.round(88+Math.sin(a)*r*20-r*4);
+    const licht=Math.cos(a-(-0.5))*0.5+0.5;ellFill(g,bx,by,3,2,(x,y,dx,dy)=>pick(KR.blatt,0.04+licht*0.18+(-dy)*0.06+(dx>0.3&&licht>0.7?0.12:0),x,y));}
+  for(let y=96;y<112;y++){P(g,242,y,pick(KR.holz,0.25,242,y));P(g,248,y+2>112?111:y,pick(KR.holz,0.2,248,y));}
+  [[232,80],[250,74],[258,90],[238,94],[226,90]].forEach(([x,y])=>{for(let k=0;k<9;k++){const px=x+(k%3)*2-2+((k/3|0)%2),py=y+Math.floor(k/3)*2;P(g,px,py,'#140a1e');if(k%4===0)P(g,px,py-1,'#3a2a4a');}line(g,x,y-1,x+1,y-4,pick(KR.holz,0.3,x,y));});
+  // Wegweiser mit drei Brettern
+  for(let y=52;y<114;y++){P(g,292,y,holz(0.35+hell(292,y)*0.3,292,y));P(g,293,y,holz(0.2+hell(293,y)*0.2,293,y));P(g,294,y,holz(0.1,294,y));}
+  [[250,55,320,'r'],[254,66,318,'r'],[256,77,318,'l']].forEach(([x0,y0,x1,d])=>{for(let y=y0;y<y0+8;y++)for(let x=x0;x<x1;x++){const spitze=d==='r'?x>x1-5&&Math.abs(y-y0-3.5)>(x1-x)*1.0:x<x0+5&&Math.abs(y-y0-3.5)>(x-x0)*1.0;if(spitze)continue;
+    P(g,x,y,holz(0.3+hell(x,y)*0.35+(y===y0?0.15:0)-(y===y0+7?0.15:0)+Math.sin(x*0.5+y)*0.03,x,y));}});
+  return c;
+}
+// vor der Figur: Thekenfront und Raeder, damit Kolportus hinter der Theke steht
+function moorrandVorne(){
+  const [c,g]=mk(W,SH),{VX,VY}=MR;
+  const HOLZM=mkMix(mkRamp(['#08060c','#1c1622','#352a38','#54404a','#7a5a58','#a07a68'],10),KR.holz,8);
+  const holz=(t,x,y)=>{const [l]=mrLicht(x,y);return pickMix(HOLZM,clamp(l*1.6,0,1),t,x,y);};
+  const hell=(x,y)=>{const [l,s]=mrLicht(x,y);return 0.06+l*0.6+s*0.3;};
+  const hash=(a,b)=>((a*73856093)^(b*19349663))>>>0;
+  for(let y=76;y<102;y++)for(let x=64;x<164;x++){const br=Math.floor((y-76)/5),fuge=(y-76)%5===0,rand=x<66||x>160;
+    let t=0.22+hell(x,y)*0.5+((hash(br,x>>4)%5)-2)*0.04-(fuge?0.14:0)+(rand?0.08:0)+Math.sin(x*0.35+br*2)*0.03;if(y===76)t+=0.25;P(g,x,y,holz(t,x,y));}
+  // Raeder mit Speichen und Nabe
+  [[84,104],[146,104]].forEach(([cx,cy])=>{ellFill(g,cx,cy,10,10,(x,y,dx,dy)=>{const r=Math.hypot(dx,dy),a=Math.atan2(dy,dx);
+    if(r>0.8)return holz(0.28+hell(x,y)*0.4+(-dx-dy)*0.12,x,y);if(r<0.2)return holz(0.5+hell(x,y)*0.3,x,y);
+    return ((a+Math.PI)/(Math.PI/4))%1<0.22?holz(0.25+hell(x,y)*0.35,x,y):null;});});
+  return c;
+}
+// Professor Kolportus: duerr, Zylinder mit Pfauenfeder, Spitzbart, Weste voller Abzeichen. 32 x 58, Fuesse bei (15,57)
+function makeKolportus(o){
+  const p=new Pup(32,58),arm=o.arm||'ruhe';
+  p.part(RAMP.trous,m=>{m.limb(13,38,12,56,2.2,2);m.limb(17,38,18,56,2.2,2);});
+  p.part(RAMP.bshoe,m=>{m.ell(12,57,3,1.2);m.ell(19,57,3,1.2);},true);
+  p.part(RAMP.legg,m=>m.poly([[9,18],[21,18],[22,40],[8,40]]));                                   // Frack
+  p.part(RAMP.boot,m=>m.poly([[11,19],[19,19],[19,34],[11,34]]),true);                            // gelbe Weste
+  [[13,23],[16,26],[13,29],[17,31]].forEach(([x,y],i)=>p.px(x,y,['#c83030','#3a64c4','#2e8a40','#fff0a0'][i]));   // Abzeichen
+  p.part(RAMP.white,m=>m.poly([[13,17],[17,17],[15,21]]),true);
+  p.part(RAMP.legg,m=>m.limb(11,20,9,32,2,1.8),true);p.part(RAMP.skin,m=>m.ell(9,33,1.6,1.6),true);
+  const A={ruhe:[19,20,21,31],zeig:[19,20,25,9],glas:[19,20,26,24],jubel:[19,20,24,6]}[arm];
+  p.part(RAMP.legg,m=>m.limb(A[0],A[1],A[2],A[3],2,1.8),true);p.part(RAMP.skin,m=>m.ell(A[2]+0.5,A[3],1.7,1.7),true);
+  if(arm==='zeig')p.part(RAMP.skin,m=>m.limb(A[2],A[3],A[2]+1,A[3]-4,0.6,0.6),true);
+  if(arm==='glas'){p.part(RAMP.white,m=>m.rect(25,17,5,7),true);p.part(RAMP.grey,m=>m.rect(24,15,7,2),true);}
+  p.part(RAMP.skin,m=>{m.rect(14,13,3,4);m.ell(15.5,9,4.6,5);m.limb(19,9,23,11,1.2,0.8);});                 // Kopf mit langer Nase
+  p.part(RAMP.braid,m=>m.poly([[13,12],[18,12],[16,17]]),true);                                   // Spitzbart
+  p.part(RAMP.legg,m=>{m.rect(10,0,11,6);m.rect(7,5,17,2);},true);                              // Zylinder
+  p.part(RAMP.tie,m=>m.rect(10,3,11,2),true);
+  p.part(RAMP.teal,m=>m.limb(20,3,26,0,0.8,0.5),true);p.px(26,0,'#3a64c4');
+  p.px(17,8,'#ffffff').px(18,8,'#101018');p.px(16,6,'#241a24').px(17,6,'#241a24').px(18,6,'#241a24');
+  if(o.talk)p.px(17,14,'#3a0a0e').px(18,14,'#7a2a2e');else p.px(17,13,'#6a3424').px(18,13,'#6a3424');
+  return p.canvas();
+}
+function drawMoorrand(now){
+  if(!MOORRAND){MOORRAND=moorrandBg();MOORRAND_VORNE=moorrandVorne();if(!NEBELBAND)NEBELBAND=nebelBand();}
+  if(S.card){R(ctx,0,0,W,SH,'#000000');const t=S.card.title;text(t,Math.round((W-textW(t))/2),34,'#ffe060',false);
+    wrap(S.card.text,260).forEach((l,i)=>text(l,Math.round((W-textW(l))/2),56+i*LINEH,'#e8e0ff',false));return;}
+  ctx.drawImage(MOORRAND,0,0);
+  ctx.save();ctx.beginPath();ctx.rect(0,0,52,SH);ctx.rect(178,0,W,SH);ctx.clip();
+  ctx.globalAlpha=0.7;const o=(now/90)%PW;ctx.drawImage(NEBELBAND,-o,MR.VY+4);ctx.drawImage(NEBELBAND,PW-o,MR.VY+4);ctx.globalAlpha=1;ctx.restore();
+  [[200,58],[230,52],[310,64]].forEach(([x,y],i)=>irrlicht(x+Math.sin(now/800+i)*3,y+Math.sin(now/500+i*2)*2,0,now));
+  text('Prof. Kolportus',Math.round(115-textW('Prof. Kolportus')/2),24,'#f0c860',false);
+  text('Wahr oder',Math.round(194-textW('Wahr oder')/2),92,'#e8ece4',false);text('Mumpitz?',Math.round(194-textW('Mumpitz?')/2),101,'#e8ece4',false);
+  text('Irrlichter',253,56,'#ecdcb8',false);text('Brücke',262,67,'#ecdcb8',false);text('Merkwohl',264,78,'#ecdcb8',false);
+  // Laterne unter dem Dach, die Flamme flackert
+  line(ctx,118,50,118,53,'#2a2030');kastenG(ctx,115,54,7,8,KR.stahl,0.35);const fl=Math.floor(now/120)%3;R(ctx,117,56,3,4,KR.feuer[8+fl]);P(ctx,118,57,KR.feuer[11]);
+  // Vokabelpilze am Wegrand
+  [[232,116,'la'],[34,138,'cat']].forEach(([x,y,w])=>{R(ctx,x-2,y,4,6,'#d8ccb4');ellFill(ctx,x,y,10,5,(px,py,dx,dy)=>dy>0.5?null:pick(KR.rosa,0.22+(-dx-dy)*0.2,px,py));text(w,Math.round(x-textW(w)/2),y-5,'#3a1020',false);});
+  for(let i=0;i<3;i++){const mx=((now/34+i*130)%(W+40))-20,my=30+i*10+Math.sin(now/300+i*2)*5;motte(mx,my,now,i);}
+  const L=[];
+  L.push({y:100,d:()=>{const red=S.speech&&S.talker==='kolportus'&&Math.floor(now/140)%2;const arm=S.kolArm||'ruhe';
+    spr(SPR.kolportus[arm+(red?'t':'')],124,100,15,57,false);}});
+  L.push({y:101,d:()=>ctx.drawImage(MOORRAND_VORNE,0,0)});
+  L.push({y:S.ky,d:()=>spr(ravenImg(now),S.kx,S.ky,11,19,S.kflip)});
+  heroLayer(L,now);
+  L.sort((p,q)=>p.y-q.y).forEach(o=>o.d());
+  drawPanel();drawSpeech();
+}
+const HS_MOORRAND=[
+  {id:'kraechz',name:'Krächz',rect:()=>[S.kx-11,S.ky-19,22,19],walk:[280,118],flip:false},
+  {id:'kolportus',name:'Professor Kolportus',rect:()=>[110,40,30,36],walk:[120,118],flip:false},
+  {id:'tee',name:'Lerntyp-Tee',rect:()=>[80,50,74,12],walk:[110,118],flip:false},
+  {id:'pillen',name:'Pillendosen',rect:()=>[80,62,74,8],walk:[110,118],flip:false},
+  {id:'laterne',name:'Laterne',rect:()=>[114,50,9,13],walk:[118,118],flip:false},
+  {id:'schildK',name:'Schild',rect:()=>[78,20,74,13],walk:[115,118],flip:false},
+  {id:'tafelK',name:'Tafel',rect:()=>[166,88,56,26],walk:[194,120],flip:false},
+  {id:'stand',name:'Marktstand',rect:()=>[54,34,120,80],walk:[115,118],flip:false},
+  {id:'holunder',name:'Holunderstrauch',rect:()=>[214,66,60,46],walk:[244,118],flip:false},
+  {id:'wegweiser',name:'Wegweiser',rect:()=>[250,52,70,34],walk:[286,118],flip:false},
+  {id:'pilzeM',name:'Pilze',rect:()=>[22,128,24,14],walk:[48,126],flip:true},
+  {id:'moorW',name:'Moor',rect:()=>[0,44,W,52],walk:[200,116],flip:false},
+  {id:'felstor',name:'Felsentor',exit:true,rect:()=>[0,30,44,84],walk:[32,118],flip:true},
+  {id:'wegR',name:'Weg zur Irrlichtwiese',exit:true,rect:()=>[300,108,20,32],walk:[304,124],flip:false},
+  {id:'bodenMR',name:'Bohlenweg',floor:true,rect:()=>[20,104,290,40],walk:[0,0],flip:false}
+];
+// Wahr oder Mumpitz: sechs Aussagen, alle muessen stimmen. Bei einem Fehler beginnt das Quiz neu, in anderer Reihenfolge.
+const MUMPITZ=[
+  {a:'Jeder lernt am besten in seinem Lerntyp. Augenmenschen nur mit Bildern!',w:false,k:'Er hat mir mal gesagt, ich bin ein Augenvogel. Seitdem lerne ich nur mit Bildern. Besser geworden bin ich nicht.'},
+  {a:'Wir nutzen nur zehn Prozent unseres Gehirns!',w:false,k:'Zehn Prozent? Dann hätte ich neunzig Prozent übrig. Das würde ich merken.'},
+  {a:'Sich selbst abfragen bringt mehr als alles noch mal lesen.',w:true,k:'Die Frösche an der Brücke lesen ihr Lied seit Wochen. Frag sie mal, wie es geht.'},
+  {a:'Viermal eine Viertelstunde an verschiedenen Tagen hält länger als eine Stunde am Abend vorher.',w:true,k:'Am Abend vorher alles rein, am Morgen danach alles raus. Kenne ich.'},
+  {a:'Wer beim Lernen nebenher chattet, lernt genauso gut!',w:false,k:'Ich hab mal beim Fliegen gezwitschert. Seitdem kenne ich diesen Baum sehr gut.'},
+  {a:'Alles gelb markieren reicht zum Lernen!',w:false,k:'Ich hab mal ein ganzes Buch gelb gemacht. Danach war es gelb. Sonst nichts.'}];
+const KOL_RICHTIG=['Hm. Glück gehabt.','Pff. Weiter.','Das stand bestimmt irgendwo.','Zufall. Eindeutig Zufall.','Hm. Hmhm. Nächste.'];
+async function quizSpielen(){
+  const reihe=MUMPITZ.map((m,i)=>i).sort(()=>Math.random()-0.5);
+  await say('kolportus','Wahr oder Mumpitz! Sechs Fragen. Alle richtig, und du darfst dir ein Glas aussuchen.');
+  for(let n=0;n<reihe.length;n++){const m=MUMPITZ[reihe[n]];S.kolArm='zeig';
+    await say('kolportus',m.a);S.quizAkt=m.w?0:1;
+    const a=await choose(['Wahr.','Mumpitz.']);S.kolArm='ruhe';await say('hero',a===0?'Wahr.':'Mumpitz.');
+    if((a===0)!==m.w){S.kolArm='jubel';tone('square',300,0.1,0.05,500);await say('kolportus','Haha! Falsch! Darauf einen Lerntyp-Tee?');S.kolArm='ruhe';
+      await say('kraechz',m.k);S.quizVersuche=(S.quizVersuche||0)+1;S.quizAkt=null;return say('kolportus','Wer es noch mal versuchen will: Ich steh hier. Ich steh hier immer.');}
+    tone('triangle',660+n*80,0.1,0.04);if(n<reihe.length-1)await say('kolportus',KOL_RICHTIG[n%KOL_RICHTIG.length]);}
+  S.quizAkt=null;S.kolArm='glas';tone('triangle',990,0.3,0.05);
+  await say('kolportus','Alle sechs. Das … das hat noch keiner.');
+  await say('kolportus','Na gut. Ein Glas. Ein leeres, ohne Tee. Leer wie meine Argumente. Sag’s keinem.');
+  S.aktZiel=[126,64];await reach('greif');give('teeglas');S.teeglas=true;S.kolArm='ruhe';save();
+  await say('kraechz','Ein Glas mit Deckel. Wer weiß, was man darin alles einsperren kann.');
+}
+async function redeKolportus(){
+  for(;;){
+    const o=['Was verkaufen Sie da?','Was sind das für Pillen?'];
+    if(!S.teeglas)o.push(S.quizBekannt?'Ich spiele Ihr Quiz.':'Was ist „Wahr oder Mumpitz“?');
+    o.push('Ist hier ein Wicht mit einem Heft vorbeigekommen?','Tschüss.');
+    const a=await choose(o),q=o[a];await say('hero',q);
+    if(q==='Was verkaufen Sie da?'){S.kolArm='zeig';await say('kolportus','Lerntyp-Tee! Blau für Augenmenschen, rot für Ohrenmenschen, kariert für Unentschlossene!');S.kolArm='ruhe';
+      await say('kraechz','Und was ist in allen drei Sorten drin?');await say('kolportus','… Kamille.');continue;}
+    if(q==='Was sind das für Pillen?'){await say('kolportus','Für die anderen neunzig Prozent des Gehirns! Die liegen bei den meisten brach. Bei dir bestimmt auch.');continue;}
+    if(q==='Was ist „Wahr oder Mumpitz“?'){S.quizBekannt=true;await say('kolportus','Mein Quiz. Ich sage etwas übers Lernen, du sagst, ob es stimmt oder Mumpitz ist.');
+      await say('kolportus','Wer alle sechs schafft, darf sich ein Glas aussuchen. Hat noch keiner geschafft. Ich bin nämlich sehr überzeugend.');continue;}
+    if(q==='Ich spiele Ihr Quiz.')return quizSpielen();
+    if(q==='Ist hier ein Wicht mit einem Heft vorbeigekommen?'){await say('kolportus','Ein Wicht im Schlafanzug? Wollte keinen Tee. Ist Richtung Turm getrippelt. Unhöflich.');continue;}
+    return say('kolportus','Komm wieder! Wissen wird nicht billiger. Meins jedenfalls nicht.');
+  }
+}
+async function enterMoorrand(){
+  S.room='moorrand';S.kraechz='moorrand';S.kx=34;S.ky=34;S.kflip=false;S.hero.x=30;S.hero.y=118;S.hero.flip=false;S.hero.hidden=false;
+  kraechzFlug(293,51,1200,16).then(()=>{S.kflip=true;});
+  await walkTo(96,124);
+  if(S.moorIntro)return;
+  await say('hero','Ein Marktstand? Mitten im Moor?');
+  S.kolArm='zeig';await say('kolportus','Kundschaft! Treten Sie näher! Wissen zum Mitnehmen, frisch aus dem Sumpf!');S.kolArm='ruhe';
+  await say('kraechz','Professor Kolportus. Er ist so lange Professor, wie ihm keiner widerspricht.');
+  S.moorIntro=true;save();
+}
+async function actMoorrand(verb,h,item){
+  const id=h.id;
+  if(item){
+    if(id==='kolportus'&&verb==='gib'){if(item==='muenze')return say('kolportus','Ein Euro? Für Tee? Nein, nein. Wissen hat seinen Preis. Der ist höher.');return say('kolportus','Tauschgeschäfte mache ich nur mit Leuten, die mein Quiz schlagen.');}
+    if(id==='kraechz'&&verb==='gib')return say('kraechz','Behalte das mal schön selbst.');
+    if(id==='holunder'&&item==='kekse')return say('hero','Der Strauch hat keinen Hunger.');
+    return say('hero',FALLBACK.benutze());
+  }
+  switch(id+':'+verb){
+    case 'kolportus:rede':return redeKolportus();
+    case 'kolportus:schau':return say('hero','Ein Mann mit Zylinder und einer Weste voller Abzeichen. Auf einem steht „Experte“. Auf einem anderen auch.');
+    case 'tee:schau':return say('hero','Teegläser mit Deckel. Blau, rot und kariert. Auf allen steht klein: „Inhalt: Kamille.“');
+    case 'tee:nimm':case 'pillen:nimm':return say('kolportus','Finger weg! Anfassen kostet extra.');
+    case 'pillen:schau':return say('hero','„Für die anderen 90 %.“ Die Dosen sind leer. Das passt irgendwie.');
+    case 'laterne:schau':return say('hero','Eine Laterne. Das Einzige hier, das wirklich Licht ins Dunkel bringt.');
+    case 'schildK:schau':return say('hero','„Prof. Kolportus. Wissen zum Mitnehmen.“ Mitnehmen klingt gut. Wissen auch. Zusammen bin ich skeptisch.');
+    case 'tafelK:schau':S.quizBekannt=S.quizBekannt||false;return say('hero','„Wahr oder Mumpitz? Wer alle Fragen richtig hat, darf sich ein Glas aussuchen. Bisher: niemand.“');
+    case 'stand:schau':return say('hero','Ein Holzkarren mit gestreiftem Dach. Die Räder sind im Moor festgewachsen. Er steht wohl schon länger hier.');
+    case 'stand:druecke':case 'stand:ziehe':return say('kolportus','Nicht schieben! Der steht genau richtig. Hier kommt jeder vorbei, der ins Land Später will.');
+    case 'holunder:schau':return say('hero','Ein Holunderstrauch mit schwarzen Beeren. Die Zweige sind dick und gerade.');
+    case 'holunder:nimm':case 'holunder:ziehe':await reach();return say('hero','Die Äste sind zäh. Mit bloßen Händen kriege ich da keinen ab.');
+    case 'wegweiser:schau':return say('hero','„Irrlichter“, „Brücke“ und „Merkwohl“. Zur Brücke und zu Merkwohl geht es offenbar erst an den Irrlichtern vorbei.');
+    case 'pilzeM:schau':return say('hero','Pilze mit Wörtern auf dem Hut. „Cat“. Das hab ich mal gelernt. Glaube ich.');
+    case 'pilzeM:nimm':return say('hero','Vokabeln, die man nie gelernt hat, isst man besser nicht.');
+    case 'moorW:schau':return say('hero','Moor, so weit man schauen kann. Und über dem Wasser tanzen Lichter.');
+    case 'felstor:schau':return say('hero','Das Felsentor. Dahinter geht die Treppe hinauf zur Schule.');
+    case 'felstor:gehe':case 'felstor:benutze':return say('hero','Zurück? Mein Heft ist hier irgendwo. Und die Unruh vermutlich auch.');
+    case 'wegR:schau':return say('hero','Der Bohlenweg führt weiter ins Moor. Zur Irrlichtwiese.');
+    case 'wegR:gehe':case 'wegR:benutze':return irrlichtwieseVorschau();
+    case 'kraechz:rede':return redeKraechz();
+    case 'kraechz:schau':return say('hero','Krächz sitzt auf dem Wegweiser und putzt sein Monokel.');
+    case 'bodenMR:schau':return say('hero','Bretter über dem Moor. Manche federn. Manche schmatzen.');
+  }
+  if(verb==='schau')return say('hero',FALLBACK.schau(h));
+  return say('hero',FALLBACK[verb]?FALLBACK[verb](h):FALLBACK.benutze());
+}
+// Die Irrlichtwiese ist noch nicht gebaut: kurze Vorschau, dann zum Ende-Bildschirm
+async function irrlichtwieseVorschau(){
+  await walkTo(304,124);S.hero.hidden=true;await kraechzFlug(330,40,700,10);S.kx=-40;
+  await showCard('Die Irrlichtwiese','Hier geht es bald weiter. Die Irrlichter pingen schon.');
+  S.over=true;save();if(API.onDone)API.onDone('kapitel2');
+}
+async function moorrandTipp(){
+  let t;
+  if(!S.quizBekannt&&!S.teeglas)t='Der Mann mit dem Zylinder hat eine Tafel vor seinem Stand. Frag ihn doch mal danach.';
+  else if(!S.teeglas)t=(S.quizVersuche||0)<2?'Bei Kolportus gewinnt, wer weiß, was beim Lernen wirklich hilft. Und was nur gut klingt.':'Wenn du falsch liegst, sage ich dir ja, wie es wirklich ist. Merk es dir für die nächste Runde.';
+  else t='Das Glas hast du. Weiter geht’s zur Irrlichtwiese, der Wegweiser zeigt nach rechts.';
+  await say('kraechz',t);
+}
 window.__cutStill=(f,t)=>{S.cut={draw:{treppe:cutTreppe,pano:cutPano,turm:cutTurm,moor:cutMoor,land:cutLand}[f],lines:f==='land'?LAND_LINES:[],t0:performance.now()-t*1000,pos:{}};};
 
 // Speichern: nur die Teile des Zustands, die das Spiel ausmachen
-const KEEP=['spur','room','takt','zettelGelesen','flureGeschafft','halleIntro','fehlwege','heft','kraechz','kx','ky','kflip','fenster','ziel','kruemelGesehen','gitter','federmappe','muenze','kreide','tipp','kraechzKennt','jonas','inv','gefragt','tschuess','eingangDone','kallFrozen','fertig','gangIntro','passed','erlebt','plaene','tafelGelesen','suchKantine','kantineErklaert','invOff','kantineIntro','broesel','broeselKekse','broeselRede','sortiert','bereit','lappenGegeben','kammerIntro','heizIntro','grummelTor','musikIntro','metronom','orchesterWach','fermateRede','brauchSchlaegel','schlaegelWeg','pause','floeteZu','neueFloete','kartonAuf','holzwolleGenommen','emilRede','bioIntro','miaFrage','miaRuhe','kopfGenommen','miaZurueck','gustavGefunden','miaWach','miaRede','brauchFeuer','wolleImFleck','feuer','grummelRede','kisteAuf','lochGesehen','probiert','torAuf'];
+const KEEP=['spur','room','takt','zettelGelesen','flureGeschafft','halleIntro','fehlwege','heft','kraechz','kx','ky','kflip','fenster','ziel','kruemelGesehen','gitter','federmappe','muenze','kreide','tipp','kraechzKennt','jonas','inv','gefragt','tschuess','eingangDone','kallFrozen','fertig','gangIntro','passed','erlebt','plaene','tafelGelesen','suchKantine','kantineErklaert','invOff','kantineIntro','broesel','broeselKekse','broeselRede','sortiert','bereit','lappenGegeben','kammerIntro','heizIntro','grummelTor','musikIntro','metronom','orchesterWach','fermateRede','brauchSchlaegel','schlaegelWeg','pause','floeteZu','neueFloete','kartonAuf','holzwolleGenommen','emilRede','bioIntro','moorIntro','quizBekannt','teeglas','quizVersuche','miaFrage','miaRuhe','kopfGenommen','miaZurueck','gustavGefunden','miaWach','miaRede','brauchFeuer','wolleImFleck','feuer','grummelRede','kisteAuf','lochGesehen','probiert','torAuf'];
 function save(){const d={};KEEP.forEach(k=>{if(S[k]!==undefined)d[k]=S[k];});d.hero={x:S.hero.x,y:S.hero.y,flip:S.hero.flip};SAVE.write({prolog:d});}
 let looping=false;
 const API={onDone:null,
-  start(saved){reset(saved);build();initAudio();last=performance.now();if(!looping){looping=true;requestAnimationFrame(loop);}if(!S.eingangDone)eingang();else if(S.room==='halle'&&!S.halleIntro)run(()=>enterHalle());else if(S.room==='gang'&&!S.gangIntro)run(()=>enterGang());else if(S.room==='kantine'&&!S.kantineIntro)run(()=>enterKantine());else if(S.room==='heiz'&&!S.heizIntro)run(()=>enterHeiz());else if(S.room==='musik'&&!S.musikIntro)run(()=>enterMusik());else if(S.room==='bio'&&!S.bioIntro)run(()=>enterBio());else if(S.zeigeUebergang){S.zeigeUebergang=false;run(()=>uebergangKapitel2());}},
+  start(saved){reset(saved);build();initAudio();last=performance.now();if(!looping){looping=true;requestAnimationFrame(loop);}if(!S.eingangDone)eingang();else if(S.room==='halle'&&!S.halleIntro)run(()=>enterHalle());else if(S.room==='gang'&&!S.gangIntro)run(()=>enterGang());else if(S.room==='kantine'&&!S.kantineIntro)run(()=>enterKantine());else if(S.room==='heiz'&&!S.heizIntro)run(()=>enterHeiz());else if(S.room==='musik'&&!S.musikIntro)run(()=>enterMusik());else if(S.room==='bio'&&!S.bioIntro)run(()=>enterBio());else if(S.room==='moorrand'&&!S.moorIntro)run(()=>enterMoorrand());else if(S.zeigeUebergang){S.zeigeUebergang=false;run(()=>uebergangKapitel2());}},
   mute(m){if(M)M.gain.value=m?0:0.5;}};
 window.__S=()=>S;window.__skip=()=>{if(skipLine)skipLine();};
 window.__act=(verb,id,item)=>{const h=curHS().find(x=>x.id===id);return run(async()=>{if(!await goTo(h.walk[0],h.walk[1]))return;face(h.flip);await act(verb,h,item);});};
@@ -4663,6 +4937,7 @@ SZENEN.feuer=Object.assign({},SZENEN.keller,{heizIntro:true,kraechz:'heiz',kx:22
   bioIntro:true,miaFrage:true,gustavGefunden:true,miaWach:true,miaRuhe:true,kopfGenommen:true,inv:['lineal','radiergummi','muenze','kreide','notiz','kekse','schlaegel','holzwolle','lupe']});
 SZENEN.kiste=Object.assign({},SZENEN.feuer,{feuer:true,kisteAuf:true,inv:['lineal','radiergummi','muenze','kreide','notiz','kekse','schlaegel','lupe']});
 SZENEN.land=Object.assign({},SZENEN.kiste,{zeigeUebergang:true});
+SZENEN.moorrand=Object.assign({},SZENEN.kiste,{room:'moorrand',kraechz:'moorrand',kx:293,ky:51,kflip:true,hero:{x:96,y:124,flip:false},torAuf:true,miaZurueck:true,moorIntro:false,inv:['lineal','radiergummi','muenze','kreide','notiz','kekse','schlaegel','kompass']});
 function szeneStarten(id){
   const s=SAVE.read();PLAYER.name=(s&&s.name)||PLAYER.name||'Robin';PLAYER.girl=s?!!s.girl:PLAYER.girl;
   SAVE.clear();
