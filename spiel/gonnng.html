@@ -4950,10 +4950,16 @@ function irrwieseBg(){
     if(loecher.some(([lx,ly,lrx,lry])=>((bx-lx)/(lrx+rx))**2+((by-ly)/(lry+ry))**2<1))continue;if(Math.abs(bx-IW.STUMPF[0])<26&&Math.abs(by-IW.STUMPF[1])<16)continue;
     ellFill(g,bx,by+ry*0.6,rx,ry*0.6,(x,y)=>moos(0.03+hell(x,y)*0.2,x,y));
     ellFill(g,bx,by,rx,ry,(x,y,dx,dy)=>moos(0.12+f*0.1+hell(x,y)*0.5+(-dy)*0.12+(-dx)*0.04+(hash(x,y)%4===0?0.06:0),x,y));}
-  // Bohlenweg von links vorn schraeg in den Nebel, Bretter quer, Kanten laufen zum Fluchtpunkt
-  for(let y=62;y<SH;y++){const f=(y-62)/(SH-62),xm=250-210*f-60*Math.sin(f*Math.PI)+10*Math.sin(f*Math.PI*2),hw=3+f*34;
-    for(let x=Math.round(xm-hw);x<Math.round(xm+hw);x++){if(x<0||x>=W)continue;const brett=Math.floor((y-62)/(1+f*4)),fuge=(y-62)%(1+Math.round(f*4))===0,rand=x<xm-hw+1.5||x>xm+hw-2;
-      const [s,i]=iwLicht(x,y);P(g,x,y,pick(KR.holz,0.12+f*0.12+s*0.25+i*0.3+((hash(brett,4)%5)-2)*0.04-(fuge?0.12:0)-(rand?0.1:0),x,y));}}
+  // Bohlenweg schlaengelt sich in Schlaufen durch die Wiese: Mittellinie auf dem Boden (x seitlich, z in die Tiefe),
+  // mit dem Fluchtpunkt projiziert. Jedes Brett liegt quer zur Laufrichtung, von hinten nach vorn gemalt.
+  const wegX=z=>-1.5+0.25*z+1.4*Math.sin((z-1)*1.6),proj=(x,z)=>[VX+x*100/z,VY+100/z],BW=0.2;
+  const stuecke=[];let sl=0;for(let z=0.95;z<10;z+=0.03){const w=wegX(z),dw=(wegX(z+0.01)-w)/0.01,len=Math.hypot(dw,1);sl+=len*0.03;
+    stuecke.push({L:proj(w-BW/len,z+BW*dw/len),R:proj(w+BW/len,z-BW*dw/len),z,s:sl});}
+  for(let k=stuecke.length-2;k>=0;k--){const a=stuecke[k],b=stuecke[k+1],brett=Math.floor(a.s/0.11),fu=(a.s/0.11)%1<0.18;
+    const q=[a.L,a.R,b.R,b.L];
+    polyFill(g,q,(x,y)=>{const [sn,i]=iwLicht(x,y);return pick(KR.holz,0.1+0.2/a.z+sn*0.25+i*0.35+((hash(brett,4)%5)-2)*0.04-(fu?0.13:0),x,y);});
+    if(a.z<4){line(g,a.L[0],a.L[1],b.L[0],b.L[1],pick(KR.holz,0.06+0.1/a.z,0,0));line(g,a.R[0],a.R[1],b.R[0],b.R[1],pick(KR.holz,0.04,0,0));}
+    if(brett%7===0&&fu&&a.z<5){const h=Math.round(4/a.z)+1;[a.L,a.R].forEach(([px,py])=>{for(let j=0;j<h;j++)P(g,px,py+j,pick(KR.holz,0.08+0.15/a.z,px,py));});}}
   // tote Birke links als Sitzplatz fuer Kraechz
   for(let y=30;y<118;y++){const w=y<60?2:y<92?3:4,bx=252-Math.round((118-y)*0.08);for(let k=0;k<w;k++){const x=bx+k,fleck=hash(x,y>>1)%5===0;
     P(g,x,y,fleck?'#140e1a':pick(KR.porz,0.12+(k===w-1?0.25:k===0?-0.05:0.1)+iwLicht(x,y)[1]*0.2,x,y));}}
