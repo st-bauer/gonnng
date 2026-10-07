@@ -4913,7 +4913,7 @@ async function moorrandTipp(){
    Monokel als Koeder, Deckel zu. Das Glas pingt aber weiter, erst im Rucksack ist Ruhe (Lernumgebung gestalten).
    ===================================================================== */
 const BAND_IRR={x0:24,x1:304,y0:112,y1:136};
-const IW={VX:200,VY:50,STUMPF:[160,110],AST:[66,50]};
+const IW={VX:200,VY:50,STUMPF:[160,110],AST:[258,50]};
 let IRRWIESE=null;
 function iwLicht(x,y){const s=Math.max(0,1-Math.hypot(x-250,(y-36)*1.4)/240),i=Math.max(0,1-Math.hypot(x-168,(y-84)*1.3)/90);return[s,i];}
 // Nebel als weiche Schicht mit Alpha, wird zur Laufzeit verschoben (rechts dicht, dort beginnt der Nebelpfad)
@@ -4951,13 +4951,13 @@ function irrwieseBg(){
     ellFill(g,bx,by+ry*0.6,rx,ry*0.6,(x,y)=>moos(0.03+hell(x,y)*0.2,x,y));
     ellFill(g,bx,by,rx,ry,(x,y,dx,dy)=>moos(0.12+f*0.1+hell(x,y)*0.5+(-dy)*0.12+(-dx)*0.04+(hash(x,y)%4===0?0.06:0),x,y));}
   // Bohlenweg von links vorn schraeg in den Nebel, Bretter quer, Kanten laufen zum Fluchtpunkt
-  for(let y=62;y<SH;y++){const f=(y-62)/(SH-62),xm=VX+(30-VX)*f*1.05,hw=3+f*34;
+  for(let y=62;y<SH;y++){const f=(y-62)/(SH-62),xm=250-210*f-60*Math.sin(f*Math.PI)+10*Math.sin(f*Math.PI*2),hw=3+f*34;
     for(let x=Math.round(xm-hw);x<Math.round(xm+hw);x++){if(x<0||x>=W)continue;const brett=Math.floor((y-62)/(1+f*4)),fuge=(y-62)%(1+Math.round(f*4))===0,rand=x<xm-hw+1.5||x>xm+hw-2;
       const [s,i]=iwLicht(x,y);P(g,x,y,pick(KR.holz,0.12+f*0.12+s*0.25+i*0.3+((hash(brett,4)%5)-2)*0.04-(fuge?0.12:0)-(rand?0.1:0),x,y));}}
   // tote Birke links als Sitzplatz fuer Kraechz
-  for(let y=30;y<118;y++){const w=y<60?2:y<92?3:4,bx=58+Math.round((118-y)*0.08);for(let k=0;k<w;k++){const x=bx+k,fleck=hash(x,y>>1)%5===0;
+  for(let y=30;y<118;y++){const w=y<60?2:y<92?3:4,bx=252-Math.round((118-y)*0.08);for(let k=0;k<w;k++){const x=bx+k,fleck=hash(x,y>>1)%5===0;
     P(g,x,y,fleck?'#140e1a':pick(KR.porz,0.12+(k===w-1?0.25:k===0?-0.05:0.1)+iwLicht(x,y)[1]*0.2,x,y));}}
-  [[52,-1,18],[64,1,16],[40,1,10],[80,-1,12]].forEach(([y,d,l])=>{const bx=58+Math.round((118-y)*0.08);line(g,bx,y,bx+d*l,y-Math.round(l*0.3),pick(KR.porz,0.2,bx,y));line(g,bx,y+1,bx+d*l,y-Math.round(l*0.3)+1,'#140e1a');});
+  [[52,1,18],[64,-1,16],[40,-1,10],[80,1,12]].forEach(([y,d,l])=>{const bx=252-Math.round((118-y)*0.08);line(g,bx,y,bx+d*l,y-Math.round(l*0.3),pick(KR.porz,0.2,bx,y));line(g,bx,y+1,bx+d*l,y-Math.round(l*0.3)+1,'#140e1a');});
   // Baumstumpf in der Mitte: Rinde mit Furchen, oben die Schnittflaeche mit Jahresringen, Wurzeln, Schatten nach vorn
   const [SX,SY]=IW.STUMPF,RX=15,RY=4,H=16;
   ellFill(g,SX+2,SY+3,RX+8,RY+2,(x,y)=>moos(0.03+hell(x,y)*0.15,x,y));
@@ -5009,11 +5009,11 @@ function drawIrrwiese(now){
   drawPanel();drawSpeech();
 }
 const HS_IRR=[
-  {id:'kraechz',name:'Krächz',rect:()=>[S.kx-11,S.ky-19,22,19],walk:[70,122],flip:true},
+  {id:'kraechz',name:'Krächz',rect:()=>[S.kx-11,S.ky-19,22,19],walk:[200,122],flip:false},
   {id:'glasS',name:()=>S.irrImGlas?'Glas mit Irrlichtern':'Teeglas',vis:()=>S.glasStumpf,rect:()=>[IW.STUMPF[0]-6,IW.STUMPF[1]-30,13,14],walk:[146,122],flip:false},
   {id:'irrlicht',name:'Irrlichter',vis:()=>!S.irrImGlas,rect:()=>[78,56,150,48],walk:[140,120],flip:false},
   {id:'stumpf',name:'Baumstumpf',rect:()=>[IW.STUMPF[0]-16,IW.STUMPF[1]-20,32,22],walk:[146,122],flip:false},
-  {id:'birke',name:'Tote Birke',rect:()=>[48,28,24,90],walk:[72,120],flip:true},
+  {id:'birke',name:'Tote Birke',rect:()=>[240,28,24,90],walk:[200,120],flip:false},
   {id:'wasser',name:'Wasserloch',rect:()=>[86,118,62,14],walk:[110,116],flip:false},
   {id:'wollgras',name:'Wollgras',rect:()=>[90,96,30,14],walk:[110,116],flip:false},
   {id:'nebelI',name:'Nebel',rect:()=>[230,30,90,50],walk:[290,118],flip:false},
@@ -5023,7 +5023,7 @@ const HS_IRR=[
 ];
 async function enterIrrwiese(){
   S.room='irrwiese';S.kraechz='irrwiese';S.kx=-20;S.ky=40;S.kflip=true;S.hero.x=10;S.hero.y=124;S.hero.flip=false;S.hero.hidden=false;
-  kraechzFlug(IW.AST[0]+6,IW.AST[1]-2,1100,14).then(()=>{S.kflip=false;});
+  kraechzFlug(IW.AST[0]-4,IW.AST[1]-2,1100,14).then(()=>{S.kflip=true;});
   await walkTo(56,126);
   if(S.irrIntro)return;
   await say('hero','Da sind sie. Die Lichter aus dem Moor. Aus der Nähe sind sie noch hübscher.');
@@ -5176,7 +5176,7 @@ SZENEN.feuer=Object.assign({},SZENEN.keller,{heizIntro:true,kraechz:'heiz',kx:22
 SZENEN.kiste=Object.assign({},SZENEN.feuer,{feuer:true,kisteAuf:true,inv:['lineal','radiergummi','muenze','kreide','notiz','kekse','schlaegel','lupe']});
 SZENEN.land=Object.assign({},SZENEN.kiste,{zeigeUebergang:true});
 SZENEN.moorrand=Object.assign({},SZENEN.kiste,{room:'moorrand',kraechz:'moorrand',kx:293,ky:51,kflip:true,hero:{x:96,y:124,flip:false},torAuf:true,miaZurueck:true,moorIntro:false,inv:['lineal','radiergummi','muenze','kreide','notiz','kekse','schlaegel','kompass']});
-SZENEN.irrwiese=Object.assign({},SZENEN.moorrand,{room:'irrwiese',kraechz:'irrwiese',kx:72,ky:48,kflip:false,hero:{x:56,y:126,flip:false},moorIntro:true,quizBekannt:true,teeglas:true,irrIntro:false,inv:['lineal','radiergummi','muenze','kreide','notiz','kekse','schlaegel','kompass','teeglas']});
+SZENEN.irrwiese=Object.assign({},SZENEN.moorrand,{room:'irrwiese',kraechz:'irrwiese',kx:254,ky:48,kflip:true,hero:{x:56,y:126,flip:false},moorIntro:true,quizBekannt:true,teeglas:true,irrIntro:false,inv:['lineal','radiergummi','muenze','kreide','notiz','kekse','schlaegel','kompass','teeglas']});
 function szeneStarten(id){
   const s=SAVE.read();PLAYER.name=(s&&s.name)||PLAYER.name||'Robin';PLAYER.girl=s?!!s.girl:PLAYER.girl;
   SAVE.clear();
