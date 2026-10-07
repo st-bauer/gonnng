@@ -404,7 +404,7 @@ Hinter dem Kellertor beginnt das Land Später mit einem Moor voller Irrlichter. 
 | --- | --- | --- | --- |
 | 1 | Professor Kolportus | Allgemein, Mythen-Quiz | Am Moorrand steht sein Marktstand mit Lerntyp-Tee in Gläsern mit Deckel. Ein leeres Teeglas samt Deckel gibt er nur her, wenn die Figur sein Quiz „Wahr oder Mumpitz“ gewinnt (Aussagen unten) |
 | 2 | Die Irrlichter | SRL: Lernumgebung gestalten, Kombination | Auf der Irrlichtwiese blinken und pingen Irrlichter wie Benachrichtigungen. Wer losgeht, dreht sich bei jedem Ping um, läuft hinterher und steht im Matsch (Krächz: „Du siehst aus wie ein Pfahl mit Meinung.“). Irrlichter fliegen auf alles, was glitzert, auch auf Krächz’ Monokel. Krächz leiht es nur gegen ein Versprechen mit Zeitpunkt: „gleich“, „später“ und „versprochen“ lässt er nicht gelten, erst „Sobald das letzte Irrlicht im Glas ist, kriegst du es sofort zurück.“ (ein Wenn-dann-Plan wie im Flüstergang). Teeglas auf den Baumstumpf, Monokel als Köder über die Öffnung, Deckel zu, Monokel sofort zurück („Pünktlich. Ich bin gerührt. Ein bisschen.“). Das volle Glas pingt aber weiter, wer losgeht, schaut wieder hin. Erst im Rucksack ist Ruhe: Einfangen reicht nicht, die Störung muss aus dem Blickfeld |
-| 3 | Der Nebelpfad | SRL: Selbstbeobachtung der Aufmerksamkeit | Im dichten Nebel verliert sich die Figur in Tagträumen (Blasen mit Pizza, Ferien, Fußball) und läuft im Kreis zurück zum Anfang. Am Weg hängt eine Bojenglocke, die der Wind ab und zu läutet. Dann bleibt die Figur stehen: „Moment. Wo bin ich eigentlich?“ Ohne Zeitdruck entscheidet man: „Passt schon, weiter“ führt zurück an den Anfang. Wer den Kompass der Pläne benutzt, sagt sein Ziel, der Kompass zeigt, und die Figur korrigiert die Richtung. Wer bei jedem Läuten prüft, kommt durch. So wird Grummelbarts Satz eingelöst: „Er zeigt nur, wenn man weiß, wohin.“ An den Weggabelungen setzt die Figur Kreidezeichen. Trifft sie auf ein eigenes Zeichen, war sie hier schon und nimmt einen unmarkierten Weg (vereinfachtes Trémaux-Verfahren, eine echte Methode für Labyrinthe). Glocke und Kompass halten die Richtung, die Kreidezeichen zeigen, wo man schon war: zwei Werkzeuge zum Überwachen in einem Schauplatz. Die Kreide wird dabei sichtbar kürzer |
+| 3 | Der Nebelpfad | SRL: Überwachen (Wo stehe ich, wohin will ich?) | Entwurf, noch nicht entschieden: Orientierungsrätsel mit Wegskizze, Wegmarken und dem Kompass der Pläne. Ausarbeitung unten im Abschnitt „Ausarbeitung Nebelpfad“ |
 | 4 | Die Wiederleser | SRL: Abrufübung | Der Froschchor soll das Brückenlied singen und scheitert ohne Liedzettel. Die Figur zeigt das Verfahren: lesen, abdecken, aus dem Kopf aufsagen, nachprüfen, wiederholen. Als Minispiel werden fünf Liedzeilen abgedeckt und aus dem Gedächtnis zusammengesetzt. Danach singen die Frösche, die Brücke hebt sich. Zum Dank schenken sie ihre Leselupe: „Brauchen wir nicht mehr. Wir lesen ja nicht mehr zehnmal.“ |
 | 5 | Die Fähre | Allgemein, Biologie | Fährmann Stakel, ein Biber, will eine Münze Fährgeld und nimmt außer der Figur nur einen Fahrgast mit. Am Ufer warten Weißstorch, Teichfrosch und Libelle. Ohne Aufsicht frisst der Storch den Frosch und der Frosch die Libelle. Lösung in sieben Fahrten: Frosch rüber, leer zurück, Storch rüber, Frosch zurück, Libelle rüber, leer zurück, Frosch rüber. Gag zum Schluss: Die Libelle erzählt, dass sie als Larve selbst Kaulquappen gefressen hat, und der Frosch wird blass |
 | 6 | Madame Merkwohls Fernrohr | Kombination, SRL: Selbstbeobachtung | Merkwohls Fernrohr ist zerbrochen. Am Moorrand wächst Schwarzer Holunder, seine Zweige haben weiches Mark, das man herausdrücken kann (so baut man seit jeher Holunderpfeifen). Stakel nagt einen dicken Ast ab, die Figur drückt das Mark heraus und setzt vorne Krächz’ Monokel und hinten die Leselupe der Frösche ein. Das Fernrohr zeigt alles auf dem Kopf, was bei dieser Bauart stimmt. Dann fragt die Schildkröte: „Wo wolltest du hin, und wo bist du?“ Die Figur trägt ihre erledigten Teilziele auf der Karte ein und vergleicht sie mit dem Kompass-Ziel. Wer richtig einschätzt, wie weit er oder sie gekommen ist, bekommt das Fernrohr als Fernrohr der Umsicht. Krächz sieht ohne Monokel nichts mehr und plaudert mit einem Baumstumpf |
@@ -427,6 +427,45 @@ Hinter dem Kellertor beginnt das Land Später mit einem Moor voller Irrlichter. 
 **Fachliche Anmerkung zum Nebelpfad.** Selbstbeobachtung der Aufmerksamkeit mit Signaltönen: Kinder hören in Abständen einen Ton und fragen sich, ob sie gerade bei der Sache waren. Das verbessert das Bei-der-Sache-Bleiben (Hallahan und andere, 1979; Übersicht bei Reid, Trout und Schartz, 2005). Die Angaben werden vor dem Einbau noch geprüft.
 
 **Ablauf am Moorrand.** Die Figur kommt über den Bohlenweg aus dem Felsentor. Kolportus steht hinter der Theke seines Holzkarrens, gestreiftes Sonnendach, Laterne, Regal mit Lerntyp-Tee (blau, rot, kariert) und Pillendosen „Für die anderen 90 %“. Vor dem Stand steht die Tafel „Wahr oder Mumpitz?“. Im Gespräch erklärt er sein Quiz: Wer alle sechs Aussagen richtig einordnet, darf sich ein Glas aussuchen. Bei einem Fehler jubelt Kolportus, Krächz wirft einen trockenen Satz ein, der zeigt, was stimmt, und das Quiz beginnt neu in anderer Reihenfolge. Mit allen sechs richtig gibt Kolportus ein leeres Teeglas mit Deckel („Leer wie meine Argumente. Sag’s keinem.“). Am Wegrand stehen ein Holunderstrauch mit schwarzen Beeren (für das Fernrohr später) und ein Wegweiser zu den Irrlichtern, zur Brücke und zu Merkwohl.
+
+**Ausarbeitung Nebelpfad (Entwurf vom 07.10.2026, noch nicht entschieden)**
+
+*Idee.* Im Nebel sieht man nur ein paar Meter weit, und die Bohlenwege winden sich so, dass man nicht merkt, aus welcher Himmelsrichtung man an eine Gabelung kommt. Man kommt nur durch, wenn man an jeder Gabelung herausfindet, wo man gerade ist (Ist), und die Karte nach dem Ziel ausrichtet (Soll). Das ist Überwachen im Moment: innehalten, Standort bestimmen, mit dem Ziel vergleichen, dann weitergehen (Selbstbeobachtung im Zyklusmodell, Zimmerman, 2002). Die Glocke ist das Signal zum Innehalten. Grummelbarts Satz „Er zeigt nur, wenn man weiß, wohin“ bekommt hier seine Bedeutung.
+
+*Fachlich.* Eine Karte nach dem Kompass auszurichten („einnorden“) ist die übliche Technik beim Wandern und beim Orientierungslauf. Der Kompass der Pläne zeigt zum Ziel statt nach Norden. Das geht trotzdem auf: Man dreht die Karte so, dass die Linie vom eigenen Standort zur Brücke in Nadelrichtung zeigt. Dann stimmen links, geradeaus und rechts auf der Karte mit den Wegen vor einem überein.
+
+*Wegnetz* (Skizze: `docs/nebelpfad_karte.png`). Vom Eingang mit der Wegtafel geht es nach Norden zur ersten Gabelung. Jede Gabelung ist eine Kreuzung: Man kommt aus einer Richtung und hat drei Wege vor sich.
+
+| Gabelung | Wegmarke im Nebel | Norden | Osten | Süden | Westen |
+| --- | --- | --- | --- | --- | --- |
+| 1 | versunkenes Boot | Gabelung 2 | Gabelung 3 | Eingang | Schleife, kommt bei 2 von Westen an (und umgekehrt) |
+| 2 | Reiher aus Stein | Sackgasse im Schilf | Gabelung 4 | Gabelung 1 | Schleife zurück zu 1 |
+| 3 | schiefer Pfahl | Gabelung 4 | Sackgasse | Sackgasse | Gabelung 1 |
+| 4 | Muschelhaufen | Froschbrücke | Sackgasse | Gabelung 3 | Gabelung 2 |
+
+Richtig ist 1, 2, 4, Brücke oder 1, 3, 4, Brücke. Die Schleife zwischen 1 und 2 ist die Falle: Wer an 2 nach Westen geht, steht nach einer Weile wieder an einer Gabelung, die genauso aussieht wie alle, und erkennt nur am Boot, dass es wieder die erste ist.
+
+*Ablauf.*
+1. Eingang: An einem Pfahl hängt eine festgeschraubte Wegtafel mit der Karte. „Benutze Kreide mit Zettel“ (oder mit der Tafel): Die Figur zeichnet die Karte auf die Rückseite des Diebeszettels aus Kapitel 1. Es entsteht die Wegskizze, die Kreide wird kürzer.
+2. Kompass beim ersten Mal: Die Nadel dreht sich, bis die Figur ihr Ziel nennt. „Irgendwohin“ und „Raus aus dem Nebel“ reichen nicht, „Zur Froschbrücke“ schon (den Namen kennt man vom Wegweiser am Moorrand).
+3. An jeder Gabelung läutet die Glocke am Pfahl, die Figur bleibt stehen: „Moment. Wo bin ich eigentlich?“ Im Nebel ist eine Wegmarke nur undeutlich zu sehen, „Schau an“ zeigt, was es ist.
+4. Wegskizze anschauen (Nahansicht): Man tippt das Symbol an, wo man zu sein glaubt. „Benutze Kompass mit Wegskizze“ dreht die Karte so, dass die Brücke in Nadelrichtung liegt. An der eigenen Gabelung stehen dann die drei Wege als links, geradeaus und rechts.
+5. Man nimmt den Weg, der auf der Karte zur Brücke führt.
+
+*Fehler und was dann passiert.*
+- Sackgasse: „Schilf, Wasser, Ende. Zurück.“ Die Figur kommt aus dieser Richtung an dieselbe Gabelung zurück, die Ausrichtung ist jetzt eine andere, also neu prüfen.
+- Schleife: Man glaubt, an einer neuen Gabelung zu sein. Wer die Wegmarke anschaut, merkt: „Das Boot kenne ich doch. Ich bin im Kreis gelaufen.“
+- Falscher Standort angetippt: Die Karte wird falsch gedreht, der gewählte Weg führt in die Irre. Man lernt, erst die Wegmarke zu prüfen.
+- Ohne Wegskizze oder ohne Kompass: Man kann trotzdem loslaufen, verirrt sich aber leicht. Hinweise kommen versteckt („Wenn ich nur wüsste, wo ich auf der Tafel am Eingang wäre.“).
+
+*Krächz.* Er sitzt auf dem Glockenpfahl, Tipps in Stufen: Wegtafel am Eingang, Wegmarke anschauen, Kompass an die Skizze halten. Ohne ihn ist alles lösbar.
+
+*Darstellung.* Ein Gabelungsbild mit drei Bohlenwegen in den Nebel, Fluchtpunkt, Glockenpfahl, je Gabelung eine eigene Wegmarke. Dichter Nebel, Nacht. Die Wegskizze als Nahansicht mit Kreidestrichen auf zerknittertem Papier.
+
+*Offene Punkte.*
+- Überschneidung mit Madame Merkwohl (dort Rückblick auf das ganze Kapitel: Welche Teilziele sind geschafft, wie gut habe ich mich eingeschätzt?).
+- Die Kreide wird hier für die Wegskizze gebraucht. Bei Merkwohl kann die Figur die Teilziele auf derselben Skizze abhaken.
+- Vier Gabelungen oder weniger.
 
 **Wahr oder Mumpitz**
 
