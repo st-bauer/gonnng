@@ -1,4 +1,4 @@
-// Durchlauf Neues Spiel bis zum Moorrand in Kapitel 2 mit Neuladen nach jedem Raum. Start: NPM_ROOT=$(npm root -g) SP=/tmp node scripts/durchlauf_test.js (Server auf Port 8765 im Repo). Protokoll: $SP/durch_log.txt
+// Durchlauf Neues Spiel bis zum Ende der Irrlichtwiese in Kapitel 2 mit Neuladen nach jedem Raum. Start: NPM_ROOT=$(npm root -g) SP=/tmp node scripts/durchlauf_test.js (Server auf Port 8765 im Repo). Protokoll: $SP/durch_log.txt
 const { chromium } = require(process.env.NPM_ROOT + '/playwright');
 const fs = require('fs');
 (async () => {
@@ -117,6 +117,19 @@ const fs = require('fs');
   await must(() => window.__S().inv.indexOf('teeglas') >= 0, 'Teeglas von Kolportus');
   await neuladen('Moorrand Quiz');
   await act('gehe', 'wegR');
+  await must(() => window.__S().room === 'irrwiese', 'auf der Irrlichtwiese');
+  // ---- Kapitel 2: Irrlichtwiese
+  await act('gehe', 'weiter');
+  await act('rede', 'kraechz', null, [0, 3]);
+  await must(() => window.__S().monokelWeg && window.__S().inv.indexOf('monokel') >= 0, 'Monokel gegen Versprechen');
+  await neuladen('Monokel geliehen');
+  await act('benutze', 'stumpf', 'teeglas');
+  await act('benutze', 'glasS', 'monokel');
+  await must(() => window.__S().irrImGlas && !window.__S().monokelWeg, 'Irrlichter im Glas, Monokel zurück');
+  await neuladen('Irrlichter gefangen');
+  await act('nimm', 'glasS');
+  await must(() => window.__S().irrWeg && window.__S().inv.indexOf('irrglas') >= 0, 'Irrlicht-Glas im Rucksack');
+  await act('gehe', 'weiter');
   await p.waitForFunction(() => window.__mode() === 'end', null, { timeout: 90000 }).catch(() => log('KEIN ENDE'));
   await flush(); log('Ende: ' + JSON.stringify(await st()));
   fs.writeFileSync((process.env.SP||'/tmp') + '/durch_log.txt', LOG.join('\n'));

@@ -60,6 +60,7 @@ button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
       <button data-szene="kiste">Heizungskeller: Schlüsselkiste</button>
       <button data-szene="land">Übergang zu Kapitel 2</button>
       <button data-szene="moorrand">Kapitel 2: Der Moorrand</button>
+      <button data-szene="irrwiese">Kapitel 2: Die Irrlichtwiese</button>
       <button id="szenenZurueck">Zurück</button>
     </div>
     <div class="overlay setup" id="setup" hidden>
@@ -361,7 +362,8 @@ function makeRaven(o){
   if(o.talk)p.px(1+k,7,'#0c0a14').px(2+k,7,'#0c0a14');
   p.part(RAMP.tie,m=>m.poly([[8,9],[11,9],[9.5,13]]));
   p.px(9,10,'#d8b040');
-  // Monokel mit Kette
+  // Monokel mit Kette (ausgeliehen: nur das blinzelnde Auge)
+  if(o.ohne){p.px(5+k,5,'#101018').px(6+k,5,'#101018');if(o.talk)p.px(1+k,7,'#0c0a14');return p.canvas();}
   p.px(5+k,4,'#d8b040').px(6+k,4,'#d8b040').px(4+k,5,'#d8b040').px(7+k,5,'#d8b040').px(5+k,6,'#d8b040').px(6+k,6,'#d8b040');
   p.px(5+k,5,'#e8f0ff').px(6+k,5,'#101018');
   p.px(7+k,7,'#9a7418').px(8,8,'#9a7418');
@@ -1135,6 +1137,8 @@ const ITEMS={
   schlaegel:{name:'Trommelschlägel',look:'Ein Trommelschlägel mit Filzkopf. Etwas angeknabbert. Riecht nach Nuss.'},
   holzwolle:{name:'Holzwolle',look:'Ein Büschel Holzwolle. Ganz fein, ganz trocken. Knistert.'},
   lupe:{name:'Lupe',look:'Mias Lupe. Groß, rund und schwer. Nur geliehen, sie ist von ihrem Opa.'},
+  monokel:{name:'Monokel',look:'Krächz’ Monokel. Geliehen, mit Rückgabezeitpunkt.'},
+  irrglas:{name:'Irrlicht-Glas',look:'Das Glas leuchtet grün im Rucksack. Ich schaue lieber nicht hinein.'},
   teeglas:{name:'Teeglas',look:'Ein leeres Glas mit Deckel aus Kolportus’ Regal. Riecht ein bisschen nach Kamille.'},
   kopfhoerer:{name:'Kopfhörer',look:'Dicke rote Ohrenschützer. Damit hört man fast nichts mehr. Herrlich.'},
   torschluessel:{name:'Torschlüssel',look:'Zwei Kerben unten, die Nase oben. Der passt ins Tor zum Land Später.'},
@@ -1147,6 +1151,8 @@ function kopfG(g,x,y,k){k=k||1;
   [-5,5].forEach(d=>ellFill(g,x+Math.round(d*k),y+1,2*k,2.6*k,(px,py,dx,dy)=>pick(KR.buchR,0.6-dx*0.3-dy*0.3,px,py)));}
 function icon(g,id,x,y){
   if(id==='kopfhoerer')kopfG(g,x+16,y+9,1.4);
+  if(id==='monokel'){ellFill(g,x+16,y+9,6,6,(px,py,dx,dy)=>{const r=dx*dx+dy*dy;return r>0.6?pick(KR.gold,0.6-dx*0.2-dy*0.2,px,py):pick(KR.himmel,0.5-dx*0.3,px,py);});line(g,x+21,y+13,x+28,y+17,KR.gold[6]);}
+  if(id==='irrglas'){for(let j=0;j<11;j++)for(let i=0;i<9;i++){const d=Math.hypot(i-4,j-5)/5;P(g,x+12+i,y+5+j,pick(KR.irr,0.3+Math.max(0,1-d)*0.6+(i===1?0.1:0),x+i,y+j));}kastenG(g,x+11,y+3,11,2,KR.stahl,0.6);}
   if(id==='teeglas'){for(let j=0;j<11;j++)for(let i=0;i<9;i++)P(g,x+12+i,y+5+j,pick(KR.himmel,0.25+(i===1?0.6:0)-(i===8?0.2:0)+j/40,x+i,y+j));kastenG(g,x+11,y+3,11,2,KR.stahl,0.6);}
   if(id==='lineal'){kastenG(g,x+2,y+6,28,5,KR.dielen,0.8);for(let i=4;i<30;i+=3)for(let k=0;k<(i%6===1?3:2);k++)P(g,x+i,y+6+k,'#3a2410');}
   if(id==='radiergummi'){kastenG(g,x+9,y+5,8,7,KR.rosa,0.6);kastenG(g,x+17,y+5,7,7,KR.buchB,0.6);}
@@ -1222,6 +1228,8 @@ function miniItem(g,id,x,y){x=Math.round(x);y=Math.round(y);
   if(id==='kekse')return keksG(g,x,y,2.6);
   if(id==='schlaegel'){line(g,x-4,y+3,x+2,y-2,'#845028');return beutelG(g,x+3,y-3,1.8,1.8,KR.papier,0.6);}
   if(id==='kopfhoerer')return kopfG(g,x,y,0.6);
+  if(id==='monokel')return ellFill(g,x,y,2.5,2.5,(px,py,dx,dy)=>dx*dx+dy*dy>0.45?KR.gold[8]:'#e4f0ff');
+  if(id==='irrglas'){kastenG(g,x-2,y-3,5,6,KR.irr,0.6);return kastenG(g,x-3,y-4,7,1,KR.stahl,0.6);}
   if(id==='teeglas'){kastenG(g,x-2,y-3,5,6,KR.himmel,0.4);return kastenG(g,x-3,y-4,7,1,KR.stahl,0.6);}
   if(id==='lupe'){line(g,x+2,y+2,x+5,y+5,'#845028');return ellFill(g,x,y,3,3,(px,py,dx,dy)=>dx*dx+dy*dy>0.5?pick(KR.stahl,0.7,px,py):pick(KR.himmel,0.6-dx*0.3,px,py));}
   if(id==='holzwolle'){for(let k=0;k<8;k++)line(g,x-3+k%4*2,y-1+(k>>2)*2,x-2+k%4*2+(k%2),y+(k>>2)*2-(k%2),k%3?'#d8b060':'#9a7430');return;}
@@ -1268,7 +1276,7 @@ const FALLBACK={
   schliesse:()=>'Da gibt es nichts zu schließen.',druecke:()=>'Da tut sich nichts.',ziehe:()=>'Da tut sich nichts.',
   rede:()=>'Mit Gegenständen rede ich nur im Notfall.',gib:()=>'Das will hier niemand haben.',benutze:()=>'Das bringt nichts.'
 };
-function stage(){if(S.room==='moorrand')return'moorrand';if(S.room==='heiz')return'heiz';if(S.room==='musik')return'musikraum';if(S.room==='bio')return'bio';if(S.room==='gang')return'gang';if(S.room==='halle'&&S.brauchFeuer&&!S.feuer&&(!has('lupe')||!has('holzwolle'))&&!S.wolleImFleck)return'feuer';if(S.room==='kantine'||S.room==='kammer')return'kueche';if(S.room==='halle')return S.suchKantine&&!has('kekse')?'kantine':has('kekse')?'flure':S.flureGeschafft?'fertig':(S.spur?'flure':'spur');if(!S.fenster)return'fenster';if(!S.ziel)return'ziel';if(!S.kruemelGesehen)return'kruemel';if(!S.gitter)return'gitter';if(S.inv.indexOf('kreide')<0)return'kreide';return'fertig';}
+function stage(){if(S.room==='moorrand')return'moorrand';if(S.room==='irrwiese')return'irrwiese';if(S.room==='heiz')return'heiz';if(S.room==='musik')return'musikraum';if(S.room==='bio')return'bio';if(S.room==='gang')return'gang';if(S.room==='halle'&&S.brauchFeuer&&!S.feuer&&(!has('lupe')||!has('holzwolle'))&&!S.wolleImFleck)return'feuer';if(S.room==='kantine'||S.room==='kammer')return'kueche';if(S.room==='halle')return S.suchKantine&&!has('kekse')?'kantine':has('kekse')?'flure':S.flureGeschafft?'fertig':(S.spur?'flure':'spur');if(!S.fenster)return'fenster';if(!S.ziel)return'ziel';if(!S.kruemelGesehen)return'kruemel';if(!S.gitter)return'gitter';if(S.inv.indexOf('kreide')<0)return'kreide';return'fertig';}
 const TIPPS={flure:['Hau mal auf den Gong und schau, was mit den Schildern passiert.','Wenn du losläufst, gongt es. Geh also dahin, wo die Kellertreppe nach dem nächsten Gong steht.','Die Räume rücken im Uhrzeigersinn eine Tür weiter und hüpfen am Musikraum vorbei. Von Osten geht es also direkt nach Westen.'],kruemel:['Wohin ist der Dieb wohl verschwunden?','Wer klaut, hat es eilig. Und wer es eilig hat, krümelt. Schau mal nach unten.','Die Krümel führen zum Gitter.'],
   kantine:['Diesmal suchst du die Kantine. Hau auf den Gong und schau, wohin sie wandert.','Beim Losgehen gongt es. Geh also dahin, wo die Kantine nach dem nächsten Gong steht.','Such das Schild „Kantine“. Die Tür im Uhrzeigersinn daneben ist deine, der Süden zählt nicht mit.'],
   gitter:['Schrauben brauchen einen Dreher.','Schlitzschrauben mag alles, was flach und rund ist.','In Pulten liegt oft Kleingeld.']};
@@ -1282,6 +1290,7 @@ async function tipp(){const st=stage();
   if(st==='musikraum')return musikTipp();
   if(st==='bio')return bioTipp();
   if(st==='moorrand')return moorrandTipp();
+  if(st==='irrwiese')return irrTipp();
   if(st==='feuer'){await say('kraechz',!has('lupe')?'Eine Lupe gibt es dort, wo man kleine Tiere anschaut. Im Biologieraum.':'Zum Anzünden braucht es was Feines, Trockenes. So was steckt oft in Paketen.');return;}
   const i=Math.min(S.tipp[st]||0,2);S.tipp[st]=i+1;await say('kraechz',TIPPS[st][i]);}
 function choose(options){return new Promise(r=>{S.dialog={options,resolve:i=>{S.dialog=null;r(i);}};});}
@@ -1378,6 +1387,7 @@ async function act(verb,h,item){
   if(S.room==='musik')return actMusik(verb,h,item);
   if(S.room==='bio')return actBio(verb,h,item);
   if(S.room==='moorrand')return actMoorrand(verb,h,item);
+  if(S.room==='irrwiese')return actIrrwiese(verb,h,item);
   const id=h.id;
   if(item){
     if(verb==='gib'){if(id==='kraechz')return say('kraechz','Behalte das mal schön selbst.');if(['jonas','lina','kallweit'].includes(id))return say(id,'Gleich.');return say('hero',FALLBACK.gib());}
@@ -1441,7 +1451,7 @@ async function act(verb,h,item){
   if(['jonas','lina','kallweit'].includes(id))return say(id,'Gleich.');
   return say('hero',FALLBACK[verb]?FALLBACK[verb](h):FALLBACK.benutze());
 }
-function ravenImg(now){if(S.kfliegt)return SPR.ravenFlug[Math.floor(now/90)%2];return S.speech&&S.talker==='kraechz'&&Math.floor(now/140)%2?SPR.ravenTalk:SPR.raven;}
+function ravenImg(now){if(S.kfliegt)return SPR.ravenFlug[Math.floor(now/90)%2];const red=S.speech&&S.talker==='kraechz'&&Math.floor(now/140)%2;if(S.monokelWeg)return red?SPR.ravenOhneTalk:SPR.ravenOhne;return red?SPR.ravenTalk:SPR.raven;}
 // Kraechz fliegt im Bogen an einen neuen Platz und schlaegt dabei mit den Fluegeln
 async function kraechzFlug(x1,y1,ms,bogen){const x0=S.kx,y0=S.ky,n=Math.max(8,Math.round((ms||700)/30));S.kfliegt=true;S.kflip=x1>x0;
   for(let i=1;i<=n;i++){const t=i/n;S.kx=x0+(x1-x0)*t;S.ky=y0+(y1-y0)*t-Math.sin(t*Math.PI)*(bogen===undefined?14:bogen);await sleep(30);}
@@ -1488,7 +1498,7 @@ function build(){
   SPR.heroWalk=[0,1,2,3,4,5].map(i=>makeHero({walk:1,phase:i/6,girl:gl}));
   SPR.kall=makeKallweit({});SPR.kallTalk=makeKallweit({talk:1});
   SPR.jonas=[makeJonas({shake:0}),makeJonas({shake:1})];SPR.lina=makeLina();
-  SPR.raven=makeRaven({});SPR.ravenFlug=[makeRaven({fluegel:'hoch'}),makeRaven({fluegel:'runter'})];SPR.ravenKnock=makeRaven({knock:1});SPR.ravenTalk=makeRaven({talk:1});
+  SPR.raven=makeRaven({});SPR.ravenFlug=[makeRaven({fluegel:'hoch'}),makeRaven({fluegel:'runter'})];SPR.ravenKnock=makeRaven({knock:1});SPR.ravenTalk=makeRaven({talk:1});SPR.ravenOhne=makeRaven({ohne:1});SPR.ravenOhneTalk=makeRaven({ohne:1,talk:1});
   SPR.imp=makeImp({});SPR.impYawn=makeImp({yawn:1,heft:1});SPR.impHeft=makeImp({heft:1});SPR.impSleep=makeImp({zu:1});SPR.impKeks=makeImp({keks:1});
   SPR.impTalk=makeImp({talk:1});SPR.impStock=[makeImp({stock:0}),makeImp({stock:1}),makeImp({stock:0,talk:1})];SPR.impHeftTalk=makeImp({heft:1,talk:1});SPR.impSleepTalk=makeImp({zu:1,talk:1});SPR.impKeksTalk=makeImp({keks:1,talk:1});
   SPR.kinder=kinderSprites();SPR.mia=makeMia({lupe:1});SPR.miaGib=makeMia({gib:1,kopf:1});SPR.miaSteht={};['haengt','gib','tipp','zeig'].forEach(a=>[0,1,2].forEach(st=>{SPR.miaSteht[a+st]=makeMiaSteht({arm:a,step:st});SPR.miaSteht[a+st+'t']=makeMiaSteht({arm:a,step:st,talk:1});}));SPR.miaTalk=makeMia({lupe:1,talk:1});SPR.miaZeichnet=makeMia({zeichnet:1,kopf:1});SPR.miaZeichnetTalk=makeMia({zeichnet:1,kopf:1,talk:1});SPR.fermate=[0,1,2].map(a=>makeFermate({arm:a,wach:a>0}));SPR.fermateTalk=[makeFermate({talk:1}),makeFermate({arm:1,wach:1,talk:1}),makeFermate({arm:2,wach:1,talk:1})];SPR.grummel=makeGrummel({});SPR.kolportus={};['ruhe','zeig','glas','jubel'].forEach(a=>{SPR.kolportus[a]=makeKolportus({arm:a});SPR.kolportus[a+'t']=makeKolportus({arm:a,talk:1});});SPR.grummelTalk=makeGrummel({talk:1});SPR.grummelWarm=makeGrummel({warm:1});SPR.grummelReck=makeGrummel({warm:1,reck:1});SPR.grummelWarmTalk=makeGrummel({warm:1,talk:1});SPR.gSteht={};['haengt','trag','greif','hoch','unten'].forEach(a=>[0,1,2].forEach(st=>{SPR.gSteht[a+st]=makeGrummelSteht({arm:a,step:st});SPR.gSteht[a+st+'k']=makeGrummelSteht({arm:a,step:st,key:1});SPR.gSteht[a+st+'t']=makeGrummelSteht({arm:a,step:st,talk:1});}));SPR.broesel=makeBroesel({});SPR.broeselTalk=makeBroesel({talk:1});SPR.broeselRuehr=makeBroesel({stir:1});SPR.broeselRuehr2=makeBroesel({stir:2});SPR.broeselGib=makeBroesel({gib:1});
@@ -1512,6 +1522,7 @@ function drawScene(now){
   if(S.room==='musik')return drawMusik(now);
   if(S.room==='bio')return drawBio(now);
   if(S.room==='moorrand')return drawMoorrand(now);
+  if(S.room==='irrwiese')return drawIrrwiese(now);
   ctx.drawImage(ROOM,0,0);
   // Sekundenzeiger zittert auf der Stelle
   const a=-2.2+Math.sin(now/40)*0.08;line(ctx,226,24,226+Math.cos(a)*7,24+Math.sin(a)*7,'#c83030');
@@ -1580,7 +1591,7 @@ const VCELL=(i)=>{const col=Math.floor(i/3),row=i%3;return[4+col*62,156+row*14,6
 const ORDER=['gib','nimm','benutze','oeffne','schau','druecke','schliesse','rede','ziehe'];
 const ICELL=i=>[208+(i%3)*37,156+Math.floor(i/3)*22,35,20];
 const IUP=[195,156,11,20],IDOWN=[195,178,11,20];
-const isFloor=id=>id==='bodenMR'||id==='boden'||id==='bodenH'||id==='bodenG'||id==='bodenZ'||id==='bodenM'||id==='bodenB';
+const isFloor=id=>id==='bodenI'||id==='bodenMR'||id==='boden'||id==='bodenH'||id==='bodenG'||id==='bodenZ'||id==='bodenM'||id==='bodenB';
 function invAt(x,y){for(let k=0;k<6;k++){const i=(S.invOff||0)*3+k;if(i<S.inv.length&&inR(x,y,ICELL(k)))return i;}return -1;}
 function inR(x,y,[a,b,w,h]){return x>=a&&x<a+w&&y>=b&&y<b+h;}
 const optDY=()=>S.dialog&&S.dialog.options.length>4?10:12;   // bei vielen Antworten enger
@@ -1657,7 +1668,7 @@ const START=['kantine','bio','keller'];           // Takt 0: Nord, Ost, West
 const RAUM_NAME={kantine:'Kantine',bio:'Biologieraum',keller:'Kellertreppe',musik:'Musikraum'};
 function raumAn(tuer,takt){if(tuer==='sued')return'musik';const i=RING.indexOf(tuer);return START[((i-takt)%3+3)%3];}
 const BAND_HALLE={x0:22,x1:298,y0:98,y1:136};
-const curBand=()=>S.room==='halle'?BAND_HALLE:S.room==='gang'?BAND_GANG:S.room==='kantine'?BAND_KANTINE:S.room==='kammer'?BAND_KAMMER:S.room==='heiz'?BAND_HEIZ:S.room==='musik'?BAND_MUSIK:S.room==='bio'?BAND_BIO:S.room==='moorrand'?BAND_MOOR:BAND;
+const curBand=()=>S.room==='halle'?BAND_HALLE:S.room==='gang'?BAND_GANG:S.room==='kantine'?BAND_KANTINE:S.room==='kammer'?BAND_KAMMER:S.room==='heiz'?BAND_HEIZ:S.room==='musik'?BAND_MUSIK:S.room==='bio'?BAND_BIO:S.room==='moorrand'?BAND_MOOR:S.room==='irrwiese'?BAND_IRR:BAND;
 
 let HALLE=null;
 function drawHalleBg(){
@@ -1832,7 +1843,7 @@ const HS_HALLE=[
   {id:'sued',name:()=>'Weg nach Süden',exit:true,rect:()=>[120,124,80,20],walk:[160,136],flip:false},
   {id:'bodenH',name:'Boden',floor:true,rect:()=>[20,98,280,40],walk:[0,0],flip:false}
 ];
-const curHS=()=>S.room==='halle'?HS_HALLE:S.room==='gang'?HS_GANG:S.room==='kantine'?HS_KANTINE:S.room==='kammer'?HS_KAMMER:S.room==='heiz'?HS_HEIZ:S.room==='musik'?HS_MUSIK:S.room==='bio'?HS_BIO:S.room==='moorrand'?HS_MOORRAND:HS;
+const curHS=()=>S.room==='halle'?HS_HALLE:S.room==='gang'?HS_GANG:S.room==='kantine'?HS_KANTINE:S.room==='kammer'?HS_KAMMER:S.room==='heiz'?HS_HEIZ:S.room==='musik'?HS_MUSIK:S.room==='bio'?HS_BIO:S.room==='moorrand'?HS_MOORRAND:S.room==='irrwiese'?HS_IRR:HS;
 const TUER={nord:{tor:[160,98],drin:[160,108],k:[160,62]},west:{tor:[24,104],drin:[48,114],k:[26,62]},ost:{tor:[296,104],drin:[272,114],k:[294,62]},sued:{tor:[160,146],drin:[160,124],k:[160,150]}};
 async function durchTuer(tuer){const T=TUER[tuer];
   if(tuer!=='sued'){S.aktZiel=[T.k[0],80];await reach('greif');S.offen=tuer;tone('sawtooth',160,0.3,0.03,110);await sleep(250);}
@@ -2104,6 +2115,7 @@ const HS_GANG=[
 const planFuer=d=>(S.plaene||{})[d.w];
 // Laufen im Gang: Wer ohne Plan an einem Aufschiebchen vorbei will, wird zurueckgeworfen
 async function goTo(x,y){
+  if(S.room==='irrwiese'&&!S.irrWeg&&x>210){await irrStoer();return false;}
   if(S.room!=='gang'){await walkTo(x,y);return true;}
   S.passed=S.passed||{};
   for(const d of STOER){
@@ -4873,7 +4885,7 @@ async function actMoorrand(verb,h,item){
     case 'felstor:schau':return say('hero','Das Felsentor. Dahinter geht die Treppe hinauf zur Schule.');
     case 'felstor:gehe':case 'felstor:benutze':return say('hero','Zurück? Mein Heft ist hier irgendwo. Und die Unruh vermutlich auch.');
     case 'wegR:schau':return say('hero','Der Bohlenweg führt weiter ins Moor. Zur Irrlichtwiese.');
-    case 'wegR:gehe':case 'wegR:benutze':return irrlichtwieseVorschau();
+    case 'wegR:gehe':case 'wegR:benutze':await walkTo(304,124);S.hero.hidden=true;await kraechzFlug(330,40,700,10);return enterIrrwiese();
     case 'kraechz:rede':return redeKraechz();
     case 'kraechz:schau':return say('hero','Krächz sitzt auf dem Wegweiser und putzt sein Monokel.');
     case 'bodenMR:schau':return say('hero','Bretter über dem Moor. Manche federn. Manche schmatzen.');
@@ -4894,14 +4906,240 @@ async function moorrandTipp(){
   else t='Das Glas hast du. Weiter geht’s zur Irrlichtwiese, der Wegweiser zeigt nach rechts.';
   await say('kraechz',t);
 }
+/* =====================================================================
+   Kapitel 2, zweiter Schauplatz: die Irrlichtwiese
+   Irrlichter pingen wie Benachrichtigungen, die Figur dreht sich jedes Mal um und landet im Matsch.
+   Loesung: Kraechz leiht sein Monokel nur gegen ein Versprechen mit Zeitpunkt. Teeglas auf den Baumstumpf,
+   Monokel als Koeder, Deckel zu. Das Glas pingt aber weiter, erst im Rucksack ist Ruhe (Lernumgebung gestalten).
+   ===================================================================== */
+const BAND_IRR={x0:24,x1:304,y0:112,y1:136};
+const IW={VX:200,VY:50,STUMPF:[160,110],AST:[66,50]};
+let IRRWIESE=null;
+function iwLicht(x,y){const s=Math.max(0,1-Math.hypot(x-250,(y-36)*1.4)/240),i=Math.max(0,1-Math.hypot(x-168,(y-84)*1.3)/90);return[s,i];}
+// Nebel als weiche Schicht mit Alpha, wird zur Laufzeit verschoben (rechts dicht, dort beginnt der Nebelpfad)
+let IRRNEBEL=null;
+function irrNebel(){const [c,g]=mk(W*2,70),img=g.createImageData(W*2,70);
+  for(let y=0;y<70;y++)for(let x=0;x<W*2;x++){const u=x/(W*2)*Math.PI*2,dicht=0.5+0.5*Math.sin(u+0.6),v=Math.sin(u*6+y*0.2)+Math.sin(u*14-y*0.13)*0.7+Math.sin(u*3)*0.5;
+    const rand=Math.min(1,y/18,(69-y)/14),d=clamp(((v+2.2)/4.4)*rand*(0.35+dicht*0.9),0,1),a=Math.floor(d*5)/5*0.75;const i=(y*W*2+x)*4;
+    img.data[i]=168;img.data[i+1]=158;img.data[i+2]=200;img.data[i+3]=Math.round(a*255);}
+  g.putImageData(img,0,0);return c;}
+function irrwieseBg(){
+  const [c,g]=mk(W,SH),hash=(a,b)=>((a*73856093)^(b*19349663))>>>0,{VX,VY}=IW;
+  const GRUEN=mkMix(KR.torf,mkRamp(['#04120e','#0a2620','#124036','#1e5a4a','#34806a','#5aa88c'],10),8);   // Moos im Abendlicht, mit Irrlicht-Schimmer
+  const hell=(x,y)=>{const [s,i]=iwLicht(x,y);return 0.06+s*0.4+i*0.4;};
+  const moos=(t,x,y)=>{const [s,i]=iwLicht(x,y);return pickMix(GRUEN,clamp(i*1.5,0,1),t,x,y);};
+  const ht=(x,y)=>clamp(0.04+Math.pow(Math.max(0,y)/VY,1.4)*0.62+Math.max(0,1-Math.hypot(x-250,(y-40)*1.5)/170)*0.2,0,1);
+  for(let y=0;y<VY;y++)for(let x=0;x<W;x++)P(g,x,y,pick(KR.abend,ht(x,y),x,y));
+  for(let i=0;i<40;i++){const x=hash(i,11)%W,y=hash(i,13)%30;if(ht(x,y)<0.2)P(g,x,y,i%5?'#5a4c80':'#c8c0e8');}   // erste Sterne
+  // Buesche und Erlen als Silhouetten am Horizont, rechts verschwinden sie im Nebel
+  for(let x=0;x<W;x++){const h=VY-2-Math.max(0,noise1(x*1.3+20,1.8))*7-Math.max(0,Math.sin(x*0.05+1))*3,dunst=clamp((x-150)/120,0,1);
+    for(let y=Math.floor(h);y<VY;y++)P(g,x,y,pick(KR.abend,0.1+dunst*0.3+(y-h<1?0.06:0),x,y));}
+  // Wiese: Moos und Torf in der Flucht, Wasserloecher spiegeln den Himmel
+  const loecher=[[96,74,22,4],[236,80,26,4],[52,96,30,6],[266,104,34,7],[118,126,28,6]];
+  for(let y=VY;y<SH;y++)for(let x=0;x<W;x++){
+    const tief=(y-VY)/(SH-VY);
+    const loch=loecher.find(([lx,ly,rx,ry])=>((x-lx)/rx)**2+((y-ly)/ry)**2<1);
+    if(loch){const [lx,ly,rx,ry]=loch,d=((x-lx)/rx)**2+((y-ly)/ry)**2,ry2=VY-(y-VY)*1.2;let t=ht(x,Math.max(0,ry2))*0.7-0.04+(d>0.75?-0.2:0);
+      if(Math.sin(y*1.6+x*0.05)>0.96)t+=0.1;const [s,i]=iwLicht(x,y);
+      P(g,x,y,i>0.3&&d<0.6?pick(KR.irr,0.1+i*0.35,x,y):pick(KR.abend,t,x,y));continue;}
+    let t=0.08+tief*0.18+hell(x,y)*0.5+((hash(x>>1,y>>1)%5)-2)*0.03;
+    if(hash(x,y*7)%9===0)t+=0.1;
+    P(g,x,y,moos(t,x,y));}
+  // Bulten: Moospolster mit heller Oberseite und Schatten darunter, vorn groesser
+  for(let i=0;i<70;i++){const bx=hash(i,31)%W,by=VY+6+hash(i,33)%(SH-VY-6),f=(by-VY)/(SH-VY),rx=3+f*9,ry=1.2+f*3;
+    if(loecher.some(([lx,ly,lrx,lry])=>((bx-lx)/(lrx+rx))**2+((by-ly)/(lry+ry))**2<1))continue;if(Math.abs(bx-IW.STUMPF[0])<26&&Math.abs(by-IW.STUMPF[1])<16)continue;
+    ellFill(g,bx,by+ry*0.6,rx,ry*0.6,(x,y)=>moos(0.03+hell(x,y)*0.2,x,y));
+    ellFill(g,bx,by,rx,ry,(x,y,dx,dy)=>moos(0.12+f*0.1+hell(x,y)*0.5+(-dy)*0.12+(-dx)*0.04+(hash(x,y)%4===0?0.06:0),x,y));}
+  // Bohlenweg von links vorn schraeg in den Nebel, Bretter quer, Kanten laufen zum Fluchtpunkt
+  for(let y=62;y<SH;y++){const f=(y-62)/(SH-62),xm=VX+(30-VX)*f*1.05,hw=3+f*34;
+    for(let x=Math.round(xm-hw);x<Math.round(xm+hw);x++){if(x<0||x>=W)continue;const brett=Math.floor((y-62)/(1+f*4)),fuge=(y-62)%(1+Math.round(f*4))===0,rand=x<xm-hw+1.5||x>xm+hw-2;
+      const [s,i]=iwLicht(x,y);P(g,x,y,pick(KR.holz,0.12+f*0.12+s*0.25+i*0.3+((hash(brett,4)%5)-2)*0.04-(fuge?0.12:0)-(rand?0.1:0),x,y));}}
+  // tote Birke links als Sitzplatz fuer Kraechz
+  for(let y=30;y<118;y++){const w=y<60?2:y<92?3:4,bx=58+Math.round((118-y)*0.08);for(let k=0;k<w;k++){const x=bx+k,fleck=hash(x,y>>1)%5===0;
+    P(g,x,y,fleck?'#140e1a':pick(KR.porz,0.12+(k===w-1?0.25:k===0?-0.05:0.1)+iwLicht(x,y)[1]*0.2,x,y));}}
+  [[52,-1,18],[64,1,16],[40,1,10],[80,-1,12]].forEach(([y,d,l])=>{const bx=58+Math.round((118-y)*0.08);line(g,bx,y,bx+d*l,y-Math.round(l*0.3),pick(KR.porz,0.2,bx,y));line(g,bx,y+1,bx+d*l,y-Math.round(l*0.3)+1,'#140e1a');});
+  // Baumstumpf in der Mitte: Rinde mit Furchen, oben die Schnittflaeche mit Jahresringen, Wurzeln, Schatten nach vorn
+  const [SX,SY]=IW.STUMPF,RX=15,RY=4,H=16;
+  ellFill(g,SX+2,SY+3,RX+8,RY+2,(x,y)=>moos(0.03+hell(x,y)*0.15,x,y));
+  [[-1,-16,6],[1,14,7],[-1,-8,9],[1,6,10]].forEach(([d,ox,l])=>{for(let k=0;k<l;k++){const x=SX+ox+d*k,y=SY+1+Math.round(k*0.35);for(let j=0;j<2;j++)P(g,x,y+j,pick(KR.holz,0.18+iwLicht(x,y)[1]*0.35-j*0.08,x,y));}});
+  for(let y=SY-H;y<SY;y++)for(let x=SX-RX;x<=SX+RX;x++){const u=(x-SX)/RX,fu=Math.abs(Math.sin(x*1.3+Math.sin(y*0.4)))<0.18;const [s,i]=iwLicht(x,y);
+    let t=0.12+(1-u*u)*0.15+i*0.45*(u<0.4?1:0.6)+s*0.15-(fu?0.1:0);P(g,x,y,pick(KR.holz,t,x,y));}
+  ellFill(g,SX,SY-H,RX,RY,(x,y,dx,dy)=>{const r=Math.hypot(dx,dy*1);const ring=Math.floor(r*6)%2;return r>0.88?pick(KR.holz,0.3,x,y):pick(KR.dielen,0.4+ring*0.08+iwLicht(x,y)[1]*0.35-r*0.1,x,y);});
+  // Wollgras und Schilf: weisse Buschel auf duennen Halmen
+  loecher.forEach(([lx,ly,rx,ry],j)=>{const n=2+hash(j,5)%2;for(let k=0;k<n;k++){const w=(hash(j,k*7)%628)/100,bx=Math.round(lx+Math.cos(w)*(rx+2)),by=Math.round(ly+Math.sin(w)*(ry+1)-1),f=(by-VY)/(SH-VY),h=3+Math.round(f*6);
+    const halme=1+hash(j,k)%3;for(let q=0;q<halme;q++){const x=bx+q*2-1,hh=h-(hash(q,k+j)%3);for(let m=0;m<hh;m++)P(g,x+(m>hh/2&&q===0?-1:0),by-m,moos(0.25+hell(x,by)*0.3,x,by));
+      ellFill(g,x+(q===0?-1:0),by-hh,0.9+f,0.8+f*0.8,(px,py,dx,dy)=>pick(KR.papier,0.25+hell(px,py)*0.45-dy*0.1,px,py));}}});
+  for(let i=0;i<50;i++){const bx=(i*37)%W,h=10+(i*13)%16,by=SH-((i*5)%5);for(let k=0;k<h;k++){const x=Math.round(bx+Math.sin(k*0.1+i)*k*0.15),y=by-k;if(x>=0&&x<W)P(g,x,y,pick(KR.schilf,0.05+(k/h)*0.18,x,y));}}
+  return c;
+}
+
+// Irrlichter: tanzen ueber der Wiese, beim Fangen fliegen sie ins Glas auf dem Baumstumpf
+const IRR_N=5;
+function irrPos(i,now){const t=now/1000;return[150+Math.sin(t*0.5+i*1.3)*70+Math.sin(t*1.3+i)*10,74+Math.sin(t*0.7+i*2.1)*14+Math.sin(t*2.1+i)*3];}
+const glasMund=()=>[IW.STUMPF[0],IW.STUMPF[1]-16-11];
+function drawGlasStumpf(now){const [gx,gy]=[IW.STUMPF[0]-4,IW.STUMPF[1]-16-10];
+  const voll=S.irrImGlas;
+  for(let j=0;j<10;j++)for(let i=0;i<9;i++){const xx=gx+i,yy=gy+j;let c;
+    if(voll){const d=Math.hypot(i-4,j-5+Math.sin(now/300+i)*0.6)/5;c=pick(KR.irr,0.35+Math.max(0,1-d)*0.55+(i===1?0.1:0),xx,yy);}
+    else c=pick(KR.himmel,0.2+(i===1?0.55:0)-(i===8?0.15:0)+j/50,xx,yy);
+    if(i===0||i===8||j===9)c=pick(KR.stahl,0.5,xx,yy);if(voll||i===0||i===1||i===8||j===9||(i+j)%3===0)P(ctx,xx,yy,c);}
+  if(voll||S.deckelZu)kastenG(ctx,gx-1,gy-2,11,2,KR.stahl,0.6);else kastenG(ctx,gx+11,gy+8,8,2,KR.stahl,0.55);        // Deckel drauf oder daneben
+  if(voll&&Math.floor(now/1900)%3===0){const r=Math.round(((now%1900)/1900)*12);for(let a=0;a<12;a++){const w=a*Math.PI/6;P(ctx,Math.round(gx+4+Math.cos(w)*(r+6)),Math.round(gy+5+Math.sin(w)*(r+6)*0.8),KR.irr[8]);}}
+}
+function drawIrrwiese(now){
+  if(!IRRWIESE){IRRWIESE=irrwieseBg();IRRNEBEL=irrNebel();}
+  if(S.card){R(ctx,0,0,W,SH,'#000000');const t=S.card.title;text(t,Math.round((W-textW(t))/2),34,'#ffe060',false);
+    wrap(S.card.text,260).forEach((l,i)=>text(l,Math.round((W-textW(l))/2),56+i*LINEH,'#e8e0ff',false));return;}
+  ctx.drawImage(IRRWIESE,0,0);
+  const o=(now/70)%(W*2);ctx.globalAlpha=0.85;ctx.drawImage(IRRNEBEL,-o,IW.VY-30);ctx.drawImage(IRRNEBEL,W*2-o,IW.VY-30);ctx.globalAlpha=1;
+  if(S.glasStumpf)drawGlasStumpf(now);
+  // die Irrlichter, solange sie frei sind
+  if(!S.irrImGlas)for(let i=0;i<IRR_N;i++){let [x,y]=irrPos(i,now);
+    if(S.irrZuKraechz&&i===0){const f=clamp((now-S.irrZuKraechz)/900,0,1),[kx,ky]=[S.kx-4,S.ky-14];x=x+(kx-x)*f+Math.sin(now/90)*3*f;y=y+(ky-y)*f+Math.cos(now/90)*2*f;}
+    if(S.fangT){const f=clamp((now-S.fangT-i*220)/700,0,1),[mx,my]=glasMund();x=x+(mx-x)*f*f;y=y+(my-y)*f*f;if(f>=1)continue;}
+    if(S.plingI===i&&now-S.plingT<500){const r=Math.round((now-S.plingT)/500*14);for(let a=0;a<12;a++){const w=a*Math.PI/6;P(ctx,Math.round(x+Math.cos(w)*(r+5)),Math.round(y+Math.sin(w)*(r+5)*0.8),KR.irr[8]);}}
+    irrlicht(x,y,(Math.floor(now/1500+i*0.7)%4===0)?1:0,now);}
+  // Koeder: das Monokel glitzert ueber der Glasoeffnung
+  if(S.koeder){const [mx,my]=glasMund();ellFill(ctx,mx,my-4,2.5,2.5,(px,py,dx,dy)=>dx*dx+dy*dy>0.45?KR.gold[8]:(Math.floor(now/120)%2?'#ffffff':'#c8e0ff'));}
+  const L=[];
+  L.push({y:S.ky,d:()=>{spr(ravenImg(now),S.kx,S.ky,11,19,S.kflip);if(!S.monokelWeg&&Math.floor(now/900)%4===0)P(ctx,Math.round(S.kx+(S.kflip?5:-5)),Math.round(S.ky-14),'#ffffff');}});
+  heroLayer(L,now);
+  L.sort((p,q)=>p.y-q.y).forEach(o=>o.d());
+  if(S.matsch&&performance.now()-S.matsch<700){const h=S.hero;for(let i=0;i<10;i++){const t=(performance.now()-S.matsch)/700,a=i*0.63;P(ctx,Math.round(h.x+Math.cos(a)*(4+t*10)),Math.round(h.y-2-Math.abs(Math.sin(a))*t*12+t*t*10),'#2a1a0c');}}
+  drawPanel();drawSpeech();
+}
+const HS_IRR=[
+  {id:'kraechz',name:'Krächz',rect:()=>[S.kx-11,S.ky-19,22,19],walk:[70,122],flip:true},
+  {id:'glasS',name:()=>S.irrImGlas?'Glas mit Irrlichtern':'Teeglas',vis:()=>S.glasStumpf,rect:()=>[IW.STUMPF[0]-6,IW.STUMPF[1]-30,13,14],walk:[146,122],flip:false},
+  {id:'irrlicht',name:'Irrlichter',vis:()=>!S.irrImGlas,rect:()=>[78,56,150,48],walk:[140,120],flip:false},
+  {id:'stumpf',name:'Baumstumpf',rect:()=>[IW.STUMPF[0]-16,IW.STUMPF[1]-20,32,22],walk:[146,122],flip:false},
+  {id:'birke',name:'Tote Birke',rect:()=>[48,28,24,90],walk:[72,120],flip:true},
+  {id:'wasser',name:'Wasserloch',rect:()=>[86,118,62,14],walk:[110,116],flip:false},
+  {id:'wollgras',name:'Wollgras',rect:()=>[90,96,30,14],walk:[110,116],flip:false},
+  {id:'nebelI',name:'Nebel',rect:()=>[230,30,90,50],walk:[290,118],flip:false},
+  {id:'zurueck',name:'Zum Moorrand',exit:true,rect:()=>[0,104,22,40],walk:[22,124],flip:true},
+  {id:'weiter',name:'In den Nebel',exit:true,rect:()=>[300,90,20,50],walk:[304,120],flip:false},
+  {id:'bodenI',name:'Wiese',floor:true,rect:()=>[0,96,W,48],walk:[0,0],flip:false}
+];
+async function enterIrrwiese(){
+  S.room='irrwiese';S.kraechz='irrwiese';S.kx=-20;S.ky=40;S.kflip=true;S.hero.x=10;S.hero.y=124;S.hero.flip=false;S.hero.hidden=false;
+  kraechzFlug(IW.AST[0]+6,IW.AST[1]-2,1100,14).then(()=>{S.kflip=false;});
+  await walkTo(56,126);
+  if(S.irrIntro)return;
+  await say('hero','Da sind sie. Die Lichter aus dem Moor. Aus der Nähe sind sie noch hübscher.');
+  S.irrZuKraechz=performance.now();tone('triangle',1760,0.1,0.05);await sleep(1000);
+  await say('kraechz','He! Weg da! Das ist mein Monokel! Kusch!');
+  S.irrZuKraechz=null;
+  await say('hero','Die flitzen zu allem, was glitzert.');
+  S.irrIntro=true;save();
+}
+// Wer ohne Ruhe ueber die Wiese will: Pling, umdrehen, hinterher, Matsch
+async function irrStoer(){
+  const nr=S.irrFall=(S.irrFall||0)+1;
+  if(S.irrImGlas){await walkTo(196,124);S.plingT=performance.now();tone('triangle',1760,0.12,0.06);tone('triangle',2640,0.18,0.05,null,0.08);await sleep(300);
+    face(true);await say('hero','Es pingt immer noch. Durchs Glas.');await say('hero','Ich gucke ständig hin. Das ist ja wie vorher.');return;}
+  await walkTo(196,124);
+  S.plingI=nr%IRR_N;S.plingT=performance.now();tone('triangle',1760,0.12,0.06);tone('triangle',2640,0.18,0.05,null,0.08);
+  await sleep(250);face(true);await say('hero',['Oh! Was war das?','Pling! Da, schon wieder!','Nur ganz kurz gucken …'][(nr-1)%3]);
+  await walkTo(96,128);S.matsch=performance.now();tone('sawtooth',90,0.35,0.08,50);S.hero.y+=3;await sleep(500);S.hero.y-=3;
+  await say('hero',['Matsch. Bis zu den Knien.','Schon wieder Matsch.','Warum stehe ich eigentlich immer im Matsch?'][(nr-1)%3]);
+  if(nr===1)await say('kraechz','Du siehst aus wie ein Pfahl mit Meinung.');
+  await walkTo(40,126);face(false);
+}
+// Kraechz leiht sein Monokel nur gegen ein Versprechen mit Zeitpunkt
+async function monokelLeihen(){
+  await say('kraechz','Mein Monokel? Ohne das sehe ich nichts. Rein gar nichts.');
+  await say('kraechz','Und hier im Land Später kommt nichts zurück, was man verleiht. Wann krieg ich es wieder?');
+  for(;;){const o=['Du kriegst es gleich wieder.','Ich geb’s dir später zurück.','Versprochen!','Sobald das letzte Irrlicht im Glas ist, kriegst du es sofort zurück.'];
+    const a=await choose(o);await say('hero',o[a]);
+    if(a===0){await say('kraechz','Gleich. Das Lieblingswort der Erstarrten. Nein.');continue;}
+    if(a===1){await say('kraechz','Später? Wir sind im Land Später. Hier kommt nichts zurück.');continue;}
+    if(a===2){await say('kraechz','Versprechen habe ich als Schulleiter jeden Tag gehört. Wann genau?');continue;}
+    break;}
+  await say('kraechz','Na also. Ein Plan mit Zeitpunkt. Aber ich zähle mit.');
+  S.monokelWeg=true;flieg('monokel',[S.kx,S.ky-14],null);give('monokel');tone('triangle',990,0.2,0.04);save();
+  await say('kraechz','Huch. Alles verschwommen. Ist das da ein Baum oder eine Kuh?');
+}
+async function redeKraechzWiese(){
+  if(S.irrImGlas||S.monokelWeg||!S.irrIntro)return redeKraechz();
+  const o=['Leihst du mir dein Monokel?','Hast du einen Tipp für mich?','Ach, nichts.'];
+  const a=await choose(o);await say('hero',o[a]);
+  if(a===0)return monokelLeihen();
+  if(a===1)return irrTipp();
+  return say('kraechz','Dann putze ich weiter mein Monokel.');
+}
+// Fangen: Monokel als Koeder ueber das offene Glas, die Irrlichter fliegen hinein, Deckel zu, Monokel zurueck
+async function irrFangen(){
+  await reach('greif');S.koeder=true;tone('triangle',1200,0.3,0.03,1800);await sleep(300);
+  S.fangT=performance.now();for(let i=0;i<IRR_N;i++)tone('triangle',1400+i*200,0.08,0.04,null,0.22*i+0.6);
+  await sleep(IRR_N*220+900);
+  S.koeder=false;S.irrImGlas=true;S.deckelZu=true;S.fangT=null;tone('square',300,0.06,0.06);await sleep(150);tone('square',420,0.06,0.06);
+  await say('hero','Deckel zu! Alle drin.');
+  take('monokel');S.monokelWeg=false;flieg('monokel',null,[S.kx,S.ky-14]);tone('triangle',990,0.2,0.04);save();
+  await say('hero','Und hier, wie versprochen. Dein Monokel.');
+  await say('kraechz','Pünktlich. Ich bin gerührt. Ein bisschen.');
+}
+async function actIrrwiese(verb,h,item){
+  const id=h.id;
+  if(item){
+    if(item==='teeglas'&&(id==='stumpf'||id==='glasS')){if(S.glasStumpf)return say('hero','Da steht schon ein Glas.');
+      await reach('greif');take('teeglas');S.glasStumpf=true;S.deckelZu=false;tone('square',500,0.05,0.03);save();return say('hero','Das Glas steht auf dem Stumpf. Deckel ab, Öffnung nach oben.');}
+    if(item==='teeglas'&&id==='irrlicht'){await reach('hoch');return say('hero','Zu schnell. Kaum komme ich mit dem Glas, sind sie weg. Ich müsste sie irgendwie hineinlocken.');}
+    if(item==='monokel'&&(id==='glasS'||id==='stumpf')){if(!S.glasStumpf)return say('hero','Glitzern allein bringt nichts. Ich brauche etwas, worin sie dann drin sind.');return irrFangen();}
+    if(item==='monokel'&&id==='irrlicht'){await reach('hoch');S.irrZuKraechz=null;return say('hero','Sie kommen angeflitzt! Und flitzen wieder weg. Ich brauche etwas, wo sie hineinfliegen und drinbleiben.');}
+    if(item==='monokel'&&id==='kraechz'){take('monokel');S.monokelWeg=false;flieg('monokel',null,[S.kx,S.ky-14]);return say('kraechz','Schon fertig? Die Lichter fliegen ja noch. Na, mir soll’s recht sein.');}
+    if(id==='kraechz'&&verb==='gib')return say('kraechz','Behalte das mal schön selbst.');
+    if(item==='kekse'&&id==='irrlicht')return say('hero','Irrlichter essen keine Kekse. Glaube ich.');
+    return say('hero',FALLBACK.benutze());
+  }
+  switch(id+':'+verb){
+    case 'kraechz:rede':return redeKraechzWiese();
+    case 'kraechz:schau':return say('hero',S.monokelWeg?'Krächz blinzelt angestrengt einen Ast an. Er hält ihn für mich.':'Krächz sitzt auf der Birke. Sein Monokel blitzt in der Dämmerung.');
+    case 'irrlicht:schau':return say('hero','Kleine grüne Lichter. Sie blinken, sie pingen, und jedes Mal will ich hingucken.');
+    case 'irrlicht:nimm':await reach('hoch');return say('hero','Zu schnell. Und warm. Und frech.');
+    case 'glasS:schau':return say('hero',S.irrImGlas?'Das Glas leuchtet grün. Drinnen schwirrt und pingt es.':'Das offene Teeglas auf dem Stumpf.');
+    case 'glasS:nimm':if(S.irrImGlas){await reach('greif');S.glasStumpf=false;S.irrWeg=true;give('irrglas');tone('triangle',520,0.2,0.04);save();
+        await say('hero','Ab in den Rucksack. Aus den Augen, aus dem Kopf.');return say('hero','… Ruhe. Herrliche Ruhe.');}
+      await reach('greif');S.glasStumpf=false;give('teeglas');return say('hero','Ich nehme das Glas wieder mit.');
+    case 'stumpf:schau':return say('hero','Ein alter Baumstumpf mit glatter Schnittfläche. Darauf könnte man gut etwas abstellen.');
+    case 'birke:schau':return say('hero','Eine tote Birke. Krächz hat sie zu seinem Ausguck erklärt.');
+    case 'wasser:schau':return say('hero','Ein Wasserloch. Die Irrlichter spiegeln sich darin. Doppelt so viele Lichter, doppelt so viel Ablenkung.');
+    case 'wollgras:schau':return say('hero','Wollgras. Sieht aus wie Watte auf Stielen.');
+    case 'wollgras:nimm':return say('hero','Das lasse ich stehen. Es wohnt hier.');
+    case 'nebelI:schau':return say('hero','Dahinten wird der Nebel dicht. Da muss ich durch.');
+    case 'zurueck:gehe':case 'zurueck:benutze':return irrZumMoorrand();
+    case 'weiter:gehe':case 'weiter:benutze':return S.irrWeg?nebelpfadVorschau():irrStoer();
+    case 'bodenI:schau':return say('hero','Moos. Es federt und schmatzt bei jedem Schritt.');
+  }
+  if(verb==='schau')return say('hero',FALLBACK.schau(h));
+  return say('hero',FALLBACK[verb]?FALLBACK[verb](h):FALLBACK.benutze());
+}
+async function irrZumMoorrand(){await walkTo(4,124);S.hero.hidden=true;await kraechzFlug(-20,40,700,10);await sleep(200);
+  S.room='moorrand';S.kraechz='moorrand';S.kx=330;S.ky=40;S.hero.x=316;S.hero.y=124;S.hero.flip=true;S.hero.hidden=false;
+  kraechzFlug(293,51,900,12).then(()=>{S.kflip=true;});await walkTo(270,124);}
+async function nebelpfadVorschau(){
+  await walkTo(306,120);S.hero.hidden=true;await kraechzFlug(330,40,700,10);S.kx=-40;
+  await showCard('Der Nebelpfad','Hier geht es bald weiter. Die Glocke läutet schon.');
+  S.over=true;save();if(API.onDone)API.onDone('kapitel2');
+}
+async function irrTipp(){
+  let t;
+  if(!has('teeglas')&&!S.glasStumpf&&!S.irrImGlas)t='Ohne etwas zum Einsperren wird das nichts. Kolportus hat doch Gläser.';
+  else if(!S.monokelWeg&&!S.irrImGlas)t='Die Lichter fliegen auf alles, was glitzert. Leider auch auf mein Monokel.';
+  else if(!S.glasStumpf&&!S.irrImGlas)t='Mit Glas in der einen und Monokel in der anderen Hand wird das nichts. Stell das Glas irgendwo ab.';
+  else if(!S.irrImGlas)t='Glitzer über die Öffnung halten. Den Rest machen die Lichter selbst.';
+  else t='Solange du das Glas siehst, siehst du hin. Pack es weg.';
+  await say('kraechz',t);
+}
+window.__irrStill=()=>{const c=irrwieseBg();ctx.drawImage(c,0,0);const n=irrNebel();ctx.globalAlpha=0.9;ctx.drawImage(n,0,IW.VY-30);ctx.globalAlpha=1;};
 window.__cutStill=(f,t)=>{S.cut={draw:{treppe:cutTreppe,pano:cutPano,turm:cutTurm,moor:cutMoor,land:cutLand}[f],lines:f==='land'?LAND_LINES:[],t0:performance.now()-t*1000,pos:{}};};
 
 // Speichern: nur die Teile des Zustands, die das Spiel ausmachen
-const KEEP=['spur','room','takt','zettelGelesen','flureGeschafft','halleIntro','fehlwege','heft','kraechz','kx','ky','kflip','fenster','ziel','kruemelGesehen','gitter','federmappe','muenze','kreide','tipp','kraechzKennt','jonas','inv','gefragt','tschuess','eingangDone','kallFrozen','fertig','gangIntro','passed','erlebt','plaene','tafelGelesen','suchKantine','kantineErklaert','invOff','kantineIntro','broesel','broeselKekse','broeselRede','sortiert','bereit','lappenGegeben','kammerIntro','heizIntro','grummelTor','musikIntro','metronom','orchesterWach','fermateRede','brauchSchlaegel','schlaegelWeg','pause','floeteZu','neueFloete','kartonAuf','holzwolleGenommen','emilRede','bioIntro','moorIntro','quizBekannt','teeglas','quizVersuche','miaFrage','miaRuhe','kopfGenommen','miaZurueck','gustavGefunden','miaWach','miaRede','brauchFeuer','wolleImFleck','feuer','grummelRede','kisteAuf','lochGesehen','probiert','torAuf'];
+const KEEP=['spur','room','takt','zettelGelesen','flureGeschafft','halleIntro','fehlwege','heft','kraechz','kx','ky','kflip','fenster','ziel','kruemelGesehen','gitter','federmappe','muenze','kreide','tipp','kraechzKennt','jonas','inv','gefragt','tschuess','eingangDone','kallFrozen','fertig','gangIntro','passed','erlebt','plaene','tafelGelesen','suchKantine','kantineErklaert','invOff','kantineIntro','broesel','broeselKekse','broeselRede','sortiert','bereit','lappenGegeben','kammerIntro','heizIntro','grummelTor','musikIntro','metronom','orchesterWach','fermateRede','brauchSchlaegel','schlaegelWeg','pause','floeteZu','neueFloete','kartonAuf','holzwolleGenommen','emilRede','bioIntro','moorIntro','quizBekannt','teeglas','quizVersuche','irrIntro','irrFall','monokelWeg','glasStumpf','deckelZu','irrImGlas','irrWeg','miaFrage','miaRuhe','kopfGenommen','miaZurueck','gustavGefunden','miaWach','miaRede','brauchFeuer','wolleImFleck','feuer','grummelRede','kisteAuf','lochGesehen','probiert','torAuf'];
 function save(){const d={};KEEP.forEach(k=>{if(S[k]!==undefined)d[k]=S[k];});d.hero={x:S.hero.x,y:S.hero.y,flip:S.hero.flip};SAVE.write({prolog:d});}
 let looping=false;
 const API={onDone:null,
-  start(saved){reset(saved);build();initAudio();last=performance.now();if(!looping){looping=true;requestAnimationFrame(loop);}if(!S.eingangDone)eingang();else if(S.room==='halle'&&!S.halleIntro)run(()=>enterHalle());else if(S.room==='gang'&&!S.gangIntro)run(()=>enterGang());else if(S.room==='kantine'&&!S.kantineIntro)run(()=>enterKantine());else if(S.room==='heiz'&&!S.heizIntro)run(()=>enterHeiz());else if(S.room==='musik'&&!S.musikIntro)run(()=>enterMusik());else if(S.room==='bio'&&!S.bioIntro)run(()=>enterBio());else if(S.room==='moorrand'&&!S.moorIntro)run(()=>enterMoorrand());else if(S.zeigeUebergang){S.zeigeUebergang=false;run(()=>uebergangKapitel2());}},
+  start(saved){reset(saved);build();initAudio();last=performance.now();if(!looping){looping=true;requestAnimationFrame(loop);}if(!S.eingangDone)eingang();else if(S.room==='halle'&&!S.halleIntro)run(()=>enterHalle());else if(S.room==='gang'&&!S.gangIntro)run(()=>enterGang());else if(S.room==='kantine'&&!S.kantineIntro)run(()=>enterKantine());else if(S.room==='heiz'&&!S.heizIntro)run(()=>enterHeiz());else if(S.room==='musik'&&!S.musikIntro)run(()=>enterMusik());else if(S.room==='bio'&&!S.bioIntro)run(()=>enterBio());else if(S.room==='moorrand'&&!S.moorIntro)run(()=>enterMoorrand());else if(S.room==='irrwiese'&&!S.irrIntro)run(()=>enterIrrwiese());else if(S.zeigeUebergang){S.zeigeUebergang=false;run(()=>uebergangKapitel2());}},
   mute(m){if(M)M.gain.value=m?0:0.5;}};
 window.__S=()=>S;window.__skip=()=>{if(skipLine)skipLine();};
 window.__act=(verb,id,item)=>{const h=curHS().find(x=>x.id===id);return run(async()=>{if(!await goTo(h.walk[0],h.walk[1]))return;face(h.flip);await act(verb,h,item);});};
@@ -4938,6 +5176,7 @@ SZENEN.feuer=Object.assign({},SZENEN.keller,{heizIntro:true,kraechz:'heiz',kx:22
 SZENEN.kiste=Object.assign({},SZENEN.feuer,{feuer:true,kisteAuf:true,inv:['lineal','radiergummi','muenze','kreide','notiz','kekse','schlaegel','lupe']});
 SZENEN.land=Object.assign({},SZENEN.kiste,{zeigeUebergang:true});
 SZENEN.moorrand=Object.assign({},SZENEN.kiste,{room:'moorrand',kraechz:'moorrand',kx:293,ky:51,kflip:true,hero:{x:96,y:124,flip:false},torAuf:true,miaZurueck:true,moorIntro:false,inv:['lineal','radiergummi','muenze','kreide','notiz','kekse','schlaegel','kompass']});
+SZENEN.irrwiese=Object.assign({},SZENEN.moorrand,{room:'irrwiese',kraechz:'irrwiese',kx:72,ky:48,kflip:false,hero:{x:56,y:126,flip:false},moorIntro:true,quizBekannt:true,teeglas:true,irrIntro:false,inv:['lineal','radiergummi','muenze','kreide','notiz','kekse','schlaegel','kompass','teeglas']});
 function szeneStarten(id){
   const s=SAVE.read();PLAYER.name=(s&&s.name)||PLAYER.name||'Robin';PLAYER.girl=s?!!s.girl:PLAYER.girl;
   SAVE.clear();
